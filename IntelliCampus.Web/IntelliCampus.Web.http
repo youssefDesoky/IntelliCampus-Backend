@@ -1,0 +1,6 @@
+@IntelliCampus.Web_HostAddress = http://localhost:5122
+
+GET {{IntelliCampus.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
