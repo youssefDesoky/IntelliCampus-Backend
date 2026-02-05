@@ -10,11 +10,4 @@
     <ProjectReference Include="../IntelliCampus.DAL/IntelliCampus.DAL.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services/" />
-    <Folder Include="Services/Classes/" />
-    <Folder Include="Services/Interfaces/" />
-    <Folder Include="Dtos/" />
-  </ItemGroup>
-
 </Project>

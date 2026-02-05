@@ -1,0 +1,22 @@
+using IntelliCampus.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace IntelliCampus.DAL.Data.Configurations;
+
+public class ClassConfiguration : IEntityTypeConfiguration<Class>
+{
+    public void Configure(EntityTypeBuilder<Class> builder)
+    {
+        builder.HasKey(c => c.ClassId);
+
+        builder.Property(c => c.ClassType)
+            .HasConversion<string>()
+            .HasMaxLength(20);
+
+        builder.HasOne(c => c.Course)
+            .WithMany(co => co.Classes)
+            .HasForeignKey(c => c.CourseId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+}
