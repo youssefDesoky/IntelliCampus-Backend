@@ -1,33 +1,39 @@
 {
   "format": 1,
   "restore": {
-    "/media/youssef-desoky/Data/My Work/C#/IntelliCampus/IntelliCampus-Backend/IntelliCampus.BLL/IntelliCampus.BLL.csproj": {}
+    "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.BLL\\IntelliCampus.BLL.csproj": {}
   },
   "projects": {
-    "/media/youssef-desoky/Data/My Work/C#/IntelliCampus/IntelliCampus-Backend/IntelliCampus.BLL/IntelliCampus.BLL.csproj": {
+    "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.BLL\\IntelliCampus.BLL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/media/youssef-desoky/Data/My Work/C#/IntelliCampus/IntelliCampus-Backend/IntelliCampus.BLL/IntelliCampus.BLL.csproj",
+        "projectUniqueName": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.BLL\\IntelliCampus.BLL.csproj",
         "projectName": "IntelliCampus.BLL",
-        "projectPath": "/media/youssef-desoky/Data/My Work/C#/IntelliCampus/IntelliCampus-Backend/IntelliCampus.BLL/IntelliCampus.BLL.csproj",
-        "packagesPath": "/home/youssef-desoky/.nuget/packages/",
-        "outputPath": "/media/youssef-desoky/Data/My Work/C#/IntelliCampus/IntelliCampus-Backend/IntelliCampus.BLL/obj/",
+        "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.BLL\\IntelliCampus.BLL.csproj",
+        "packagesPath": "C:\\Users\\Youssef Ahmed\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.BLL\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/youssef-desoky/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Youssef Ahmed\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "/media/youssef-desoky/Data/My Work/C#/IntelliCampus/IntelliCampus-Backend/IntelliCampus.DAL/IntelliCampus.DAL.csproj": {
-                "projectPath": "/media/youssef-desoky/Data/My Work/C#/IntelliCampus/IntelliCampus-Backend/IntelliCampus.DAL/IntelliCampus.DAL.csproj"
+              "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.DAL\\IntelliCampus.DAL.csproj": {
+                "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.DAL\\IntelliCampus.DAL.csproj"
               }
             }
           }
@@ -42,7 +48,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net9.0": {
@@ -63,26 +69,32 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/media/youssef-desoky/Data/My Work/C#/IntelliCampus/IntelliCampus-Backend/IntelliCampus.DAL/IntelliCampus.DAL.csproj": {
+    "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.DAL\\IntelliCampus.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/media/youssef-desoky/Data/My Work/C#/IntelliCampus/IntelliCampus-Backend/IntelliCampus.DAL/IntelliCampus.DAL.csproj",
+        "projectUniqueName": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.DAL\\IntelliCampus.DAL.csproj",
         "projectName": "IntelliCampus.DAL",
-        "projectPath": "/media/youssef-desoky/Data/My Work/C#/IntelliCampus/IntelliCampus-Backend/IntelliCampus.DAL/IntelliCampus.DAL.csproj",
-        "packagesPath": "/home/youssef-desoky/.nuget/packages/",
-        "outputPath": "/media/youssef-desoky/Data/My Work/C#/IntelliCampus/IntelliCampus-Backend/IntelliCampus.DAL/obj/",
+        "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.DAL\\IntelliCampus.DAL.csproj",
+        "packagesPath": "C:\\Users\\Youssef Ahmed\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.DAL\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/youssef-desoky/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Youssef Ahmed\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -101,7 +113,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net9.0": {
@@ -128,7 +140,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

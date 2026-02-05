@@ -11,15 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data/" />
-    <Folder Include="Data/Configurations/" />
-    <Folder Include="Data/Contexts/" />
-    <Folder Include="Data/DataSeed/" />
-    <Folder Include="Entities/" />
-    <Folder Include="Entities/Enums/" />
-    <Folder Include="Repositories/" />
-    <Folder Include="Repositories/Classes/" />
-    <Folder Include="Repositories/Interfaces/" />
+    <Folder Include="Data\DataSeed\" />
   </ItemGroup>
 
 </Project>
