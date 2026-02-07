@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IntelliCampus.BLL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ba5dcf58e822a28ee534a105b76793d645d1b035")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+230744f61d04ac776c90bb6e50e1d17644154881")]
 [assembly: System.Reflection.AssemblyProductAttribute("IntelliCampus.BLL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IntelliCampus.BLL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
