@@ -7,4 +7,5 @@ public class CreateCourseDto
     public string CourseName { get; set; } = null!;
     public string? CourseNameAr { get; set; }
     public int CreditHours { get; set; }
+    public int? DepartmentId { get; set; }
 }

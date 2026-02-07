@@ -15,10 +15,16 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
             .HasMaxLength(100);
 
         builder.Property(c => c.CourseNameAr)
-            .HasMaxLength(100);
+            .HasMaxLength(100)
+            .IsUnicode();
 
         builder.Property(c => c.Status)
             .HasConversion<string>()
             .HasMaxLength(20);
+
+        builder.HasOne(c => c.Department)
+            .WithMany(d => d.Courses)
+            .HasForeignKey(c => c.DepartmentId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

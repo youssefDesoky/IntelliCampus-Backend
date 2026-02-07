@@ -7,6 +7,8 @@ namespace IntelliCampus.BLL.Services.Classes;
 
 public class AuthService : IAuthService
 {
+    private const string DefaultProfileImage = "/images/default-avatar.png";
+
     private readonly IntelliCampusDbContext _context;
     private readonly IPasswordService _passwordService;
     private readonly ITokenService _tokenService;
@@ -45,6 +47,24 @@ public class AuthService : IAuthService
         };
     }
 
+    public async Task<MeResponseDto?> GetMeAsync(int userId)
+    {
+        var user = await _context.Users.FindAsync(userId);
+
+        if (user is null)
+            return null;
+
+        return new MeResponseDto
+        {
+            UserId = user.UserId,
+            FullName = user.FullName,
+            Email = user.Email,
+            Role = user.Role.ToString(),
+            ProfileImage = user.ProfileImage ?? DefaultProfileImage,
+            Notifications = new { message = "Notifications placeholder" }
+        };
+    }
+
     public async Task<UserProfileDto?> GetProfileAsync(int userId)
     {
         var user = await _context.Users.FindAsync(userId);
@@ -61,8 +81,54 @@ public class AuthService : IAuthService
             PhoneNumber = user.PhoneNumber,
             Email = user.Email,
             Address = user.Address,
-            Role = user.Role.ToString()
+            Role = user.Role.ToString(),
+            ProfileImage = user.ProfileImage ?? DefaultProfileImage
         };
+    }
+
+    public async Task<UserProfileDto?> UpdateProfileAsync(int userId, UpdateProfileDto dto)
+    {
+        var user = await _context.Users.FindAsync(userId);
+
+        if (user is null)
+            return null;
+
+        if (dto.Address is not null)
+            user.Address = dto.Address;
+
+        if (dto.PhoneNumber is not null)
+            user.PhoneNumber = dto.PhoneNumber;
+
+        if (dto.FullNameAr is not null)
+            user.FullNameAr = dto.FullNameAr;
+
+        await _context.SaveChangesAsync();
+
+        return new UserProfileDto
+        {
+            UserId = user.UserId,
+            NationalId = user.NationalId,
+            FullName = user.FullName,
+            FullNameAr = user.FullNameAr,
+            PhoneNumber = user.PhoneNumber,
+            Email = user.Email,
+            Address = user.Address,
+            Role = user.Role.ToString(),
+            ProfileImage = user.ProfileImage ?? DefaultProfileImage
+        };
+    }
+
+    public async Task<string?> UpdateProfileImageAsync(int userId, string imageUrl)
+    {
+        var user = await _context.Users.FindAsync(userId);
+
+        if (user is null)
+            return null;
+
+        user.ProfileImage = imageUrl;
+        await _context.SaveChangesAsync();
+
+        return user.ProfileImage;
     }
 
     public async Task<bool> ChangePasswordAsync(int userId, ChangePasswordDto dto)

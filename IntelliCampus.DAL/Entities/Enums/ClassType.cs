@@ -4,5 +4,5 @@ public enum ClassType
 {
     Lecture,
     Lab,
-    Tutorial
+    Section
 }

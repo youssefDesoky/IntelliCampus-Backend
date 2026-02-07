@@ -20,9 +20,10 @@ public class InstructorService : IInstructorService
 
     public async Task<InstructorDto?> GetByIdAsync(int instructorId)
     {
+        // UserId is the PK in TPT inheritance
         var instructor = await _context.Instructors
             .Include(i => i.Department)
-            .FirstOrDefaultAsync(i => i.InstructorId == instructorId);
+            .FirstOrDefaultAsync(i => i.UserId == instructorId);
 
         if (instructor is null)
             return null;
@@ -83,8 +84,9 @@ public class InstructorService : IInstructorService
 
     public async Task<bool> DeleteAsync(int instructorId)
     {
+        // UserId is the PK in TPT inheritance
         var instructor = await _context.Instructors
-            .FirstOrDefaultAsync(i => i.InstructorId == instructorId);
+            .FirstOrDefaultAsync(i => i.UserId == instructorId);
 
         if (instructor is null)
             return false;

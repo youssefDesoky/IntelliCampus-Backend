@@ -1,0 +1,20 @@
+using IntelliCampus.BLL.Dtos.Material;
+
+namespace IntelliCampus.BLL.Services.Interfaces;
+
+public interface IMaterialService
+{
+    // Materials
+    Task<MaterialDto?> GetByIdAsync(int materialId);
+    Task<IEnumerable<MaterialDto>> GetByCourseIdAsync(int courseId);
+    Task<CourseMaterialsDto?> GetCourseMaterialsOrganizedAsync(int courseId);
+    Task<MaterialDto> CreateAsync(int instructorId, CreateMaterialDto dto, string? filePath, string? fileUrl);
+    Task<bool> DeleteAsync(int materialId, int instructorId);
+
+    // Folders
+    Task<MaterialFolderDto?> GetFolderByIdAsync(int folderId);
+    Task<IEnumerable<MaterialFolderDto>> GetFoldersByCourseIdAsync(int courseId);
+    Task<MaterialFolderDto> CreateFolderAsync(int instructorId, CreateMaterialFolderDto dto);
+    Task<MaterialFolderDto?> UpdateFolderAsync(int folderId, int instructorId, string name, string? description);
+    Task<bool> DeleteFolderAsync(int folderId, int instructorId);
+}

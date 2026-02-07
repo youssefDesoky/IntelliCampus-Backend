@@ -20,8 +20,9 @@ public class StudentService : IStudentService
 
     public async Task<StudentDto?> GetByIdAsync(int studentId)
     {
+        // UserId is the PK in TPT inheritance
         var student = await _context.Students
-            .FirstOrDefaultAsync(s => s.StudentId == studentId);
+            .FirstOrDefaultAsync(s => s.UserId == studentId);
 
         if (student is null)
             return null;
@@ -69,8 +70,9 @@ public class StudentService : IStudentService
 
     public async Task<bool> DeleteAsync(int studentId)
     {
+        // UserId is the PK in TPT inheritance
         var student = await _context.Students
-            .FirstOrDefaultAsync(s => s.StudentId == studentId);
+            .FirstOrDefaultAsync(s => s.UserId == studentId);
 
         if (student is null)
             return false;
