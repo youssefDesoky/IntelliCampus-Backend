@@ -24,7 +24,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(100);
 
         builder.Property(u => u.FullNameAr)
-            .HasMaxLength(100);
+            .HasMaxLength(100)
+            .IsUnicode();
 
         builder.Property(u => u.PhoneNumber)
             .HasMaxLength(20);
@@ -46,5 +47,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Role)
             .HasConversion<string>()
             .HasMaxLength(20);
+
+        builder.Property(u => u.ProfileImage)
+            .HasMaxLength(500);
     }
 }

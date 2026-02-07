@@ -11,4 +11,5 @@ public class Department
     public Instructor? HeadInstructor { get; set; }
     public ICollection<Instructor> Instructors { get; set; } = [];
     public ICollection<StudentDepartment> StudentDepartments { get; set; } = [];
+    public ICollection<Course> Courses { get; set; } = [];
 }

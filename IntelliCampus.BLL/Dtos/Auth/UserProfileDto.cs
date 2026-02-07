@@ -10,4 +10,5 @@ public class UserProfileDto
     public string Email { get; set; } = null!;
     public string? Address { get; set; }
     public string Role { get; set; } = null!;
+    public string? ProfileImage { get; set; }
 }

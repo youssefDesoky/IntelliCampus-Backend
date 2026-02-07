@@ -9,9 +9,9 @@ public class Notification
     public string Message { get; set; } = null!;
     public bool IsRead { get; set; }
     public DateTime CreatedAt { get; set; }
-    public int UserId { get; set; }
+    public int? PostId { get; set; }
 
     // Navigation properties
-    public User User { get; set; } = null!;
+    public Post? Post { get; set; }
     public ICollection<UserNotification> UserNotifications { get; set; } = [];
 }

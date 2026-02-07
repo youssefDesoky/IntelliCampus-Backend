@@ -13,10 +13,10 @@ public abstract class User
     public string Email { get; set; } = null!;
     public string? Address { get; set; }
     public string Password { get; set; } = null!;
+    public string? ProfileImage { get; set; }
 
     // Navigation properties
     public ICollection<Post> Posts { get; set; } = [];
     public ICollection<Comment> Comments { get; set; } = [];
-    public ICollection<Notification> Notifications { get; set; } = [];
     public ICollection<UserNotification> UserNotifications { get; set; } = [];
 }

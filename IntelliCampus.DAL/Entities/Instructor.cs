@@ -10,4 +10,6 @@ public class Instructor : User
     // Navigation properties
     public Department? Department { get; set; }
     public ICollection<InstructorMaterial> InstructorMaterials { get; set; } = [];
+    public ICollection<Class> Classes { get; set; } = [];
+    public ICollection<MaterialFolder> CreatedFolders { get; set; } = [];
 }

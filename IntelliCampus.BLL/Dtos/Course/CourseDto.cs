@@ -10,4 +10,7 @@ public class CourseDto
     public int CreditHours { get; set; }
     public CourseStatus Status { get; set; }
     public string StatusName => Status.ToString();
+    public int? DepartmentId { get; set; }
+    public string? DepartmentName { get; set; }
+    public int ClassCount { get; set; }
 }

@@ -116,9 +116,14 @@ namespace IntelliCampus.DAL.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("InstructorId")
+                        .HasColumnType("int");
+
                     b.HasKey("ClassId");
 
                     b.HasIndex("CourseId");
+
+                    b.HasIndex("InstructorId");
 
                     b.ToTable("Classes");
                 });
@@ -181,9 +186,13 @@ namespace IntelliCampus.DAL.Migrations
 
                     b.Property<string>("CourseNameAr")
                         .HasMaxLength(100)
+                        .IsUnicode(true)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("CreditHours")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -192,6 +201,8 @@ namespace IntelliCampus.DAL.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("CourseId");
+
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("Courses");
                 });
@@ -321,6 +332,24 @@ namespace IntelliCampus.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaterialId"));
 
+                    b.Property<int?>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("FilePath")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("FileUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int?>("FolderId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -336,7 +365,49 @@ namespace IntelliCampus.DAL.Migrations
 
                     b.HasKey("MaterialId");
 
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("FolderId");
+
                     b.ToTable("Materials");
+                });
+
+            modelBuilder.Entity("IntelliCampus.DAL.Entities.MaterialFolder", b =>
+                {
+                    b.Property<int>("MaterialFolderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaterialFolderId"));
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedByInstructorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("MaterialFolderId");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("CreatedByInstructorId");
+
+                    b.ToTable("MaterialFolders");
                 });
 
             modelBuilder.Entity("IntelliCampus.DAL.Entities.Note", b =>
@@ -411,17 +482,17 @@ namespace IntelliCampus.DAL.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<int?>("PostId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("NotificationId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("PostId");
 
                     b.ToTable("Notifications");
                 });
@@ -599,11 +670,19 @@ namespace IntelliCampus.DAL.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ClassId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RegisteredAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Semester")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("StudentId", "CourseId");
+
+                    b.HasIndex("ClassId");
 
                     b.HasIndex("CourseId");
 
@@ -668,6 +747,7 @@ namespace IntelliCampus.DAL.Migrations
 
                     b.Property<string>("FullNameAr")
                         .HasMaxLength(100)
+                        .IsUnicode(true)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NationalId")
@@ -683,6 +763,10 @@ namespace IntelliCampus.DAL.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ProfileImage")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -814,7 +898,14 @@ namespace IntelliCampus.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("IntelliCampus.DAL.Entities.Instructor", "Instructor")
+                        .WithMany("Classes")
+                        .HasForeignKey("InstructorId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Course");
+
+                    b.Navigation("Instructor");
                 });
 
             modelBuilder.Entity("IntelliCampus.DAL.Entities.Comment", b =>
@@ -834,6 +925,16 @@ namespace IntelliCampus.DAL.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("IntelliCampus.DAL.Entities.Course", b =>
+                {
+                    b.HasOne("IntelliCampus.DAL.Entities.Department", "Department")
+                        .WithMany("Courses")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("IntelliCampus.DAL.Entities.CoursePrerequisite", b =>
@@ -914,6 +1015,42 @@ namespace IntelliCampus.DAL.Migrations
                     b.Navigation("Material");
                 });
 
+            modelBuilder.Entity("IntelliCampus.DAL.Entities.Material", b =>
+                {
+                    b.HasOne("IntelliCampus.DAL.Entities.Course", "Course")
+                        .WithMany("Materials")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("IntelliCampus.DAL.Entities.MaterialFolder", "Folder")
+                        .WithMany("Materials")
+                        .HasForeignKey("FolderId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Folder");
+                });
+
+            modelBuilder.Entity("IntelliCampus.DAL.Entities.MaterialFolder", b =>
+                {
+                    b.HasOne("IntelliCampus.DAL.Entities.Course", "Course")
+                        .WithMany("MaterialFolders")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IntelliCampus.DAL.Entities.Instructor", "CreatedByInstructor")
+                        .WithMany("CreatedFolders")
+                        .HasForeignKey("CreatedByInstructorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("CreatedByInstructor");
+                });
+
             modelBuilder.Entity("IntelliCampus.DAL.Entities.Note", b =>
                 {
                     b.HasOne("IntelliCampus.DAL.Entities.Session", "Session")
@@ -945,13 +1082,12 @@ namespace IntelliCampus.DAL.Migrations
 
             modelBuilder.Entity("IntelliCampus.DAL.Entities.Notification", b =>
                 {
-                    b.HasOne("IntelliCampus.DAL.Entities.User", "User")
-                        .WithMany("Notifications")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("IntelliCampus.DAL.Entities.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.Navigation("User");
+                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("IntelliCampus.DAL.Entities.Post", b =>
@@ -1027,6 +1163,11 @@ namespace IntelliCampus.DAL.Migrations
 
             modelBuilder.Entity("IntelliCampus.DAL.Entities.StudentCourse", b =>
                 {
+                    b.HasOne("IntelliCampus.DAL.Entities.Class", "Class")
+                        .WithMany("StudentCourses")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("IntelliCampus.DAL.Entities.Course", "Course")
                         .WithMany("StudentCourses")
                         .HasForeignKey("CourseId")
@@ -1038,6 +1179,8 @@ namespace IntelliCampus.DAL.Migrations
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Class");
 
                     b.Navigation("Course");
 
@@ -1143,6 +1286,8 @@ namespace IntelliCampus.DAL.Migrations
             modelBuilder.Entity("IntelliCampus.DAL.Entities.Class", b =>
                 {
                     b.Navigation("Sessions");
+
+                    b.Navigation("StudentCourses");
                 });
 
             modelBuilder.Entity("IntelliCampus.DAL.Entities.Community", b =>
@@ -1158,6 +1303,10 @@ namespace IntelliCampus.DAL.Migrations
 
                     b.Navigation("Grades");
 
+                    b.Navigation("MaterialFolders");
+
+                    b.Navigation("Materials");
+
                     b.Navigation("PrerequisiteFor");
 
                     b.Navigation("Prerequisites");
@@ -1167,6 +1316,8 @@ namespace IntelliCampus.DAL.Migrations
 
             modelBuilder.Entity("IntelliCampus.DAL.Entities.Department", b =>
                 {
+                    b.Navigation("Courses");
+
                     b.Navigation("Instructors");
 
                     b.Navigation("StudentDepartments");
@@ -1175,6 +1326,11 @@ namespace IntelliCampus.DAL.Migrations
             modelBuilder.Entity("IntelliCampus.DAL.Entities.Material", b =>
                 {
                     b.Navigation("InstructorMaterials");
+                });
+
+            modelBuilder.Entity("IntelliCampus.DAL.Entities.MaterialFolder", b =>
+                {
+                    b.Navigation("Materials");
                 });
 
             modelBuilder.Entity("IntelliCampus.DAL.Entities.Note", b =>
@@ -1208,8 +1364,6 @@ namespace IntelliCampus.DAL.Migrations
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("Notifications");
-
                     b.Navigation("Posts");
 
                     b.Navigation("UserNotifications");
@@ -1217,6 +1371,10 @@ namespace IntelliCampus.DAL.Migrations
 
             modelBuilder.Entity("IntelliCampus.DAL.Entities.Instructor", b =>
                 {
+                    b.Navigation("Classes");
+
+                    b.Navigation("CreatedFolders");
+
                     b.Navigation("InstructorMaterials");
                 });
 

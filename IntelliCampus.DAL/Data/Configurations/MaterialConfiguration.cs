@@ -14,8 +14,27 @@ public class MaterialConfiguration : IEntityTypeConfiguration<Material>
             .IsRequired()
             .HasMaxLength(200);
 
+        builder.Property(m => m.Description)
+            .HasMaxLength(500);
+
+        builder.Property(m => m.FilePath)
+            .HasMaxLength(500);
+
+        builder.Property(m => m.FileUrl)
+            .HasMaxLength(500);
+
         builder.Property(m => m.Type)
             .HasConversion<string>()
             .HasMaxLength(20);
+
+        builder.HasOne(m => m.Course)
+            .WithMany(c => c.Materials)
+            .HasForeignKey(m => m.CourseId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(m => m.Folder)
+            .WithMany(f => f.Materials)
+            .HasForeignKey(m => m.FolderId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
