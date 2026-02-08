@@ -37,19 +37,21 @@ public static class AdminSeeder
         await context.Departments.AddRangeAsync(departments);
         await context.SaveChangesAsync();
 
-        // Seed Admin
-        var admin = new Admin
+        // Seed SuperAdmin
+        var superAdmin = new Admin
         {
             NationalId = "00000000000000",
-            FullName = "System Administrator",
-            FullNameAr = "????? ??????",
-            Email = "admin@intellicampus.com",
+            FullName = "Super Administrator",
+            FullNameAr = "\u0645\u0633\u0626\u0648\u0644 \u0627\u0644\u0646\u0638\u0627\u0645",
+            Email = "superadmin@intellicampus.com",
             PhoneNumber = "01000000000",
             Address = "Cairo, Egypt",
-            Password = passwordService.HashPassword("Admin@123"),
-            Role = UserRole.Admin
+            Nationality = "Egyptian",
+            Password = passwordService.HashPassword("SuperAdmin@123"),
+            Role = UserRole.SuperAdmin,
+            HireDate = DateTime.UtcNow
         };
-        await context.Admins.AddAsync(admin);
+        await context.Admins.AddAsync(superAdmin);
         await context.SaveChangesAsync();
 
         // Seed Instructors (Professors and TAs)
@@ -59,57 +61,65 @@ public static class AdminSeeder
             {
                 NationalId = "11111111111111",
                 FullName = "Dr. Ahmed Hassan",
-                FullNameAr = "?. ???? ???",
+                FullNameAr = "\u062f. \u0623\u062d\u0645\u062f \u062d\u0633\u0646",
                 Email = "ahmed.hassan@instructor.com",
                 PhoneNumber = "01100000001",
                 Address = "Cairo, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Instructor@123"),
                 Role = UserRole.Instructor,
                 InstructorRole = "Professor",
                 Specialization = "Computer Networks",
-                DepartmentId = departments[0].DepartmentId
+                DepartmentId = departments[0].DepartmentId,
+                HireDate = DateTime.UtcNow
             },
             new Instructor
             {
                 NationalId = "22222222222222",
                 FullName = "Dr. Fatima Mohamed",
-                FullNameAr = "?. ????? ????",
+                FullNameAr = "\u062f. \u0641\u0627\u0637\u0645\u0629 \u0645\u062d\u0645\u062f",
                 Email = "fatima.mohamed@instructor.com",
                 PhoneNumber = "01100000002",
                 Address = "Giza, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Instructor@123"),
                 Role = UserRole.Instructor,
                 InstructorRole = "Professor",
                 Specialization = "Database Systems",
-                DepartmentId = departments[0].DepartmentId
+                DepartmentId = departments[0].DepartmentId,
+                HireDate = DateTime.UtcNow
             },
             new Instructor
             {
                 NationalId = "33333333333333",
                 FullName = "Eng. Omar Khaled",
-                FullNameAr = "?. ??? ????",
+                FullNameAr = "\u0645. \u0639\u0645\u0631 \u062e\u0627\u0644\u062f",
                 Email = "omar.khaled@instructor.com",
                 PhoneNumber = "01100000003",
                 Address = "Alexandria, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Instructor@123"),
                 Role = UserRole.Instructor,
                 InstructorRole = "TA",
                 Specialization = "Web Development",
-                DepartmentId = departments[0].DepartmentId
+                DepartmentId = departments[0].DepartmentId,
+                HireDate = DateTime.UtcNow
             },
             new Instructor
             {
                 NationalId = "44444444444444",
                 FullName = "Eng. Sara Ali",
-                FullNameAr = "?. ???? ???",
+                FullNameAr = "\u0645. \u0633\u0627\u0631\u0629 \u0639\u0644\u064a",
                 Email = "sara.ali@instructor.com",
                 PhoneNumber = "01100000004",
                 Address = "Cairo, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Instructor@123"),
                 Role = UserRole.Instructor,
                 InstructorRole = "TA",
                 Specialization = "Data Structures",
-                DepartmentId = departments[0].DepartmentId
+                DepartmentId = departments[0].DepartmentId,
+                HireDate = DateTime.UtcNow
             }
         };
         await context.Instructors.AddRangeAsync(instructors);

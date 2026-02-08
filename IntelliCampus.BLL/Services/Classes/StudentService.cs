@@ -20,8 +20,8 @@ public class StudentService : IStudentService
 
     public async Task<StudentDto?> GetByIdAsync(int studentId)
     {
-        // UserId is the PK in TPT inheritance
         var student = await _context.Students
+            .Include(s => s.Department)
             .FirstOrDefaultAsync(s => s.UserId == studentId);
 
         if (student is null)
@@ -33,6 +33,7 @@ public class StudentService : IStudentService
     public async Task<IEnumerable<StudentDto>> GetAllAsync()
     {
         var students = await _context.Students
+            .Include(s => s.Department)
             .ToListAsync();
 
         return students.Select(MapToDto);
@@ -40,11 +41,9 @@ public class StudentService : IStudentService
 
     public async Task<StudentDto> CreateAsync(CreateStudentDto dto)
     {
-        // Check if email already exists
         if (await _context.Users.AnyAsync(u => u.Email == dto.Email))
             throw new InvalidOperationException("Email already exists.");
 
-        // Check if national ID already exists
         if (await _context.Users.AnyAsync(u => u.NationalId == dto.NationalId))
             throw new InvalidOperationException("National ID already exists.");
 
@@ -57,20 +56,58 @@ public class StudentService : IStudentService
             Email = dto.Email,
             Address = dto.Address,
             Password = _passwordService.HashPassword(dto.Password),
+            Nationality = dto.Nationality,
             Role = UserRole.Student,
             Faculty = dto.Faculty,
-            Level = dto.Level
+            Level = dto.Level,
+            DepartmentId = dto.DepartmentId,
+            EnrollmentDate = dto.EnrollmentDate ?? DateTime.UtcNow
         };
 
         _context.Students.Add(student);
         await _context.SaveChangesAsync();
+
+        if (student.DepartmentId.HasValue)
+            await _context.Entry(student).Reference(s => s.Department).LoadAsync();
+
+        return MapToDto(student);
+    }
+
+    public async Task<StudentDto?> UpdateAsync(int studentId, UpdateStudentDto dto)
+    {
+        var student = await _context.Students
+            .Include(s => s.Department)
+            .FirstOrDefaultAsync(s => s.UserId == studentId);
+
+        if (student is null)
+            return null;
+
+        if (dto.Email is not null && dto.Email != student.Email)
+        {
+            if (await _context.Users.AnyAsync(u => u.Email == dto.Email && u.UserId != studentId))
+                throw new InvalidOperationException("Email already exists.");
+            student.Email = dto.Email;
+        }
+
+        if (dto.FullName is not null) student.FullName = dto.FullName;
+        if (dto.FullNameAr is not null) student.FullNameAr = dto.FullNameAr;
+        if (dto.PhoneNumber is not null) student.PhoneNumber = dto.PhoneNumber;
+        if (dto.Address is not null) student.Address = dto.Address;
+        if (dto.Nationality is not null) student.Nationality = dto.Nationality;
+        if (dto.Faculty is not null) student.Faculty = dto.Faculty;
+        if (dto.Level.HasValue) student.Level = dto.Level;
+        if (dto.DepartmentId.HasValue) student.DepartmentId = dto.DepartmentId;
+
+        await _context.SaveChangesAsync();
+
+        if (student.DepartmentId.HasValue)
+            await _context.Entry(student).Reference(s => s.Department).LoadAsync();
 
         return MapToDto(student);
     }
 
     public async Task<bool> DeleteAsync(int studentId)
     {
-        // UserId is the PK in TPT inheritance
         var student = await _context.Students
             .FirstOrDefaultAsync(s => s.UserId == studentId);
 
@@ -95,8 +132,12 @@ public class StudentService : IStudentService
             PhoneNumber = student.PhoneNumber,
             Email = student.Email,
             Address = student.Address,
+            Nationality = student.Nationality,
             Faculty = student.Faculty,
-            Level = student.Level
+            Level = student.Level,
+            DepartmentId = student.DepartmentId,
+            DepartmentName = student.Department?.DepartmentName,
+            EnrollmentDate = student.EnrollmentDate
         };
     }
 }

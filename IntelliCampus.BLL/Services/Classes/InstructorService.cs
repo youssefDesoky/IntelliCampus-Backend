@@ -20,7 +20,6 @@ public class InstructorService : IInstructorService
 
     public async Task<InstructorDto?> GetByIdAsync(int instructorId)
     {
-        // UserId is the PK in TPT inheritance
         var instructor = await _context.Instructors
             .Include(i => i.Department)
             .FirstOrDefaultAsync(i => i.UserId == instructorId);
@@ -42,15 +41,12 @@ public class InstructorService : IInstructorService
 
     public async Task<InstructorDto> CreateAsync(CreateInstructorDto dto)
     {
-        // Check if email already exists
         if (await _context.Users.AnyAsync(u => u.Email == dto.Email))
             throw new InvalidOperationException("Email already exists.");
 
-        // Check if national ID already exists
         if (await _context.Users.AnyAsync(u => u.NationalId == dto.NationalId))
             throw new InvalidOperationException("National ID already exists.");
 
-        // Validate department if provided
         if (dto.DepartmentId.HasValue)
         {
             var departmentExists = await _context.Departments.AnyAsync(d => d.DepartmentId == dto.DepartmentId);
@@ -67,16 +63,49 @@ public class InstructorService : IInstructorService
             Email = dto.Email,
             Address = dto.Address,
             Password = _passwordService.HashPassword(dto.Password),
+            Nationality = dto.Nationality,
             Role = UserRole.Instructor,
             InstructorRole = dto.Role,
             Specialization = dto.Specialization,
-            DepartmentId = dto.DepartmentId
+            DepartmentId = dto.DepartmentId,
+            HireDate = dto.HireDate ?? DateTime.UtcNow
         };
 
         _context.Instructors.Add(instructor);
         await _context.SaveChangesAsync();
 
-        // Reload with department
+        await _context.Entry(instructor).Reference(i => i.Department).LoadAsync();
+
+        return MapToDto(instructor);
+    }
+
+    public async Task<InstructorDto?> UpdateAsync(int instructorId, UpdateInstructorDto dto)
+    {
+        var instructor = await _context.Instructors
+            .Include(i => i.Department)
+            .FirstOrDefaultAsync(i => i.UserId == instructorId);
+
+        if (instructor is null)
+            return null;
+
+        if (dto.Email is not null && dto.Email != instructor.Email)
+        {
+            if (await _context.Users.AnyAsync(u => u.Email == dto.Email && u.UserId != instructorId))
+                throw new InvalidOperationException("Email already exists.");
+            instructor.Email = dto.Email;
+        }
+
+        if (dto.FullName is not null) instructor.FullName = dto.FullName;
+        if (dto.FullNameAr is not null) instructor.FullNameAr = dto.FullNameAr;
+        if (dto.PhoneNumber is not null) instructor.PhoneNumber = dto.PhoneNumber;
+        if (dto.Address is not null) instructor.Address = dto.Address;
+        if (dto.Nationality is not null) instructor.Nationality = dto.Nationality;
+        if (dto.Role is not null) instructor.InstructorRole = dto.Role;
+        if (dto.Specialization is not null) instructor.Specialization = dto.Specialization;
+        if (dto.DepartmentId.HasValue) instructor.DepartmentId = dto.DepartmentId;
+
+        await _context.SaveChangesAsync();
+
         await _context.Entry(instructor).Reference(i => i.Department).LoadAsync();
 
         return MapToDto(instructor);
@@ -84,7 +113,6 @@ public class InstructorService : IInstructorService
 
     public async Task<bool> DeleteAsync(int instructorId)
     {
-        // UserId is the PK in TPT inheritance
         var instructor = await _context.Instructors
             .FirstOrDefaultAsync(i => i.UserId == instructorId);
 
@@ -109,10 +137,12 @@ public class InstructorService : IInstructorService
             PhoneNumber = instructor.PhoneNumber,
             Email = instructor.Email,
             Address = instructor.Address,
+            Nationality = instructor.Nationality,
             Role = instructor.InstructorRole,
             Specialization = instructor.Specialization,
             DepartmentId = instructor.DepartmentId,
-            DepartmentName = instructor.Department?.DepartmentName
+            DepartmentName = instructor.Department?.DepartmentName,
+            HireDate = instructor.HireDate
         };
     }
 }

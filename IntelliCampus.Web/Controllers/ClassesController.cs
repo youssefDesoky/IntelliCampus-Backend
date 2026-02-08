@@ -41,7 +41,7 @@ public class ClassesController : ControllerBase
         return Ok(classes);
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     [HttpPost]
     public async Task<ActionResult<ClassDto>> Create(CreateClassDto dto)
     {
@@ -56,7 +56,7 @@ public class ClassesController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     [HttpPut("{id}/instructor/{instructorId}")]
     public async Task<ActionResult<ClassDto>> AssignInstructor(int id, int instructorId)
     {
@@ -75,7 +75,7 @@ public class ClassesController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

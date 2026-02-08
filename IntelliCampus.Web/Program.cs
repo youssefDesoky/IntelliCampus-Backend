@@ -77,6 +77,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IInstructorService, InstructorService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
