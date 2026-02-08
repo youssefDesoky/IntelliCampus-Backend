@@ -36,7 +36,7 @@ public class AdminsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<AdminDto>> Create(CreateAdminDto dto)
+    public async Task<ActionResult<AdminDto>> Create([FromBody] CreateAdminDto dto)
     {
         try
         {

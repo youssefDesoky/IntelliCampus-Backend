@@ -1,3 +1,4 @@
+using System.Globalization;
 using IntelliCampus.BLL.Dtos.Admin;
 using IntelliCampus.BLL.Services.Interfaces;
 using IntelliCampus.DAL.Data.Contexts;
@@ -43,6 +44,9 @@ public class AdminService : IAdminService
         if (await _context.Users.AnyAsync(u => u.NationalId == dto.NationalId))
             throw new InvalidOperationException("National ID already exists.");
 
+        var hireDate = ParseDate(dto.HireDate) ?? DateTime.UtcNow;
+        var password = string.IsNullOrWhiteSpace(dto.Password) ? "Admin@123" : dto.Password;
+
         var admin = new Admin
         {
             NationalId = dto.NationalId,
@@ -51,10 +55,11 @@ public class AdminService : IAdminService
             PhoneNumber = dto.PhoneNumber,
             Email = dto.Email,
             Address = dto.Address,
-            Password = _passwordService.HashPassword(dto.Password),
+            Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
             Role = UserRole.Admin,
-            HireDate = dto.HireDate ?? DateTime.UtcNow
+            AdminCode = dto.AdminCode,
+            HireDate = hireDate
         };
 
         _context.Admins.Add(admin);
@@ -80,6 +85,22 @@ public class AdminService : IAdminService
         return true;
     }
 
+    private static DateTime? ParseDate(string? dateStr)
+    {
+        if (string.IsNullOrWhiteSpace(dateStr))
+            return null;
+
+        var formats = new[] { "yyyy-MM-dd", "M/d/yyyy", "d/M/yyyy", "M-d-yyyy", "d-M-yyyy", "MM/dd/yyyy", "dd/MM/yyyy" };
+
+        if (DateTime.TryParseExact(dateStr, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+            return date;
+
+        if (DateTime.TryParse(dateStr, CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+            return date;
+
+        throw new InvalidOperationException("Invalid date format.");
+    }
+
     private static AdminDto MapToDto(Admin admin)
     {
         return new AdminDto
@@ -93,6 +114,7 @@ public class AdminService : IAdminService
             Email = admin.Email,
             Address = admin.Address,
             Nationality = admin.Nationality,
+            AdminCode = admin.AdminCode,
             HireDate = admin.HireDate
         };
     }
