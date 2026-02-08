@@ -36,7 +36,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<StudentDto>> Create(CreateStudentDto dto)
+    public async Task<ActionResult<StudentDto>> Create([FromBody] CreateStudentDto dto)
     {
         try
         {
@@ -50,7 +50,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<StudentDto>> Update(int id, UpdateStudentDto dto)
+    public async Task<ActionResult<StudentDto>> Update(int id, [FromBody] UpdateStudentDto dto)
     {
         try
         {
