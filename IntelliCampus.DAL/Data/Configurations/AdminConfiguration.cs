@@ -12,5 +12,8 @@ public class AdminConfiguration : IEntityTypeConfiguration<Admin>
 
         builder.Property(a => a.AdminId)
             .ValueGeneratedOnAdd();
+
+        builder.Property(a => a.AdminCode)
+            .HasMaxLength(50);
     }
 }

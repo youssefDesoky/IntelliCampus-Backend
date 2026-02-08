@@ -11,5 +11,6 @@ public class AdminDto
     public string Email { get; set; } = null!;
     public string? Address { get; set; }
     public string? Nationality { get; set; }
+    public string? AdminCode { get; set; }
     public DateTime? HireDate { get; set; }
 }
