@@ -25,6 +25,26 @@ public static class AdminSeeder
             },
             new Department
             {
+                DepartmentName = "Information Systems",
+                Description = "Information Systems Department"
+            },
+            new Department
+            {
+                DepartmentName = "Artificial Intelligence",
+                Description = "Artificial Intelligence Department"
+            },
+            new Department
+            {
+                DepartmentName = "Information Technology",
+                Description = "Information Technology Department"
+            },
+            new Department
+            {
+                DepartmentName = "Data Science",
+                Description = "Data Science Department"
+            },
+            new Department
+            {
                 DepartmentName = "Electrical Engineering",
                 Description = "Electrical Engineering Department"
             },
@@ -32,11 +52,6 @@ public static class AdminSeeder
             {
                 DepartmentName = "Mechanical Engineering",
                 Description = "Mechanical Engineering Department"
-            },
-            new Department
-            {
-                DepartmentName = "Information Systems",
-                Description = "Information Systems Department"
             }
         };
         await context.Departments.AddRangeAsync(departments);
@@ -132,7 +147,7 @@ public static class AdminSeeder
 
         // Set department heads
         departments[0].InstructorId = instructors[0].UserId;
-        departments[1].InstructorId = instructors[1].UserId;
+        departments[5].InstructorId = instructors[1].UserId;
         context.Departments.UpdateRange(departments);
         await context.SaveChangesAsync();
 
@@ -177,7 +192,7 @@ public static class AdminSeeder
                 CourseNameAr = "\u062a\u062d\u0644\u064a\u0644 \u0627\u0644\u062f\u0648\u0627\u0626\u0631",
                 CreditHours = 3,
                 Status = CourseStatus.Active,
-                DepartmentId = departments[1].DepartmentId
+                DepartmentId = departments[5].DepartmentId
             }
         };
         await context.Courses.AddRangeAsync(courses);
@@ -191,18 +206,30 @@ public static class AdminSeeder
             {
                 CourseId = courses[0].CourseId,
                 ClassType = ClassType.Lecture,
+                Day = DayOfWeekEnum.Sunday,
+                StartTime = new TimeSpan(9, 0, 0),
+                EndTime = new TimeSpan(10, 30, 0),
+                Room = "Hall A1",
                 InstructorId = instructors[0].UserId
             },
             new Class
             {
                 CourseId = courses[0].CourseId,
                 ClassType = ClassType.Section,
+                Day = DayOfWeekEnum.Tuesday,
+                StartTime = new TimeSpan(11, 0, 0),
+                EndTime = new TimeSpan(12, 30, 0),
+                Room = "Lab 101",
                 InstructorId = instructors[2].UserId
             },
             new Class
             {
                 CourseId = courses[0].CourseId,
                 ClassType = ClassType.Section,
+                Day = DayOfWeekEnum.Tuesday,
+                StartTime = new TimeSpan(13, 0, 0),
+                EndTime = new TimeSpan(14, 30, 0),
+                Room = "Lab 102",
                 InstructorId = instructors[3].UserId
             },
             // Database Management Systems classes
@@ -210,12 +237,20 @@ public static class AdminSeeder
             {
                 CourseId = courses[1].CourseId,
                 ClassType = ClassType.Lecture,
+                Day = DayOfWeekEnum.Monday,
+                StartTime = new TimeSpan(10, 0, 0),
+                EndTime = new TimeSpan(11, 30, 0),
+                Room = "Hall B2",
                 InstructorId = instructors[1].UserId
             },
             new Class
             {
                 CourseId = courses[1].CourseId,
                 ClassType = ClassType.Section,
+                Day = DayOfWeekEnum.Wednesday,
+                StartTime = new TimeSpan(9, 0, 0),
+                EndTime = new TimeSpan(10, 30, 0),
+                Room = "Lab 201",
                 InstructorId = instructors[2].UserId
             },
             // Web Development classes
@@ -223,12 +258,20 @@ public static class AdminSeeder
             {
                 CourseId = courses[2].CourseId,
                 ClassType = ClassType.Lecture,
+                Day = DayOfWeekEnum.Wednesday,
+                StartTime = new TimeSpan(11, 0, 0),
+                EndTime = new TimeSpan(12, 30, 0),
+                Room = "Hall A2",
                 InstructorId = instructors[0].UserId
             },
             new Class
             {
                 CourseId = courses[2].CourseId,
                 ClassType = ClassType.Section,
+                Day = DayOfWeekEnum.Thursday,
+                StartTime = new TimeSpan(9, 0, 0),
+                EndTime = new TimeSpan(10, 30, 0),
+                Room = "Lab 301",
                 InstructorId = instructors[3].UserId
             },
             // Computer Networks classes
@@ -236,6 +279,10 @@ public static class AdminSeeder
             {
                 CourseId = courses[3].CourseId,
                 ClassType = ClassType.Lecture,
+                Day = DayOfWeekEnum.Thursday,
+                StartTime = new TimeSpan(13, 0, 0),
+                EndTime = new TimeSpan(14, 30, 0),
+                Room = "Hall C1",
                 InstructorId = instructors[0].UserId
             }
         };
@@ -250,7 +297,7 @@ public static class AdminSeeder
                 NationalId = "55555555555555",
                 StudentCode = "20230001",
                 FullName = "Mohammed Hassan",
-                FullNameAr = "\u0645\u062d\u0645\u062f \u062d\u0633\u0646",
+                FullNameAr = "\u0645\u062d\u0645\u062d \u062d\u0633\u0646",
                 Email = "mohammed.hassan@student.com",
                 PhoneNumber = "01100000010",
                 Address = "Cairo, Egypt",
@@ -310,7 +357,7 @@ public static class AdminSeeder
                 Role = UserRole.Student,
                 Faculty = "Engineering",
                 Level = 2,
-                DepartmentId = departments[3].DepartmentId,
+                DepartmentId = departments[1].DepartmentId,
                 EnrollmentDate = DateTime.UtcNow.AddYears(-2)
             },
             new Student
@@ -327,7 +374,7 @@ public static class AdminSeeder
                 Role = UserRole.Student,
                 Faculty = "Engineering",
                 Level = 1,
-                DepartmentId = departments[3].DepartmentId,
+                DepartmentId = departments[1].DepartmentId,
                 EnrollmentDate = DateTime.UtcNow.AddYears(-1)
             }
         };
