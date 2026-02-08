@@ -365,53 +365,53 @@ public static class AdminSeeder
             new Material
             {
                 Title = "Data Structures Introduction Slides",
-                Description = "Comprehensive introduction to data structures",
                 Type = MaterialType.Document,
                 CourseId = courses[0].CourseId,
                 FolderId = materialFolders[0].MaterialFolderId,
                 FileUrl = "/materials/ds-intro-slides.pdf",
+                FileSize = 1_024_000,
                 UploadDate = DateTime.UtcNow
             },
             new Material
             {
                 Title = "Arrays Implementation Guide",
-                Description = "Step-by-step guide to implementing arrays",
                 Type = MaterialType.Document,
                 CourseId = courses[0].CourseId,
                 FolderId = materialFolders[1].MaterialFolderId,
                 FileUrl = "/materials/arrays-guide.pdf",
+                FileSize = 768_000,
                 UploadDate = DateTime.UtcNow
             },
             // Database Management Systems materials
             new Material
             {
                 Title = "Database Fundamentals",
-                Description = "Introduction to database systems",
                 Type = MaterialType.Document,
                 CourseId = courses[1].CourseId,
                 FolderId = materialFolders[2].MaterialFolderId,
                 FileUrl = "/materials/db-fundamentals.pdf",
+                FileSize = 1_280_000,
                 UploadDate = DateTime.UtcNow
             },
             new Material
             {
                 Title = "SQL Basics Tutorial",
-                Description = "SQL queries and operations",
                 Type = MaterialType.Document,
                 CourseId = courses[1].CourseId,
                 FolderId = null,
                 FileUrl = "/materials/sql-tutorial.pdf",
+                FileSize = 640_000,
                 UploadDate = DateTime.UtcNow
             },
             // Web Development materials
             new Material
             {
                 Title = "HTML & CSS Fundamentals",
-                Description = "Introduction to web development",
                 Type = MaterialType.Document,
                 CourseId = courses[2].CourseId,
                 FolderId = null,
                 FileUrl = "/materials/html-css-guide.pdf",
+                FileSize = 512_000,
                 UploadDate = DateTime.UtcNow
             }
         };
