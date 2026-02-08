@@ -80,10 +80,6 @@ public class ClassService : IClassService
         var classEntity = new Class
         {
             ClassType = dto.ClassType,
-            Day = dto.Day,
-            StartTime = dto.StartTime,
-            EndTime = dto.EndTime,
-            Room = dto.Room,
             CourseId = dto.CourseId,
             InstructorId = dto.InstructorId
         };
@@ -160,10 +156,6 @@ public class ClassService : IClassService
         {
             ClassId = classEntity.ClassId,
             ClassType = classEntity.ClassType,
-            Day = classEntity.Day,
-            StartTime = classEntity.StartTime,
-            EndTime = classEntity.EndTime,
-            Room = classEntity.Room,
             CourseId = classEntity.CourseId,
             CourseName = classEntity.Course.CourseName,
             InstructorId = classEntity.InstructorId,

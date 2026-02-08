@@ -8,7 +8,7 @@ public interface IMaterialService
     Task<MaterialDto?> GetByIdAsync(int materialId);
     Task<IEnumerable<MaterialDto>> GetByCourseIdAsync(int courseId);
     Task<CourseMaterialsDto?> GetCourseMaterialsOrganizedAsync(int courseId);
-    Task<MaterialDto> CreateAsync(int instructorId, CreateMaterialDto dto, string? fileUrl, long? fileSize);
+    Task<MaterialDto> CreateAsync(int instructorId, CreateMaterialDto dto, string? filePath, string? fileUrl);
     Task<bool> DeleteAsync(int materialId, int instructorId);
 
     // Folders

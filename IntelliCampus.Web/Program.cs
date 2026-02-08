@@ -54,19 +54,6 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtSettings.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
     };
-
-    // Read token from cookie
-    options.Events = new JwtBearerEvents
-    {
-        OnMessageReceived = context =>
-        {
-            if (context.Request.Cookies.TryGetValue("token", out var token))
-            {
-                context.Token = token;
-            }
-            return Task.CompletedTask;
-        }
-    };
 });
 
 builder.Services.AddAuthorization();
@@ -77,7 +64,6 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IInstructorService, InstructorService>();
-builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();

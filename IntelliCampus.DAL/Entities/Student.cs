@@ -3,14 +3,10 @@ namespace IntelliCampus.DAL.Entities;
 public class Student : User
 {
     public int StudentId { get; set; }
-    public string? StudentCode { get; set; }
     public string? Faculty { get; set; }
     public int? Level { get; set; }
-    public int? DepartmentId { get; set; }
-    public DateTime? EnrollmentDate { get; set; }
 
     // Navigation properties
-    public Department? Department { get; set; }
     public ICollection<StudentQuiz> StudentQuizzes { get; set; } = [];
     public ICollection<StudentAssignment> StudentAssignments { get; set; } = [];
     public ICollection<ChatbotQuery> ChatbotQueries { get; set; } = [];
