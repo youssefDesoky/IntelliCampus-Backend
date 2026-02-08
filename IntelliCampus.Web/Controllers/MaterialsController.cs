@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using IntelliCampus.BLL.Dtos.Material;
 using IntelliCampus.BLL.Services.Interfaces;
+using IntelliCampus.DAL.Entities.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -84,6 +85,8 @@ public class MaterialsController : ControllerBase
                 await file.CopyToAsync(stream);
 
                 fileUrl = $"/materials/{uniqueFileName}";
+
+                dto.Type = DetectMaterialType(file.FileName);
             }
 
             var material = await _materialService.CreateAsync(instructorId.Value, dto, fileUrl, fileSize);
@@ -235,6 +238,21 @@ public class MaterialsController : ControllerBase
     }
 
     #endregion
+
+    private static MaterialType DetectMaterialType(string fileName)
+    {
+        var extension = Path.GetExtension(fileName).ToLowerInvariant();
+
+        return extension switch
+        {
+            ".pdf" or ".doc" or ".docx" or ".txt" or ".rtf" => MaterialType.Document,
+            ".ppt" or ".pptx" => MaterialType.Document,
+            ".mp4" or ".mov" or ".avi" or ".mkv" => MaterialType.Video,
+            ".mp3" or ".wav" or ".aac" or ".flac" => MaterialType.Audio,
+            ".png" or ".jpg" or ".jpeg" or ".gif" or ".bmp" => MaterialType.Image,
+            _ => MaterialType.Other
+        };
+    }
 
     private int? GetCurrentInstructorId()
     {

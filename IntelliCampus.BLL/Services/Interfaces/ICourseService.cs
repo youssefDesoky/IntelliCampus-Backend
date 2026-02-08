@@ -7,6 +7,8 @@ public interface ICourseService
     Task<CourseDto?> GetByIdAsync(int courseId);
     Task<IEnumerable<CourseDto>> GetAllAsync();
     Task<IEnumerable<CourseDto>> GetActiveCoursesAsync();
+    Task<IEnumerable<CourseDto>> GetCoursesByStudentIdAsync(int studentId);
+    Task<IEnumerable<CourseDto>> GetCoursesByInstructorIdAsync(int instructorId);
     Task<CourseDto> CreateAsync(CreateCourseDto dto);
     Task<bool> ActivateAsync(int courseId);
     Task<bool> DeactivateAsync(int courseId);

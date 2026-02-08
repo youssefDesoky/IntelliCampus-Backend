@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using IntelliCampus.BLL.Dtos.Course;
 using IntelliCampus.BLL.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -32,6 +33,46 @@ public class CoursesController : ControllerBase
         return Ok(courses);
     }
 
+    [HttpGet("student/{studentId}")]
+    [Authorize]
+    public async Task<ActionResult<IEnumerable<CourseDto>>> GetByStudentId(int studentId)
+    {
+        var courses = await _courseService.GetCoursesByStudentIdAsync(studentId);
+        return Ok(courses);
+    }
+
+    [HttpGet("my-courses")]
+    [Authorize(Roles = "Student")]
+    public async Task<ActionResult<IEnumerable<CourseDto>>> GetMyStudentCourses()
+    {
+        var userId = GetCurrentUserId();
+        if (userId is null)
+            return Unauthorized();
+
+        var courses = await _courseService.GetCoursesByStudentIdAsync(userId.Value);
+        return Ok(courses);
+    }
+
+    [HttpGet("instructor/{instructorId}")]
+    [Authorize]
+    public async Task<ActionResult<IEnumerable<CourseDto>>> GetByInstructorId(int instructorId)
+    {
+        var courses = await _courseService.GetCoursesByInstructorIdAsync(instructorId);
+        return Ok(courses);
+    }
+
+    [HttpGet("my-teaching")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<ActionResult<IEnumerable<CourseDto>>> GetMyInstructorCourses()
+    {
+        var userId = GetCurrentUserId();
+        if (userId is null)
+            return Unauthorized();
+
+        var courses = await _courseService.GetCoursesByInstructorIdAsync(userId.Value);
+        return Ok(courses);
+    }
+
     [HttpGet("{id}")]
     [Authorize]
     public async Task<ActionResult<CourseDto>> GetById(int id)
@@ -45,7 +86,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<ActionResult<CourseDto>> Create(CreateCourseDto dto)
     {
         var course = await _courseService.CreateAsync(dto);
@@ -53,7 +94,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPatch("{id}/activate")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> Activate(int id)
     {
         var result = await _courseService.ActivateAsync(id);
@@ -65,7 +106,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPatch("{id}/deactivate")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> Deactivate(int id)
     {
         var result = await _courseService.DeactivateAsync(id);
@@ -77,7 +118,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _courseService.DeleteAsync(id);
@@ -86,5 +127,15 @@ public class CoursesController : ControllerBase
             return NotFound();
 
         return NoContent();
+    }
+
+    private int? GetCurrentUserId()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+            return null;
+
+        return userId;
     }
 }

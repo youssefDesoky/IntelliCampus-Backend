@@ -50,6 +50,39 @@ public class CourseService : ICourseService
         return courses.Select(MapToDto);
     }
 
+    public async Task<IEnumerable<CourseDto>> GetCoursesByStudentIdAsync(int studentId)
+    {
+        var courseIds = await _context.StudentCourses
+            .Where(sc => sc.StudentId == studentId)
+            .Select(sc => sc.CourseId)
+            .ToListAsync();
+
+        var courses = await _context.Courses
+            .Include(c => c.Department)
+            .Include(c => c.Classes)
+            .Where(c => courseIds.Contains(c.CourseId))
+            .ToListAsync();
+
+        return courses.Select(MapToDto);
+    }
+
+    public async Task<IEnumerable<CourseDto>> GetCoursesByInstructorIdAsync(int instructorId)
+    {
+        var courseIds = await _context.Classes
+            .Where(c => c.InstructorId == instructorId)
+            .Select(c => c.CourseId)
+            .Distinct()
+            .ToListAsync();
+
+        var courses = await _context.Courses
+            .Include(c => c.Department)
+            .Include(c => c.Classes)
+            .Where(c => courseIds.Contains(c.CourseId))
+            .ToListAsync();
+
+        return courses.Select(MapToDto);
+    }
+
     public async Task<CourseDto> CreateAsync(CreateCourseDto dto)
     {
         var course = new Course

@@ -293,11 +293,9 @@ public class MaterialService : IMaterialService
         if (folder.CreatedByInstructorId != instructorId)
             throw new InvalidOperationException("You are not authorized to delete this folder.");
 
-        // Move materials to unorganized (set FolderId to null)
-        foreach (var material in folder.Materials)
-        {
-            material.FolderId = null;
-        }
+        // Delete materials in this folder
+        if (folder.Materials.Count > 0)
+            _context.Materials.RemoveRange(folder.Materials);
 
         _context.MaterialFolders.Remove(folder);
         await _context.SaveChangesAsync();

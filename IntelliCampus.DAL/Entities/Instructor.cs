@@ -6,6 +6,7 @@ public class Instructor : User
     public string? InstructorRole { get; set; }
     public string? Specialization { get; set; }
     public int? DepartmentId { get; set; }
+    public DateTime? HireDate { get; set; }
 
     // Navigation properties
     public Department? Department { get; set; }

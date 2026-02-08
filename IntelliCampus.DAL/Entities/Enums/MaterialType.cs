@@ -4,7 +4,7 @@ public enum MaterialType
 {
     Document,
     Video,
-    Presentation,
-    Link,
+    Audio,
+    Image,
     Other
 }
