@@ -7,7 +7,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,SuperAdmin")]
 public class InstructorsController : ControllerBase
 {
     private readonly IInstructorService _instructorService;
@@ -36,12 +36,30 @@ public class InstructorsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<InstructorDto>> Create(CreateInstructorDto dto)
+    public async Task<ActionResult<InstructorDto>> Create([FromBody] CreateInstructorDto dto)
     {
         try
         {
             var instructor = await _instructorService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = instructor.InstructorId }, instructor);
+            return CreatedAtAction(nameof(GetById), new { id = instructor.UserId }, instructor);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<InstructorDto>> Update(int id, [FromBody] UpdateInstructorDto dto)
+    {
+        try
+        {
+            var instructor = await _instructorService.UpdateAsync(id, dto);
+
+            if (instructor is null)
+                return NotFound();
+
+            return Ok(instructor);
         }
         catch (InvalidOperationException ex)
         {

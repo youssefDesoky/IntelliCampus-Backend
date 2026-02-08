@@ -4,6 +4,7 @@ using IntelliCampus.DAL.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.DAL.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260208131449_ReplaceMaterialDescriptionWithMaterialSize")]
+    partial class ReplaceMaterialDescriptionWithMaterialSize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,22 +119,8 @@ namespace IntelliCampus.DAL.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Day")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<TimeSpan?>("EndTime")
-                        .HasColumnType("time");
-
                     b.Property<int?>("InstructorId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Room")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<TimeSpan?>("StartTime")
-                        .HasColumnType("time");
 
                     b.HasKey("ClassId");
 
@@ -193,10 +182,6 @@ namespace IntelliCampus.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourseId"));
 
-                    b.Property<string>("CourseCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<string>("CourseName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -212,10 +197,6 @@ namespace IntelliCampus.DAL.Migrations
 
                     b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -357,8 +338,13 @@ namespace IntelliCampus.DAL.Migrations
                     b.Property<int?>("CourseId")
                         .HasColumnType("int");
 
-                    b.Property<long?>("FileSize")
-                        .HasColumnType("bigint");
+                    b.Property<string>("FilePath")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("FileSize")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("FileUrl")
                         .HasMaxLength(500)
@@ -772,10 +758,6 @@ namespace IntelliCampus.DAL.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("Nationality")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -832,9 +814,6 @@ namespace IntelliCampus.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminId"));
 
-                    b.Property<DateTime?>("HireDate")
-                        .HasColumnType("datetime2");
-
                     b.ToTable("Admins", (string)null);
                 });
 
@@ -844,13 +823,6 @@ namespace IntelliCampus.DAL.Migrations
 
                     b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("HireDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("InstructorCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("InstructorId")
                         .ValueGeneratedOnAdd()
@@ -875,12 +847,6 @@ namespace IntelliCampus.DAL.Migrations
                 {
                     b.HasBaseType("IntelliCampus.DAL.Entities.User");
 
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EnrollmentDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Faculty")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -888,17 +854,11 @@ namespace IntelliCampus.DAL.Migrations
                     b.Property<int?>("Level")
                         .HasColumnType("int");
 
-                    b.Property<string>("StudentCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<int>("StudentId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
-
-                    b.HasIndex("DepartmentId");
 
                     b.ToTable("Students", (string)null);
                 });
@@ -1314,18 +1274,11 @@ namespace IntelliCampus.DAL.Migrations
 
             modelBuilder.Entity("IntelliCampus.DAL.Entities.Student", b =>
                 {
-                    b.HasOne("IntelliCampus.DAL.Entities.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("IntelliCampus.DAL.Entities.User", null)
                         .WithOne()
                         .HasForeignKey("IntelliCampus.DAL.Entities.Student", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("IntelliCampus.DAL.Entities.Assignment", b =>

@@ -25,6 +25,26 @@ public static class AdminSeeder
             },
             new Department
             {
+                DepartmentName = "Information Systems",
+                Description = "Information Systems Department"
+            },
+            new Department
+            {
+                DepartmentName = "Artificial Intelligence",
+                Description = "Artificial Intelligence Department"
+            },
+            new Department
+            {
+                DepartmentName = "Information Technology",
+                Description = "Information Technology Department"
+            },
+            new Department
+            {
+                DepartmentName = "Data Science",
+                Description = "Data Science Department"
+            },
+            new Department
+            {
                 DepartmentName = "Electrical Engineering",
                 Description = "Electrical Engineering Department"
             },
@@ -37,19 +57,21 @@ public static class AdminSeeder
         await context.Departments.AddRangeAsync(departments);
         await context.SaveChangesAsync();
 
-        // Seed Admin
-        var admin = new Admin
+        // Seed SuperAdmin
+        var superAdmin = new Admin
         {
             NationalId = "00000000000000",
-            FullName = "System Administrator",
-            FullNameAr = "????? ??????",
-            Email = "admin@intellicampus.com",
+            FullName = "Super Administrator",
+            FullNameAr = "\u0645\u0633\u0626\u0648\u0644 \u0627\u0644\u0646\u0638\u0627\u0645",
+            Email = "superadmin@intellicampus.com",
             PhoneNumber = "01000000000",
             Address = "Cairo, Egypt",
-            Password = passwordService.HashPassword("Admin@123"),
-            Role = UserRole.Admin
+            Nationality = "Egyptian",
+            Password = passwordService.HashPassword("SuperAdmin@123"),
+            Role = UserRole.SuperAdmin,
+            HireDate = DateTime.UtcNow
         };
-        await context.Admins.AddAsync(admin);
+        await context.Admins.AddAsync(superAdmin);
         await context.SaveChangesAsync();
 
         // Seed Instructors (Professors and TAs)
@@ -59,57 +81,65 @@ public static class AdminSeeder
             {
                 NationalId = "11111111111111",
                 FullName = "Dr. Ahmed Hassan",
-                FullNameAr = "?. ???? ???",
+                FullNameAr = "\u062f. \u0623\u062d\u0645\u062f \u062d\u0633\u0646",
                 Email = "ahmed.hassan@instructor.com",
                 PhoneNumber = "01100000001",
                 Address = "Cairo, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Instructor@123"),
                 Role = UserRole.Instructor,
                 InstructorRole = "Professor",
                 Specialization = "Computer Networks",
-                DepartmentId = departments[0].DepartmentId
+                DepartmentId = departments[0].DepartmentId,
+                HireDate = DateTime.UtcNow
             },
             new Instructor
             {
                 NationalId = "22222222222222",
                 FullName = "Dr. Fatima Mohamed",
-                FullNameAr = "?. ????? ????",
+                FullNameAr = "\u062f. \u0641\u0627\u0637\u0645\u0629 \u0645\u062d\u0645\u062f",
                 Email = "fatima.mohamed@instructor.com",
                 PhoneNumber = "01100000002",
                 Address = "Giza, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Instructor@123"),
                 Role = UserRole.Instructor,
                 InstructorRole = "Professor",
                 Specialization = "Database Systems",
-                DepartmentId = departments[0].DepartmentId
+                DepartmentId = departments[0].DepartmentId,
+                HireDate = DateTime.UtcNow
             },
             new Instructor
             {
                 NationalId = "33333333333333",
                 FullName = "Eng. Omar Khaled",
-                FullNameAr = "?. ??? ????",
+                FullNameAr = "\u0645. \u0639\u0645\u0631 \u062e\u0627\u0644\u062f",
                 Email = "omar.khaled@instructor.com",
                 PhoneNumber = "01100000003",
                 Address = "Alexandria, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Instructor@123"),
                 Role = UserRole.Instructor,
                 InstructorRole = "TA",
                 Specialization = "Web Development",
-                DepartmentId = departments[0].DepartmentId
+                DepartmentId = departments[0].DepartmentId,
+                HireDate = DateTime.UtcNow
             },
             new Instructor
             {
                 NationalId = "44444444444444",
                 FullName = "Eng. Sara Ali",
-                FullNameAr = "?. ???? ???",
+                FullNameAr = "\u0645. \u0633\u0627\u0631\u0629 \u0639\u0644\u064a",
                 Email = "sara.ali@instructor.com",
                 PhoneNumber = "01100000004",
                 Address = "Cairo, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Instructor@123"),
                 Role = UserRole.Instructor,
                 InstructorRole = "TA",
                 Specialization = "Data Structures",
-                DepartmentId = departments[0].DepartmentId
+                DepartmentId = departments[0].DepartmentId,
+                HireDate = DateTime.UtcNow
             }
         };
         await context.Instructors.AddRangeAsync(instructors);
@@ -117,7 +147,7 @@ public static class AdminSeeder
 
         // Set department heads
         departments[0].InstructorId = instructors[0].UserId;
-        departments[1].InstructorId = instructors[1].UserId;
+        departments[5].InstructorId = instructors[1].UserId;
         context.Departments.UpdateRange(departments);
         await context.SaveChangesAsync();
 
@@ -127,7 +157,7 @@ public static class AdminSeeder
             new Course
             {
                 CourseName = "Data Structures",
-                CourseNameAr = "????? ????????",
+                CourseNameAr = "\u0647\u064a\u0627\u0643\u0644 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a",
                 CreditHours = 3,
                 Status = CourseStatus.Active,
                 DepartmentId = departments[0].DepartmentId
@@ -135,7 +165,7 @@ public static class AdminSeeder
             new Course
             {
                 CourseName = "Database Management Systems",
-                CourseNameAr = "????? ????? ????? ????????",
+                CourseNameAr = "\u0623\u0646\u0638\u0645\u0629 \u0625\u062f\u0627\u0631\u0629 \u0642\u0648\u0627\u0639\u062f \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a",
                 CreditHours = 3,
                 Status = CourseStatus.Active,
                 DepartmentId = departments[0].DepartmentId
@@ -143,7 +173,7 @@ public static class AdminSeeder
             new Course
             {
                 CourseName = "Web Development",
-                CourseNameAr = "????? ??????? ?????",
+                CourseNameAr = "\u062a\u0637\u0648\u064a\u0631 \u062a\u0637\u0628\u064a\u0642\u0627\u062a \u0627\u0644\u0648\u064a\u0628",
                 CreditHours = 4,
                 Status = CourseStatus.Active,
                 DepartmentId = departments[0].DepartmentId
@@ -151,7 +181,7 @@ public static class AdminSeeder
             new Course
             {
                 CourseName = "Computer Networks",
-                CourseNameAr = "????? ???????",
+                CourseNameAr = "\u0634\u0628\u0643\u0627\u062a \u0627\u0644\u062d\u0627\u0633\u0648\u0628",
                 CreditHours = 3,
                 Status = CourseStatus.Active,
                 DepartmentId = departments[0].DepartmentId
@@ -159,10 +189,10 @@ public static class AdminSeeder
             new Course
             {
                 CourseName = "Circuit Analysis",
-                CourseNameAr = "????? ???????",
+                CourseNameAr = "\u062a\u062d\u0644\u064a\u0644 \u0627\u0644\u062f\u0648\u0627\u0626\u0631",
                 CreditHours = 3,
                 Status = CourseStatus.Active,
-                DepartmentId = departments[1].DepartmentId
+                DepartmentId = departments[5].DepartmentId
             }
         };
         await context.Courses.AddRangeAsync(courses);
@@ -176,18 +206,30 @@ public static class AdminSeeder
             {
                 CourseId = courses[0].CourseId,
                 ClassType = ClassType.Lecture,
+                Day = DayOfWeekEnum.Sunday,
+                StartTime = new TimeSpan(9, 0, 0),
+                EndTime = new TimeSpan(10, 30, 0),
+                Room = "Hall A1",
                 InstructorId = instructors[0].UserId
             },
             new Class
             {
                 CourseId = courses[0].CourseId,
                 ClassType = ClassType.Section,
+                Day = DayOfWeekEnum.Tuesday,
+                StartTime = new TimeSpan(11, 0, 0),
+                EndTime = new TimeSpan(12, 30, 0),
+                Room = "Lab 101",
                 InstructorId = instructors[2].UserId
             },
             new Class
             {
                 CourseId = courses[0].CourseId,
                 ClassType = ClassType.Section,
+                Day = DayOfWeekEnum.Tuesday,
+                StartTime = new TimeSpan(13, 0, 0),
+                EndTime = new TimeSpan(14, 30, 0),
+                Room = "Lab 102",
                 InstructorId = instructors[3].UserId
             },
             // Database Management Systems classes
@@ -195,12 +237,20 @@ public static class AdminSeeder
             {
                 CourseId = courses[1].CourseId,
                 ClassType = ClassType.Lecture,
+                Day = DayOfWeekEnum.Monday,
+                StartTime = new TimeSpan(10, 0, 0),
+                EndTime = new TimeSpan(11, 30, 0),
+                Room = "Hall B2",
                 InstructorId = instructors[1].UserId
             },
             new Class
             {
                 CourseId = courses[1].CourseId,
                 ClassType = ClassType.Section,
+                Day = DayOfWeekEnum.Wednesday,
+                StartTime = new TimeSpan(9, 0, 0),
+                EndTime = new TimeSpan(10, 30, 0),
+                Room = "Lab 201",
                 InstructorId = instructors[2].UserId
             },
             // Web Development classes
@@ -208,12 +258,20 @@ public static class AdminSeeder
             {
                 CourseId = courses[2].CourseId,
                 ClassType = ClassType.Lecture,
+                Day = DayOfWeekEnum.Wednesday,
+                StartTime = new TimeSpan(11, 0, 0),
+                EndTime = new TimeSpan(12, 30, 0),
+                Room = "Hall A2",
                 InstructorId = instructors[0].UserId
             },
             new Class
             {
                 CourseId = courses[2].CourseId,
                 ClassType = ClassType.Section,
+                Day = DayOfWeekEnum.Thursday,
+                StartTime = new TimeSpan(9, 0, 0),
+                EndTime = new TimeSpan(10, 30, 0),
+                Room = "Lab 301",
                 InstructorId = instructors[3].UserId
             },
             // Computer Networks classes
@@ -221,6 +279,10 @@ public static class AdminSeeder
             {
                 CourseId = courses[3].CourseId,
                 ClassType = ClassType.Lecture,
+                Day = DayOfWeekEnum.Thursday,
+                StartTime = new TimeSpan(13, 0, 0),
+                EndTime = new TimeSpan(14, 30, 0),
+                Room = "Hall C1",
                 InstructorId = instructors[0].UserId
             }
         };
@@ -233,67 +295,87 @@ public static class AdminSeeder
             new Student
             {
                 NationalId = "55555555555555",
+                StudentCode = "20230001",
                 FullName = "Mohammed Hassan",
-                FullNameAr = "???? ???",
+                FullNameAr = "\u0645\u062d\u0645\u062d \u062d\u0633\u0646",
                 Email = "mohammed.hassan@student.com",
                 PhoneNumber = "01100000010",
                 Address = "Cairo, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Student@123"),
                 Role = UserRole.Student,
                 Faculty = "Engineering",
-                Level = 2
+                Level = 2,
+                DepartmentId = departments[0].DepartmentId,
+                EnrollmentDate = DateTime.UtcNow.AddYears(-2)
             },
             new Student
             {
                 NationalId = "66666666666666",
+                StudentCode = "20230002",
                 FullName = "Layla Ahmed",
-                FullNameAr = "???? ????",
+                FullNameAr = "\u0644\u064a\u0644\u0649 \u0623\u062d\u0645\u062f",
                 Email = "layla.ahmed@student.com",
                 PhoneNumber = "01100000011",
                 Address = "Giza, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Student@123"),
                 Role = UserRole.Student,
                 Faculty = "Engineering",
-                Level = 2
+                Level = 2,
+                DepartmentId = departments[0].DepartmentId,
+                EnrollmentDate = DateTime.UtcNow.AddYears(-2)
             },
             new Student
             {
                 NationalId = "77777777777777",
+                StudentCode = "20220001",
                 FullName = "Karim Mohamed",
-                FullNameAr = "???? ????",
+                FullNameAr = "\u0643\u0631\u064a\u0645 \u0645\u062d\u0645\u062f",
                 Email = "karim.mohamed@student.com",
                 PhoneNumber = "01100000012",
                 Address = "Alexandria, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Student@123"),
                 Role = UserRole.Student,
                 Faculty = "Engineering",
-                Level = 3
+                Level = 3,
+                DepartmentId = departments[0].DepartmentId,
+                EnrollmentDate = DateTime.UtcNow.AddYears(-3)
             },
             new Student
             {
                 NationalId = "88888888888888",
+                StudentCode = "20230003",
                 FullName = "Noor Ali",
-                FullNameAr = "??? ???",
+                FullNameAr = "\u0646\u0648\u0631 \u0639\u0644\u064a",
                 Email = "noor.ali@student.com",
                 PhoneNumber = "01100000013",
                 Address = "Cairo, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Student@123"),
                 Role = UserRole.Student,
                 Faculty = "Engineering",
-                Level = 2
+                Level = 2,
+                DepartmentId = departments[1].DepartmentId,
+                EnrollmentDate = DateTime.UtcNow.AddYears(-2)
             },
             new Student
             {
                 NationalId = "99999999999999",
+                StudentCode = "20240001",
                 FullName = "Youssef Salim",
-                FullNameAr = "???? ????",
+                FullNameAr = "\u064a\u0648\u0633\u0641 \u0633\u0644\u064a\u0645",
                 Email = "youssef.salim@student.com",
                 PhoneNumber = "01100000014",
                 Address = "Giza, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Student@123"),
                 Role = UserRole.Student,
                 Faculty = "Engineering",
-                Level = 1
+                Level = 1,
+                DepartmentId = departments[1].DepartmentId,
+                EnrollmentDate = DateTime.UtcNow.AddYears(-1)
             }
         };
         await context.Students.AddRangeAsync(students);
@@ -365,53 +447,53 @@ public static class AdminSeeder
             new Material
             {
                 Title = "Data Structures Introduction Slides",
-                Description = "Comprehensive introduction to data structures",
                 Type = MaterialType.Document,
                 CourseId = courses[0].CourseId,
                 FolderId = materialFolders[0].MaterialFolderId,
                 FileUrl = "/materials/ds-intro-slides.pdf",
+                FileSize = 1_024_000,
                 UploadDate = DateTime.UtcNow
             },
             new Material
             {
                 Title = "Arrays Implementation Guide",
-                Description = "Step-by-step guide to implementing arrays",
                 Type = MaterialType.Document,
                 CourseId = courses[0].CourseId,
                 FolderId = materialFolders[1].MaterialFolderId,
                 FileUrl = "/materials/arrays-guide.pdf",
+                FileSize = 768_000,
                 UploadDate = DateTime.UtcNow
             },
             // Database Management Systems materials
             new Material
             {
                 Title = "Database Fundamentals",
-                Description = "Introduction to database systems",
                 Type = MaterialType.Document,
                 CourseId = courses[1].CourseId,
                 FolderId = materialFolders[2].MaterialFolderId,
                 FileUrl = "/materials/db-fundamentals.pdf",
+                FileSize = 1_280_000,
                 UploadDate = DateTime.UtcNow
             },
             new Material
             {
                 Title = "SQL Basics Tutorial",
-                Description = "SQL queries and operations",
                 Type = MaterialType.Document,
                 CourseId = courses[1].CourseId,
                 FolderId = null,
                 FileUrl = "/materials/sql-tutorial.pdf",
+                FileSize = 640_000,
                 UploadDate = DateTime.UtcNow
             },
             // Web Development materials
             new Material
             {
                 Title = "HTML & CSS Fundamentals",
-                Description = "Introduction to web development",
                 Type = MaterialType.Document,
                 CourseId = courses[2].CourseId,
                 FolderId = null,
                 FileUrl = "/materials/html-css-guide.pdf",
+                FileSize = 512_000,
                 UploadDate = DateTime.UtcNow
             }
         };
