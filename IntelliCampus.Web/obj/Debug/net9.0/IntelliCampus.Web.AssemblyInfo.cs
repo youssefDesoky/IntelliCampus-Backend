@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IntelliCampus.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+52cc359923053cb26070338a39ac0e518a17dda8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8ef0dd65aae6cfbb30f50356c1015171981c30a5")]
 [assembly: System.Reflection.AssemblyProductAttribute("IntelliCampus.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IntelliCampus.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

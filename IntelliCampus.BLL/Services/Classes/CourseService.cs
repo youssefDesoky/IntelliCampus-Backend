@@ -21,6 +21,8 @@ public class CourseService : ICourseService
         var course = await _context.Courses
             .Include(c => c.Department)
             .Include(c => c.Classes)
+            .Include(c => c.Prerequisites)
+                .ThenInclude(p => p.PrerequisiteCourse)
             .FirstOrDefaultAsync(c => c.CourseId == courseId);
 
         if (course is null)
@@ -34,6 +36,8 @@ public class CourseService : ICourseService
         var courses = await _context.Courses
             .Include(c => c.Department)
             .Include(c => c.Classes)
+            .Include(c => c.Prerequisites)
+                .ThenInclude(p => p.PrerequisiteCourse)
             .ToListAsync();
 
         return courses.Select(MapToDto);
@@ -44,6 +48,8 @@ public class CourseService : ICourseService
         var courses = await _context.Courses
             .Include(c => c.Department)
             .Include(c => c.Classes)
+            .Include(c => c.Prerequisites)
+                .ThenInclude(p => p.PrerequisiteCourse)
             .Where(c => c.Status == CourseStatus.Active)
             .ToListAsync();
 
@@ -60,6 +66,8 @@ public class CourseService : ICourseService
         var courses = await _context.Courses
             .Include(c => c.Department)
             .Include(c => c.Classes)
+            .Include(c => c.Prerequisites)
+                .ThenInclude(p => p.PrerequisiteCourse)
             .Where(c => courseIds.Contains(c.CourseId))
             .ToListAsync();
 
@@ -77,6 +85,8 @@ public class CourseService : ICourseService
         var courses = await _context.Courses
             .Include(c => c.Department)
             .Include(c => c.Classes)
+            .Include(c => c.Prerequisites)
+                .ThenInclude(p => p.PrerequisiteCourse)
             .Where(c => courseIds.Contains(c.CourseId))
             .ToListAsync();
 
@@ -85,21 +95,45 @@ public class CourseService : ICourseService
 
     public async Task<CourseDto> CreateAsync(CreateCourseDto dto)
     {
+        var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentName);
+
         var course = new Course
         {
+            CourseCode = dto.CourseCode,
             CourseName = dto.CourseName,
             CourseNameAr = dto.CourseNameAr,
+            Description = dto.Description,
             CreditHours = dto.CreditHours,
             Status = CourseStatus.Active,
-            DepartmentId = dto.DepartmentId
+            DepartmentId = departmentId
         };
 
         _context.Courses.Add(course);
         await _context.SaveChangesAsync();
 
-        // Reload with department
+        // Resolve prerequisite codes to course IDs
+        if (dto.PrerequisiteCodes is { Count: > 0 })
+        {
+            var prereqCourses = await _context.Courses
+                .Where(c => dto.PrerequisiteCodes.Contains(c.CourseCode!))
+                .ToListAsync();
+
+            foreach (var prereq in prereqCourses)
+            {
+                _context.Set<CoursePrerequisite>().Add(new CoursePrerequisite
+                {
+                    CourseId = course.CourseId,
+                    PrerequisiteCourseId = prereq.CourseId
+                });
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        // Reload with relations
         if (course.DepartmentId.HasValue)
             await _context.Entry(course).Reference(c => c.Department).LoadAsync();
+        await _context.Entry(course).Collection(c => c.Prerequisites).LoadAsync();
 
         return MapToDto(course);
     }
@@ -143,18 +177,57 @@ public class CourseService : ICourseService
         return true;
     }
 
+    private async Task<int?> ResolveDepartmentIdAsync(string? departmentName)
+    {
+        if (string.IsNullOrWhiteSpace(departmentName))
+            return null;
+
+        if (int.TryParse(departmentName, out var id))
+        {
+            if (await _context.Departments.AnyAsync(d => d.DepartmentId == id))
+                return id;
+        }
+
+        var department = await _context.Departments
+            .FirstOrDefaultAsync(d => d.DepartmentName.ToLower() == departmentName.ToLower());
+
+        if (department is not null)
+            return department.DepartmentId;
+
+        var normalized = departmentName.Trim();
+        var departments = await _context.Departments.ToListAsync();
+        var matched = departments.FirstOrDefault(d =>
+            string.Equals(GetDepartmentCode(d.DepartmentName), normalized, StringComparison.OrdinalIgnoreCase));
+
+        if (matched is null)
+            throw new InvalidOperationException("Department not found.");
+
+        return matched.DepartmentId;
+    }
+
+    private static string GetDepartmentCode(string departmentName)
+    {
+        var parts = departmentName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        return string.Concat(parts.Select(p => char.ToUpperInvariant(p[0])));
+    }
+
     private static CourseDto MapToDto(Course course)
     {
         return new CourseDto
         {
             CourseId = course.CourseId,
+            CourseCode = course.CourseCode,
             CourseName = course.CourseName,
             CourseNameAr = course.CourseNameAr,
+            Description = course.Description,
             CreditHours = course.CreditHours,
             Status = course.Status,
             DepartmentId = course.DepartmentId,
             DepartmentName = course.Department?.DepartmentName,
-            ClassCount = course.Classes?.Count ?? 0
+            ClassCount = course.Classes?.Count ?? 0,
+            Prerequisites = course.Prerequisites?
+                .Select(p => p.PrerequisiteCourse?.CourseCode ?? p.PrerequisiteCourseId.ToString())
+                .ToList()
         };
     }
 }

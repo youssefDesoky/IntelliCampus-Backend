@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace IntelliCampus.BLL.Dtos.Instructor;
 
 public class UpdateInstructorDto
@@ -10,5 +12,13 @@ public class UpdateInstructorDto
     public string? Nationality { get; set; }
     public string? Role { get; set; }
     public string? Specialization { get; set; }
-    public int? DepartmentId { get; set; }
+
+    [JsonPropertyName("instructorId")]
+    public string? InstructorCode { get; set; }
+
+    [JsonPropertyName("departmentId")]
+    public string? DepartmentName { get; set; }
+
+    [JsonPropertyName("HireDate")]
+    public string? HireDate { get; set; }
 }

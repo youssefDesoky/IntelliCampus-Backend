@@ -32,6 +32,11 @@ public static class AdminSeeder
             {
                 DepartmentName = "Mechanical Engineering",
                 Description = "Mechanical Engineering Department"
+            },
+            new Department
+            {
+                DepartmentName = "Information Systems",
+                Description = "Information Systems Department"
             }
         };
         await context.Departments.AddRangeAsync(departments);
@@ -137,7 +142,7 @@ public static class AdminSeeder
             new Course
             {
                 CourseName = "Data Structures",
-                CourseNameAr = "????? ????????",
+                CourseNameAr = "\u0647\u064a\u0627\u0643\u0644 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a",
                 CreditHours = 3,
                 Status = CourseStatus.Active,
                 DepartmentId = departments[0].DepartmentId
@@ -145,7 +150,7 @@ public static class AdminSeeder
             new Course
             {
                 CourseName = "Database Management Systems",
-                CourseNameAr = "????? ????? ????? ????????",
+                CourseNameAr = "\u0623\u0646\u0638\u0645\u0629 \u0625\u062f\u0627\u0631\u0629 \u0642\u0648\u0627\u0639\u062f \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a",
                 CreditHours = 3,
                 Status = CourseStatus.Active,
                 DepartmentId = departments[0].DepartmentId
@@ -153,7 +158,7 @@ public static class AdminSeeder
             new Course
             {
                 CourseName = "Web Development",
-                CourseNameAr = "????? ??????? ?????",
+                CourseNameAr = "\u062a\u0637\u0648\u064a\u0631 \u062a\u0637\u0628\u064a\u0642\u0627\u062a \u0627\u0644\u0648\u064a\u0628",
                 CreditHours = 4,
                 Status = CourseStatus.Active,
                 DepartmentId = departments[0].DepartmentId
@@ -161,7 +166,7 @@ public static class AdminSeeder
             new Course
             {
                 CourseName = "Computer Networks",
-                CourseNameAr = "????? ???????",
+                CourseNameAr = "\u0634\u0628\u0643\u0627\u062a \u0627\u0644\u062d\u0627\u0633\u0648\u0628",
                 CreditHours = 3,
                 Status = CourseStatus.Active,
                 DepartmentId = departments[0].DepartmentId
@@ -169,7 +174,7 @@ public static class AdminSeeder
             new Course
             {
                 CourseName = "Circuit Analysis",
-                CourseNameAr = "????? ???????",
+                CourseNameAr = "\u062a\u062d\u0644\u064a\u0644 \u0627\u0644\u062f\u0648\u0627\u0626\u0631",
                 CreditHours = 3,
                 Status = CourseStatus.Active,
                 DepartmentId = departments[1].DepartmentId
@@ -243,67 +248,87 @@ public static class AdminSeeder
             new Student
             {
                 NationalId = "55555555555555",
+                StudentCode = "20230001",
                 FullName = "Mohammed Hassan",
-                FullNameAr = "???? ???",
+                FullNameAr = "\u0645\u062d\u0645\u062f \u062d\u0633\u0646",
                 Email = "mohammed.hassan@student.com",
                 PhoneNumber = "01100000010",
                 Address = "Cairo, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Student@123"),
                 Role = UserRole.Student,
                 Faculty = "Engineering",
-                Level = 2
+                Level = 2,
+                DepartmentId = departments[0].DepartmentId,
+                EnrollmentDate = DateTime.UtcNow.AddYears(-2)
             },
             new Student
             {
                 NationalId = "66666666666666",
+                StudentCode = "20230002",
                 FullName = "Layla Ahmed",
-                FullNameAr = "???? ????",
+                FullNameAr = "\u0644\u064a\u0644\u0649 \u0623\u062d\u0645\u062f",
                 Email = "layla.ahmed@student.com",
                 PhoneNumber = "01100000011",
                 Address = "Giza, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Student@123"),
                 Role = UserRole.Student,
                 Faculty = "Engineering",
-                Level = 2
+                Level = 2,
+                DepartmentId = departments[0].DepartmentId,
+                EnrollmentDate = DateTime.UtcNow.AddYears(-2)
             },
             new Student
             {
                 NationalId = "77777777777777",
+                StudentCode = "20220001",
                 FullName = "Karim Mohamed",
-                FullNameAr = "???? ????",
+                FullNameAr = "\u0643\u0631\u064a\u0645 \u0645\u062d\u0645\u062f",
                 Email = "karim.mohamed@student.com",
                 PhoneNumber = "01100000012",
                 Address = "Alexandria, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Student@123"),
                 Role = UserRole.Student,
                 Faculty = "Engineering",
-                Level = 3
+                Level = 3,
+                DepartmentId = departments[0].DepartmentId,
+                EnrollmentDate = DateTime.UtcNow.AddYears(-3)
             },
             new Student
             {
                 NationalId = "88888888888888",
+                StudentCode = "20230003",
                 FullName = "Noor Ali",
-                FullNameAr = "??? ???",
+                FullNameAr = "\u0646\u0648\u0631 \u0639\u0644\u064a",
                 Email = "noor.ali@student.com",
                 PhoneNumber = "01100000013",
                 Address = "Cairo, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Student@123"),
                 Role = UserRole.Student,
                 Faculty = "Engineering",
-                Level = 2
+                Level = 2,
+                DepartmentId = departments[3].DepartmentId,
+                EnrollmentDate = DateTime.UtcNow.AddYears(-2)
             },
             new Student
             {
                 NationalId = "99999999999999",
+                StudentCode = "20240001",
                 FullName = "Youssef Salim",
-                FullNameAr = "???? ????",
+                FullNameAr = "\u064a\u0648\u0633\u0641 \u0633\u0644\u064a\u0645",
                 Email = "youssef.salim@student.com",
                 PhoneNumber = "01100000014",
                 Address = "Giza, Egypt",
+                Nationality = "Egyptian",
                 Password = passwordService.HashPassword("Student@123"),
                 Role = UserRole.Student,
                 Faculty = "Engineering",
-                Level = 1
+                Level = 1,
+                DepartmentId = departments[3].DepartmentId,
+                EnrollmentDate = DateTime.UtcNow.AddYears(-1)
             }
         };
         await context.Students.AddRangeAsync(students);

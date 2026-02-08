@@ -87,10 +87,17 @@ public class CoursesController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "Admin,SuperAdmin")]
-    public async Task<ActionResult<CourseDto>> Create(CreateCourseDto dto)
+    public async Task<ActionResult<CourseDto>> Create([FromBody] CreateCourseDto dto)
     {
-        var course = await _courseService.CreateAsync(dto);
-        return CreatedAtAction(nameof(GetById), new { id = course.CourseId }, course);
+        try
+        {
+            var course = await _courseService.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetById), new { id = course.CourseId }, course);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpPatch("{id}/activate")]

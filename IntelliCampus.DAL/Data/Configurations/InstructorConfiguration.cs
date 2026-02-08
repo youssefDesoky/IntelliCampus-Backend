@@ -13,6 +13,9 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
         builder.Property(i => i.InstructorId)
             .ValueGeneratedOnAdd();
 
+        builder.Property(i => i.InstructorCode)
+            .HasMaxLength(50);
+
         builder.Property(i => i.InstructorRole)
             .HasMaxLength(50);
 
