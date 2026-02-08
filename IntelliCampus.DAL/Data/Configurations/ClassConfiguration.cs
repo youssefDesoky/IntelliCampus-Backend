@@ -14,13 +14,6 @@ public class ClassConfiguration : IEntityTypeConfiguration<Class>
             .HasConversion<string>()
             .HasMaxLength(20);
 
-        builder.Property(c => c.Day)
-            .HasConversion<string>()
-            .HasMaxLength(20);
-
-        builder.Property(c => c.Room)
-            .HasMaxLength(100);
-
         builder.HasOne(c => c.Course)
             .WithMany(co => co.Classes)
             .HasForeignKey(c => c.CourseId)

@@ -14,6 +14,12 @@ public class MaterialConfiguration : IEntityTypeConfiguration<Material>
             .IsRequired()
             .HasMaxLength(200);
 
+        builder.Property(m => m.Description)
+            .HasMaxLength(500);
+
+        builder.Property(m => m.FilePath)
+            .HasMaxLength(500);
+
         builder.Property(m => m.FileUrl)
             .HasMaxLength(500);
 

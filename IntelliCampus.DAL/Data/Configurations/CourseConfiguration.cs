@@ -10,9 +10,6 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
     {
         builder.HasKey(c => c.CourseId);
 
-        builder.Property(c => c.CourseCode)
-            .HasMaxLength(50);
-
         builder.Property(c => c.CourseName)
             .IsRequired()
             .HasMaxLength(100);
@@ -20,9 +17,6 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         builder.Property(c => c.CourseNameAr)
             .HasMaxLength(100)
             .IsUnicode();
-
-        builder.Property(c => c.Description)
-            .HasMaxLength(500);
 
         builder.Property(c => c.Status)
             .HasConversion<string>()

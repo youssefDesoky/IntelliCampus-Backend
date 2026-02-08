@@ -5,11 +5,9 @@ namespace IntelliCampus.DAL.Entities;
 public class Course
 {
     public int CourseId { get; set; }
-    public string? CourseCode { get; set; }
     public int CreditHours { get; set; }
     public string CourseName { get; set; } = null!;
     public string? CourseNameAr { get; set; }
-    public string? Description { get; set; }
     public CourseStatus Status { get; set; }
     public int? DepartmentId { get; set; }
 

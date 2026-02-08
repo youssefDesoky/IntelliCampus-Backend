@@ -1,10 +1,8 @@
 using System.Security.Claims;
 using IntelliCampus.BLL.Dtos.Auth;
 using IntelliCampus.BLL.Services.Interfaces;
-using IntelliCampus.BLL.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace IntelliCampus.Web.Controllers;
 
@@ -13,51 +11,21 @@ namespace IntelliCampus.Web.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
-    private readonly JwtSettings _jwtSettings;
 
-    public AuthController(IAuthService authService, IOptions<JwtSettings> jwtSettings)
+    public AuthController(IAuthService authService)
     {
         _authService = authService;
-        _jwtSettings = jwtSettings.Value;
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<LoginResponseDto>> Login(LoginDto dto)
+    public async Task<ActionResult<AuthResponseDto>> Login(LoginDto dto)
     {
         var result = await _authService.LoginAsync(dto);
 
         if (result is null)
             return Unauthorized(new { message = "Invalid email or password." });
 
-        // Set token in HttpOnly cookie
-        Response.Cookies.Append("token", result.Token, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.None,
-            Expires = result.ExpiresAt
-        });
-
-        return Ok(new LoginResponseDto
-        {
-            UserId = result.UserId,
-            Email = result.Email,
-            FullName = result.FullName,
-            Role = result.Role
-        });
-    }
-
-    [HttpPost("logout")]
-    public IActionResult Logout()
-    {
-        Response.Cookies.Delete("token", new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.None
-        });
-
-        return Ok(new { message = "Logged out successfully." });
+        return Ok(result);
     }
 
     [Authorize]
