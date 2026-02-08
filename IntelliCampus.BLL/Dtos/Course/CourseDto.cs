@@ -16,4 +16,16 @@ public class CourseDto
     public string? DepartmentName { get; set; }
     public int ClassCount { get; set; }
     public List<string>? Prerequisites { get; set; }
+
+    // Fields needed by the frontend
+    public string? Semester { get; set; }
+    public string? Schedule { get; set; }
+    public string? Room { get; set; }
+    public int NumOfStudents { get; set; }
+    public int TotalStudents { get; set; }
+    public int WeeksCompleted { get; set; }
+    public int Weeks { get; set; }
+    public decimal? Attendance { get; set; }
+    public decimal? Grade { get; set; }
+    public bool IsElective { get; set; }
 }

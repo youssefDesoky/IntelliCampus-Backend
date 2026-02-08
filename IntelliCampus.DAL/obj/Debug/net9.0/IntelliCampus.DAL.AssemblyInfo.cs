@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IntelliCampus.DAL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8ef0dd65aae6cfbb30f50356c1015171981c30a5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8a03483dd7ddea298bc223048e90d3c333da338d")]
 [assembly: System.Reflection.AssemblyProductAttribute("IntelliCampus.DAL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IntelliCampus.DAL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,5 +1,6 @@
 using IntelliCampus.BLL.Dtos.Course;
 using IntelliCampus.BLL.Services.Interfaces;
+using IntelliCampus.BLL.Utilities;
 using IntelliCampus.DAL.Data.Contexts;
 using IntelliCampus.DAL.Entities;
 using IntelliCampus.DAL.Entities.Enums;
@@ -9,6 +10,8 @@ namespace IntelliCampus.BLL.Services.Classes;
 
 public class CourseService : ICourseService
 {
+    private const int TotalSemesterWeeks = 16;
+
     private readonly IntelliCampusDbContext _context;
 
     public CourseService(IntelliCampusDbContext context)
@@ -18,11 +21,7 @@ public class CourseService : ICourseService
 
     public async Task<CourseDto?> GetByIdAsync(int courseId)
     {
-        var course = await _context.Courses
-            .Include(c => c.Department)
-            .Include(c => c.Classes)
-            .Include(c => c.Prerequisites)
-                .ThenInclude(p => p.PrerequisiteCourse)
+        var course = await GetCourseQuery()
             .FirstOrDefaultAsync(c => c.CourseId == courseId);
 
         if (course is null)
@@ -33,23 +32,13 @@ public class CourseService : ICourseService
 
     public async Task<IEnumerable<CourseDto>> GetAllAsync()
     {
-        var courses = await _context.Courses
-            .Include(c => c.Department)
-            .Include(c => c.Classes)
-            .Include(c => c.Prerequisites)
-                .ThenInclude(p => p.PrerequisiteCourse)
-            .ToListAsync();
-
+        var courses = await GetCourseQuery().ToListAsync();
         return courses.Select(MapToDto);
     }
 
     public async Task<IEnumerable<CourseDto>> GetActiveCoursesAsync()
     {
-        var courses = await _context.Courses
-            .Include(c => c.Department)
-            .Include(c => c.Classes)
-            .Include(c => c.Prerequisites)
-                .ThenInclude(p => p.PrerequisiteCourse)
+        var courses = await GetCourseQuery()
             .Where(c => c.Status == CourseStatus.Active)
             .ToListAsync();
 
@@ -63,11 +52,7 @@ public class CourseService : ICourseService
             .Select(sc => sc.CourseId)
             .ToListAsync();
 
-        var courses = await _context.Courses
-            .Include(c => c.Department)
-            .Include(c => c.Classes)
-            .Include(c => c.Prerequisites)
-                .ThenInclude(p => p.PrerequisiteCourse)
+        var courses = await GetCourseQuery()
             .Where(c => courseIds.Contains(c.CourseId))
             .ToListAsync();
 
@@ -82,11 +67,7 @@ public class CourseService : ICourseService
             .Distinct()
             .ToListAsync();
 
-        var courses = await _context.Courses
-            .Include(c => c.Department)
-            .Include(c => c.Classes)
-            .Include(c => c.Prerequisites)
-                .ThenInclude(p => p.PrerequisiteCourse)
+        var courses = await GetCourseQuery()
             .Where(c => courseIds.Contains(c.CourseId))
             .ToListAsync();
 
@@ -111,7 +92,6 @@ public class CourseService : ICourseService
         _context.Courses.Add(course);
         await _context.SaveChangesAsync();
 
-        // Resolve prerequisite codes to course IDs
         if (dto.PrerequisiteCodes is { Count: > 0 })
         {
             var prereqCourses = await _context.Courses
@@ -130,7 +110,6 @@ public class CourseService : ICourseService
             await _context.SaveChangesAsync();
         }
 
-        // Reload with relations
         if (course.DepartmentId.HasValue)
             await _context.Entry(course).Reference(c => c.Department).LoadAsync();
         await _context.Entry(course).Collection(c => c.Prerequisites).LoadAsync();
@@ -141,40 +120,42 @@ public class CourseService : ICourseService
     public async Task<bool> ActivateAsync(int courseId)
     {
         var course = await _context.Courses.FindAsync(courseId);
-
-        if (course is null)
-            return false;
-
+        if (course is null) return false;
         course.Status = CourseStatus.Active;
         await _context.SaveChangesAsync();
-
         return true;
     }
 
     public async Task<bool> DeactivateAsync(int courseId)
     {
         var course = await _context.Courses.FindAsync(courseId);
-
-        if (course is null)
-            return false;
-
+        if (course is null) return false;
         course.Status = CourseStatus.Inactive;
         await _context.SaveChangesAsync();
-
         return true;
     }
 
     public async Task<bool> DeleteAsync(int courseId)
     {
         var course = await _context.Courses.FindAsync(courseId);
-
-        if (course is null)
-            return false;
-
+        if (course is null) return false;
         _context.Courses.Remove(course);
         await _context.SaveChangesAsync();
-
         return true;
+    }
+
+    private IQueryable<Course> GetCourseQuery()
+    {
+        return _context.Courses
+            .Include(c => c.Department)
+            .Include(c => c.Classes)
+            .Include(c => c.StudentCourses)
+            .Include(c => c.Grades)
+            .Include(c => c.Prerequisites)
+                .ThenInclude(p => p.PrerequisiteCourse)
+            .Include(c => c.Classes)
+                .ThenInclude(cl => cl.Sessions)
+                    .ThenInclude(s => s.Attendances);
     }
 
     private async Task<int?> ResolveDepartmentIdAsync(string? departmentName)
@@ -213,6 +194,44 @@ public class CourseService : ICourseService
 
     private static CourseDto MapToDto(Course course)
     {
+        var currentSemester = SemesterHelper.GetCurrentSemester();
+
+        var allSessions = course.Classes?.SelectMany(cl => cl.Sessions) ?? [];
+        var allAttendances = allSessions.SelectMany(s => s.Attendances);
+        var totalAttendances = allAttendances.Count();
+        var presentAttendances = allAttendances.Count(a => a.Status == AttendanceStatus.Present || a.Status == AttendanceStatus.Late);
+        var attendancePercent = totalAttendances > 0 ? Math.Round((decimal)presentAttendances / totalAttendances * 100, 1) : (decimal?)null;
+
+        var courseGrades = course.Grades ?? [];
+        var avgGrade = courseGrades.Any() ? Math.Round(courseGrades.Average(g => g.Score), 1) : (decimal?)null;
+
+        var numStudents = course.StudentCourses?.Count ?? 0;
+
+        var lectureClass = course.Classes?.FirstOrDefault(cl => cl.ClassType == ClassType.Lecture);
+        var scheduleClass = lectureClass ?? course.Classes?.FirstOrDefault();
+
+        string? schedule = null;
+        string? room = null;
+
+        if (scheduleClass is not null)
+        {
+            room = scheduleClass.Room;
+            if (scheduleClass.Day.HasValue && scheduleClass.StartTime.HasValue && scheduleClass.EndTime.HasValue)
+            {
+                var startFormatted = DateTime.Today.Add(scheduleClass.StartTime.Value).ToString("h:mm tt");
+                var endFormatted = DateTime.Today.Add(scheduleClass.EndTime.Value).ToString("h:mm tt");
+                schedule = $"{scheduleClass.Day.Value} {startFormatted} - {endFormatted}";
+            }
+        }
+
+        var distinctSessionWeeks = allSessions
+            .Select(s => s.Date)
+            .Where(d => d <= DateTime.UtcNow)
+            .Select(d => System.Globalization.CultureInfo.InvariantCulture.Calendar
+                .GetWeekOfYear(d, System.Globalization.CalendarWeekRule.FirstDay, DayOfWeek.Sunday))
+            .Distinct()
+            .Count();
+
         return new CourseDto
         {
             CourseId = course.CourseId,
@@ -227,7 +246,17 @@ public class CourseService : ICourseService
             ClassCount = course.Classes?.Count ?? 0,
             Prerequisites = course.Prerequisites?
                 .Select(p => p.PrerequisiteCourse?.CourseCode ?? p.PrerequisiteCourseId.ToString())
-                .ToList()
+                .ToList(),
+            Semester = currentSemester,
+            Schedule = schedule,
+            Room = room,
+            NumOfStudents = numStudents,
+            TotalStudents = numStudents,
+            WeeksCompleted = distinctSessionWeeks,
+            Weeks = TotalSemesterWeeks,
+            Attendance = attendancePercent,
+            Grade = avgGrade,
+            IsElective = false
         };
     }
 }
