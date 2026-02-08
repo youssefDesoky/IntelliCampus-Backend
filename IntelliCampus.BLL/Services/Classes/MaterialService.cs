@@ -76,9 +76,9 @@ public class MaterialService : IMaterialService
                 {
                     MaterialId = m.MaterialId,
                     Title = m.Title,
-                    Description = m.Description,
                     Type = m.Type,
                     UploadDate = m.UploadDate,
+                    FileSize = m.FileSize,
                     FileUrl = m.FileUrl,
                     CourseId = m.CourseId,
                     CourseName = course.CourseName,
@@ -90,7 +90,7 @@ public class MaterialService : IMaterialService
         };
     }
 
-    public async Task<MaterialDto> CreateAsync(int instructorId, CreateMaterialDto dto, string? filePath, string? fileUrl)
+    public async Task<MaterialDto> CreateAsync(int instructorId, CreateMaterialDto dto, string? fileUrl, long? fileSize)
     {
         // Verify the course exists
         var course = await _context.Courses
@@ -120,12 +120,11 @@ public class MaterialService : IMaterialService
         var material = new Material
         {
             Title = dto.Title,
-            Description = dto.Description,
             Type = dto.Type,
             CourseId = dto.CourseId,
             FolderId = dto.FolderId,
-            FilePath = filePath,
             FileUrl = fileUrl,
+            FileSize = fileSize,
             UploadDate = DateTime.UtcNow
         };
 
@@ -144,9 +143,9 @@ public class MaterialService : IMaterialService
         {
             MaterialId = material.MaterialId,
             Title = material.Title,
-            Description = material.Description,
             Type = material.Type,
             UploadDate = material.UploadDate,
+            FileSize = material.FileSize,
             FileUrl = material.FileUrl,
             CourseId = material.CourseId,
             CourseName = course.CourseName,
@@ -316,9 +315,9 @@ public class MaterialService : IMaterialService
         {
             MaterialId = material.MaterialId,
             Title = material.Title,
-            Description = material.Description,
             Type = material.Type,
             UploadDate = material.UploadDate,
+            FileSize = material.FileSize,
             FileUrl = material.FileUrl,
             CourseId = material.CourseId,
             CourseName = material.Course?.CourseName,

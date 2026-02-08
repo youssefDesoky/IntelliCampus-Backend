@@ -8,8 +8,7 @@ public class Material
     public MaterialType Type { get; set; }
     public DateTime UploadDate { get; set; }
     public string Title { get; set; } = null!;
-    public string? Description { get; set; }
-    public string? FilePath { get; set; }
+    public long? FileSize { get; set; }
     public string? FileUrl { get; set; }
     public int? CourseId { get; set; }
     public int? FolderId { get; set; }

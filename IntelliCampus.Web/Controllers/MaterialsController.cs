@@ -64,8 +64,8 @@ public class MaterialsController : ControllerBase
 
         try
         {
-            string? filePath = null;
             string? fileUrl = null;
+            long? fileSize = null;
 
             if (file is not null)
             {
@@ -77,16 +77,16 @@ public class MaterialsController : ControllerBase
                 Directory.CreateDirectory(uploadsFolder);
 
                 var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
-                filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                fileSize = file.Length;
 
-                // Use buffered file copy for better performance
                 await using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, useAsync: true);
                 await file.CopyToAsync(stream);
 
                 fileUrl = $"/materials/{uniqueFileName}";
             }
 
-            var material = await _materialService.CreateAsync(instructorId.Value, dto, filePath, fileUrl);
+            var material = await _materialService.CreateAsync(instructorId.Value, dto, fileUrl, fileSize);
             return CreatedAtAction(nameof(GetById), new { id = material.MaterialId }, material);
         }
         catch (InvalidOperationException ex)
@@ -130,8 +130,19 @@ public class MaterialsController : ControllerBase
         if (string.IsNullOrEmpty(material.FileUrl))
             return BadRequest(new { message = "No file associated with this material." });
 
-        // Redirect to the file URL for download
-        return Redirect(material.FileUrl);
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", material.FileUrl.TrimStart('/'));
+
+        if (!System.IO.File.Exists(filePath))
+            return NotFound(new { message = "File not found on server." });
+
+        var fileName = Path.GetFileName(filePath);
+        // Remove the GUID prefix for a clean download name
+        var downloadName = fileName.Contains('_') ? fileName[(fileName.IndexOf('_') + 1)..] : fileName;
+
+        var contentType = GetContentType(filePath);
+        var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+
+        return File(fileBytes, contentType, downloadName);
     }
 
     #endregion
@@ -237,6 +248,29 @@ public class MaterialsController : ControllerBase
             return null;
 
         return userId;
+    }
+
+    private static string GetContentType(string filePath)
+    {
+        var extension = Path.GetExtension(filePath).ToLowerInvariant();
+        return extension switch
+        {
+            ".pdf" => "application/pdf",
+            ".doc" => "application/msword",
+            ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ".xls" => "application/vnd.ms-excel",
+            ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            ".ppt" => "application/vnd.ms-powerpoint",
+            ".pptx" => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            ".png" => "image/png",
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".gif" => "image/gif",
+            ".zip" => "application/zip",
+            ".mp4" => "video/mp4",
+            ".mp3" => "audio/mpeg",
+            ".txt" => "text/plain",
+            _ => "application/octet-stream"
+        };
     }
 }
 
