@@ -143,6 +143,15 @@ public class CourseService : ICourseService
         return true;
     }
 
+    public async Task<string?> GetProfessorNameAsync(int courseId)
+    {
+        var lectureClass = await _context.Classes
+            .Include(c => c.Instructor)
+            .FirstOrDefaultAsync(c => c.CourseId == courseId && c.ClassType == ClassType.Lecture);
+
+        return lectureClass?.Instructor?.FullName;
+    }
+
     private IQueryable<Course> GetCourseQuery()
     {
         return _context.Courses
