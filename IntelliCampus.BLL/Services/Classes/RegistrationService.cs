@@ -3,6 +3,7 @@ using IntelliCampus.BLL.Services.Interfaces;
 using IntelliCampus.BLL.Utilities;
 using IntelliCampus.DAL.Data.Contexts;
 using IntelliCampus.DAL.Entities;
+using IntelliCampus.DAL.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace IntelliCampus.BLL.Services.Classes;
@@ -55,6 +56,11 @@ public class RegistrationService : IRegistrationService
         _context.StudentCourses.Add(studentCourse);
         await _context.SaveChangesAsync();
 
+        // Get professor from lecture class
+        var lectureClass = await _context.Classes
+            .Include(c => c.Instructor)
+            .FirstOrDefaultAsync(c => c.CourseId == dto.CourseId && c.ClassType == ClassType.Lecture);
+
         return new StudentRegistrationDto
         {
             StudentId = studentId,
@@ -62,6 +68,7 @@ public class RegistrationService : IRegistrationService
             CourseName = course.CourseName,
             ClassId = dto.ClassId,
             ClassName = $"{classEntity.ClassType}",
+            ProfessorName = lectureClass?.Instructor?.FullName,
             Semester = semester,
             RegisteredAt = studentCourse.RegisteredAt
         };
@@ -71,6 +78,8 @@ public class RegistrationService : IRegistrationService
     {
         var registrations = await _context.StudentCourses
             .Include(sc => sc.Course)
+                .ThenInclude(c => c.Classes)
+                    .ThenInclude(cl => cl.Instructor)
             .Include(sc => sc.Class)
             .Where(sc => sc.StudentId == studentId)
             .ToListAsync();
@@ -82,6 +91,8 @@ public class RegistrationService : IRegistrationService
             CourseName = sc.Course.CourseName,
             ClassId = sc.ClassId,
             ClassName = sc.Class is not null ? $"{sc.Class.ClassType}" : null,
+            ProfessorName = sc.Course.Classes
+                .FirstOrDefault(cl => cl.ClassType == ClassType.Lecture)?.Instructor?.FullName,
             Semester = sc.Semester,
             RegisteredAt = sc.RegisteredAt
         });
