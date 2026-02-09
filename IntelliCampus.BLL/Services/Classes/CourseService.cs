@@ -143,20 +143,12 @@ public class CourseService : ICourseService
         return true;
     }
 
-    public async Task<string?> GetProfessorNameAsync(int courseId)
-    {
-        var lectureClass = await _context.Classes
-            .Include(c => c.Instructor)
-            .FirstOrDefaultAsync(c => c.CourseId == courseId && c.ClassType == ClassType.Lecture);
-
-        return lectureClass?.Instructor?.FullName;
-    }
-
     private IQueryable<Course> GetCourseQuery()
     {
         return _context.Courses
             .Include(c => c.Department)
             .Include(c => c.Classes)
+                .ThenInclude(cl => cl.Instructor)
             .Include(c => c.StudentCourses)
             .Include(c => c.Grades)
             .Include(c => c.Prerequisites)
@@ -263,7 +255,8 @@ public class CourseService : ICourseService
             Weeks = TotalSemesterWeeks,
             Attendance = attendancePercent,
             Grade = avgGrade,
-            IsElective = false
+            IsElective = false,
+            ProfessorName = lectureClass?.Instructor?.FullName
         };
     }
 }

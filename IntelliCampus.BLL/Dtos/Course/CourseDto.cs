@@ -27,4 +27,5 @@ public class CourseDto
     public decimal? Attendance { get; set; }
     public decimal? Grade { get; set; }
     public bool IsElective { get; set; }
+    public string? ProfessorName { get; set; }
 }

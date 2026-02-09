@@ -13,5 +13,4 @@ public interface ICourseService
     Task<bool> ActivateAsync(int courseId);
     Task<bool> DeactivateAsync(int courseId);
     Task<bool> DeleteAsync(int courseId);
-    Task<string?> GetProfessorNameAsync(int courseId);
 }
