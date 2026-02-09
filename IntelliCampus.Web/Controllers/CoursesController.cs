@@ -136,6 +136,18 @@ public class CoursesController : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("{id}/professor")]
+    [Authorize]
+    public async Task<IActionResult> GetProfessor(int id)
+    {
+        var professorName = await _courseService.GetProfessorNameAsync(id);
+
+        if (professorName is null)
+            return NotFound(new { message = "No professor assigned to this course." });
+
+        return Ok(new { professorName });
+    }
+
     private int? GetCurrentUserId()
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
