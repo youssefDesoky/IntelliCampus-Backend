@@ -43,7 +43,7 @@ public class ClassesController : ControllerBase
 
     [Authorize(Roles = "Admin,SuperAdmin")]
     [HttpPost]
-    public async Task<ActionResult<ClassDto>> Create(CreateClassDto dto)
+    public async Task<ActionResult<ClassDto>> Create([FromBody] CreateClassDto dto)
     {
         try
         {
