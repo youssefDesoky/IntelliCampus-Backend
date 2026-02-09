@@ -1,14 +1,19 @@
+using System.Text.Json.Serialization;
 using IntelliCampus.DAL.Entities.Enums;
 
 namespace IntelliCampus.BLL.Dtos.Class;
 
 public class CreateClassDto
 {
-    public ClassType ClassType { get; set; }
-    public DayOfWeekEnum? Day { get; set; }
-    public TimeSpan? StartTime { get; set; }
-    public TimeSpan? EndTime { get; set; }
+    [JsonPropertyName("type")]
+    public string Type { get; set; } = null!;
+
+    [JsonPropertyName("instructor")]
+    public string? InstructorName { get; set; }
+
+    [JsonPropertyName("schedule")]
+    public string? Schedule { get; set; }
+
     public string? Room { get; set; }
     public int CourseId { get; set; }
-    public int? InstructorId { get; set; }
 }

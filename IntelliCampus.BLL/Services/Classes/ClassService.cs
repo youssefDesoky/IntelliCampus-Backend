@@ -1,3 +1,4 @@
+using System.Globalization;
 using IntelliCampus.BLL.Dtos.Class;
 using IntelliCampus.BLL.Services.Interfaces;
 using IntelliCampus.DAL.Data.Contexts;
@@ -52,13 +53,17 @@ public class ClassService : IClassService
 
     public async Task<ClassDto> CreateAsync(CreateClassDto dto)
     {
+        // Parse class type from string
+        if (!Enum.TryParse<ClassType>(dto.Type, ignoreCase: true, out var classType))
+            throw new InvalidOperationException($"Invalid class type '{dto.Type}'. Valid values: Lecture, Section.");
+
         // Validate course exists
         var courseExists = await _context.Courses.AnyAsync(c => c.CourseId == dto.CourseId);
         if (!courseExists)
             throw new InvalidOperationException("Course not found.");
 
         // Only one Lecture class per course
-        if (dto.ClassType == ClassType.Lecture)
+        if (classType == ClassType.Lecture)
         {
             var lectureExists = await _context.Classes
                 .AnyAsync(c => c.CourseId == dto.CourseId && c.ClassType == ClassType.Lecture);
@@ -67,25 +72,38 @@ public class ClassService : IClassService
                 throw new InvalidOperationException("A lecture class already exists for this course. Only one lecture is allowed per course.");
         }
 
-        // Validate instructor role matches class type
-        if (dto.InstructorId.HasValue)
+        // Resolve instructor by name
+        int? instructorId = null;
+        if (!string.IsNullOrWhiteSpace(dto.InstructorName))
         {
-            var instructor = await _context.Instructors.FirstOrDefaultAsync(i => i.UserId == dto.InstructorId);
-            if (instructor is null)
-                throw new InvalidOperationException("Instructor not found.");
+            var instructor = await _context.Instructors
+                .FirstOrDefaultAsync(i => i.FullName.ToLower() == dto.InstructorName.ToLower());
 
-            ValidateInstructorRoleForClassType(instructor, dto.ClassType);
+            if (instructor is null)
+                throw new InvalidOperationException($"Instructor '{dto.InstructorName}' not found.");
+
+            ValidateInstructorRoleForClassType(instructor, classType);
+            instructorId = instructor.UserId;
+        }
+
+        // Parse schedule string (e.g. "Thu 05:42")
+        DayOfWeekEnum? day = null;
+        TimeSpan? startTime = null;
+
+        if (!string.IsNullOrWhiteSpace(dto.Schedule))
+        {
+            ParseSchedule(dto.Schedule, out day, out startTime);
         }
 
         var classEntity = new Class
         {
-            ClassType = dto.ClassType,
-            Day = dto.Day,
-            StartTime = dto.StartTime,
-            EndTime = dto.EndTime,
+            ClassType = classType,
+            Day = day,
+            StartTime = startTime,
+            EndTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : null,
             Room = dto.Room,
             CourseId = dto.CourseId,
-            InstructorId = dto.InstructorId
+            InstructorId = instructorId
         };
 
         _context.Classes.Add(classEntity);
@@ -151,6 +169,46 @@ public class ClassService : IClassService
                 if (role != "ta")
                     throw new InvalidOperationException("Only a TA can be assigned to a Section class.");
                 break;
+        }
+    }
+
+    private static void ParseSchedule(string schedule, out DayOfWeekEnum? day, out TimeSpan? startTime)
+    {
+        day = null;
+        startTime = null;
+
+        var parts = schedule.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0) return;
+
+        // Parse day abbreviation
+        var dayAbbreviations = new Dictionary<string, DayOfWeekEnum>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["sun"] = DayOfWeekEnum.Sunday,
+            ["sunday"] = DayOfWeekEnum.Sunday,
+            ["mon"] = DayOfWeekEnum.Monday,
+            ["monday"] = DayOfWeekEnum.Monday,
+            ["tue"] = DayOfWeekEnum.Tuesday,
+            ["tuesday"] = DayOfWeekEnum.Tuesday,
+            ["wed"] = DayOfWeekEnum.Wednesday,
+            ["wednesday"] = DayOfWeekEnum.Wednesday,
+            ["thu"] = DayOfWeekEnum.Thursday,
+            ["thursday"] = DayOfWeekEnum.Thursday,
+            ["fri"] = DayOfWeekEnum.Friday,
+            ["friday"] = DayOfWeekEnum.Friday,
+            ["sat"] = DayOfWeekEnum.Saturday,
+            ["saturday"] = DayOfWeekEnum.Saturday
+        };
+
+        if (dayAbbreviations.TryGetValue(parts[0], out var parsedDay))
+            day = parsedDay;
+
+        // Parse time
+        if (parts.Length > 1)
+        {
+            if (TimeSpan.TryParse(parts[1], CultureInfo.InvariantCulture, out var time))
+                startTime = time;
+            else if (DateTime.TryParse(parts[1], CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt))
+                startTime = dt.TimeOfDay;
         }
     }
 
