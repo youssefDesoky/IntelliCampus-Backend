@@ -5,6 +5,7 @@ namespace IntelliCampus.DAL.Entities;
 public class Class
 {
     public int ClassId { get; set; }
+    public string? GroupCode { get; set; }
     public ClassType ClassType { get; set; }
     public DayOfWeekEnum? Day { get; set; }
     public TimeSpan? StartTime { get; set; }

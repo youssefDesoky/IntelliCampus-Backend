@@ -83,7 +83,6 @@ public class CourseService : ICourseService
             CourseCode = dto.CourseCode,
             CourseName = dto.CourseName,
             CourseNameAr = dto.CourseNameAr,
-            Description = dto.Description,
             CreditHours = dto.CreditHours,
             Status = CourseStatus.Active,
             DepartmentId = departmentId
@@ -238,7 +237,6 @@ public class CourseService : ICourseService
             CourseCode = course.CourseCode,
             CourseName = course.CourseName,
             CourseNameAr = course.CourseNameAr,
-            Description = course.Description,
             CreditHours = course.CreditHours,
             Status = course.Status,
             DepartmentId = course.DepartmentId,

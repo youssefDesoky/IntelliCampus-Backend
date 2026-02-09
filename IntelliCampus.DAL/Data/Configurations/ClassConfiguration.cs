@@ -10,6 +10,9 @@ public class ClassConfiguration : IEntityTypeConfiguration<Class>
     {
         builder.HasKey(c => c.ClassId);
 
+        builder.Property(c => c.GroupCode)
+            .HasMaxLength(20);
+
         builder.Property(c => c.ClassType)
             .HasConversion<string>()
             .HasMaxLength(20);
