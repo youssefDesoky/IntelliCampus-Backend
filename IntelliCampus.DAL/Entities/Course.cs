@@ -9,7 +9,6 @@ public class Course
     public int CreditHours { get; set; }
     public string CourseName { get; set; } = null!;
     public string? CourseNameAr { get; set; }
-    public string? Description { get; set; }
     public CourseStatus Status { get; set; }
     public int? DepartmentId { get; set; }
 

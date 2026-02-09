@@ -21,9 +21,6 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
             .HasMaxLength(100)
             .IsUnicode();
 
-        builder.Property(c => c.Description)
-            .HasMaxLength(500);
-
         builder.Property(c => c.Status)
             .HasConversion<string>()
             .HasMaxLength(20);

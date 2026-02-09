@@ -57,9 +57,12 @@ public class ClassService : IClassService
         if (!Enum.TryParse<ClassType>(dto.Type, ignoreCase: true, out var classType))
             throw new InvalidOperationException($"Invalid class type '{dto.Type}'. Valid values: Lecture, Section.");
 
-        // Validate course exists
-        var courseExists = await _context.Courses.AnyAsync(c => c.CourseId == dto.CourseId);
-        if (!courseExists)
+        // Validate course exists and load department
+        var course = await _context.Courses
+            .Include(c => c.Department)
+            .FirstOrDefaultAsync(c => c.CourseId == dto.CourseId);
+
+        if (course is null)
             throw new InvalidOperationException("Course not found.");
 
         // Only one Lecture class per course
@@ -95,8 +98,12 @@ public class ClassService : IClassService
             ParseSchedule(dto.Schedule, out day, out startTime);
         }
 
+        // Generate group code (e.g. CS-L1, IS-S1, IS-S2)
+        var groupCode = await GenerateGroupCodeAsync(course, classType);
+
         var classEntity = new Class
         {
+            GroupCode = groupCode,
             ClassType = classType,
             Day = day,
             StartTime = startTime,
@@ -130,7 +137,6 @@ public class ClassService : IClassService
         if (instructor is null)
             throw new InvalidOperationException("Instructor not found.");
 
-        // Validate instructor role matches class type
         ValidateInstructorRoleForClassType(instructor, classEntity.ClassType);
 
         classEntity.InstructorId = instructorId;
@@ -152,6 +158,34 @@ public class ClassService : IClassService
         await _context.SaveChangesAsync();
 
         return true;
+    }
+
+    private async Task<string> GenerateGroupCodeAsync(Course course, ClassType classType)
+    {
+        // Get department code (e.g. "CS", "IS")
+        var deptCode = "GEN";
+        if (course.Department is not null)
+        {
+            var parts = course.Department.DepartmentName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            deptCode = string.Concat(parts.Select(p => char.ToUpperInvariant(p[0])));
+        }
+
+        // Type prefix: L = Lecture, S = Section
+        var typePrefix = classType switch
+        {
+            ClassType.Lecture => "L",
+            ClassType.Section => "S",
+            ClassType.Lab => "LB",
+            _ => "X"
+        };
+
+        // Count existing classes of the same type for this course
+        var existingCount = await _context.Classes
+            .CountAsync(c => c.CourseId == course.CourseId && c.ClassType == classType);
+
+        var number = existingCount + 1;
+
+        return $"{deptCode}-{typePrefix}{number}";
     }
 
     private static void ValidateInstructorRoleForClassType(Instructor instructor, ClassType classType)
@@ -217,6 +251,7 @@ public class ClassService : IClassService
         return new ClassDto
         {
             ClassId = classEntity.ClassId,
+            GroupCode = classEntity.GroupCode,
             ClassType = classEntity.ClassType,
             Day = classEntity.Day,
             StartTime = classEntity.StartTime,

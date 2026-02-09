@@ -4,15 +4,16 @@ namespace IntelliCampus.BLL.Dtos.Course;
 
 public class CreateCourseDto
 {
-    [JsonPropertyName("courseId")]
+    [JsonPropertyName("id")]
     public string? CourseCode { get; set; }
 
+    [JsonPropertyName("title")]
     public string CourseName { get; set; } = null!;
+
     public string? CourseNameAr { get; set; }
     public int CreditHours { get; set; }
-    public string? Description { get; set; }
 
-    [JsonPropertyName("departmentId")]
+    [JsonPropertyName("department")]
     public string? DepartmentName { get; set; }
 
     [JsonPropertyName("prerequisites")]

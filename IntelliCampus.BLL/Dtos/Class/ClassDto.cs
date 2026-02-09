@@ -5,6 +5,7 @@ namespace IntelliCampus.BLL.Dtos.Class;
 public class ClassDto
 {
     public int ClassId { get; set; }
+    public string? GroupCode { get; set; }
     public ClassType ClassType { get; set; }
     public string ClassTypeName => ClassType.ToString();
     public DayOfWeekEnum? Day { get; set; }
