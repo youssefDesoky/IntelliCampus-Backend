@@ -1,0 +1,27 @@
+using IntelliCampus.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace IntelliCampus.Presistence.Data.Configurations;
+
+public class StudentConfiguration : IEntityTypeConfiguration<Student>
+{
+    public void Configure(EntityTypeBuilder<Student> builder)
+    {
+        builder.ToTable("Students");
+
+        builder.Property(s => s.StudentId)
+            .ValueGeneratedOnAdd();
+
+        builder.Property(s => s.StudentCode)
+            .HasMaxLength(50);
+
+        builder.Property(s => s.Faculty)
+            .HasMaxLength(100);
+
+        builder.HasOne(s => s.Department)
+            .WithMany()
+            .HasForeignKey(s => s.DepartmentId)
+            .OnDelete(DeleteBehavior.SetNull);
+    }
+}
