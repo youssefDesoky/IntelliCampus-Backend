@@ -1,0 +1,69 @@
+using IntelliCampus.Shared.Dtos.Admin;
+using IntelliCampus.Service_Abstraction;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace IntelliCampus.Web.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize(Roles = "SuperAdmin")]
+public class AdminsController : ControllerBase
+{
+    private readonly IAdminService _adminService;
+
+    public AdminsController(IAdminService adminService)
+    {
+        _adminService = adminService;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<AdminDto>>> GetAll()
+    {
+        var admins = await _adminService.GetAllAsync();
+        return Ok(admins);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<AdminDto>> GetById(int id)
+    {
+        var admin = await _adminService.GetByIdAsync(id);
+
+        if (admin is null)
+            return NotFound();
+
+        return Ok(admin);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<AdminDto>> Create([FromBody] CreateAdminDto dto)
+    {
+        try
+        {
+            var admin = await _adminService.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetById), new { id = admin.UserId }, admin);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            var result = await _adminService.DeleteAsync(id);
+
+            if (!result)
+                return NotFound();
+
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+}

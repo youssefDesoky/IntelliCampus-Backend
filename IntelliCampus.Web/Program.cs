@@ -1,13 +1,15 @@
 using System.Text;
-using IntelliCampus.BLL.Services.Classes;
-using IntelliCampus.BLL.Services.Interfaces;
-using IntelliCampus.BLL.Settings;
-using IntelliCampus.DAL.Data.Contexts;
-using IntelliCampus.Web.Data;
+using IntelliCampus.Service;
+using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Shared.Settings;
+using IntelliCampus.Presistence.Data.Contexts;
+using IntelliCampus.Presistence.Data.DataSeeding;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Presistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,8 +27,9 @@ builder.Services.Configure<FormOptions>(options =>
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 // Add DbContext
 builder.Services.AddDbContext<IntelliCampusDbContext>(options =>
@@ -82,8 +85,14 @@ builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
-
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 // Seed admin user
 using (var scope = app.Services.CreateScope())
@@ -93,11 +102,6 @@ using (var scope = app.Services.CreateScope())
     await AdminSeeder.SeedAdminAsync(context, passwordService);
 }
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
 
 app.UseHttpsRedirection();
 

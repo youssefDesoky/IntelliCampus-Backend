@@ -1,0 +1,146 @@
+using IntelliCampus.Shared.Dtos.Auth;
+using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Domain.Entities;
+using IntelliCampus.Service.Specifications;
+
+namespace IntelliCampus.Service;
+
+public class AuthService(
+    IUnitOfWork unitOfWork,
+    IPasswordService passwordService,
+    ITokenService tokenService) : IAuthService
+{
+    private const string DefaultProfileImage = "/images/default-avatar.png";
+
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IPasswordService _passwordService = passwordService;
+    private readonly ITokenService _tokenService = tokenService;
+
+    public async Task<AuthResponseDto?> LoginAsync(LoginDto dto)
+    {
+        var spec = new UserByEmailSpec(dto.Email);
+        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(spec);
+
+        if (user is null)
+            return null;
+
+        if (!_passwordService.VerifyPassword(dto.Password, user.Password))
+            return null;
+
+        var (token, expiresAt) = _tokenService.GenerateToken(user);
+
+        return new AuthResponseDto
+        {
+            UserId = user.UserId,
+            Email = user.Email,
+            FullName = user.FullName,
+            Role = user.Role.ToString(),
+            Token = token,
+            ExpiresAt = expiresAt
+        };
+    }
+
+    public async Task<MeResponseDto?> GetMeAsync(int userId)
+    {
+        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
+
+        if (user is null)
+            return null;
+
+        return new MeResponseDto
+        {
+            UserId = user.UserId,
+            FullName = user.FullName,
+            Email = user.Email,
+            Role = user.Role.ToString(),
+            ProfileImage = user.ProfileImage ?? DefaultProfileImage,
+            Notifications = new { message = "Notifications placeholder" }
+        };
+    }
+
+    public async Task<UserProfileDto?> GetProfileAsync(int userId)
+    {
+        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
+        
+        if (user is null)
+            return null;
+
+        return new UserProfileDto
+        {
+            UserId = user.UserId,
+            NationalId = user.NationalId,
+            FullName = user.FullName,
+            FullNameAr = user.FullNameAr,
+            PhoneNumber = user.PhoneNumber,
+            Email = user.Email,
+            Address = user.Address,
+            Role = user.Role.ToString(),
+            ProfileImage = user.ProfileImage ?? DefaultProfileImage
+        };
+    }
+
+    public async Task<UserProfileDto?> UpdateProfileAsync(int userId, UpdateProfileDto dto)
+    {
+        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
+
+        if (user is null)
+            return null;
+
+        if (dto.Address is not null)
+            user.Address = dto.Address;
+
+        if (dto.PhoneNumber is not null)
+            user.PhoneNumber = dto.PhoneNumber;
+
+        if (dto.FullNameAr is not null)
+            user.FullNameAr = dto.FullNameAr;
+
+        _unitOfWork.GetRepository<User, int>().Update(user);
+        await _unitOfWork.SaveChangesAsync();
+
+        return new UserProfileDto
+        {
+            UserId = user.UserId,
+            NationalId = user.NationalId,
+            FullName = user.FullName,
+            FullNameAr = user.FullNameAr,
+            PhoneNumber = user.PhoneNumber,
+            Email = user.Email,
+            Address = user.Address,
+            Role = user.Role.ToString(),
+            ProfileImage = user.ProfileImage ?? DefaultProfileImage
+        };
+    }
+
+    public async Task<string?> UpdateProfileImageAsync(int userId, string imageUrl)
+    {
+        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
+
+        if (user is null)
+            return null;
+
+        user.ProfileImage = imageUrl;
+        _unitOfWork.GetRepository<User, int>().Update(user);
+        await _unitOfWork.SaveChangesAsync();
+
+        return user.ProfileImage;
+    }
+
+    public async Task<bool> ChangePasswordAsync(int userId, ChangePasswordDto dto)
+    {
+        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
+
+        if (user is null)
+            return false;
+
+        if (!_passwordService.VerifyPassword(dto.CurrentPassword, user.Password))
+            return false;
+
+        user.Password = _passwordService.HashPassword(dto.NewPassword);
+        _unitOfWork.GetRepository<User, int>().Update(user);
+        await _unitOfWork.SaveChangesAsync();
+
+        return true;
+    }
+}
