@@ -1,5 +1,6 @@
 using IntelliCampus.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace IntelliCampus.Presistence.Data.Contexts;
 
@@ -59,5 +60,8 @@ public class IntelliCampusDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(IntelliCampusDbContext).Assembly);
+
+
+    
     }
 }
