@@ -250,6 +250,7 @@ public class MaterialsController(IMaterialService materialService) : ControllerB
         };
     }
 
+
     private int? GetCurrentInstructorId()
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
