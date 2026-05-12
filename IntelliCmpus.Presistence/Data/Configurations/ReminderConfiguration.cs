@@ -18,6 +18,14 @@ public class ReminderConfiguration : IEntityTypeConfiguration<Reminder>
             .HasConversion<string>()
             .HasMaxLength(20);
 
+        builder.Property(r => r.Location)
+            .HasMaxLength(200);
+
+        builder.Property(r => r.Priority)
+            .IsRequired()
+            .HasMaxLength(20)
+            .HasDefaultValue("low");
+
         builder.HasOne(r => r.Student)
             .WithMany(s => s.Reminders)
             .HasForeignKey(r => r.StudentId)

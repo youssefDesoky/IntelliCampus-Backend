@@ -574,6 +574,16 @@ namespace IntelliCampus.DAL.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Location")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("low");
+
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
