@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
@@ -18,6 +19,12 @@ public class AssignmentService(IUnitOfWork unitOfWork) : IAssignmentService
 
     private IGenericRepository<Class, int> Classes
         => _unitOfWork.GetRepository<Class, int>();
+
+    private IGenericRepository<StudentCourse, int> StudentCourses
+        => _unitOfWork.GetRepository<StudentCourse, int>();
+
+    private IGenericRepository<Reminder, int> Reminders
+        => _unitOfWork.GetRepository<Reminder, int>();
 
     // Instructor/student (optional student view)
     public async Task<AssignmentDto?> GetByIdAsync(int assignmentId, int? studentId = null)
@@ -84,6 +91,29 @@ public class AssignmentService(IUnitOfWork unitOfWork) : IAssignmentService
         };
 
         Assignments.Add(assignment);
+        await _unitOfWork.SaveChangesAsync();
+
+        // Auto-create reminders for students registered in this course
+        var courseId = classEntity.CourseId;
+        var registered = (await StudentCourses.GetAllAsync())
+            .Where(sc => sc.CourseId == courseId)
+            .Select(sc => sc.StudentId)
+            .Distinct()
+            .ToList();
+
+        foreach (var studentId in registered)
+        {
+            Reminders.Add(new Reminder
+            {
+                StudentId = studentId,
+                Title = $"Assignment due: {assignment.Title}",
+                Date = assignment.DueDate,
+                Type = ReminderType.Assignment,
+                Location = null,
+                Priority = "medium"
+            });
+        }
+
         await _unitOfWork.SaveChangesAsync();
 
         var spec = new AssignmentSpec(assignment.AssignmentId);
