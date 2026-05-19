@@ -11,10 +11,12 @@ namespace IntelliCampus.Service;
 public class RegistrationService : IRegistrationService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IScheduleService _scheduleService;
 
-    public RegistrationService(IUnitOfWork unitOfWork)
+    public RegistrationService(IUnitOfWork unitOfWork, IScheduleService scheduleService)
     {
         _unitOfWork = unitOfWork;
+        _scheduleService = scheduleService;
     }
 
     private IGenericRepository<StudentCourse, int> StudentCourses
@@ -66,9 +68,16 @@ public class RegistrationService : IRegistrationService
         StudentCourses.Add(studentCourse);
         await _unitOfWork.SaveChangesAsync();
 
-        // Get professor from lecture class
+        // Get lecture class for this course
         var lectureSpec = new LectureClassSpec(dto.CourseId);
         var lectureClass = await Classes.GetByIdAsync(lectureSpec);
+
+        // Sync schedule entry for the registered class
+        await _scheduleService.SyncFromCourseRegistrationAsync(studentId, dto.ClassId);
+
+        // Auto-register the lecture in the schedule when registering for a section or lab
+        if (classEntity.ClassType != ClassType.Lecture && lectureClass is not null)
+            await _scheduleService.SyncFromCourseRegistrationAsync(studentId, lectureClass.ClassId);
 
         return new StudentRegistrationDto
         {
@@ -112,6 +121,9 @@ public class RegistrationService : IRegistrationService
 
         StudentCourses.Delete(registration);
         await _unitOfWork.SaveChangesAsync();
+
+        // Clean up schedule entries for this dropped course
+        await _scheduleService.RemoveByStudentAndCourseAsync(studentId, courseId);
 
         return true;
     }

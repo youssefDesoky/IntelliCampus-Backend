@@ -1,38 +1,17 @@
 using IntelliCampus.Domain.Entities.Enums;
 
-namespace IntelliCampus.Domain.Entities;
+namespace IntelliCampus.Shared.Dtos.Schedule;
 
-public class Schedule
+public class CreateScheduleDto
 {
-    public int ScheduleId { get; set; }
-
     public string Title { get; set; } = string.Empty;
-
-    // e.g. "sat", "mon"
     public string Day { get; set; } = string.Empty;
-
     public DateTime Date { get; set; }
-
     public TimeSpan StartTime { get; set; }
     public TimeSpan EndTime { get; set; }
-
     public string? Location { get; set; }
-
-    // Lecture | Section | Activity | Exam
-    public ScheduleType ScheduleType { get; set; }
-
+    public ScheduleType Type { get; set; }
     public string? InstructorName { get; set; }
-
     public int? CourseId { get; set; }
-
-    public int? ClassId { get; set; }
-
     public int StudentId { get; set; }
-
-    // Navigation properties
-    public Course? Course { get; set; }
-
-    public Class? Class { get; set; }
-
-    public Student Student { get; set; } = null!;
 }
