@@ -8,10 +8,19 @@ public class StudentAssignmentConfiguration : IEntityTypeConfiguration<StudentAs
 {
     public void Configure(EntityTypeBuilder<StudentAssignment> builder)
     {
-        builder.HasKey(sa => new { sa.StudentId, sa.AssignmentId });
+        builder.HasKey(sa => sa.StudentAssignmentId);
 
-        builder.Property(sa => sa.Score)
-            .HasPrecision(5, 2);
+        builder.HasIndex(sa => new { sa.StudentId, sa.AssignmentId })
+            .IsUnique();
+
+        builder.Property(sa => sa.Grade)
+            .HasPrecision(10, 2);
+
+        builder.Property(sa => sa.FileUrl)
+            .HasMaxLength(2000);
+
+        builder.Property(sa => sa.Notes)
+            .HasMaxLength(4000);
 
         builder.HasOne(sa => sa.Student)
             .WithMany(s => s.StudentAssignments)

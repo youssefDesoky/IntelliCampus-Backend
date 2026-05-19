@@ -9,5 +9,20 @@ public class AssignmentConfiguration : IEntityTypeConfiguration<Assignment>
     public void Configure(EntityTypeBuilder<Assignment> builder)
     {
         builder.HasKey(a => a.AssignmentId);
+
+        builder.Property(a => a.Title)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(a => a.Description)
+            .HasMaxLength(2000);
+
+        builder.Property(a => a.MaxGrade)
+            .HasPrecision(10, 2);
+
+        builder.HasOne(a => a.Class)
+            .WithMany(c => c.Assignments)
+            .HasForeignKey(a => a.ClassId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
