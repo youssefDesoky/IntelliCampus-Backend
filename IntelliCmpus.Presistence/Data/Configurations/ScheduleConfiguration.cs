@@ -8,22 +8,57 @@ public class ScheduleConfiguration : IEntityTypeConfiguration<Schedule>
 {
     public void Configure(EntityTypeBuilder<Schedule> builder)
     {
+        builder.ToTable("Schedules");
+
         builder.HasKey(s => s.ScheduleId);
+
+        builder.Property(s => s.Title)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(s => s.Day)
+            .IsRequired()
+            .HasMaxLength(20);
+
+        builder.Property(s => s.Date)
+            .IsRequired();
+
+        builder.Property(s => s.StartTime)
+            .IsRequired();
+
+        builder.Property(s => s.EndTime)
+            .IsRequired();
 
         builder.Property(s => s.Location)
             .HasMaxLength(100);
 
-        builder.Property(s => s.Type)
-            .HasConversion<string>()
-            .HasMaxLength(20);
+        builder.Property(s => s.InstructorName)
+            .HasMaxLength(200);
 
-        builder.Property(s => s.Day)
+        // Backward compatible with the existing DB schema that used column name "Type"
+        builder.Property(s => s.ScheduleType)
+            .HasColumnName("Type")
             .HasConversion<string>()
-            .HasMaxLength(20);
+            .HasMaxLength(20)
+            .IsRequired();
+
+        builder.HasIndex(s => new { s.StudentId, s.Date });
+        builder.HasIndex(s => s.CourseId);
+        builder.HasIndex(s => s.ClassId);
 
         builder.HasOne(s => s.Student)
             .WithMany(st => st.Schedules)
             .HasForeignKey(s => s.StudentId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(s => s.Course)
+            .WithMany()
+            .HasForeignKey(s => s.CourseId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(s => s.Class)
+            .WithMany()
+            .HasForeignKey(s => s.ClassId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

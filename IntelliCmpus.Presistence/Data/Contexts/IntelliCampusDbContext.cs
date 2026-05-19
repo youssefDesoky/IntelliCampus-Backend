@@ -36,6 +36,7 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<NoteSummary> NoteSummaries { get; set; }
     public DbSet<Reminder> Reminders { get; set; }
     public DbSet<Schedule> Schedules { get; set; }
+    public DbSet<ExamSchedule> ExamSchedules { get; set; }
     public DbSet<ChatbotQuery> ChatbotQueries { get; set; }
 
     // Community
