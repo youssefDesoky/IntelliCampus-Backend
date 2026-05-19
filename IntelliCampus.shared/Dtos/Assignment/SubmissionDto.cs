@@ -2,14 +2,8 @@ namespace IntelliCampus.Shared.Dtos.Assignment;
 
 public class SubmissionDto
 {
-    public int StudentAssignmentId { get; set; }
-    public int StudentId { get; set; }
-    public string? StudentName { get; set; }
-    public int AssignmentId { get; set; }
-    public string? AssignmentTitle { get; set; }
-    public string? FileUrl { get; set; }
-    public string? Notes { get; set; }
+    public string Id { get; set; } = string.Empty;
     public DateTime SubmittedAt { get; set; }
-    public decimal? Grade { get; set; }
-    public bool IsLate { get; set; }
+    public string? Note { get; set; }
+    public List<SubmissionFileDto> Files { get; set; } = [];
 }

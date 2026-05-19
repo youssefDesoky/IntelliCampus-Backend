@@ -8,6 +8,8 @@ public class StudentAssignmentSpec : BaseSpecifications<StudentAssignment>
     public StudentAssignmentSpec(int studentId, int assignmentId)
         : base(sa => sa.StudentId == studentId && sa.AssignmentId == assignmentId)
     {
+        AddInclude(sa => sa.Files);
+        AddInclude(sa => sa.GradedByInstructor);
         AddInclude(sa => sa.Student);
         AddInclude("Assignment.Class");
     }
@@ -17,6 +19,8 @@ public class StudentAssignmentSpec : BaseSpecifications<StudentAssignment>
         : base(sa => sa.AssignmentId == assignmentId)
     {
         AddInclude(sa => sa.Student);
+        AddInclude(sa => sa.Files);
+        AddInclude(sa => sa.GradedByInstructor);
         AddInclude(sa => sa.Assignment);
     }
 
@@ -25,6 +29,9 @@ public class StudentAssignmentSpec : BaseSpecifications<StudentAssignment>
         : base(sa => sa.StudentId == studentId)
     {
         AddInclude(sa => sa.Assignment);
-        AddOrderByDescending(sa => sa.SubmittedAt);
+        AddInclude("Assignment.Attachments");
+        AddInclude(sa => sa.Files);
+        AddInclude(sa => sa.GradedByInstructor);
+        AddOrderByDescending(sa => sa.Assignment.DueDate);
     }
 }

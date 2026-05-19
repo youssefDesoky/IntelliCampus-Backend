@@ -5,17 +5,15 @@ namespace IntelliCampus.Service_Abstraction;
 public interface IAssignmentService
 {
     // Instructor
-    Task<AssignmentDto?> GetByIdAsync(int assignmentId);
-    Task<IEnumerable<AssignmentDto>> GetByClassIdAsync(int classId);
+    Task<AssignmentDto?> GetByIdAsync(int assignmentId, int? studentId = null);
+    Task<IEnumerable<AssignmentDto>> GetByCourseIdAsync(int courseId, int? studentId = null);
     Task<AssignmentDto> CreateAsync(int instructorId, CreateAssignmentDto dto);
     Task<bool> DeleteAsync(int assignmentId, int instructorId);
-
-    // Submissions
-    Task<SubmissionDto> SubmitAsync(int studentId, SubmitAssignmentDto dto);
-    Task<SubmissionDto?> GetSubmissionAsync(int studentId, int assignmentId);
     Task<IEnumerable<SubmissionDto>> GetAllSubmissionsAsync(int assignmentId, int instructorId);
-    Task<SubmissionDto?> GradeSubmissionAsync(int instructorId, GradeSubmissionDto dto);
+    Task<AssignmentDto?> GradeSubmissionAsync(int instructorId, GradeSubmissionDto dto);
+    Task<AssignmentStatsDto> GetStatsAsync(int courseId, int studentId);
 
     // Student
-    Task<IEnumerable<SubmissionDto>> GetByStudentIdAsync(int studentId);
+    Task<SubmissionDto> SubmitAsync(int studentId, int assignmentId, SubmitAssignmentDto dto);
+    Task<IEnumerable<AssignmentDto>> GetByStudentAndCourseAsync(int studentId, int courseId);
 }

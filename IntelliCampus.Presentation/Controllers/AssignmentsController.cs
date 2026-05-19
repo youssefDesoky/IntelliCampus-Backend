@@ -13,39 +13,25 @@ public class AssignmentsController(IAssignmentService assignmentService) : Contr
 {
     private int UserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-    [HttpGet("{assignmentId}")]
-    public async Task<IActionResult> GetById(int assignmentId)
-    {
-        var result = await assignmentService.GetByIdAsync(assignmentId);
-        return result is null ? NotFound() : Ok(result);
-    }
+    [HttpGet("{courseId}")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> GetByCourse(int courseId)
+        => Ok(await assignmentService.GetByStudentAndCourseAsync(UserId, courseId));
 
-    [HttpGet("class/{classId}")]
-    public async Task<IActionResult> GetByClass(int classId)
-        => Ok(await assignmentService.GetByClassIdAsync(classId));
+    [HttpGet("{courseId}/stats")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> GetStats(int courseId)
+        => Ok(await assignmentService.GetStatsAsync(courseId, UserId));
 
-    [HttpPost]
+    [HttpPost("{assignmentId}/submit")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> Submit(int assignmentId, [FromBody] SubmitAssignmentDto dto)
+        => Ok(await assignmentService.SubmitAsync(UserId, assignmentId, dto));
+
+    [HttpPost("create")]
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> Create([FromBody] CreateAssignmentDto dto)
         => Ok(await assignmentService.CreateAsync(UserId, dto));
-
-    [HttpDelete("{assignmentId}")]
-    [Authorize(Roles = "Instructor")]
-    public async Task<IActionResult> Delete(int assignmentId)
-        => Ok(await assignmentService.DeleteAsync(assignmentId, UserId));
-
-    [HttpPost("submit")]
-    [Authorize(Roles = "Student")]
-    public async Task<IActionResult> Submit([FromBody] SubmitAssignmentDto dto)
-        => Ok(await assignmentService.SubmitAsync(UserId, dto));
-
-    [HttpGet("{assignmentId}/my-submission")]
-    [Authorize(Roles = "Student")]
-    public async Task<IActionResult> GetMySubmission(int assignmentId)
-    {
-        var result = await assignmentService.GetSubmissionAsync(UserId, assignmentId);
-        return result is null ? NotFound() : Ok(result);
-    }
 
     [HttpGet("{assignmentId}/submissions")]
     [Authorize(Roles = "Instructor")]
@@ -60,8 +46,8 @@ public class AssignmentsController(IAssignmentService assignmentService) : Contr
         return result is null ? NotFound() : Ok(result);
     }
 
-    [HttpGet("my-submissions")]
-    [Authorize(Roles = "Student")]
-    public async Task<IActionResult> GetMySubmissions()
-        => Ok(await assignmentService.GetByStudentIdAsync(UserId));
+    [HttpDelete("{assignmentId}")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> Delete(int assignmentId)
+        => Ok(await assignmentService.DeleteAsync(assignmentId, UserId));
 }

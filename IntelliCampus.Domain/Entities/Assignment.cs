@@ -6,6 +6,7 @@ public class Assignment
 
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
+    public string? FullInstructions { get; set; }
 
     public DateTime DueDate { get; set; }
 
@@ -16,6 +17,7 @@ public class Assignment
     public int ClassId { get; set; }
 
     // Navigation properties
-    public Class? Class { get; set; }
-    public ICollection<StudentAssignment> StudentAssignments { get; set; } = new List<StudentAssignment>();
+    public Class Class { get; set; } = null!;
+    public ICollection<StudentAssignment> StudentAssignments { get; set; } = [];
+    public ICollection<AssignmentAttachment> Attachments { get; set; } = [];
 }

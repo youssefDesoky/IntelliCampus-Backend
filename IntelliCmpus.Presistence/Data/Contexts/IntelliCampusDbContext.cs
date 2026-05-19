@@ -28,6 +28,7 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<Material> Materials { get; set; }
     public DbSet<MaterialFolder> MaterialFolders { get; set; }
     public DbSet<Assignment> Assignments { get; set; }
+    public DbSet<AssignmentAttachment> AssignmentAttachments { get; set; }
     public DbSet<Quiz> Quizzes { get; set; }
 
     // Student activities
@@ -56,6 +57,7 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<StudentCourse> StudentCourses { get; set; }
     public DbSet<StudentQuiz> StudentQuizzes { get; set; }
     public DbSet<StudentAssignment> StudentAssignments { get; set; }
+    public DbSet<SubmissionFile> SubmissionFiles { get; set; }
     public DbSet<StudentDepartment> StudentDepartments { get; set; }
     public DbSet<InstructorMaterial> InstructorMaterials { get; set; }
     public DbSet<UserNotification> UserNotifications { get; set; }
@@ -66,8 +68,5 @@ public class IntelliCampusDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(IntelliCampusDbContext).Assembly);
-
-
-    
     }
 }

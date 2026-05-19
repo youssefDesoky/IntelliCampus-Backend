@@ -16,10 +16,10 @@ public class StudentAssignmentConfiguration : IEntityTypeConfiguration<StudentAs
         builder.Property(sa => sa.Grade)
             .HasPrecision(10, 2);
 
-        builder.Property(sa => sa.FileUrl)
-            .HasMaxLength(2000);
+        builder.Property(sa => sa.Note)
+            .HasMaxLength(4000);
 
-        builder.Property(sa => sa.Notes)
+        builder.Property(sa => sa.Feedback)
             .HasMaxLength(4000);
 
         builder.HasOne(sa => sa.Student)
@@ -31,5 +31,11 @@ public class StudentAssignmentConfiguration : IEntityTypeConfiguration<StudentAs
             .WithMany(a => a.StudentAssignments)
             .HasForeignKey(sa => sa.AssignmentId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // SQL Server: avoid multiple cascade paths
+        builder.HasOne(sa => sa.GradedByInstructor)
+            .WithMany()
+            .HasForeignKey(sa => sa.GradedByInstructorId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
