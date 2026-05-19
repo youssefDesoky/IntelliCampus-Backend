@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Web\\IntelliCampus.Web.csproj": {}
+    "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Web\\IntelliCampus.Web.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\IntelliCampus.Domain.csproj": {
+    "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\IntelliCampus.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\IntelliCampus.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\IntelliCampus.Domain.csproj",
         "projectName": "IntelliCampus.Domain",
-        "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\IntelliCampus.Domain.csproj",
-        "packagesPath": "C:\\Users\\Youssef Ahmed\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\obj\\",
+        "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\IntelliCampus.Domain.csproj",
+        "packagesPath": "C:\\Users\\MM\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Youssef Ahmed\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\MM\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -30,7 +30,6 @@
         },
         "frameworks": {
           "net8.0": {
-            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {}
           }
@@ -45,11 +44,10 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "imports": [
             "net461",
@@ -67,24 +65,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Presentation\\IntelliCampus.Presentation.csproj": {
+    "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Presentation\\IntelliCampus.Presentation.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Presentation\\IntelliCampus.Presentation.csproj",
+        "projectUniqueName": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Presentation\\IntelliCampus.Presentation.csproj",
         "projectName": "IntelliCampus.Presentation",
-        "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Presentation\\IntelliCampus.Presentation.csproj",
-        "packagesPath": "C:\\Users\\Youssef Ahmed\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Presentation\\obj\\",
+        "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Presentation\\IntelliCampus.Presentation.csproj",
+        "packagesPath": "C:\\Users\\MM\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Presentation\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Youssef Ahmed\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\MM\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -97,11 +95,10 @@
         },
         "frameworks": {
           "net8.0": {
-            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\IntelliCampus.Service_Abstraction.csproj": {
-                "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\IntelliCampus.Service_Abstraction.csproj"
+              "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\IntelliCampus.Service_Abstraction.csproj": {
+                "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\IntelliCampus.Service_Abstraction.csproj"
               }
             }
           }
@@ -116,11 +113,10 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "imports": [
             "net461",
@@ -141,24 +137,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Service\\IntelliCampus.Service.csproj": {
+    "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Service\\IntelliCampus.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Service\\IntelliCampus.Service.csproj",
+        "projectUniqueName": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Service\\IntelliCampus.Service.csproj",
         "projectName": "IntelliCampus.Service",
-        "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Service\\IntelliCampus.Service.csproj",
-        "packagesPath": "C:\\Users\\Youssef Ahmed\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Service\\obj\\",
+        "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Service\\IntelliCampus.Service.csproj",
+        "packagesPath": "C:\\Users\\MM\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Service\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Youssef Ahmed\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\MM\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -171,14 +167,13 @@
         },
         "frameworks": {
           "net8.0": {
-            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\IntelliCampus.Domain.csproj": {
-                "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\IntelliCampus.Domain.csproj"
+              "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\IntelliCampus.Domain.csproj": {
+                "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\IntelliCampus.Domain.csproj"
               },
-              "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\IntelliCampus.Service_Abstraction.csproj": {
-                "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\IntelliCampus.Service_Abstraction.csproj"
+              "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\IntelliCampus.Service_Abstraction.csproj": {
+                "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\IntelliCampus.Service_Abstraction.csproj"
               }
             }
           }
@@ -193,11 +188,10 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.EntityFrameworkCore": {
@@ -225,24 +219,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\IntelliCampus.Service_Abstraction.csproj": {
+    "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\IntelliCampus.Service_Abstraction.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\IntelliCampus.Service_Abstraction.csproj",
+        "projectUniqueName": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\IntelliCampus.Service_Abstraction.csproj",
         "projectName": "IntelliCampus.Service_Abstraction",
-        "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\IntelliCampus.Service_Abstraction.csproj",
-        "packagesPath": "C:\\Users\\Youssef Ahmed\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\obj\\",
+        "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\IntelliCampus.Service_Abstraction.csproj",
+        "packagesPath": "C:\\Users\\MM\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Service_Abstraction\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Youssef Ahmed\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\MM\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -255,11 +249,10 @@
         },
         "frameworks": {
           "net8.0": {
-            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.shared\\IntelliCampus.shared.csproj": {
-                "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.shared\\IntelliCampus.shared.csproj"
+              "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.shared\\IntelliCampus.shared.csproj": {
+                "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.shared\\IntelliCampus.shared.csproj"
               }
             }
           }
@@ -274,11 +267,10 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "imports": [
             "net461",
@@ -296,24 +288,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.shared\\IntelliCampus.shared.csproj": {
+    "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.shared\\IntelliCampus.shared.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.shared\\IntelliCampus.shared.csproj",
+        "projectUniqueName": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.shared\\IntelliCampus.shared.csproj",
         "projectName": "IntelliCampus.shared",
-        "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.shared\\IntelliCampus.shared.csproj",
-        "packagesPath": "C:\\Users\\Youssef Ahmed\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.shared\\obj\\",
+        "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.shared\\IntelliCampus.shared.csproj",
+        "packagesPath": "C:\\Users\\MM\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.shared\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Youssef Ahmed\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\MM\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -326,11 +318,10 @@
         },
         "frameworks": {
           "net8.0": {
-            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\IntelliCampus.Domain.csproj": {
-                "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\IntelliCampus.Domain.csproj"
+              "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\IntelliCampus.Domain.csproj": {
+                "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Domain\\IntelliCampus.Domain.csproj"
               }
             }
           }
@@ -345,11 +336,10 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "imports": [
             "net461",
@@ -367,44 +357,43 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Web\\IntelliCampus.Web.csproj": {
+    "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Web\\IntelliCampus.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Web\\IntelliCampus.Web.csproj",
+        "projectUniqueName": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Web\\IntelliCampus.Web.csproj",
         "projectName": "IntelliCampus.Web",
-        "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Web\\IntelliCampus.Web.csproj",
-        "packagesPath": "C:\\Users\\Youssef Ahmed\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Web\\obj\\",
+        "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Web\\IntelliCampus.Web.csproj",
+        "packagesPath": "C:\\Users\\MM\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Web\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Youssef Ahmed\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\MM\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net8.0"
+          "net9.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net8.0": {
-            "framework": "net8.0",
-            "targetAlias": "net8.0",
+          "net9.0": {
+            "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Presentation\\IntelliCampus.Presentation.csproj": {
-                "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Presentation\\IntelliCampus.Presentation.csproj"
+              "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Presentation\\IntelliCampus.Presentation.csproj": {
+                "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Presentation\\IntelliCampus.Presentation.csproj"
               },
-              "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCmpus.Presistence\\IntelliCampus.Presistence.csproj": {
-                "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCmpus.Presistence\\IntelliCampus.Presistence.csproj"
+              "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCmpus.Presistence\\IntelliCampus.Presistence.csproj": {
+                "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCmpus.Presistence\\IntelliCampus.Presistence.csproj"
               }
             }
           }
@@ -419,12 +408,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net8.0": {
-          "framework": "net8.0",
-          "targetAlias": "net8.0",
+        "net9.0": {
+          "targetAlias": "net9.0",
           "dependencies": {
             "Azure.Identity": {
               "target": "Package",
@@ -432,7 +420,7 @@
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
-              "version": "[8.0.12, )"
+              "version": "[9.0.15, )"
             },
             "Microsoft.Data.SqlClient": {
               "target": "Package",
@@ -448,11 +436,11 @@
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.12, )"
+              "version": "[10.0.7, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[6.*, )"
+              "version": "[10.1.7, )"
             }
           },
           "imports": [
@@ -474,24 +462,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCmpus.Presistence\\IntelliCampus.Presistence.csproj": {
+    "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCmpus.Presistence\\IntelliCampus.Presistence.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCmpus.Presistence\\IntelliCampus.Presistence.csproj",
+        "projectUniqueName": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCmpus.Presistence\\IntelliCampus.Presistence.csproj",
         "projectName": "IntelliCampus.Presistence",
-        "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCmpus.Presistence\\IntelliCampus.Presistence.csproj",
-        "packagesPath": "C:\\Users\\Youssef Ahmed\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCmpus.Presistence\\obj\\",
+        "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCmpus.Presistence\\IntelliCampus.Presistence.csproj",
+        "packagesPath": "C:\\Users\\MM\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCmpus.Presistence\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Youssef Ahmed\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\MM\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -504,11 +492,10 @@
         },
         "frameworks": {
           "net8.0": {
-            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Service\\IntelliCampus.Service.csproj": {
-                "projectPath": "C:\\Users\\Youssef Ahmed\\source\\repos\\IntelliCampus-Backend\\IntelliCampus.Service\\IntelliCampus.Service.csproj"
+              "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Service\\IntelliCampus.Service.csproj": {
+                "projectPath": "C:\\Users\\MM\\Source\\Repos\\IntelliCampus-Backend\\IntelliCampus.Service\\IntelliCampus.Service.csproj"
               }
             }
           }
@@ -523,11 +510,10 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "Azure.Identity": {
@@ -565,7 +551,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

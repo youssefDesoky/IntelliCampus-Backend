@@ -26,15 +26,7 @@ builder.Services.Configure<FormOptions>(options =>
 });
 
 // Add services to the container.
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -94,7 +86,6 @@ builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IReminderService, ReminderService>();
-builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
 
@@ -102,7 +93,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage();
 }
 
 // Seed admin user
@@ -114,11 +104,9 @@ using (var scope = app.Services.CreateScope())
 }
 
 
-app.UseHttpsRedirection(); // Disabled in dev — use http://localhost:5122
+app.UseHttpsRedirection();
 
 app.UseStaticFiles(); // Enable serving static files (for material downloads)
-
-app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();

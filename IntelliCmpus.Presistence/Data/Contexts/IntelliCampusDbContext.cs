@@ -46,11 +46,6 @@ public class IntelliCampusDbContext : DbContext
     // Notifications
     public DbSet<Notification> Notifications { get; set; }
 
-    // Announcements
-    public DbSet<Announcement> Announcements { get; set; }
-    public DbSet<AnnouncementAttachment> AnnouncementAttachments { get; set; }
-    public DbSet<AnnouncementComment> AnnouncementComments { get; set; }
-
     // Junction tables
     public DbSet<StudentCourse> StudentCourses { get; set; }
     public DbSet<StudentQuiz> StudentQuizzes { get; set; }
