@@ -1181,7 +1181,7 @@ namespace IntelliCampus.DAL.Migrations
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Attendance", b =>
                 {
-                    b.HasOne("IntelliCampus.Domain.Entities.Session", "Session")
+                    b.HasOne("IntelliCampus.Domain.Entities.Session", "Session");
                     b.HasOne("IntelliCampus.Domain.Entities.Announcement", "Announcement")
                         .WithMany("Comments")
                         .HasForeignKey("AnnouncementId")
