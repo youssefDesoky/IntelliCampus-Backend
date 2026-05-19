@@ -19,19 +19,43 @@ public class AssignmentService(IUnitOfWork unitOfWork) : IAssignmentService
     private IGenericRepository<Class, int> Classes
         => _unitOfWork.GetRepository<Class, int>();
 
-    public async Task<AssignmentDto?> GetByIdAsync(int assignmentId)
+    // Instructor/student (optional student view)
+    public async Task<AssignmentDto?> GetByIdAsync(int assignmentId, int? studentId = null)
     {
         var spec = new AssignmentSpec(assignmentId);
         var assignment = await Assignments.GetByIdAsync(spec);
-        return assignment is null ? null : MapToDto(assignment);
+        if (assignment is null) return null;
+
+        if (studentId is null)
+            return MapToDtoWithStatus(assignment, submission: null);
+
+        var submissionSpec = new StudentAssignmentSpec(studentId.Value, assignmentId);
+        var submission = await StudentAssignments.GetByIdAsync(submissionSpec);
+        return MapToDtoWithStatus(assignment, submission);
     }
 
-    public async Task<IEnumerable<AssignmentDto>> GetByClassIdAsync(int classId)
+    public async Task<IEnumerable<AssignmentDto>> GetByCourseIdAsync(int courseId, int? studentId = null)
     {
-        var spec = new AssignmentSpec(classId, byClass: true);
+        var spec = new AssignmentSpec(courseId, byCourse: true);
         var assignments = await Assignments.GetAllAsync(spec);
-        return assignments.Select(MapToDto);
+
+        if (studentId is null)
+            return assignments.Select(a => MapToDtoWithStatus(a, submission: null));
+
+        var result = new List<AssignmentDto>();
+        foreach (var assignment in assignments)
+        {
+            var submissionSpec = new StudentAssignmentSpec(studentId.Value, assignment.AssignmentId);
+            var submission = await StudentAssignments.GetByIdAsync(submissionSpec);
+            result.Add(MapToDtoWithStatus(assignment, submission));
+        }
+
+        return result;
     }
+
+    // Student view with status
+    public Task<IEnumerable<AssignmentDto>> GetByStudentAndCourseAsync(int studentId, int courseId)
+        => GetByCourseIdAsync(courseId, studentId);
 
     public async Task<AssignmentDto> CreateAsync(int instructorId, CreateAssignmentDto dto)
     {
@@ -46,9 +70,17 @@ public class AssignmentService(IUnitOfWork unitOfWork) : IAssignmentService
         {
             Title = dto.Title,
             Description = dto.Description,
+            FullInstructions = dto.FullInstructions,
             DueDate = dto.DueDate,
-            MaxGrade = dto.MaxGrade,
-            ClassId = dto.ClassId
+            MaxGrade = dto.TotalPoints,
+            ClassId = dto.ClassId,
+            Attachments = dto.Attachments.Select(a => new AssignmentAttachment
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Size = a.Size,
+                Url = a.Url
+            }).ToList()
         };
 
         Assignments.Add(assignment);
@@ -56,7 +88,7 @@ public class AssignmentService(IUnitOfWork unitOfWork) : IAssignmentService
 
         var spec = new AssignmentSpec(assignment.AssignmentId);
         var result = await Assignments.GetByIdAsync(spec);
-        return MapToDto(result!);
+        return MapToDtoWithStatus(result!, submission: null);
     }
 
     public async Task<bool> DeleteAsync(int assignmentId, int instructorId)
@@ -71,43 +103,6 @@ public class AssignmentService(IUnitOfWork unitOfWork) : IAssignmentService
         Assignments.Delete(assignment);
         await _unitOfWork.SaveChangesAsync();
         return true;
-    }
-
-    public async Task<SubmissionDto> SubmitAsync(int studentId, SubmitAssignmentDto dto)
-    {
-        var assignment = await Assignments.GetByIdAsync(dto.AssignmentId);
-        if (assignment is null)
-            throw new InvalidOperationException("Assignment not found.");
-
-        var existingSpec = new StudentAssignmentSpec(studentId, dto.AssignmentId);
-        var existing = await StudentAssignments.GetByIdAsync(existingSpec);
-        if (existing is not null)
-            throw new InvalidOperationException("Assignment already submitted.");
-
-        var now = DateTime.UtcNow;
-        var submission = new StudentAssignment
-        {
-            StudentId = studentId,
-            AssignmentId = dto.AssignmentId,
-            FileUrl = dto.FileUrl,
-            Notes = dto.Notes,
-            SubmittedAt = now,
-            IsLate = now > assignment.DueDate
-        };
-
-        StudentAssignments.Add(submission);
-        await _unitOfWork.SaveChangesAsync();
-
-        var spec = new StudentAssignmentSpec(studentId, dto.AssignmentId);
-        var result = await StudentAssignments.GetByIdAsync(spec);
-        return MapSubmissionToDto(result!);
-    }
-
-    public async Task<SubmissionDto?> GetSubmissionAsync(int studentId, int assignmentId)
-    {
-        var spec = new StudentAssignmentSpec(studentId, assignmentId);
-        var submission = await StudentAssignments.GetByIdAsync(spec);
-        return submission is null ? null : MapSubmissionToDto(submission);
     }
 
     public async Task<IEnumerable<SubmissionDto>> GetAllSubmissionsAsync(int assignmentId, int instructorId)
@@ -125,7 +120,72 @@ public class AssignmentService(IUnitOfWork unitOfWork) : IAssignmentService
         return submissions.Select(MapSubmissionToDto);
     }
 
-    public async Task<SubmissionDto?> GradeSubmissionAsync(int instructorId, GradeSubmissionDto dto)
+    public async Task<AssignmentStatsDto> GetStatsAsync(int courseId, int studentId)
+    {
+        var spec = new AssignmentSpec(courseId, byCourse: true);
+        var assignments = await Assignments.GetAllAsync(spec);
+        var assignmentIds = assignments.Select(a => a.AssignmentId).ToList();
+
+        var submissionsSpec = new StudentAssignmentSpec(studentId, byStudent: true, dummy: true);
+        var submissions = (await StudentAssignments.GetAllAsync(submissionsSpec))
+            .Where(sa => assignmentIds.Contains(sa.AssignmentId))
+            .ToList();
+
+        var submitted = submissions.Count(sa => sa.Grade is null);
+        var graded = submissions.Count(sa => sa.Grade is not null);
+        var pending = assignmentIds.Count - submitted - graded;
+
+        var avgGrade = graded > 0
+            ? Math.Round(submissions.Where(sa => sa.Grade.HasValue)
+                .Average(sa => sa.Grade!.Value), 1)
+            : (decimal?)null;
+
+        return new AssignmentStatsDto
+        {
+            Pending = pending,
+            Submitted = submitted,
+            Graded = graded,
+            AverageGrade = avgGrade
+        };
+    }
+
+    public async Task<SubmissionDto> SubmitAsync(int studentId, int assignmentId, SubmitAssignmentDto dto)
+    {
+        var assignment = await Assignments.GetByIdAsync(assignmentId);
+        if (assignment is null)
+            throw new InvalidOperationException("Assignment not found.");
+
+        var existingSpec = new StudentAssignmentSpec(studentId, assignmentId);
+        var existing = await StudentAssignments.GetByIdAsync(existingSpec);
+        if (existing is not null)
+            throw new InvalidOperationException("Assignment already submitted.");
+
+        var now = DateTime.UtcNow;
+        var submission = new StudentAssignment
+        {
+            StudentId = studentId,
+            AssignmentId = assignmentId,
+            Note = dto.Note,
+            SubmittedAt = now,
+            IsLate = now > assignment.DueDate,
+            Files = dto.Files.Select(f => new SubmissionFile
+            {
+                Id = f.Id,
+                Name = f.Name,
+                Size = f.Size,
+                Url = f.Url
+            }).ToList()
+        };
+
+        StudentAssignments.Add(submission);
+        await _unitOfWork.SaveChangesAsync();
+
+        var spec = new StudentAssignmentSpec(studentId, assignmentId);
+        var result = await StudentAssignments.GetByIdAsync(spec);
+        return MapSubmissionToDto(result!);
+    }
+
+    public async Task<AssignmentDto?> GradeSubmissionAsync(int instructorId, GradeSubmissionDto dto)
     {
         var submission = await StudentAssignments.GetByIdAsync(dto.StudentAssignmentId);
         if (submission is null) return null;
@@ -133,51 +193,67 @@ public class AssignmentService(IUnitOfWork unitOfWork) : IAssignmentService
         var assignment = await Assignments.GetByIdAsync(submission.AssignmentId);
         var classEntity = await Classes.GetByIdAsync(assignment!.ClassId);
         if (classEntity?.InstructorId != instructorId)
-            throw new InvalidOperationException("Not authorized to grade this submission.");
+            throw new InvalidOperationException("Not authorized.");
 
-        if (dto.Grade > assignment.MaxGrade)
-            throw new InvalidOperationException($"Grade cannot exceed max grade of {assignment.MaxGrade}.");
+        if (dto.Score > assignment.MaxGrade)
+            throw new InvalidOperationException($"Score cannot exceed total points of {assignment.MaxGrade}.");
 
-        submission.Grade = dto.Grade;
+        submission.Grade = dto.Score;
+        submission.Feedback = dto.Feedback;
+        submission.GradedByInstructorId = instructorId;
+        submission.GradedAt = DateTime.UtcNow;
+
         StudentAssignments.Update(submission);
         await _unitOfWork.SaveChangesAsync();
 
         var spec = new StudentAssignmentSpec(submission.StudentId, submission.AssignmentId);
         var result = await StudentAssignments.GetByIdAsync(spec);
-        return MapSubmissionToDto(result!);
+        return MapToDtoWithStatus(result!.Assignment, result);
     }
 
-    public async Task<IEnumerable<SubmissionDto>> GetByStudentIdAsync(int studentId)
+    private static AssignmentDto MapToDtoWithStatus(Assignment a, StudentAssignment? submission) => new()
     {
-        var spec = new StudentAssignmentSpec(studentId, byStudent: true, dummy: true);
-        var submissions = await StudentAssignments.GetAllAsync(spec);
-        return submissions.Select(MapSubmissionToDto);
-    }
-
-    private static AssignmentDto MapToDto(Assignment a) => new()
-    {
-        AssignmentId = a.AssignmentId,
+        Id = a.AssignmentId.ToString(),
         Title = a.Title,
         Description = a.Description,
+        FullInstructions = a.FullInstructions,
         DueDate = a.DueDate,
-        MaxGrade = a.MaxGrade,
-        ClassId = a.ClassId,
-        ClassName = a.Class?.GroupCode,
-        CourseId = a.Class?.CourseId ?? 0,
-        CourseName = a.Class?.Course?.CourseName
+        TotalPoints = a.MaxGrade,
+        Attachments = a.Attachments?.Select(att => new AssignmentAttachmentDto
+        {
+            Id = att.Id,
+            Name = att.Name,
+            Size = att.Size,
+            Url = att.Url
+        }).ToList() ?? [],
+
+        Status = submission is null ? "pending"
+               : submission.Grade.HasValue ? "graded"
+               : "submitted",
+
+        Submission = submission is null ? null : MapSubmissionToDto(submission),
+
+        Grade = submission?.Grade.HasValue == true ? new GradeInfoDto
+        {
+            Score = submission.Grade!.Value,
+            TotalPoints = a.MaxGrade,
+            Feedback = submission.Feedback,
+            GradedBy = submission.GradedByInstructor?.FullName,
+            GradedAt = submission.GradedAt
+        } : null
     };
 
     private static SubmissionDto MapSubmissionToDto(StudentAssignment sa) => new()
     {
-        StudentAssignmentId = sa.StudentAssignmentId,
-        StudentId = sa.StudentId,
-        StudentName = sa.Student?.FullName,
-        AssignmentId = sa.AssignmentId,
-        AssignmentTitle = sa.Assignment?.Title,
-        FileUrl = sa.FileUrl,
-        Notes = sa.Notes,
+        Id = sa.StudentAssignmentId.ToString(),
         SubmittedAt = sa.SubmittedAt,
-        Grade = sa.Grade,
-        IsLate = sa.IsLate
+        Note = sa.Note,
+        Files = sa.Files?.Select(f => new SubmissionFileDto
+        {
+            Id = f.Id,
+            Name = f.Name,
+            Size = f.Size,
+            Url = f.Url
+        }).ToList() ?? []
     };
 }

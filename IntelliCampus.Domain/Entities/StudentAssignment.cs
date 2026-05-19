@@ -7,16 +7,19 @@ public class StudentAssignment
     public int StudentId { get; set; }
     public int AssignmentId { get; set; }
 
-    public string? FileUrl { get; set; }
-    public string? Notes { get; set; }
+    public string? Note { get; set; }
 
     public DateTime SubmittedAt { get; set; }
     public bool IsLate { get; set; }
 
-    // Grade/score given by instructor
     public decimal? Grade { get; set; }
+    public string? Feedback { get; set; }
+    public int? GradedByInstructorId { get; set; }
+    public DateTime? GradedAt { get; set; }
 
-    // Navigation properties
-    public Student? Student { get; set; }
-    public Assignment? Assignment { get; set; }
+    // Navigation
+    public Student Student { get; set; } = null!;
+    public Assignment Assignment { get; set; } = null!;
+    public Instructor? GradedByInstructor { get; set; }
+    public ICollection<SubmissionFile> Files { get; set; } = [];
 }
