@@ -13,6 +13,10 @@ public class SessionConfiguration : IEntityTypeConfiguration<Session>
         builder.Property(s => s.Topic)
             .HasMaxLength(200);
 
+        builder.Property(s => s.SessionType)
+            .HasConversion<string>()
+            .HasMaxLength(20);
+
         builder.HasOne(s => s.Class)
             .WithMany(c => c.Sessions)
             .HasForeignKey(s => s.ClassId)
