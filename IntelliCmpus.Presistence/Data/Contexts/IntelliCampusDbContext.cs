@@ -33,6 +33,7 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<Quiz> Quizzes { get; set; }
 
     // Student activities
+    public DbSet<AttendanceExcuse> AttendanceExcuses { get; set; }
     public DbSet<Attendance> Attendances { get; set; }
     public DbSet<Note> Notes { get; set; }
     public DbSet<NoteSummary> NoteSummaries { get; set; }

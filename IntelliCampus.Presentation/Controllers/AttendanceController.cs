@@ -1,0 +1,90 @@
+using System.Security.Claims;
+using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Dtos.Attendance;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace IntelliCampus.Presentation.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class AttendanceController(
+    ISessionService sessionService,
+    IAttendanceService attendanceService,
+    IAttendanceExcuseService excuseService) : ControllerBase
+{
+    private int UserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+    [HttpGet("sessions/{sessionId}")]
+    public async Task<IActionResult> GetSession(int sessionId)
+    {
+        var result = await sessionService.GetByIdAsync(sessionId);
+        return result is null ? NotFound() : Ok(result);
+    }
+
+    [HttpGet("sessions/class/{classId}")]
+    public async Task<IActionResult> GetSessionsByClass(int classId)
+        => Ok(await sessionService.GetByClassIdAsync(classId));
+
+    [HttpPost("sessions")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> CreateSession(CreateSessionDto dto)
+        => Ok(await sessionService.CreateAsync(UserId, dto));
+
+    [HttpDelete("sessions/{sessionId}")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> DeleteSession(int sessionId)
+        => Ok(await sessionService.DeleteAsync(sessionId, UserId));
+
+    [HttpPost("record")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> Record(RecordAttendanceDto dto)
+    {
+        await attendanceService.RecordAsync(UserId, dto);
+        return Ok();
+    }
+
+    [HttpGet("my-attendance/course/{courseId}")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> GetMyAttendance(int courseId)
+        => Ok(await attendanceService.GetByStudentAndCourseAsync(UserId, courseId));
+
+    [HttpGet("report/class/{classId}")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> GetReport(int classId)
+        => Ok(await attendanceService.GenerateReportAsync(classId, UserId));
+
+    [HttpGet("percentage/student/{studentId}/course/{courseId}")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> GetPercentage(int studentId, int courseId)
+        => Ok(await attendanceService.GetAttendancePercentageAsync(studentId, courseId));
+
+    [HttpPost("/api/courses/{courseId}/attendance/excuse")]
+    [Authorize(Roles = "Student")]
+    [RequestSizeLimit(11 * 1024 * 1024)]
+    public async Task<IActionResult> SubmitExcuse(int courseId, [FromForm] SubmitExcuseFormDto dto)
+    {
+        var result = await excuseService.SubmitAsync(UserId, courseId, dto);
+        return Ok(result);
+    }
+
+    [HttpGet("excuses/my")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> GetMyExcuses()
+        => Ok(await excuseService.GetByStudentAsync(UserId));
+
+    [HttpGet("excuses/session/{sessionId}")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> GetSessionExcuses(int sessionId)
+        => Ok(await excuseService.GetBySessionAsync(sessionId, UserId));
+
+    [HttpPatch("excuses/{excuseId}/status")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> UpdateExcuseStatus(int excuseId, [FromBody] ExcuseStatus status)
+    {
+        var result = await excuseService.UpdateStatusAsync(excuseId, status, UserId);
+        return Ok(result);
+    }
+}
