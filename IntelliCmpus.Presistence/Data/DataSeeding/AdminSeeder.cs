@@ -268,12 +268,12 @@ public static class AdminSeeder
         // ???????????????????? Grades ????????????????????
         var grades = new List<Grade>
         {
-            new() { StudentId = students[0].UserId, CourseId = courses[2].CourseId, Type = GradeType.Midterm, Score = 85 },
-            new() { StudentId = students[0].UserId, CourseId = courses[2].CourseId, Type = GradeType.Final, Score = 88 },
-            new() { StudentId = students[1].UserId, CourseId = courses[2].CourseId, Type = GradeType.Midterm, Score = 92 },
-            new() { StudentId = students[1].UserId, CourseId = courses[2].CourseId, Type = GradeType.Final, Score = 90 },
-            new() { StudentId = students[2].UserId, CourseId = courses[4].CourseId, Type = GradeType.Midterm, Score = 78 },
-            new() { StudentId = students[2].UserId, CourseId = courses[4].CourseId, Type = GradeType.Final, Score = 82 },
+            new() { StudentId = students[0].UserId, CourseId = courses[2].CourseId, GradeType = GradeType.Midterm, Title = "Midterm", Score = 85, MaxScore = 100, Weight = 30, Status = "Graded", GradedAt = DateTime.UtcNow },
+            new() { StudentId = students[0].UserId, CourseId = courses[2].CourseId, GradeType = GradeType.Final, Title = "Final", Score = 88, MaxScore = 100, Weight = 40, Status = "Graded", GradedAt = DateTime.UtcNow },
+            new() { StudentId = students[1].UserId, CourseId = courses[2].CourseId, GradeType = GradeType.Midterm, Title = "Midterm", Score = 92, MaxScore = 100, Weight = 30, Status = "Graded", GradedAt = DateTime.UtcNow },
+            new() { StudentId = students[1].UserId, CourseId = courses[2].CourseId, GradeType = GradeType.Final, Title = "Final", Score = 90, MaxScore = 100, Weight = 40, Status = "Graded", GradedAt = DateTime.UtcNow },
+            new() { StudentId = students[2].UserId, CourseId = courses[4].CourseId, GradeType = GradeType.Midterm, Title = "Midterm", Score = 78, MaxScore = 100, Weight = 30, Status = "Graded", GradedAt = DateTime.UtcNow },
+            new() { StudentId = students[2].UserId, CourseId = courses[4].CourseId, GradeType = GradeType.Final, Title = "Final", Score = 82, MaxScore = 100, Weight = 40, Status = "Graded", GradedAt = DateTime.UtcNow },
         };
         await context.Grades.AddRangeAsync(grades);
         await context.SaveChangesAsync();

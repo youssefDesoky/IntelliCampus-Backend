@@ -10,12 +10,29 @@ public class GradeConfiguration : IEntityTypeConfiguration<Grade>
     {
         builder.HasKey(g => g.GradeId);
 
-        builder.Property(g => g.Score)
-            .HasPrecision(5, 2);
+        builder.Property(g => g.Title)
+            .HasMaxLength(200)
+            .IsRequired();
 
-        builder.Property(g => g.Type)
+        builder.Property(g => g.Score)
+            .HasPrecision(10, 2);
+
+        builder.Property(g => g.MaxScore)
+            .HasPrecision(10, 2);
+
+        builder.Property(g => g.Weight)
+            .HasPrecision(10, 2);
+
+        builder.Property(g => g.GradeType)
             .HasConversion<string>()
             .HasMaxLength(20);
+
+        builder.Property(g => g.Status)
+            .HasMaxLength(20)
+            .IsRequired();
+
+        builder.Property(g => g.Notes)
+            .HasMaxLength(2000);
 
         builder.HasOne(g => g.Course)
             .WithMany(c => c.Grades)
