@@ -5,7 +5,5 @@ public enum GradeType
     Midterm,
     Final,
     Assignment,
-    Quiz,
-    Project,
-    Participation
+    Quiz
 }

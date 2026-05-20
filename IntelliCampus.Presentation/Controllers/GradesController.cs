@@ -1,0 +1,55 @@
+using System.Security.Claims;
+using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Shared.Dtos.Grade;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace IntelliCampus.Web.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class GradesController(IGradeService gradeService) : ControllerBase
+{
+    private int UserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+    // ??? Student endpoints ???????????????????????????????????????
+
+    [HttpGet("course/{courseId}")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> GetCourseGrade(int courseId)
+    {
+        var result = await gradeService.GetCourseGradeAsync(UserId, courseId);
+        return result is null ? NotFound() : Ok(result);
+    }
+
+    [HttpGet("my-grades")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> GetAllMyGrades()
+        => Ok(await gradeService.GetAllGradesAsync(UserId));
+
+    [HttpPost("complaint")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> FileComplaint([FromBody] GradeComplaintDto dto)
+        => Ok(await gradeService.FileComplaintAsync(UserId, dto));
+
+    [HttpGet("complaints")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> GetComplaints()
+        => Ok(await gradeService.GetComplaintsAsync(UserId));
+
+    // ??? Instructor endpoints ????????????????????????????????????
+
+    [HttpGet("student/{studentId}/course/{courseId}")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> GetStudentGrades(int studentId, int courseId)
+        => Ok(await gradeService.GetByStudentAndCourseAsync(UserId, studentId, courseId));
+
+    [HttpPut("complaint/{complaintId}/review")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> ReviewComplaint(int complaintId)
+    {
+        var result = await gradeService.ReviewComplaintAsync(complaintId, UserId);
+        return result is null ? NotFound() : Ok(result);
+    }
+}
