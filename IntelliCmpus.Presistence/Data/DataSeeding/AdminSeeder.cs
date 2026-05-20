@@ -114,7 +114,7 @@ public static class AdminSeeder
             new() { CourseCode = "IT-302", CourseName = "Cybersecurity", CourseNameAr = "????? ?????????", CreditHours = 3, Status = CourseStatus.Active, DepartmentId = departments[3].DepartmentId },
 
             // DS courses [23-26]
-            new() { CourseCode = "DS-101", CourseName = "Statistics and Probability", CourseNameAr = "??????? ???????????", CreditHours = 3, Status = CourseStatus.Active, DepartmentId = departments[4].DepartmentId },
+            new() { CourseCode = "[DS-101]", CourseName = "Statistics and Probability", CourseNameAr = "??????? ???????????", CreditHours = 3, Status = CourseStatus.Active, DepartmentId = departments[4].DepartmentId },
             new() { CourseCode = "DS-201", CourseName = "Data Analysis", CourseNameAr = "????? ????????", CreditHours = 3, Status = CourseStatus.Active, DepartmentId = departments[4].DepartmentId },
             new() { CourseCode = "DS-301", CourseName = "Big Data Technologies", CourseNameAr = "?????? ???????? ??????", CreditHours = 3, Status = CourseStatus.Active, DepartmentId = departments[4].DepartmentId },
             new() { CourseCode = "DS-302", CourseName = "Data Visualization", CourseNameAr = "???? ????????", CreditHours = 3, Status = CourseStatus.Active, DepartmentId = departments[4].DepartmentId },
@@ -276,6 +276,79 @@ public static class AdminSeeder
             new() { StudentId = students[2].UserId, CourseId = courses[4].CourseId, Type = GradeType.Final, Score = 82 },
         };
         await context.Grades.AddRangeAsync(grades);
+        await context.SaveChangesAsync();
+
+        // ???????????????????? Quizzes & Questions ????????????????????
+        var quizzes = new List<Quiz>
+        {
+            // CS-201 Data Structures [courses[2]]
+            new()
+            {
+                CourseId = courses[2].CourseId,
+                Title = "Data Structures Midterm",
+                MaxScore = 100,
+                Deadline = DateTime.UtcNow.AddDays(14),
+                DurationSeconds = 3600,
+                PageSize = 3,
+                MaxAttempts = 1,
+                Questions = new List<Question>
+                {
+                    new() { Type = QuestionType.MCQ, Prompt = "What is the time complexity of accessing an element in an array by index?", Options = "O(1),O(n),O(log n),O(n²)", Points = 5, CorrectAnswer = "O(1)" },
+                    new() { Type = QuestionType.MCQ, Prompt = "Which data structure uses LIFO principle?", Options = "Queue,Stack,LinkedList,Tree", Points = 5, CorrectAnswer = "Stack" },
+                    new() { Type = QuestionType.TF, Prompt = "A linked list allows random access to elements.", Options = "True,False", Points = 5, CorrectAnswer = "False" },
+                    new() { Type = QuestionType.MCQ, Prompt = "What is the worst-case time complexity of searching in a binary search tree?", Options = "O(1),O(log n),O(n),O(n²)", Points = 5, CorrectAnswer = "O(n)" },
+                    new() { Type = QuestionType.TF, Prompt = "A queue is a FIFO data structure.", Options = "True,False", Points = 5, CorrectAnswer = "True" },
+                    new() { Type = QuestionType.MCQ, Prompt = "Which of the following is NOT a linear data structure?", Options = "Array,Queue,Graph,Stack", Points = 5, CorrectAnswer = "Graph" },
+                    new() { Type = QuestionType.TF, Prompt = "Hash table has O(1) average time complexity for search.", Options = "True,False", Points = 5, CorrectAnswer = "True" },
+                    new() { Type = QuestionType.MCQ, Prompt = "What traversal visits left subtree, root, then right subtree?", Options = "Preorder,Inorder,Postorder,Level-order", Points = 5, CorrectAnswer = "Inorder" },
+                    new() { Type = QuestionType.Written, Prompt = "Explain the difference between an array and a linked list. When would you prefer one over the other?", Options = "", Points = 10, CorrectAnswer = "" },
+                    new() { Type = QuestionType.Written, Prompt = "Describe how a stack can be used to evaluate a postfix expression. Provide an example.", Options = "", Points = 10, CorrectAnswer = "" },
+                }
+            },
+            // CS-301 Database Management Systems [courses[4]]
+            new()
+            {
+                CourseId = courses[4].CourseId,
+                Title = "Database Systems Quiz 1",
+                MaxScore = 50,
+                Deadline = DateTime.UtcNow.AddDays(7),
+                DurationSeconds = 1800,
+                PageSize = 4,
+                MaxAttempts = 2,
+                Questions = new List<Question>
+                {
+                    new() { Type = QuestionType.MCQ, Prompt = "Which of the following is a type of SQL join?", Options = "CONNECT,INNER,MERGE,COMBINE", Points = 5, CorrectAnswer = "INNER" },
+                    new() { Type = QuestionType.TF, Prompt = "A primary key can contain NULL values.", Options = "True,False", Points = 5, CorrectAnswer = "False" },
+                    new() { Type = QuestionType.MCQ, Prompt = "Which normal form removes transitive dependencies?", Options = "1NF,2NF,3NF,BCNF", Points = 5, CorrectAnswer = "3NF" },
+                    new() { Type = QuestionType.TF, Prompt = "SELECT * FROM users WHERE name LIKE 'A%' returns users whose name starts with 'A'.", Options = "True,False", Points = 5, CorrectAnswer = "True" },
+                    new() { Type = QuestionType.MCQ, Prompt = "Which command is used to remove all records from a table without removing the table structure?", Options = "DELETE,DROP,TRUNCATE,REMOVE", Points = 5, CorrectAnswer = "TRUNCATE" },
+                    new() { Type = QuestionType.Written, Prompt = "Explain the ACID properties of database transactions.", Options = "", Points = 10, CorrectAnswer = "" },
+                    new() { Type = QuestionType.MCQ, Prompt = "What type of relationship does a foreign key represent?", Options = "One-to-One,One-to-Many,Many-to-Many,All of the above", Points = 5, CorrectAnswer = "All of the above" },
+                    new() { Type = QuestionType.TF, Prompt = "An index speeds up SELECT queries but slows down INSERT operations.", Options = "True,False", Points = 5, CorrectAnswer = "True" },
+                }
+            },
+            // AI-201 Machine Learning [courses[15]]
+            new()
+            {
+                CourseId = courses[15].CourseId,
+                Title = "ML Week 3 Assessment",
+                MaxScore = 50,
+                Deadline = DateTime.UtcNow.AddDays(3),
+                DurationSeconds = 900,
+                PageSize = 3,
+                MaxAttempts = 1,
+                Questions = new List<Question>
+                {
+                    new() { Type = QuestionType.TF, Prompt = "Supervised learning requires labeled training data.", Options = "True,False", Points = 5, CorrectAnswer = "True" },
+                    new() { Type = QuestionType.MCQ, Prompt = "Which algorithm is used for classification problems?", Options = "Linear Regression,Logistic Regression,K-Means,PCA", Points = 5, CorrectAnswer = "Logistic Regression" },
+                    new() { Type = QuestionType.MCQ, Prompt = "What does the 'K' represent in K-Nearest Neighbors?", Options = "Number of features,Number of neighbors,Number of clusters,Number of iterations", Points = 5, CorrectAnswer = "Number of neighbors" },
+                    new() { Type = QuestionType.TF, Prompt = "Overfitting occurs when a model performs well on training data but poorly on new data.", Options = "True,False", Points = 5, CorrectAnswer = "True" },
+                    new() { Type = QuestionType.MCQ, Prompt = "Which metric is used to evaluate a regression model?", Options = "Accuracy,Precision,Mean Squared Error,F1 Score", Points = 5, CorrectAnswer = "Mean Squared Error" },
+                    new() { Type = QuestionType.Written, Prompt = "Briefly explain the bias-variance tradeoff in machine learning.", Options = "", Points = 10, CorrectAnswer = "" },
+                }
+            },
+        };
+        await context.Quizzes.AddRangeAsync(quizzes);
         await context.SaveChangesAsync();
     }
 }

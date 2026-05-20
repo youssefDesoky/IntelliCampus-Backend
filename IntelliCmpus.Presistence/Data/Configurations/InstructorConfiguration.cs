@@ -10,8 +10,7 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
     {
         builder.ToTable("Instructors");
 
-        builder.Property(i => i.InstructorId)
-            .ValueGeneratedOnAddOrUpdate();
+        builder.Property(i => i.InstructorId);
 
         builder.Property(i => i.InstructorCode)
             .HasMaxLength(50);

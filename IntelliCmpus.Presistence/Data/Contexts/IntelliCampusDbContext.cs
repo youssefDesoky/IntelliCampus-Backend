@@ -29,6 +29,7 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<MaterialFolder> MaterialFolders { get; set; }
     public DbSet<Assignment> Assignments { get; set; }
     public DbSet<Quiz> Quizzes { get; set; }
+    public DbSet<Question> Questions { get; set; }
 
     // Student activities
     public DbSet<Attendance> Attendances { get; set; }

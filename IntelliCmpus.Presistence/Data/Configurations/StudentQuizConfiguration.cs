@@ -13,6 +13,12 @@ public class StudentQuizConfiguration : IEntityTypeConfiguration<StudentQuiz>
         builder.Property(sq => sq.Score)
             .HasPrecision(5, 2);
 
+        builder.Property(sq => sq.Answers)
+            .HasMaxLength(4000);
+
+        builder.Property(sq => sq.Feedback)
+            .HasMaxLength(2000);
+
         builder.HasOne(sq => sq.Student)
             .WithMany(s => s.StudentQuizzes)
             .HasForeignKey(sq => sq.StudentId)
@@ -22,5 +28,10 @@ public class StudentQuizConfiguration : IEntityTypeConfiguration<StudentQuiz>
             .WithMany(q => q.StudentQuizzes)
             .HasForeignKey(sq => sq.QuizId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(sq => sq.GradedByInstructor)
+            .WithMany()
+            .HasForeignKey(sq => sq.GradedByInstructorId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
