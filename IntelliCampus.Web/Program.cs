@@ -108,10 +108,11 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-// Seed admin user
+// Apply migrations and seed data
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<IntelliCampusDbContext>();
+    await context.Database.MigrateAsync();
     var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
     await AdminSeeder.SeedAdminAsync(context, passwordService);
 }
