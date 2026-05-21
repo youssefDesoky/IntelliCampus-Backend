@@ -1,4 +1,5 @@
 using IntelliCampus.Shared.Dtos.Assignment;
+using Microsoft.AspNetCore.Http;
 
 namespace IntelliCampus.Service_Abstraction;
 
@@ -14,6 +15,6 @@ public interface IAssignmentService
     Task<AssignmentStatsDto> GetStatsAsync(int courseId, int studentId);
 
     // Student
-    Task<SubmissionDto> SubmitAsync(int studentId, int assignmentId, SubmitAssignmentDto dto);
+    Task<SubmissionDto> SubmitAsync(int studentId, int assignmentId, SubmitAssignmentDto dto, IFormFileCollection? files);
     Task<IEnumerable<AssignmentDto>> GetByStudentAndCourseAsync(int studentId, int courseId);
 }
