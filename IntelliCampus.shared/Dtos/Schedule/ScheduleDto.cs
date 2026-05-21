@@ -12,7 +12,7 @@ public class ScheduleDto
     public string EndTime { get; set; } = string.Empty;
     public string? Location { get; set; }
     public string Type { get; set; } = string.Empty;
-    public string? InstructorName { get; set; }
+    public string? Instructor { get; set; }
     public int? CourseId { get; set; }
     public string? CourseName { get; set; }
     public int StudentId { get; set; }
