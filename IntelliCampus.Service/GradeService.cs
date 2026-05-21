@@ -10,8 +10,13 @@ namespace IntelliCampus.Service;
 public class GradeService : IGradeService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly INotificationService _notificationService;
 
-    public GradeService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
+    public GradeService(IUnitOfWork unitOfWork, INotificationService notificationService)
+    {
+        _unitOfWork = unitOfWork;
+        _notificationService = notificationService;
+    }
 
     private IGenericRepository<GradeComplaint, int> Complaints
         => _unitOfWork.GetRepository<GradeComplaint, int>();
@@ -363,6 +368,11 @@ public class GradeService : IGradeService
         complaint.Status = "Reviewed";
         Complaints.Update(complaint);
         await _unitOfWork.SaveChangesAsync();
+
+        await _notificationService.SendAsync(
+            complaint.StudentId,
+            NotificationType.GradeComplaintReviewed,
+            $"Your grade complaint for '{assignment.Title}' has been reviewed by your instructor.");
 
         return MapComplaintToDto(complaint, assignment.Title);
     }

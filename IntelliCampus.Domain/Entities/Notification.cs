@@ -5,13 +5,10 @@ namespace IntelliCampus.Domain.Entities;
 public class Notification
 {
     public int NotificationId { get; set; }
+    public string Message { get; set; } = string.Empty;
     public NotificationType Type { get; set; }
-    public string Message { get; set; } = null!;
-    public bool IsRead { get; set; }
     public DateTime CreatedAt { get; set; }
-    public int? PostId { get; set; }
 
-    // Navigation properties
-    public Post? Post { get; set; }
+    // Navigation
     public ICollection<UserNotification> UserNotifications { get; set; } = [];
 }

@@ -8,10 +8,14 @@ using Microsoft.AspNetCore.Http;
 
 namespace IntelliCampus.Service;
 
-public class AssignmentService(IUnitOfWork unitOfWork, IFileStorageService fileStorage) : IAssignmentService
+public class AssignmentService(
+    IUnitOfWork unitOfWork,
+    IFileStorageService fileStorage,
+    INotificationService notificationService) : IAssignmentService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IFileStorageService _fileStorage = fileStorage;
+    private readonly INotificationService _notificationService = notificationService;
 
     private IGenericRepository<Assignment, int> Assignments
         => _unitOfWork.GetRepository<Assignment, int>();
@@ -117,6 +121,14 @@ public class AssignmentService(IUnitOfWork unitOfWork, IFileStorageService fileS
         }
 
         await _unitOfWork.SaveChangesAsync();
+
+        if (registered.Count > 0)
+        {
+            await _notificationService.SendToManyAsync(
+                registered,
+                NotificationType.NewAssignmentPosted,
+                $"New assignment posted: '{dto.Title}'. Due {dto.DueDate:dd MMM yyyy}.");
+        }
 
         var spec = new AssignmentSpec(assignment.AssignmentId);
         var result = await Assignments.GetByIdAsync(spec);
@@ -240,6 +252,11 @@ public class AssignmentService(IUnitOfWork unitOfWork, IFileStorageService fileS
         StudentAssignments.Add(submission);
         await _unitOfWork.SaveChangesAsync();
 
+        await _notificationService.SendAsync(
+            studentId,
+            NotificationType.AssignmentSubmitted,
+            $"Your assignment '{assignment.Title}' was submitted successfully.");
+
         var spec = new StudentAssignmentSpec(studentId, assignmentId);
         var result = await StudentAssignments.GetByIdAsync(spec);
         return MapSubmissionToDto(result!);
@@ -265,6 +282,11 @@ public class AssignmentService(IUnitOfWork unitOfWork, IFileStorageService fileS
 
         StudentAssignments.Update(submission);
         await _unitOfWork.SaveChangesAsync();
+
+        await _notificationService.SendAsync(
+            submission.StudentId,
+            NotificationType.AssignmentGraded,
+            $"Your assignment '{assignment.Title}' has been graded. Score: {dto.Score}/{assignment.MaxGrade}.");
 
         var spec = new StudentAssignmentSpec(submission.StudentId, submission.AssignmentId);
         var result = await StudentAssignments.GetByIdAsync(spec);
