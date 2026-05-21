@@ -25,6 +25,12 @@ public class GradeService : IGradeService
     private IGenericRepository<Assignment, int> Assignments
         => _unitOfWork.GetRepository<Assignment, int>();
 
+    private IGenericRepository<Quiz, int> Quizzes
+        => _unitOfWork.GetRepository<Quiz, int>();
+
+    private IGenericRepository<StudentQuiz, (int StudentId, int QuizId)> StudentQuizzes
+        => _unitOfWork.GetRepository<StudentQuiz, (int StudentId, int QuizId)>();
+
     // Student
 
     public async Task<CourseGradeDto?> GetCourseGradeAsync(int studentId, int courseId)
@@ -32,16 +38,28 @@ public class GradeService : IGradeService
         var assignments = await Assignments.GetAllAsync(new AssignmentSpec(courseId, byCourse: true));
         var assignmentIds = assignments.Select(a => a.AssignmentId).ToHashSet();
 
-        // Pull student submissions for this course
+        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseId, "course"));
+        var quizIds = quizzes.Select(q => q.QuizId).ToHashSet();
+
+        // Assignment submissions
         var mySubmissions = (await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(studentId, byStudent: true, dummy: true)))
             .Where(sa => assignmentIds.Contains(sa.AssignmentId))
             .ToList();
 
-        var graded = mySubmissions.Where(sa => sa.Grade.HasValue).ToList();
-        if (graded.Count == 0)
+        // Quiz submissions
+        var myQuizSubmissions = (await StudentQuizzes.GetAllAsync(new StudentQuizSpec(studentId, true, true)))
+            .Where(sq => quizIds.Contains(sq.QuizId))
+            .ToList();
+
+        var gradedAssignments = mySubmissions.Where(sa => sa.Grade.HasValue).ToList();
+        var gradedQuizzes = myQuizSubmissions.Where(sq => sq.Score.HasValue).ToList();
+
+        if (gradedAssignments.Count == 0 && gradedQuizzes.Count == 0)
             return null;
 
-        var history = graded.Select(sa =>
+        var history = new List<GradeHistoryItemDto>();
+
+        history.AddRange(gradedAssignments.Select(sa =>
         {
             var assignment = assignments.First(a => a.AssignmentId == sa.AssignmentId);
             var max = assignment.MaxGrade;
@@ -49,7 +67,6 @@ public class GradeService : IGradeService
 
             return new GradeHistoryItemDto
             {
-                // NOTE: For now we treat StudentAssignmentId as the "grade id" for complaints.
                 Id = sa.StudentAssignmentId,
                 Title = assignment.Title,
                 Type = MapGradeType(GradeType.Assignment),
@@ -60,12 +77,67 @@ public class GradeService : IGradeService
                 Date = (sa.GradedAt ?? sa.SubmittedAt).ToString("dd MMM yyyy"),
                 Percent = max > 0 ? Math.Round(score / max * 100, 0) : 0
             };
-        }).OrderByDescending(h => h.Date).ToList();
+        }));
 
-        var totalScore = graded.Sum(sa => sa.Grade!.Value);
-        var totalMax = graded.Sum(sa => assignments.First(a => a.AssignmentId == sa.AssignmentId).MaxGrade);
+        history.AddRange(gradedQuizzes.Select(sq =>
+        {
+            var quiz = quizzes.First(q => q.QuizId == sq.QuizId);
+            var max = quiz.MaxGrade;
+            var score = sq.Score!.Value;
 
-        var overallPercent = totalMax > 0 ? Math.Round(totalScore / totalMax * 100, 0) : 0;
+            return new GradeHistoryItemDto
+            {
+                Id = sq.QuizId,
+                Title = quiz.Title,
+                Type = MapGradeType(GradeType.Quiz),
+                Score = score,
+                MaxScore = max,
+                Weight = 1,
+                Status = "Graded",
+                Date = sq.SubmittedAt.ToString("dd MMM yyyy"),
+                Percent = max > 0 ? Math.Round(score / max * 100, 0) : 0
+            };
+        }));
+
+        history = history.OrderByDescending(h => h.Date).ToList();
+
+        var assignTotalScore = gradedAssignments.Sum(sa => sa.Grade!.Value);
+        var assignTotalMax = gradedAssignments.Sum(sa => assignments.First(a => a.AssignmentId == sa.AssignmentId).MaxGrade);
+
+        var quizTotalScore = gradedQuizzes.Sum(sq => sq.Score!.Value);
+        var quizTotalMax = gradedQuizzes.Sum(sq => quizzes.First(q => q.QuizId == sq.QuizId).MaxGrade);
+
+        var allScore = assignTotalScore + quizTotalScore;
+        var allMax = assignTotalMax + quizTotalMax;
+        var overallPercent = allMax > 0 ? Math.Round(allScore / allMax * 100, 0) : 0;
+
+        var breakdown = new List<AssessmentBreakdownDto>();
+        if (gradedAssignments.Count > 0)
+        {
+            var ap = assignTotalMax > 0 ? Math.Round(assignTotalScore / assignTotalMax * 100, 0) : 0;
+            breakdown.Add(new AssessmentBreakdownDto
+            {
+                Category = "Assignments",
+                TotalScore = assignTotalScore,
+                TotalMaxScore = assignTotalMax,
+                TotalWeight = 1,
+                Percent = ap,
+                Status = "Graded"
+            });
+        }
+        if (gradedQuizzes.Count > 0)
+        {
+            var qp = quizTotalMax > 0 ? Math.Round(quizTotalScore / quizTotalMax * 100, 0) : 0;
+            breakdown.Add(new AssessmentBreakdownDto
+            {
+                Category = "Quizzes",
+                TotalScore = quizTotalScore,
+                TotalMaxScore = quizTotalMax,
+                TotalWeight = 1,
+                Percent = qp,
+                Status = "Graded"
+            });
+        }
 
         return new CourseGradeDto
         {
@@ -74,52 +146,74 @@ public class GradeService : IGradeService
                 Percent = overallPercent,
                 Letter = GetLetterGrade(overallPercent)
             },
-            AssessmentBreakdown =
-            [
-                new AssessmentBreakdownDto
-                {
-                    Category = "Assignments",
-                    TotalScore = totalScore,
-                    TotalMaxScore = totalMax,
-                    TotalWeight = 1,
-                    Percent = overallPercent,
-                    Status = "Graded"
-                }
-            ],
+            AssessmentBreakdown = breakdown,
             History = history
         };
     }
 
     public async Task<IEnumerable<GradeHistoryItemDto>> GetAllGradesAsync(int studentId)
     {
+        var result = new List<GradeHistoryItemDto>();
+
+        // Assignment grades
         var mySubmissions = await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(studentId, byStudent: true, dummy: true));
-        var graded = mySubmissions.Where(sa => sa.Grade.HasValue).ToList();
+        var gradedAssignments = mySubmissions.Where(sa => sa.Grade.HasValue).ToList();
 
-        if (graded.Count == 0)
-            return [];
-
-        // load needed assignments in one shot
-        var assignmentIds = graded.Select(sa => sa.AssignmentId).Distinct().ToList();
-        var assignments = (await Assignments.GetAllAsync()).Where(a => assignmentIds.Contains(a.AssignmentId)).ToList();
-
-        return graded.Select(sa =>
+        if (gradedAssignments.Count > 0)
         {
-            var assignment = assignments.First(a => a.AssignmentId == sa.AssignmentId);
-            var max = assignment.MaxGrade;
-            var score = sa.Grade!.Value;
-            return new GradeHistoryItemDto
+            var assignmentIds = gradedAssignments.Select(sa => sa.AssignmentId).Distinct().ToList();
+            var assignments = (await Assignments.GetAllAsync()).Where(a => assignmentIds.Contains(a.AssignmentId)).ToList();
+
+            result.AddRange(gradedAssignments.Select(sa =>
             {
-                Id = sa.StudentAssignmentId,
-                Title = assignment.Title,
-                Type = MapGradeType(GradeType.Assignment),
-                Score = score,
-                MaxScore = max,
-                Weight = 1,
-                Status = "Graded",
-                Date = (sa.GradedAt ?? sa.SubmittedAt).ToString("dd MMM yyyy"),
-                Percent = max > 0 ? Math.Round(score / max * 100, 0) : 0
-            };
-        });
+                var assignment = assignments.First(a => a.AssignmentId == sa.AssignmentId);
+                var max = assignment.MaxGrade;
+                var score = sa.Grade!.Value;
+                return new GradeHistoryItemDto
+                {
+                    Id = sa.StudentAssignmentId,
+                    Title = assignment.Title,
+                    Type = MapGradeType(GradeType.Assignment),
+                    Score = score,
+                    MaxScore = max,
+                    Weight = 1,
+                    Status = "Graded",
+                    Date = (sa.GradedAt ?? sa.SubmittedAt).ToString("dd MMM yyyy"),
+                    Percent = max > 0 ? Math.Round(score / max * 100, 0) : 0
+                };
+            }));
+        }
+
+        // Quiz grades
+        var myQuizSubmissions = await StudentQuizzes.GetAllAsync(new StudentQuizSpec(studentId, true, true));
+        var gradedQuizzes = myQuizSubmissions.Where(sq => sq.Score.HasValue).ToList();
+
+        if (gradedQuizzes.Count > 0)
+        {
+            var quizIds = gradedQuizzes.Select(sq => sq.QuizId).Distinct().ToList();
+            var quizzes = (await Quizzes.GetAllAsync()).Where(q => quizIds.Contains(q.QuizId)).ToList();
+
+            result.AddRange(gradedQuizzes.Select(sq =>
+            {
+                var quiz = quizzes.First(q => q.QuizId == sq.QuizId);
+                var max = quiz.MaxGrade;
+                var score = sq.Score!.Value;
+                return new GradeHistoryItemDto
+                {
+                    Id = sq.QuizId,
+                    Title = quiz.Title,
+                    Type = MapGradeType(GradeType.Quiz),
+                    Score = score,
+                    MaxScore = max,
+                    Weight = 1,
+                    Status = "Graded",
+                    Date = sq.SubmittedAt.ToString("dd MMM yyyy"),
+                    Percent = max > 0 ? Math.Round(score / max * 100, 0) : 0
+                };
+            }));
+        }
+
+        return result.OrderByDescending(h => h.Date).ToList();
     }
 
     // Instructor (read-only)
@@ -130,6 +224,9 @@ public class GradeService : IGradeService
         if (!teaches)
             throw new InvalidOperationException("Not authorized.");
 
+        var result = new List<GradeDto>();
+
+        // Assignment grades
         var assignments = await Assignments.GetAllAsync(new AssignmentSpec(courseId, byCourse: true));
         var assignmentIds = assignments.Select(a => a.AssignmentId).ToHashSet();
 
@@ -137,7 +234,7 @@ public class GradeService : IGradeService
             .Where(sa => assignmentIds.Contains(sa.AssignmentId) && sa.Grade.HasValue)
             .ToList();
 
-        return submissions.Select(sa =>
+        result.AddRange(submissions.Select(sa =>
         {
             var assignment = assignments.First(a => a.AssignmentId == sa.AssignmentId);
             return new GradeDto
@@ -155,7 +252,37 @@ public class GradeService : IGradeService
                 GradedAt = (sa.GradedAt ?? DateTime.UtcNow).ToString("dd MM yyyy HH:mm"),
                 Notes = sa.Feedback
             };
-        });
+        }));
+
+        // Quiz grades
+        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseId, "course"));
+        var quizIds = quizzes.Select(q => q.QuizId).ToHashSet();
+
+        var quizSubmissions = (await StudentQuizzes.GetAllAsync(new StudentQuizSpec(studentId, true, true)))
+            .Where(sq => quizIds.Contains(sq.QuizId) && sq.Score.HasValue)
+            .ToList();
+
+        result.AddRange(quizSubmissions.Select(sq =>
+        {
+            var quiz = quizzes.First(q => q.QuizId == sq.QuizId);
+            return new GradeDto
+            {
+                GradeId = sq.QuizId,
+                StudentId = studentId,
+                CourseId = courseId,
+                CourseName = null,
+                Title = quiz.Title,
+                Score = sq.Score!.Value,
+                MaxScore = quiz.MaxGrade,
+                Weight = 1,
+                GradeType = GradeType.Quiz,
+                Status = "Graded",
+                GradedAt = sq.SubmittedAt.ToString("dd MM yyyy HH:mm"),
+                Notes = null
+            };
+        }));
+
+        return result;
     }
 
     // Complaints

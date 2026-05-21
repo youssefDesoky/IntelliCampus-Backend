@@ -22,6 +22,6 @@ public interface IQuizService
 
     // Advanced JSON matching endpoints (using courseId as a string to match the frontend expectations)
     Task<QuizSubmitResponseDto?> SubmitPracticeQuizAsync(int studentId, string courseId, SubmitQuizDto dto);
-    Task<PracticeQuizDto?> GetPracticeQuizAsync(int studentId, string courseId);
+    Task<PracticeQuizDto?> GetPracticeQuizAsync(int studentId, string courseId , int? quizId=null);
     Task<CourseQuizzesDto?> GetQuizzesOverviewAsync(int studentId, string courseId);
 }

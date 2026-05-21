@@ -16,4 +16,11 @@ public class QuizSpec : BaseSpecifications<Quiz>
         AddInclude("Class.Course");
         AddOrderByDescending(q => q.DueDate);
     }
+
+    public QuizSpec(int courseId, string byCourse)
+        : base(q => q.Class.CourseId == courseId)
+    {
+        AddInclude("Class.Course");
+        AddOrderByDescending(q => q.DueDate);
+    }
 }

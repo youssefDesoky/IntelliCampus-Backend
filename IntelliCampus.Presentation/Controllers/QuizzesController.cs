@@ -48,9 +48,9 @@ public class QuizzesController : ControllerBase
 
     [HttpGet("/api/courses/{courseId}/quizzes/practice")]
     [Authorize(Roles = "Student")]
-    public async Task<IActionResult> GetPracticeQuiz(string courseId)
+    public async Task<IActionResult> GetPracticeQuiz(string courseId ,[FromQuery] int? quizId)
     {
-        var result = await _quizService.GetPracticeQuizAsync(UserId, courseId);
+        var result = await _quizService.GetPracticeQuizAsync(UserId, courseId , quizId);
         return result is null ? NotFound() : Ok(result);
     }
 

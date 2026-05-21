@@ -281,7 +281,7 @@ public class QuizService : IQuizService
             StudentName = sq.Student?.FullName,
             Score = sq.Score ?? 0,
             MaxScore = maxScore,
-            SubmittedAt = sq.SubmittedAt,
+            SubmittedAt = sq.SubmittedAt.ToString("dd MM yy HH:mm"),
             Answers = sq.AnswersJson is not null ? JsonSerializer.Deserialize<Dictionary<string, object>>(sq.AnswersJson) : null,
             QuestionResults = sq.QuestionResultsJson is not null ? JsonSerializer.Deserialize<List<QuestionResultDto>>(sq.QuestionResultsJson) : null
         }).ToList();
@@ -389,7 +389,7 @@ public class QuizService : IQuizService
         QuizTitle = sq.Quiz?.Title,
         Score = sq.Score ?? 0,
         MaxGrade = sq.Quiz?.MaxGrade ?? 0,
-        SubmittedAt = sq.SubmittedAt,
+        SubmittedAt = sq.SubmittedAt.ToString("dd MM yy HH:mm"),
         IsLate = sq.IsLate
     };
 
@@ -425,12 +425,16 @@ public class QuizService : IQuizService
             var maxScore = allQ.Sum(q => q.Points);
             return new QuizSubmitResponseDto
             {
-                CourseId = courseId, CourseName = course.CourseName,
-                Score = tScore, MaxScore = maxScore,
+                CourseId = courseId,
+                CourseName = course.CourseName,
+                Score = tScore,
+                MaxScore = maxScore,
                 Percentage = maxScore > 0 ? Math.Round(tScore / maxScore * 100, 0) : 0,
                 AnsweredCount = dto.Answers.Count,
                 ByType = bType.ToDictionary(kv => kv.Key, kv => new QuizTypeStatsDto { Answered = kv.Value.Answered, Total = kv.Value.Total, Score = kv.Value.Score }),
-                QuestionResults = qResults, Answers = dto.Answers, SubmittedAt = existing.SubmittedAt
+                QuestionResults = qResults,
+                Answers = dto.Answers,
+                SubmittedAt = existing.SubmittedAt.ToString("dd MM yy HH:mm")
             };
         }
 
@@ -450,16 +454,20 @@ public class QuizService : IQuizService
         var maxS = allQ.Sum(q => q.Points);
         return new QuizSubmitResponseDto
         {
-            CourseId = courseId, CourseName = course.CourseName,
-            Score = tScore, MaxScore = maxS,
+            CourseId = courseId,
+            CourseName = course.CourseName,
+            Score = tScore,
+            MaxScore = maxS,
             Percentage = maxS > 0 ? Math.Round(tScore / maxS * 100, 0) : 0,
             AnsweredCount = dto.Answers.Count,
             ByType = bType.ToDictionary(kv => kv.Key, kv => new QuizTypeStatsDto { Answered = kv.Value.Answered, Total = kv.Value.Total, Score = kv.Value.Score }),
-            QuestionResults = qResults, Answers = dto.Answers, SubmittedAt = studentQuiz.SubmittedAt
+            QuestionResults = qResults,
+            Answers = dto.Answers,
+            SubmittedAt = studentQuiz.SubmittedAt.ToString("dd MM yy HH:mm")
         };
     }
 
-    public async Task<PracticeQuizDto?> GetPracticeQuizAsync(int studentId, string courseId)
+    public async Task<PracticeQuizDto?> GetPracticeQuizAsync(int studentId, string courseId, int? quizId = null)
     {
         if (!int.TryParse(courseId, out var parsedCourseId))
             return null;
@@ -471,16 +479,25 @@ public class QuizService : IQuizService
         var quizSpec = new QuizzesByCourseSpec(parsedCourseId);
         var quizzes = (await Quizzes.GetAllAsync(quizSpec)).ToList();
 
-        var unsubmitted = new List<Quiz>();
-        foreach (var q in quizzes)
+        Quiz? quiz;
+        if (quizId.HasValue)
         {
-            var sub = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, q.QuizId));
-            if (sub is null)
-                unsubmitted.Add(q);
+            quiz = quizzes.FirstOrDefault(q => q.QuizId == quizId.Value);
+        }
+        else
+        {
+            var unsubmitted = new List<Quiz>();
+            foreach (var q in quizzes)
+            {
+                var sub = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, q.QuizId));
+                if (sub is null)
+                    unsubmitted.Add(q);
+            }
+
+            var pool = unsubmitted.Count > 0 ? unsubmitted : quizzes;
+            quiz = pool.Count > 0 ? pool[Random.Shared.Next(pool.Count)] : null;
         }
 
-        var pool = unsubmitted.Count > 0 ? unsubmitted : quizzes;
-        var quiz = pool.Count > 0 ? pool[Random.Shared.Next(pool.Count)] : null;
         if (quiz is null)
             return null;
 
@@ -491,8 +508,58 @@ public class QuizService : IQuizService
         var mcqCount = questions.Count(q => q.Type == "MCQ");
         var writtenCount = questions.Count(q => q.Type == "Written");
 
+        QuizSubmitResponseDto? previousSubmission = null;
+        if (submission is not null)
+        {
+            var maxScore = questions.Sum(q => q.Points);
+            var deserializedAnswers = submission.AnswersJson is null
+                ? new Dictionary<string, object>()
+                : JsonSerializer.Deserialize<Dictionary<string, object>>(submission.AnswersJson) ?? new Dictionary<string, object>();
+
+            var deserializedResults = submission.QuestionResultsJson is null
+                ? new List<QuestionResultDto>()
+                : JsonSerializer.Deserialize<List<QuestionResultDto>>(submission.QuestionResultsJson) ?? new List<QuestionResultDto>();
+
+            var byType = new Dictionary<string, QuizTypeStatsDto>
+            {
+                ["TF"] = new QuizTypeStatsDto
+                {
+                    Total = questions.Count(q => q.Type == "TF"),
+                    Answered = deserializedResults.Count(r => r.Type == "TF"),
+                    Score = deserializedResults.Where(r => r.Type == "TF").Sum(r => r.EarnedPoints)
+                },
+                ["MCQ"] = new QuizTypeStatsDto
+                {
+                    Total = questions.Count(q => q.Type == "MCQ"),
+                    Answered = deserializedResults.Count(r => r.Type == "MCQ"),
+                    Score = deserializedResults.Where(r => r.Type == "MCQ").Sum(r => r.EarnedPoints)
+                },
+                ["Written Question"] = new QuizTypeStatsDto
+                {
+                    Total = questions.Count(q => q.Type == "Written"),
+                    Answered = deserializedResults.Count(r => r.Type == "Written"),
+                    Score = deserializedResults.Where(r => r.Type == "Written").Sum(r => r.EarnedPoints)
+                }
+            };
+
+            previousSubmission = new QuizSubmitResponseDto
+            {
+                CourseId = courseId,
+                CourseName = course.CourseName,
+                Score = submission.Score ?? 0,
+                MaxScore = maxScore,
+                Percentage = maxScore > 0 ? Math.Round((submission.Score ?? 0) / maxScore * 100, 0) : 0,
+                AnsweredCount = deserializedAnswers.Count,
+                ByType = byType,
+                QuestionResults = deserializedResults,
+                Answers = deserializedAnswers,
+                SubmittedAt = submission.SubmittedAt.ToString("dd MM yy HH:mm")
+            };
+        }
+
         return new PracticeQuizDto
         {
+            QuizId = quiz.QuizId,
             CourseId = courseId,
             CourseName = course.CourseName,
             Title = quiz.Title,
@@ -506,6 +573,7 @@ public class QuizService : IQuizService
                 Mcq = mcqCount,
                 Written = writtenCount
             },
+            PreviousSubmission = previousSubmission,
             Questions = questions.Select((q, i) => new QuizQuestionDto
             {
                 Id = "q" + (i + 1).ToString(),
@@ -549,6 +617,7 @@ public class QuizService : IQuizService
                     Title = quiz.Title,
                     Score = submission.Score ?? 0,
                     MaxScore = quiz.MaxGrade,
+                    DurationMinutes = quiz.DurationMinutes,
                     Deadline = quiz.DueDate,
                     Status = "Completed"
                 });
@@ -560,6 +629,7 @@ public class QuizService : IQuizService
                     Id = quiz.QuizId.ToString(),
                     Title = quiz.Title,
                     MaxScore = quiz.MaxGrade,
+                    DurationMinutes = quiz.DurationMinutes,
                     Deadline = quiz.DueDate,
                     Status = "Missed"
                 });
@@ -571,6 +641,7 @@ public class QuizService : IQuizService
                     Id = quiz.QuizId.ToString(),
                     Title = quiz.Title,
                     MaxScore = quiz.MaxGrade,
+                    DurationMinutes = quiz.DurationMinutes,
                     Deadline = quiz.DueDate,
                     Status = "Upcoming"
                 });
@@ -579,7 +650,7 @@ public class QuizService : IQuizService
 
         var completed = history.Count;
         var missed = upcoming.Count(u => u.Status == "Missed");
-        var upcomingCount = upcoming.Count;
+        var upcomingCount = upcoming.Count(u => u.Status == "Upcoming");
 
         return new CourseQuizzesDto
         {
