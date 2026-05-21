@@ -11,7 +11,8 @@ public class AdminConfiguration : IEntityTypeConfiguration<Admin>
         builder.ToTable("Admins");
 
         builder.Property(a => a.AdminId)
-            .ValueGeneratedOnAddOrUpdate();
+            .ValueGeneratedOnAdd()
+            .UseIdentityColumn(1, 1);
 
         builder.Property(a => a.AdminCode)
             .HasMaxLength(50);

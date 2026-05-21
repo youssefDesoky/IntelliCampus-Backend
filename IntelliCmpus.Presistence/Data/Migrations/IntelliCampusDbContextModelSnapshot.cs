@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace IntelliCampus.DAL.Migrations
+namespace IntelliCampus.Presistence.Data.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
     partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
@@ -450,6 +450,10 @@ namespace IntelliCampus.DAL.Migrations
 
                     b.Property<string>("DepartmentName")
                         .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("DepartmentNameAr")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -933,6 +937,31 @@ namespace IntelliCampus.DAL.Migrations
                     b.ToTable("Reminders");
                 });
 
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.Room", b =>
+                {
+                    b.Property<int>("RoomId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoomId"));
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RoomName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("RoomNameAr")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("RoomId");
+
+                    b.ToTable("Rooms");
+                });
+
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Schedule", b =>
                 {
                     b.Property<int>("ScheduleId")
@@ -1261,8 +1290,10 @@ namespace IntelliCampus.DAL.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("AdminId")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminId"));
 
                     b.Property<DateTime?>("HireDate")
                         .HasColumnType("datetime2");
@@ -1285,8 +1316,10 @@ namespace IntelliCampus.DAL.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("InstructorId")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InstructorId"));
 
                     b.Property<string>("InstructorRole")
                         .HasMaxLength(50)
@@ -1323,8 +1356,10 @@ namespace IntelliCampus.DAL.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("StudentId")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
 
                     b.HasIndex("DepartmentId");
 
@@ -1456,7 +1491,7 @@ namespace IntelliCampus.DAL.Migrations
                     b.HasOne("IntelliCampus.Domain.Entities.Course", "Course")
                         .WithMany("Classes")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IntelliCampus.Domain.Entities.Instructor", "Instructor")

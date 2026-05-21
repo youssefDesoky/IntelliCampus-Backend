@@ -11,7 +11,8 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
         builder.ToTable("Students");
 
         builder.Property(s => s.StudentId)
-            .ValueGeneratedOnAddOrUpdate();
+            .ValueGeneratedOnAdd()
+            .UseIdentityColumn(1, 1);
 
         builder.Property(s => s.StudentCode)
             .HasMaxLength(50);
