@@ -111,6 +111,49 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
         return MapToDto(result!);
     }
 
+    public async Task<CourseDto?> UpdateAsync(int courseId, CreateCourseDto dto)
+    {
+        var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
+
+        if (course is null)
+            return null;
+
+        var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentName);
+
+        course.CourseCode = dto.CourseCode;
+        course.CourseName = dto.CourseName;
+        course.CourseNameAr = dto.CourseNameAr;
+        course.CreditHours = dto.CreditHours;
+        course.DepartmentId = departmentId;
+
+        if (dto.PrerequisiteCodes is not null)
+        {
+            var existingPrereqs = course.Prerequisites?.ToList() ?? [];
+            foreach (var prereq in existingPrereqs)
+                Prerequisites.Delete(prereq);
+
+            var allCourses = await Courses.GetAllAsync();
+            var prereqCourses = allCourses
+                .Where(c => dto.PrerequisiteCodes.Contains(c.CourseCode!))
+                .ToList();
+
+            foreach (var prereq in prereqCourses)
+            {
+                Prerequisites.Add(new CoursePrerequisite
+                {
+                    CourseId = course.CourseId,
+                    PrerequisiteCourseId = prereq.CourseId
+                });
+            }
+        }
+
+        Courses.Update(course);
+        await _unitOfWork.SaveChangesAsync();
+
+        var result = await Courses.GetByIdAsync(new CourseSpec(course.CourseId));
+        return MapToDto(result!);
+    }
+
     public async Task<bool> ActivateAsync(int courseId)
     {
         var course = await Courses.GetByIdAsync(courseId);
@@ -129,6 +172,34 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
         Courses.Update(course);
         await _unitOfWork.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<IEnumerable<CoursePrerequisiteDto>?> GetPrerequisitesAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
+
+        if (course is null)
+            return null;
+
+        return
+        [
+            new CoursePrerequisiteDto
+            {
+                CourseId = course.CourseId,
+                CourseName = course.CourseName,
+                CourseCode = course.CourseCode,
+                CreditHours = course.CreditHours,
+                Prerequisites = course.Prerequisites?
+                    .Select(p => p.PrerequisiteCourse)
+                    .Where(p => p is not null)
+                    .Select(p => new PrerequisiteItemDto
+                    {
+                        Code = p!.CourseCode ?? p.CourseId.ToString(),
+                        Title = p.CourseName
+                    })
+                    .ToList() ?? []
+            }
+        ];
     }
 
     public async Task<bool> DeleteAsync(int courseId)
