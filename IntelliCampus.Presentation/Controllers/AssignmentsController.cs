@@ -2,6 +2,7 @@ using System.Security.Claims;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Assignment;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IntelliCampus.Web.Controllers;
@@ -11,6 +12,8 @@ namespace IntelliCampus.Web.Controllers;
 [Authorize]
 public class AssignmentsController(IAssignmentService assignmentService) : ControllerBase
 {
+    private const long MaxFileSize = 50 * 1024 * 1024;
+
     private int UserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpGet("{courseId}")]
@@ -25,8 +28,10 @@ public class AssignmentsController(IAssignmentService assignmentService) : Contr
 
     [HttpPost("{assignmentId}/submit")]
     [Authorize(Roles = "Student")]
-    public async Task<IActionResult> Submit(int assignmentId, [FromBody] SubmitAssignmentDto dto)
-        => Ok(await assignmentService.SubmitAsync(UserId, assignmentId, dto));
+    [RequestSizeLimit(MaxFileSize)]
+    [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
+    public async Task<IActionResult> Submit(int assignmentId, [FromForm] SubmitAssignmentDto dto, IFormFileCollection? files)
+        => Ok(await assignmentService.SubmitAsync(UserId, assignmentId, dto, files));
 
     [HttpPost("create")]
     [Authorize(Roles = "Instructor")]

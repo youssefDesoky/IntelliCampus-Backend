@@ -4,12 +4,14 @@ using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Assignment;
+using Microsoft.AspNetCore.Http;
 
 namespace IntelliCampus.Service;
 
-public class AssignmentService(IUnitOfWork unitOfWork) : IAssignmentService
+public class AssignmentService(IUnitOfWork unitOfWork, IFileStorageService fileStorage) : IAssignmentService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IFileStorageService _fileStorage = fileStorage;
 
     private IGenericRepository<Assignment, int> Assignments
         => _unitOfWork.GetRepository<Assignment, int>();
@@ -179,7 +181,7 @@ public class AssignmentService(IUnitOfWork unitOfWork) : IAssignmentService
         };
     }
 
-    public async Task<SubmissionDto> SubmitAsync(int studentId, int assignmentId, SubmitAssignmentDto dto)
+    public async Task<SubmissionDto> SubmitAsync(int studentId, int assignmentId, SubmitAssignmentDto dto, IFormFileCollection? files)
     {
         var assignment = await Assignments.GetByIdAsync(assignmentId);
         if (assignment is null)
@@ -191,21 +193,41 @@ public class AssignmentService(IUnitOfWork unitOfWork) : IAssignmentService
             throw new InvalidOperationException("Assignment already submitted.");
 
         var now = DateTime.UtcNow;
+        var isLate = now > assignment.DueDate;
+
+        if (isLate)
+            return new SubmissionDto
+            {
+                Status = "rejected",
+                SubmittedAt = now,
+                IsLate = true,
+                Files = []
+            };
+
         var submission = new StudentAssignment
         {
             StudentId = studentId,
             AssignmentId = assignmentId,
             Note = dto.Note,
             SubmittedAt = now,
-            IsLate = now > assignment.DueDate,
-            Files = dto.Files.Select(f => new SubmissionFile
-            {
-                Id = f.Id,
-                Name = f.Name,
-                Size = f.Size,
-                Url = f.Url
-            }).ToList()
+            IsLate = false,
+            Files = []
         };
+
+        if (files is { Count: > 0 })
+        {
+            foreach (var file in files)
+            {
+                var url = await _fileStorage.SaveAsync(file, "assignments");
+                submission.Files.Add(new SubmissionFile
+                {
+                    Id = Guid.NewGuid().ToString("N"),
+                    Name = file.FileName,
+                    Size = file.Length,
+                    Url = url
+                });
+            }
+        }
 
         StudentAssignments.Add(submission);
         await _unitOfWork.SaveChangesAsync();
@@ -276,7 +298,9 @@ public class AssignmentService(IUnitOfWork unitOfWork) : IAssignmentService
     private static SubmissionDto MapSubmissionToDto(StudentAssignment sa) => new()
     {
         Id = sa.StudentAssignmentId.ToString(),
+        Status = "successful",
         SubmittedAt = sa.SubmittedAt,
+        IsLate = sa.IsLate,
         Note = sa.Note,
         Files = sa.Files?.Select(f => new SubmissionFileDto
         {
