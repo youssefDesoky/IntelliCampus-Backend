@@ -1,0 +1,9 @@
+namespace IntelliCampus.Shared.Dtos.Department;
+
+public class CreateDepartmentDto
+{
+    public string DepartmentName { get; set; } = null!;
+    public string? DepartmentNameAr { get; set; }
+    public string? Description { get; set; }
+    public int? InstructorId { get; set; }
+}

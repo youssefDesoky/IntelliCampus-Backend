@@ -21,6 +21,7 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<Class> Classes { get; set; }
     public DbSet<Session> Sessions { get; set; }
     public DbSet<Department> Departments { get; set; }
+    public DbSet<Room> Rooms { get; set; }
     public DbSet<Grade> Grades { get; set; }
     public DbSet<GradeComplaint> GradeComplaints { get; set; }
     public DbSet<Exam> Exams { get; set; }
