@@ -10,10 +10,15 @@ namespace IntelliCampus.Service;
 public class AttendanceService : IAttendanceService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly INotificationService _notificationService;
 
     private const decimal AttendanceThreshold = 75m;
 
-    public AttendanceService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
+    public AttendanceService(IUnitOfWork unitOfWork, INotificationService notificationService)
+    {
+        _unitOfWork = unitOfWork;
+        _notificationService = notificationService;
+    }
 
     private IGenericRepository<Attendance, int> Attendances => _unitOfWork.GetRepository<Attendance, int>();
     private IGenericRepository<Session, int> Sessions => _unitOfWork.GetRepository<Session, int>();
@@ -45,6 +50,20 @@ public class AttendanceService : IAttendanceService
         }
 
         await _unitOfWork.SaveChangesAsync();
+
+        // Check attendance threshold per student
+        foreach (var record in dto.Records)
+        {
+            var percentage = await GetAttendancePercentageAsync(record.StudentId, classEntity.CourseId);
+
+            if (percentage < AttendanceThreshold)
+            {
+                await _notificationService.SendAsync(
+                    record.StudentId,
+                    NotificationType.AttendanceWarning,
+                    $"Warning: Your attendance in {classEntity.GroupCode} dropped to {percentage}%. Minimum required is {AttendanceThreshold}%.");
+            }
+        }
     }
 
     public async Task<IEnumerable<SessionDto>> GetByStudentAndCourseAsync(int studentId, int courseId)

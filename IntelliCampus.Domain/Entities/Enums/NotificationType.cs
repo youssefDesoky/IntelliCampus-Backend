@@ -2,10 +2,18 @@ namespace IntelliCampus.Domain.Entities.Enums;
 
 public enum NotificationType
 {
-    General,
-    Assignment,
-    Quiz,
-    Exam,
-    Reminder,
-    Announcement
+    CourseRegistered        = 0,
+    AssignmentSubmitted     = 1,
+    AssignmentGraded        = 2,
+    NewAssignmentPosted     = 3,
+    QuizSubmitted           = 4,
+    QuizGraded              = 5,
+    NewQuizPosted           = 6,
+    AttendanceWarning       = 7,
+    ScheduleUpdated         = 8,
+    ClassCancelled          = 9,
+    GradeComplaintReviewed  = 10,
+    MaterialUploaded        = 11,
+    Announcement            = 12,
+    Reminder                = 13
 }

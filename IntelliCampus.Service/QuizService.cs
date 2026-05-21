@@ -1,5 +1,6 @@
 using System.Text.Json;
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.shared.Dtos.Quiz;
@@ -10,8 +11,13 @@ namespace IntelliCampus.Service;
 public class QuizService : IQuizService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly INotificationService _notificationService;
 
-    public QuizService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
+    public QuizService(IUnitOfWork unitOfWork, INotificationService notificationService)
+    {
+        _unitOfWork = unitOfWork;
+        _notificationService = notificationService;
+    }
 
     private IGenericRepository<Quiz, int> Quizzes
         => _unitOfWork.GetRepository<Quiz, int>();
@@ -450,6 +456,11 @@ public class QuizService : IQuizService
         };
         StudentQuizzes.Add(studentQuiz);
         await _unitOfWork.SaveChangesAsync();
+
+        await _notificationService.SendAsync(
+            studentId,
+            NotificationType.QuizSubmitted,
+            $"Your quiz '{quiz.Title}' was submitted successfully.");
 
         var maxS = allQ.Sum(q => q.Points);
         return new QuizSubmitResponseDto

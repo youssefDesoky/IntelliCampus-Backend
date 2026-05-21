@@ -12,11 +12,16 @@ public class RegistrationService : IRegistrationService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IScheduleService _scheduleService;
+    private readonly INotificationService _notificationService;
 
-    public RegistrationService(IUnitOfWork unitOfWork, IScheduleService scheduleService)
+    public RegistrationService(
+        IUnitOfWork unitOfWork,
+        IScheduleService scheduleService,
+        INotificationService notificationService)
     {
         _unitOfWork = unitOfWork;
         _scheduleService = scheduleService;
+        _notificationService = notificationService;
     }
 
     private IGenericRepository<StudentCourse, int> StudentCourses
@@ -67,6 +72,11 @@ public class RegistrationService : IRegistrationService
 
         StudentCourses.Add(studentCourse);
         await _unitOfWork.SaveChangesAsync();
+
+        await _notificationService.SendAsync(
+            studentId,
+            NotificationType.CourseRegistered,
+            $"You have successfully registered for {course.CourseName}.");
 
         // Get lecture class for this course
         var lectureSpec = new LectureClassSpec(dto.CourseId);

@@ -16,11 +16,6 @@ public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
 
         builder.Property(n => n.Type)
             .HasConversion<string>()
-            .HasMaxLength(20);
-
-        builder.HasOne(n => n.Post)
-            .WithMany()
-            .HasForeignKey(n => n.PostId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .HasMaxLength(30);
     }
 }

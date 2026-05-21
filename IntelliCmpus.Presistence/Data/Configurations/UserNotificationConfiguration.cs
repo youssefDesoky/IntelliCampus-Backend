@@ -8,7 +8,10 @@ public class UserNotificationConfiguration : IEntityTypeConfiguration<UserNotifi
 {
     public void Configure(EntityTypeBuilder<UserNotification> builder)
     {
-        builder.HasKey(un => new { un.UserId, un.NotificationId });
+        builder.HasKey(un => un.UserNotificationId);
+
+        builder.Property(un => un.IsRead)
+            .HasDefaultValue(false);
 
         builder.HasOne(un => un.User)
             .WithMany(u => u.UserNotifications)

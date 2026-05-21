@@ -1,14 +1,18 @@
 using IntelliCampus.Shared.Dtos.Material;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 
 namespace IntelliCampus.Service;
 
-public class MaterialService(IUnitOfWork unitOfWork) : IMaterialService
+public class MaterialService(
+    IUnitOfWork unitOfWork,
+    INotificationService notificationService) : IMaterialService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly INotificationService _notificationService = notificationService;
 
     private IGenericRepository<Material, int> Materials
         => _unitOfWork.GetRepository<Material, int>();
@@ -131,6 +135,21 @@ public class MaterialService(IUnitOfWork unitOfWork) : IMaterialService
         Materials.Add(material);
         InstructorMaterials.Add(instructorMaterial);
         await _unitOfWork.SaveChangesAsync();
+
+        // Notify enrolled students
+        var studentCourses = await _unitOfWork
+            .GetRepository<StudentCourse, int>()
+            .GetAllAsync(new StudentCourseIdsSpec(dto.CourseId, byCourse: true));
+
+        var studentIds = studentCourses.Select(sc => sc.StudentId).ToList();
+
+        if (studentIds.Count > 0)
+        {
+            await _notificationService.SendToManyAsync(
+                studentIds,
+                NotificationType.MaterialUploaded,
+                $"New material uploaded: '{dto.Title}' in {course.CourseName}.");
+        }
 
         return new MaterialDto
         {
