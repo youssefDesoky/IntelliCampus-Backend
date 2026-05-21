@@ -133,7 +133,7 @@ public class ScheduleService : IScheduleService
         EndTime = FormatTime(s.EndTime),
         Location = s.Location,
         Type = s.ScheduleType.ToString().ToLowerInvariant(),
-        InstructorName = s.InstructorName,
+        Instructor = s.InstructorName,
         CourseId = s.CourseId,
         CourseName = s.Course?.CourseName,
         StudentId = s.StudentId
