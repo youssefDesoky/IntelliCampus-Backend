@@ -108,14 +108,29 @@ public class ExamScheduleService : IExamScheduleService
         ExamScheduleId = e.ExamScheduleId,
         CourseCode = e.CourseCode,
         CourseName = e.CourseName,
-        Day = e.Day,
+        Day = ToDayAbbreviation(e.Day),
         Date = e.Date,
-        StartTime = e.StartTime,
-        EndTime = e.EndTime,
+        StartTime = FormatTime(e.StartTime),
+        EndTime = FormatTime(e.EndTime),
         Duration = e.Duration,
         Location = e.Location,
         ExamType = e.ExamType,
         Status = e.Status,
         StudentId = e.StudentId
     };
+
+    private static string ToDayAbbreviation(string day) => day?.ToLowerInvariant() switch
+    {
+        "saturday" or "sat" => "sat",
+        "sunday" or "sun" => "sun",
+        "monday" or "mon" => "mon",
+        "tuesday" or "tue" => "tue",
+        "wednesday" or "wed" => "wed",
+        "thursday" or "thu" => "thu",
+        "friday" or "fri" => "fri",
+        _ => day?.ToLowerInvariant() ?? string.Empty
+    };
+
+    private static string FormatTime(TimeSpan time) =>
+        DateTime.Today.Add(time).ToString("hh:mm tt");
 }

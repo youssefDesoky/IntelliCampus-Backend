@@ -127,15 +127,30 @@ public class ScheduleService : IScheduleService
     {
         ScheduleId = s.ScheduleId,
         Title = s.Title,
-        Day = s.Day,
+        Day = ToDayAbbreviation(s.Day),
         Date = s.Date,
-        StartTime = s.StartTime,
-        EndTime = s.EndTime,
+        StartTime = FormatTime(s.StartTime),
+        EndTime = FormatTime(s.EndTime),
         Location = s.Location,
-        Type = s.ScheduleType,
+        Type = s.ScheduleType.ToString().ToLowerInvariant(),
         InstructorName = s.InstructorName,
         CourseId = s.CourseId,
         CourseName = s.Course?.CourseName,
         StudentId = s.StudentId
     };
+
+    private static string ToDayAbbreviation(string day) => day?.ToLowerInvariant() switch
+    {
+        "saturday" or "sat" => "sat",
+        "sunday" or "sun" => "sun",
+        "monday" or "mon" => "mon",
+        "tuesday" or "tue" => "tue",
+        "wednesday" or "wed" => "wed",
+        "thursday" or "thu" => "thu",
+        "friday" or "fri" => "fri",
+        _ => day?.ToLowerInvariant() ?? string.Empty
+    };
+
+    private static string FormatTime(TimeSpan time) =>
+        DateTime.Today.Add(time).ToString("hh:mm tt");
 }
