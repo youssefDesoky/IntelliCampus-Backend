@@ -10,32 +10,37 @@ namespace IntelliCampus.Presistence.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Location",
-                table: "Reminders",
-                type: "nvarchar(200)",
-                maxLength: 200,
-                nullable: true);
+            migrationBuilder.Sql("""
+                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Reminders' AND COLUMN_NAME = 'Location')
+                BEGIN
+                    ALTER TABLE [Reminders] ADD [Location] nvarchar(200) NULL;
+                END
+                """);
 
-            migrationBuilder.AddColumn<string>(
-                name: "Priority",
-                table: "Reminders",
-                type: "nvarchar(20)",
-                maxLength: 20,
-                nullable: false,
-                defaultValue: "low");
+            migrationBuilder.Sql("""
+                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Reminders' AND COLUMN_NAME = 'Priority')
+                BEGIN
+                    ALTER TABLE [Reminders] ADD [Priority] nvarchar(20) NOT NULL DEFAULT 'low';
+                END
+                """);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Location",
-                table: "Reminders");
+            migrationBuilder.Sql("""
+                IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Reminders' AND COLUMN_NAME = 'Location')
+                BEGIN
+                    ALTER TABLE [Reminders] DROP COLUMN [Location];
+                END
+                """);
 
-            migrationBuilder.DropColumn(
-                name: "Priority",
-                table: "Reminders");
+            migrationBuilder.Sql("""
+                IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Reminders' AND COLUMN_NAME = 'Priority')
+                BEGIN
+                    ALTER TABLE [Reminders] DROP COLUMN [Priority];
+                END
+                """);
         }
     }
 }

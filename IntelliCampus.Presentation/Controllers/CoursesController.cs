@@ -1,7 +1,9 @@
 using System.Security.Claims;
+using IntelliCampus.Shared.Dtos.Announcement;
 using IntelliCampus.Shared.Dtos.Course;
 using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IntelliCampus.Web.Controllers;
@@ -11,10 +13,12 @@ namespace IntelliCampus.Web.Controllers;
 public class CoursesController : ControllerBase
 {
     private readonly ICourseService _courseService;
+    private readonly IAnnouncementService _announcementService;
 
-    public CoursesController(ICourseService courseService)
+    public CoursesController(ICourseService courseService, IAnnouncementService announcementService)
     {
         _courseService = courseService;
+        _announcementService = announcementService;
     }
 
     [HttpGet]
@@ -73,6 +77,18 @@ public class CoursesController : ControllerBase
         return Ok(courses);
     }
 
+    [HttpGet("{courseId}/prerequisites")]
+    [Authorize]
+    public async Task<ActionResult<IEnumerable<CoursePrerequisiteDto>>> GetPrerequisites(int courseId)
+    {
+        var result = await _courseService.GetPrerequisitesAsync(courseId);
+
+        if (result is null)
+            return NotFound();
+
+        return Ok(result);
+    }
+
     [HttpGet("{id}")]
     [Authorize]
     public async Task<ActionResult<CourseDto>> GetById(int id)
@@ -93,6 +109,25 @@ public class CoursesController : ControllerBase
         {
             var course = await _courseService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = course.CourseId }, course);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
+    public async Task<ActionResult<CourseDto>> Update(int id, [FromBody] CreateCourseDto dto)
+    {
+        try
+        {
+            var course = await _courseService.UpdateAsync(id, dto);
+
+            if (course is null)
+                return NotFound();
+
+            return Ok(course);
         }
         catch (InvalidOperationException ex)
         {
@@ -135,6 +170,148 @@ public class CoursesController : ControllerBase
 
         return NoContent();
     }
+
+    #region Announcements
+
+    [HttpGet("{courseId}/announcements")]
+    [Authorize]
+    public async Task<ActionResult<List<AnnouncementDto>>> GetAnnouncements(int courseId)
+    {
+        var announcements = await _announcementService.GetCourseAnnouncementsAsync(courseId);
+        return Ok(announcements);
+    }
+
+    [HttpGet("{courseId}/announcements/{announcementId}")]
+    [Authorize]
+    public async Task<ActionResult<AnnouncementDto>> GetAnnouncementById(int courseId, int announcementId)
+    {
+        var announcement = await _announcementService.GetByIdAsync(announcementId);
+
+        if (announcement is null)
+            return NotFound();
+
+        return Ok(announcement);
+    }
+
+    [HttpPost("{courseId}/announcements")]
+    [Authorize(Roles = "Instructor,Admin,SuperAdmin")]
+    [RequestSizeLimit(50 * 1024 * 1024)]
+    [RequestFormLimits(MultipartBodyLengthLimit = 50 * 1024 * 1024)]
+    public async Task<ActionResult<AnnouncementDto>> CreateAnnouncement(int courseId, [FromForm] AnnouncementContentDto dto, IFormFile? file)
+    {
+        var senderId = GetCurrentUserId();
+        if (senderId is null)
+            return Unauthorized();
+
+        try
+        {
+            string? fileUrl = null;
+            long? fileSize = null;
+
+            if (file is not null)
+            {
+                if (file.Length > 50 * 1024 * 1024)
+                    return BadRequest(new { message = "File size exceeds the 50 MB limit." });
+
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "announcements");
+                Directory.CreateDirectory(uploadsFolder);
+
+                var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                fileSize = file.Length;
+
+                await using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, useAsync: true);
+                await file.CopyToAsync(stream);
+
+                fileUrl = $"/announcements/{uniqueFileName}";
+            }
+
+            var announcement = await _announcementService.CreateAsync(courseId, senderId.Value, dto, fileUrl, fileSize);
+            return CreatedAtAction(nameof(GetAnnouncementById), new { courseId, announcementId = announcement.Id }, announcement);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = ex.Message, type = ex.GetType().Name });
+        }
+    }
+
+    [HttpPut("{courseId}/announcements/{announcementId}")]
+    [Authorize(Roles = "Instructor,Admin,SuperAdmin")]
+    public async Task<ActionResult<AnnouncementDto>> UpdateAnnouncement(int courseId, int announcementId, [FromBody] AnnouncementContentDto dto)
+    {
+        var senderId = GetCurrentUserId();
+        if (senderId is null)
+            return Unauthorized();
+
+        var updated = await _announcementService.UpdateAsync(announcementId, senderId.Value, dto.Content);
+
+        if (updated is null)
+            return NotFound();
+
+        return Ok(updated);
+    }
+
+    [HttpDelete("{courseId}/announcements/{announcementId}")]
+    [Authorize(Roles = "Instructor,Admin,SuperAdmin")]
+    public async Task<IActionResult> DeleteAnnouncement(int courseId, int announcementId)
+    {
+        var deleted = await _announcementService.DeleteAsync(announcementId);
+
+        if (!deleted)
+            return NotFound();
+
+        return NoContent();
+    }
+
+    [HttpPost("{courseId}/announcements/{announcementId}/comments")]
+    [Authorize]
+    public async Task<ActionResult<CommentDto>> AddComment(int courseId, int announcementId, [FromBody] AnnouncementContentDto dto)
+    {
+        var userId = GetCurrentUserId();
+        if (userId is null)
+            return Unauthorized();
+
+        var comment = await _announcementService.AddCommentAsync(announcementId, userId.Value, dto.Content);
+        return Ok(comment);
+    }
+
+    [HttpDelete("{courseId}/announcements/{announcementId}/comments/{commentId}")]
+    [Authorize]
+    public async Task<IActionResult> DeleteComment(int courseId, int announcementId, int commentId)
+    {
+        var userId = GetCurrentUserId();
+        if (userId is null)
+            return Unauthorized();
+
+        var deleted = await _announcementService.DeleteCommentAsync(commentId, userId.Value);
+
+        if (!deleted)
+            return NotFound();
+
+        return NoContent();
+    }
+
+    [HttpPut("{courseId}/announcements/{announcementId}/comments/{commentId}")]
+    [Authorize]
+    public async Task<ActionResult<CommentDto>> EditComment(int courseId, int announcementId, int commentId, [FromBody] AnnouncementContentDto dto)
+    {
+        var userId = GetCurrentUserId();
+        if (userId is null)
+            return Unauthorized();
+
+        var comment = await _announcementService.EditCommentAsync(commentId, userId.Value, dto.Content);
+
+        if (comment is null)
+            return NotFound();
+
+        return Ok(comment);
+    }
+
+    #endregion
 
     private int? GetCurrentUserId()
     {

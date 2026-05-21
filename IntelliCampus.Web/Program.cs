@@ -26,7 +26,15 @@ builder.Services.Configure<FormOptions>(options =>
 });
 
 // Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -98,20 +106,24 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
-// Seed admin user
+// Apply migrations and seed data
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<IntelliCampusDbContext>();
+    await context.Database.MigrateAsync();
     var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
     await AdminSeeder.SeedAdminAsync(context, passwordService);
 }
 
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection(); // Disabled in dev — use http://localhost:5122
 
 app.UseStaticFiles(); // Enable serving static files (for material downloads)
+
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
