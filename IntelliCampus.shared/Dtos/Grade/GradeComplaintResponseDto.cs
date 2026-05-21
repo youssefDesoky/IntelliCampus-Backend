@@ -8,5 +8,5 @@ public class GradeComplaintResponseDto
     public string ComplaintType { get; set; } = string.Empty;
     public string Details { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
-    public DateTime SubmittedAt { get; set; }
+    public string SubmittedAt { get; set; } = string.Empty;
 }

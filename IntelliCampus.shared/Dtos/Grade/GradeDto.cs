@@ -14,6 +14,6 @@ public class GradeDto
     public decimal Weight { get; set; }
     public GradeType GradeType { get; set; }
     public string Status { get; set; } = string.Empty;
-    public DateTime GradedAt { get; set; }
+    public string GradedAt { get; set; } = string.Empty;
     public string? Notes { get; set; }
 }

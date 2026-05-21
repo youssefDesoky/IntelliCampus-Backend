@@ -6,5 +6,5 @@ public class GradeInfoDto
     public decimal TotalPoints { get; set; }
     public string? Feedback { get; set; }
     public string? GradedBy { get; set; }
-    public DateTime? GradedAt { get; set; }
+    public string? GradedAt { get; set; }
 }

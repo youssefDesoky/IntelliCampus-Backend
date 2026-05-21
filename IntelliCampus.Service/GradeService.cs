@@ -152,7 +152,7 @@ public class GradeService : IGradeService
                 Weight = 1,
                 GradeType = GradeType.Assignment,
                 Status = "Graded",
-                GradedAt = sa.GradedAt ?? DateTime.UtcNow,
+                GradedAt = (sa.GradedAt ?? DateTime.UtcNow).ToString("dd MM yyyy HH:mm"),
                 Notes = sa.Feedback
             };
         });
@@ -275,6 +275,6 @@ public class GradeService : IGradeService
         ComplaintType = c.ComplaintType,
         Details = c.Details,
         Status = c.Status,
-        SubmittedAt = c.SubmittedAt
+        SubmittedAt = c.SubmittedAt.ToString("dd MM yyyy HH:mm")
     };
 }

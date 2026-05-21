@@ -189,17 +189,25 @@ public class AssignmentService(IUnitOfWork unitOfWork, IFileStorageService fileS
 
         var existingSpec = new StudentAssignmentSpec(studentId, assignmentId);
         var existing = await StudentAssignments.GetByIdAsync(existingSpec);
-        if (existing is not null)
-            throw new InvalidOperationException("Assignment already submitted.");
-
         var now = DateTime.UtcNow;
         var isLate = now > assignment.DueDate;
+
+        // Allow resubmission only if deadline hasn't passed; otherwise reject
+        if (existing is not null && isLate)
+            throw new InvalidOperationException("Cannot resubmit after deadline.");
+
+        // If resubmitting before deadline, delete old submission and create new one
+        if (existing is not null && !isLate)
+        {
+            StudentAssignments.Delete(existing);
+            await _unitOfWork.SaveChangesAsync();
+        }
 
         if (isLate)
             return new SubmissionDto
             {
                 Status = "rejected",
-                SubmittedAt = now,
+                SubmittedAt = now.ToString("dd MM yyyy HH:mm"),
                 IsLate = true,
                 Files = []
             };
@@ -291,7 +299,7 @@ public class AssignmentService(IUnitOfWork unitOfWork, IFileStorageService fileS
             TotalPoints = a.MaxGrade,
             Feedback = submission.Feedback,
             GradedBy = submission.GradedByInstructor?.FullName,
-            GradedAt = submission.GradedAt
+            GradedAt = submission.GradedAt?.ToString("dd MM yyyy HH:mm")
         } : null
     };
 
@@ -299,7 +307,7 @@ public class AssignmentService(IUnitOfWork unitOfWork, IFileStorageService fileS
     {
         Id = sa.StudentAssignmentId.ToString(),
         Status = "successful",
-        SubmittedAt = sa.SubmittedAt,
+        SubmittedAt = sa.SubmittedAt.ToString("dd MM yyyy HH:mm"),
         IsLate = sa.IsLate,
         Note = sa.Note,
         Files = sa.Files?.Select(f => new SubmissionFileDto
