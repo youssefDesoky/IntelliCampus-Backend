@@ -124,6 +124,7 @@ using (var scope = app.Services.CreateScope())
     var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
     await AdminSeeder.SeedAdminAsync(context, passwordService);
     await QuizSeeder.SeedQuizzesAsync(context);
+    await AssignmentSeeder.SeedAssignmentsAsync(context);
 }
 
 
