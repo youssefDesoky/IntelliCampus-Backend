@@ -96,12 +96,16 @@ builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IReminderService, ReminderService>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 builder.Services.AddScoped<IAssignmentService, AssignmentService>();
+builder.Services.AddScoped<IQuizService, QuizService>();
 builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IExamScheduleService, ExamScheduleService>();
 builder.Services.AddScoped<IGradeService, GradeService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+builder.Services.AddScoped<IAttendanceExcuseService, AttendanceExcuseService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
 
@@ -119,10 +123,11 @@ using (var scope = app.Services.CreateScope())
     await context.Database.MigrateAsync();
     var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
     await AdminSeeder.SeedAdminAsync(context, passwordService);
+    await QuizSeeder.SeedQuizzesAsync(context);
 }
 
 
-app.UseHttpsRedirection(); // Disabled in dev — use http://localhost:5122
+// app.UseHttpsRedirection(); // Disabled in dev — use http://localhost:5122
 
 app.UseStaticFiles(); // Enable serving static files (for material downloads)
 

@@ -879,6 +879,42 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.Question", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CorrectAnswer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Options")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Points")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<string>("Prompt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("QuizId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuizId");
+
+                    b.ToTable("Questions");
+                });
+
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Quiz", b =>
                 {
                     b.Property<int>("QuizId")
@@ -887,10 +923,34 @@ namespace IntelliCampus.Presistence.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("QuizId"));
 
+                    b.Property<int>("ClassId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("MaxGrade")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<int>("TotalMarks")
                         .HasColumnType("int");
 
                     b.HasKey("QuizId");
+
+                    b.HasIndex("ClassId");
 
                     b.ToTable("Quizzes");
                 });
@@ -1159,9 +1219,21 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     b.Property<int>("QuizId")
                         .HasColumnType("int");
 
+                    b.Property<string>("AnswersJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsLate")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("QuestionResultsJson")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal?>("Score")
                         .HasPrecision(5, 2)
                         .HasColumnType("decimal(5,2)");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("StudentId", "QuizId");
 
@@ -1742,6 +1814,28 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.Question", b =>
+                {
+                    b.HasOne("IntelliCampus.Domain.Entities.Quiz", "Quiz")
+                        .WithMany("Questions")
+                        .HasForeignKey("QuizId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Quiz");
+                });
+
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.Quiz", b =>
+                {
+                    b.HasOne("IntelliCampus.Domain.Entities.Class", "Class")
+                        .WithMany()
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Class");
+                });
+
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Reminder", b =>
                 {
                     b.HasOne("IntelliCampus.Domain.Entities.Student", "Student")
@@ -2033,6 +2127,8 @@ namespace IntelliCampus.Presistence.Data.Migrations
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Quiz", b =>
                 {
+                    b.Navigation("Questions");
+
                     b.Navigation("StudentQuizzes");
                 });
 

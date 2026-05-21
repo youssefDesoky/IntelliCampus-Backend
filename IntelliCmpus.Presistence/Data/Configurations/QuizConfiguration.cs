@@ -9,5 +9,31 @@ public class QuizConfiguration : IEntityTypeConfiguration<Quiz>
     public void Configure(EntityTypeBuilder<Quiz> builder)
     {
         builder.HasKey(q => q.QuizId);
+
+        builder.Property(q => q.Title)
+            .HasMaxLength(200)
+            .IsRequired();
+
+        builder.Property(q => q.Description)
+            .HasMaxLength(2000);
+
+        builder.Property(q => q.DueDate)
+            .IsRequired();
+
+        builder.Property(q => q.MaxGrade)
+            .HasPrecision(10, 2);
+
+        builder.Property(q => q.TotalMarks)
+            .IsRequired();
+
+        builder.HasOne(q => q.Class)
+            .WithMany()
+            .HasForeignKey(q => q.ClassId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(q => q.Questions)
+            .WithOne(q => q.Quiz)
+            .HasForeignKey(q => q.QuizId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -34,8 +34,8 @@ public class AuthController : ControllerBase
         Response.Cookies.Append("token", result.Token, new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.None,
+            Secure = false,
+            SameSite = SameSiteMode.Lax,
             Expires = result.ExpiresAt
         });
 
@@ -54,8 +54,8 @@ public class AuthController : ControllerBase
         Response.Cookies.Delete("token", new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.None
+            Secure = false,
+            SameSite = SameSiteMode.Lax
         });
 
         return Ok(new { message = "Logged out successfully." });

@@ -13,6 +13,12 @@ public class StudentQuizConfiguration : IEntityTypeConfiguration<StudentQuiz>
         builder.Property(sq => sq.Score)
             .HasPrecision(5, 2);
 
+        builder.Property(sq => sq.AnswersJson)
+            .HasColumnType("nvarchar(max)");
+
+        builder.Property(sq => sq.QuestionResultsJson)
+            .HasColumnType("nvarchar(max)");
+
         builder.HasOne(sq => sq.Student)
             .WithMany(s => s.StudentQuizzes)
             .HasForeignKey(sq => sq.StudentId)
