@@ -77,6 +77,18 @@ public class CoursesController : ControllerBase
         return Ok(courses);
     }
 
+    [HttpGet("{courseId}/prerequisites")]
+    [Authorize]
+    public async Task<ActionResult<IEnumerable<CoursePrerequisiteDto>>> GetPrerequisites(int courseId)
+    {
+        var result = await _courseService.GetPrerequisitesAsync(courseId);
+
+        if (result is null)
+            return NotFound();
+
+        return Ok(result);
+    }
+
     [HttpGet("{id}")]
     [Authorize]
     public async Task<ActionResult<CourseDto>> GetById(int id)
@@ -97,6 +109,25 @@ public class CoursesController : ControllerBase
         {
             var course = await _courseService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = course.CourseId }, course);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
+    public async Task<ActionResult<CourseDto>> Update(int id, [FromBody] CreateCourseDto dto)
+    {
+        try
+        {
+            var course = await _courseService.UpdateAsync(id, dto);
+
+            if (course is null)
+                return NotFound();
+
+            return Ok(course);
         }
         catch (InvalidOperationException ex)
         {
