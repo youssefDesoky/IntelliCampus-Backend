@@ -19,7 +19,10 @@ internal sealed class NotificationSpec : BaseSpecifications<UserNotification>
     }
 
     public NotificationSpec(int userId, int notificationId)
-        : base(n => n.UserId == userId && n.NotificationId == notificationId) { }
+        : base(n => n.UserId == userId && n.NotificationId == notificationId) 
+    {
+        AddInclude(n => n.Notification);
+    }
 
     public NotificationSpec(int userId, bool unreadOnly, bool forUpdate)
         : base(n => n.UserId == userId && !n.IsRead) { }

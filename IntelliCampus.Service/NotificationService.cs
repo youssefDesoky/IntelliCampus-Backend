@@ -10,9 +10,13 @@ namespace IntelliCampus.Service;
 public class NotificationService : INotificationService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly INotificationStreamService _notificationStreamService;
 
-    public NotificationService(IUnitOfWork unitOfWork)
-        => _unitOfWork = unitOfWork;
+    public NotificationService(IUnitOfWork unitOfWork, INotificationStreamService notificationStreamService)
+    {
+        _unitOfWork = unitOfWork;
+        _notificationStreamService = notificationStreamService;
+    }
 
     private IGenericRepository<Notification, int> Notifications
         => _unitOfWork.GetRepository<Notification, int>();
@@ -102,14 +106,19 @@ public class NotificationService : INotificationService
         Notifications.Add(notification);
         await _unitOfWork.SaveChangesAsync();
 
-        UserNotifications.Add(new UserNotification
+        var userNotification = new UserNotification
         {
             UserId = userId,
             NotificationId = notification.NotificationId,
-            IsRead = false
-        });
+            IsRead = false,
+            Notification = notification
+        };
+
+        UserNotifications.Add(userNotification);
 
         await _unitOfWork.SaveChangesAsync();
+
+        _notificationStreamService.Publish(userId, MapToDto(userNotification));
     }
 
     public async Task SendToManyAsync(
@@ -130,17 +139,28 @@ public class NotificationService : INotificationService
         Notifications.Add(notification);
         await _unitOfWork.SaveChangesAsync();
 
+        var createdUserNotifications = new List<UserNotification>();
+
         foreach (var userId in userIdList)
         {
-            UserNotifications.Add(new UserNotification
+            var userNotification = new UserNotification
             {
                 UserId = userId,
                 NotificationId = notification.NotificationId,
-                IsRead = false
-            });
+                IsRead = false,
+                Notification = notification
+            };
+
+            UserNotifications.Add(userNotification);
+            createdUserNotifications.Add(userNotification);
         }
 
         await _unitOfWork.SaveChangesAsync();
+
+        foreach (var userNotification in createdUserNotifications)
+        {
+            _notificationStreamService.Publish(userNotification.UserId, MapToDto(userNotification));
+        }
     }
 
     private static NotificationDto MapToDto(UserNotification un) => new()
@@ -157,33 +177,33 @@ public class NotificationService : INotificationService
 
     private static string GetTypeLabel(NotificationType type) => type switch
     {
-        NotificationType.CourseRegistered       => "Course Registration",
-        NotificationType.AssignmentSubmitted    => "Assignment Submitted",
-        NotificationType.AssignmentGraded       => "Assignment Graded",
-        NotificationType.NewAssignmentPosted    => "New Assignment",
-        NotificationType.QuizSubmitted          => "Quiz Submitted",
-        NotificationType.QuizGraded             => "Quiz Graded",
-        NotificationType.NewQuizPosted          => "New Quiz",
-        NotificationType.AttendanceWarning      => "Attendance Warning",
-        NotificationType.ScheduleUpdated        => "Schedule Updated",
-        NotificationType.ClassCancelled         => "Class Cancelled",
+        NotificationType.CourseRegistered => "Course Registration",
+        NotificationType.AssignmentSubmitted => "Assignment Submitted",
+        NotificationType.AssignmentGraded => "Assignment Graded",
+        NotificationType.NewAssignmentPosted => "New Assignment",
+        NotificationType.QuizSubmitted => "Quiz Submitted",
+        NotificationType.QuizGraded => "Quiz Graded",
+        NotificationType.NewQuizPosted => "New Quiz",
+        NotificationType.AttendanceWarning => "Attendance Warning",
+        NotificationType.ScheduleUpdated => "Schedule Updated",
+        NotificationType.ClassCancelled => "Class Cancelled",
         NotificationType.GradeComplaintReviewed => "Complaint Reviewed",
-        NotificationType.MaterialUploaded       => "Material Uploaded",
-        NotificationType.Announcement           => "Announcement",
-        NotificationType.Reminder               => "Reminder",
-        _                                       => "Notification"
+        NotificationType.MaterialUploaded => "Material Uploaded",
+        NotificationType.Announcement => "Announcement",
+        NotificationType.Reminder => "Reminder",
+        _ => "Notification"
     };
 
     private static string GetTimeAgo(DateTime createdAt)
     {
         var diff = DateTime.UtcNow - createdAt;
 
-        return diff.TotalMinutes < 1   ? "Just now"
-             : diff.TotalMinutes < 60  ? $"{(int)diff.TotalMinutes} minutes ago"
-             : diff.TotalHours < 24    ? $"{(int)diff.TotalHours} hours ago"
-             : diff.TotalDays < 7     ? $"{(int)diff.TotalDays} days ago"
-             : diff.TotalDays < 30    ? $"{(int)(diff.TotalDays / 7)} weeks ago"
-             : diff.TotalDays < 365   ? $"{(int)(diff.TotalDays / 30)} months ago"
+        return diff.TotalMinutes < 1 ? "Just now"
+             : diff.TotalMinutes < 60 ? $"{(int)diff.TotalMinutes} minutes ago"
+             : diff.TotalHours < 24 ? $"{(int)diff.TotalHours} hours ago"
+             : diff.TotalDays < 7 ? $"{(int)diff.TotalDays} days ago"
+             : diff.TotalDays < 30 ? $"{(int)(diff.TotalDays / 7)} weeks ago"
+             : diff.TotalDays < 365 ? $"{(int)(diff.TotalDays / 30)} months ago"
              : $"{(int)(diff.TotalDays / 365)} years ago";
     }
 }

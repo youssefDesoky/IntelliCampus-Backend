@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Notification;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +11,7 @@ namespace IntelliCampus.Web.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class NotificationsController(INotificationService notificationService)
+public class NotificationsController(INotificationService notificationService, INotificationStreamService notificationStreamService)
     : ControllerBase
 {
     private int UserId
@@ -62,5 +64,46 @@ public class NotificationsController(INotificationService notificationService)
         await notificationService.SendToManyAsync(dto.UserIds, dto.Type, dto.Message);
 
         return Ok(new { sent = dto.UserIds.Count });
+    }
+
+    [HttpGet("stream")]
+    public async Task StreamNotifications(CancellationToken cancellationToken)
+    {
+        Response.ContentType = "text/event-stream";
+        Response.Headers["Cache-Control"] = "no-cache";
+        Response.Headers["Connection"] = "keep-alive";
+
+        var subscription = notificationStreamService.Subscribe(UserId);
+        try
+        {
+            var unreadNotifications = await notificationService.GetUnreadAsync(UserId);
+            foreach (var notification in unreadNotifications)
+            {
+                await WriteEventAsync(notification, cancellationToken);
+            }
+
+            await foreach (var notification in subscription.Reader.ReadAllAsync(cancellationToken))
+            {
+                await WriteEventAsync(notification, cancellationToken);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Client disconnected.
+        }
+        finally
+        {
+            notificationStreamService.Unsubscribe(UserId, subscription.ConnectionId);
+        }
+    }
+
+    private async Task WriteEventAsync(NotificationDto notification, CancellationToken cancellationToken)
+    {
+        var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+        var json = JsonSerializer.Serialize(notification, options);
+        var payload = $"data: {json}\n\n";
+        var bytes = Encoding.UTF8.GetBytes(payload);
+        await Response.Body.WriteAsync(bytes, cancellationToken);
+        await Response.Body.FlushAsync(cancellationToken);
     }
 }

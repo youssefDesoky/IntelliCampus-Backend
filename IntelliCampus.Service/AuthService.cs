@@ -9,7 +9,8 @@ namespace IntelliCampus.Service;
 public class AuthService(
     IUnitOfWork unitOfWork,
     IPasswordService passwordService,
-    ITokenService tokenService) : IAuthService
+    ITokenService tokenService,
+    INotificationService notificationService) : IAuthService
 {
     private const string DefaultProfileImage = "/images/default-avatar.png";
 
@@ -41,6 +42,8 @@ public class AuthService(
         };
     }
 
+    private readonly INotificationService _notificationService = notificationService;
+
     public async Task<MeResponseDto?> GetMeAsync(int userId)
     {
         var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
@@ -55,14 +58,14 @@ public class AuthService(
             Email = user.Email,
             Role = user.Role.ToString(),
             ProfileImage = user.ProfileImage ?? DefaultProfileImage,
-            Notifications = new { message = "Notifications placeholder" }
+            Notifications = (await _notificationService.GetUnreadAsync(userId)).ToList()
         };
     }
 
     public async Task<UserProfileDto?> GetProfileAsync(int userId)
     {
         var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
-        
+
         if (user is null)
             return null;
 
