@@ -158,7 +158,6 @@ public class AttendanceService : IAttendanceService
 
         return new AttendanceResultDto
         {
-            StudentId = payload.UserId,
             StudentName = student?.FullName ?? payload.Name,
             StudentCode = payload.StudentCode,
             Status = dto.Status,
@@ -209,7 +208,6 @@ public class AttendanceService : IAttendanceService
 
         return new AttendanceResultDto
         {
-            StudentId = student.UserId,
             StudentName = student.FullName,
             StudentCode = student.StudentCode ?? dto.StudentCode,
             Status = dto.Status,
@@ -228,10 +226,15 @@ public class AttendanceService : IAttendanceService
         if (classEntity?.InstructorId != instructorId)
             throw new InvalidOperationException("Not authorized.");
 
+        var allStudents = await Students.GetAllAsync();
+
         foreach (var record in dto.Records)
         {
+            var student = allStudents.FirstOrDefault(s => s.StudentCode == record.StudentCode);
+            if (student is null) continue;
+
             var alreadyRecorded = await Attendances.AnyAsync(
-                a => a.StudentId == record.StudentId
+                a => a.StudentId == student.UserId
                   && a.SessionId == dto.SessionId);
 
             if (alreadyRecorded) continue;
@@ -239,7 +242,7 @@ public class AttendanceService : IAttendanceService
             Attendances.Add(new Attendance
             {
                 SessionId = dto.SessionId,
-                StudentId = record.StudentId,
+                StudentId = student.UserId,
                 Status = record.Status,
                 Date = DateTime.UtcNow
             });
@@ -249,8 +252,11 @@ public class AttendanceService : IAttendanceService
 
         foreach (var record in dto.Records)
         {
+            var student = allStudents.FirstOrDefault(s => s.StudentCode == record.StudentCode);
+            if (student is null) continue;
+
             await CheckAndNotifyThresholdAsync(
-                record.StudentId,
+                student.UserId,
                 classEntity.CourseId,
                 classEntity.GroupCode ?? "");
         }
@@ -325,7 +331,7 @@ public class AttendanceService : IAttendanceService
 
             return new StudentAttendanceSummary
             {
-                StudentId = studentId,
+                StudentCode = sa.First().Student?.StudentCode ?? "",
                 StudentName = sa.First().Student?.FullName,
                 Present = present,
                 Absent = absent,

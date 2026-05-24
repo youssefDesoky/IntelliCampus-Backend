@@ -11,7 +11,7 @@ public class RecordAttendanceDto
 
 public class AttendanceEntry
 {
-    public int StudentId { get; set; }
+    public string StudentCode { get; set; } = string.Empty;
 
     public AttendanceStatus Status { get; set; }
 }

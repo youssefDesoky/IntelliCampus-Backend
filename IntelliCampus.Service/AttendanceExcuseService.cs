@@ -128,7 +128,7 @@ public class AttendanceExcuseService : IAttendanceExcuseService
     private AttendanceExcuseDto MapToDto(AttendanceExcuse e) => new()
     {
         ExcuseId = e.ExcuseId,
-        StudentId = e.StudentId,
+        StudentCode = e.Student?.StudentCode ?? "",
         StudentName = e.Student?.FullName,
         SessionId = e.SessionId,
         Reason = e.Reason,

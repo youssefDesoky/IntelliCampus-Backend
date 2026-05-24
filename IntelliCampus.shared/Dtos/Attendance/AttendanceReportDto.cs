@@ -15,7 +15,7 @@ public class AttendanceReportDto
 
 public class StudentAttendanceSummary
 {
-    public int StudentId { get; set; }
+    public string StudentCode { get; set; } = string.Empty;
     public string? StudentName { get; set; }
     public int Present { get; set; }
     public int Absent { get; set; }

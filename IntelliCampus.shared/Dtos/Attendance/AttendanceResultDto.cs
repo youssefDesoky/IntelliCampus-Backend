@@ -4,7 +4,6 @@ namespace IntelliCampus.shared.Dtos.Attendance;
 
 public class AttendanceResultDto
 {
-    public int StudentId { get; set; }
     public string StudentName { get; set; } = string.Empty;
     public string StudentCode { get; set; } = string.Empty;
     public AttendanceStatus Status { get; set; }
