@@ -51,7 +51,9 @@ public class SessionService : ISessionService
         Sessions.Add(session);
         await _unitOfWork.SaveChangesAsync();
 
-        return MapToDto(session);
+        var spec = new SessionSpec(session.SessionId);
+        var result = await Sessions.GetByIdAsync(spec);
+        return MapToDto(result!);
     }
 
     public async Task<bool> DeleteAsync(int sessionId, int instructorId)

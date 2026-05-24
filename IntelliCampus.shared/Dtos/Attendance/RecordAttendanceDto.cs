@@ -6,10 +6,10 @@ public class RecordAttendanceDto
 {
     public int SessionId { get; set; }
 
-    public List<StudentAttendanceRecord> Records { get; set; } = [];
+    public List<AttendanceEntry> Records { get; set; } = [];
 }
 
-public class StudentAttendanceRecord
+public class AttendanceEntry
 {
     public int StudentId { get; set; }
 

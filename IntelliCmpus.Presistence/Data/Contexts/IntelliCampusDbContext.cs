@@ -57,6 +57,9 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<AnnouncementAttachment> AnnouncementAttachments { get; set; }
     public DbSet<AnnouncementComment> AnnouncementComments { get; set; }
 
+    // Attendance
+    public DbSet<QrToken> QrTokens { get; set; }
+
     // Junction tables
     public DbSet<StudentCourse> StudentCourses { get; set; }
     public DbSet<StudentQuiz> StudentQuizzes { get; set; }

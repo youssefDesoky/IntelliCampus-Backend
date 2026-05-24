@@ -15,7 +15,10 @@ public class AttendanceController(
     IAttendanceService attendanceService,
     IAttendanceExcuseService excuseService) : ControllerBase
 {
-    private int UserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private int UserId
+        => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+    // ─── Sessions ──────────────────────────────────────────────────────────────
 
     [HttpGet("sessions/{sessionId}")]
     public async Task<IActionResult> GetSession(int sessionId)
@@ -38,6 +41,38 @@ public class AttendanceController(
     public async Task<IActionResult> DeleteSession(int sessionId)
         => Ok(await sessionService.DeleteAsync(sessionId, UserId));
 
+    // ─── QR — Student dashboard ────────────────────────────────────────────────
+
+    [HttpGet("qr")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> GetQrCode()
+    {
+        var result = await attendanceService.GenerateQrAsync(UserId);
+        return Ok(result);
+    }
+
+    // ─── QR — Instructor scans ─────────────────────────────────────────────────
+
+    [HttpPost("scan")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> ScanQr(ScanQrDto dto)
+    {
+        var result = await attendanceService.ScanQrAsync(UserId, dto);
+        return Ok(result);
+    }
+
+    // ─── Manual entry ──────────────────────────────────────────────────────────
+
+    [HttpPost("manual")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> RecordManual(ManualAttendanceDto dto)
+    {
+        var result = await attendanceService.RecordManualAsync(UserId, dto);
+        return Ok(result);
+    }
+
+    // ─── Bulk record ───────────────────────────────────────────────────────────
+
     [HttpPost("record")]
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> Record(RecordAttendanceDto dto)
@@ -46,10 +81,14 @@ public class AttendanceController(
         return Ok();
     }
 
+    // ─── Student read ──────────────────────────────────────────────────────────
+
     [HttpGet("my-attendance/course/{courseId}")]
     [Authorize(Roles = "Student")]
     public async Task<IActionResult> GetMyAttendance(int courseId)
         => Ok(await attendanceService.GetByStudentAndCourseAsync(UserId, courseId));
+
+    // ─── Instructor read ───────────────────────────────────────────────────────
 
     [HttpGet("report/class/{classId}")]
     [Authorize(Roles = "Instructor")]
@@ -61,10 +100,13 @@ public class AttendanceController(
     public async Task<IActionResult> GetPercentage(int studentId, int courseId)
         => Ok(await attendanceService.GetAttendancePercentageAsync(studentId, courseId));
 
+    // ─── Excuses ───────────────────────────────────────────────────────────────
+
     [HttpPost("/api/courses/{courseId}/attendance/excuse")]
     [Authorize(Roles = "Student")]
     [RequestSizeLimit(11 * 1024 * 1024)]
-    public async Task<IActionResult> SubmitExcuse(int courseId, [FromForm] SubmitExcuseFormDto dto)
+    public async Task<IActionResult> SubmitExcuse(
+        int courseId, [FromForm] SubmitExcuseFormDto dto)
     {
         var result = await excuseService.SubmitAsync(UserId, courseId, dto);
         return Ok(result);
@@ -82,7 +124,8 @@ public class AttendanceController(
 
     [HttpPatch("excuses/{excuseId}/status")]
     [Authorize(Roles = "Instructor")]
-    public async Task<IActionResult> UpdateExcuseStatus(int excuseId, [FromBody] ExcuseStatus status)
+    public async Task<IActionResult> UpdateExcuseStatus(
+        int excuseId, [FromBody] ExcuseStatus status)
     {
         var result = await excuseService.UpdateStatusAsync(excuseId, status, UserId);
         return Ok(result);

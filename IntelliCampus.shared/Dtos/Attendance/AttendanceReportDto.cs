@@ -9,6 +9,7 @@ public class AttendanceReportDto
     public int     TotalSessions            { get; set; }
     public decimal OnTimePercentage         { get; set; }   // Present / Total
     public decimal NeedsImprovementPercentage { get; set; } // Late  / Total
+    public int BelowThresholdCount { get; set; }
     public List<StudentAttendanceSummary> Students { get; set; } = [];
 }
 
