@@ -72,12 +72,12 @@ public class AssignmentService(
 
     public async Task<AssignmentDto> CreateAsync(int instructorId, CreateAssignmentDto dto)
     {
-        var classEntity = await Classes.GetByIdAsync(dto.ClassId);
-        if (classEntity is null)
-            throw new InvalidOperationException("Class not found.");
+        // Verify instructor teaches this course (at least one class for this course)
+        var instructorTeachesCourse = (await Classes.GetAllAsync())
+            .Any(c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
 
-        if (classEntity.InstructorId != instructorId)
-            throw new InvalidOperationException("You are not authorized to create assignments for this class.");
+        if (!instructorTeachesCourse)
+            throw new InvalidOperationException("You do not teach this course.");
 
         var assignment = new Assignment
         {
@@ -86,7 +86,7 @@ public class AssignmentService(
             FullInstructions = dto.FullInstructions,
             DueDate = dto.DueDate,
             MaxGrade = dto.TotalPoints,
-            ClassId = dto.ClassId,
+            CourseId = dto.CourseId,
             Attachments = dto.Attachments.Select(a => new AssignmentAttachment
             {
                 Id = a.Id,
@@ -100,9 +100,8 @@ public class AssignmentService(
         await _unitOfWork.SaveChangesAsync();
 
         // Auto-create reminders for students registered in this course
-        var courseId = classEntity.CourseId;
         var registered = (await StudentCourses.GetAllAsync())
-            .Where(sc => sc.CourseId == courseId)
+            .Where(sc => sc.CourseId == dto.CourseId)
             .Select(sc => sc.StudentId)
             .Distinct()
             .ToList();
@@ -135,13 +134,64 @@ public class AssignmentService(
         return MapToDtoWithStatus(result!, submission: null);
     }
 
+    public async Task<AssignmentDto> UpdateAsync(int instructorId, int assignmentId, UpdateAssignmentDto dto)
+    {
+        var assignment = await Assignments.GetByIdAsync(assignmentId);
+        if (assignment is null)
+            throw new InvalidOperationException("Assignment not found.");
+
+        // Verify instructor teaches the course this assignment belongs to
+        var instructorTeachesCourse = (await Classes.GetAllAsync())
+            .Any(c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
+
+        if (!instructorTeachesCourse)
+            throw new InvalidOperationException("You are not authorized to edit this assignment.");
+
+        // If course changed, verify instructor teaches the new course
+        if (dto.CourseId != assignment.CourseId)
+        {
+            var instructorTeachesNewCourse = (await Classes.GetAllAsync())
+                .Any(c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
+            if (!instructorTeachesNewCourse)
+                throw new InvalidOperationException("You do not teach the target course.");
+
+            assignment.CourseId = dto.CourseId;
+        }
+
+        // Update fields
+        assignment.Title = dto.Title;
+        assignment.Description = dto.Description;
+        assignment.FullInstructions = dto.FullInstructions;
+        assignment.DueDate = dto.DueDate;
+        assignment.MaxGrade = dto.TotalPoints;
+
+        // Replace attachments
+        assignment.Attachments = dto.Attachments?.Select(a => new AssignmentAttachment
+        {
+            Id = a.Id,
+            Name = a.Name,
+            Size = a.Size,
+            Url = a.Url
+        }).ToList() ?? new List<AssignmentAttachment>();
+
+        Assignments.Update(assignment);
+        await _unitOfWork.SaveChangesAsync();
+
+        var spec = new AssignmentSpec(assignment.AssignmentId);
+        var result = await Assignments.GetByIdAsync(spec);
+        return MapToDtoWithStatus(result!, submission: null);
+    }
+
     public async Task<bool> DeleteAsync(int assignmentId, int instructorId)
     {
         var assignment = await Assignments.GetByIdAsync(assignmentId);
         if (assignment is null) return false;
 
-        var classEntity = await Classes.GetByIdAsync(assignment.ClassId);
-        if (classEntity?.InstructorId != instructorId)
+        // Verify instructor teaches the course this assignment belongs to
+        var instructorTeachesCourse = (await Classes.GetAllAsync())
+            .Any(c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
+
+        if (!instructorTeachesCourse)
             throw new InvalidOperationException("You are not authorized to delete this assignment.");
 
         Assignments.Delete(assignment);
@@ -155,8 +205,11 @@ public class AssignmentService(
         if (assignment is null)
             throw new InvalidOperationException("Assignment not found.");
 
-        var classEntity = await Classes.GetByIdAsync(assignment.ClassId);
-        if (classEntity?.InstructorId != instructorId)
+        // Verify instructor teaches the course this assignment belongs to
+        var instructorTeachesCourse = (await Classes.GetAllAsync())
+            .Any(c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
+
+        if (!instructorTeachesCourse)
             throw new InvalidOperationException("Not authorized.");
 
         var spec = new StudentAssignmentSpec(assignmentId, allSubmissions: true);
@@ -268,11 +321,15 @@ public class AssignmentService(
         if (submission is null) return null;
 
         var assignment = await Assignments.GetByIdAsync(submission.AssignmentId);
-        var classEntity = await Classes.GetByIdAsync(assignment!.ClassId);
-        if (classEntity?.InstructorId != instructorId)
+
+        // Verify instructor teaches the course this assignment belongs to
+        var instructorTeachesCourse = (await Classes.GetAllAsync())
+            .Any(c => c.CourseId == assignment!.CourseId && c.InstructorId == instructorId);
+
+        if (!instructorTeachesCourse)
             throw new InvalidOperationException("Not authorized.");
 
-        if (dto.Score > assignment.MaxGrade)
+        if (dto.Score > assignment!.MaxGrade)
             throw new InvalidOperationException($"Score cannot exceed total points of {assignment.MaxGrade}.");
 
         submission.Grade = dto.Score;
@@ -328,6 +385,7 @@ public class AssignmentService(
     private static SubmissionDto MapSubmissionToDto(StudentAssignment sa) => new()
     {
         Id = sa.StudentAssignmentId.ToString(),
+        StudentName = sa.Student?.FullName,
         Status = "successful",
         SubmittedAt = sa.SubmittedAt.ToString("dd MM yyyy HH:mm"),
         IsLate = sa.IsLate,

@@ -21,6 +21,11 @@ public class AssignmentsController(IAssignmentService assignmentService) : Contr
     public async Task<IActionResult> GetByCourse(int courseId)
         => Ok(await assignmentService.GetByStudentAndCourseAsync(UserId, courseId));
 
+    [HttpGet("instructor/course/{courseId}")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> GetInstructorByCourse(int courseId)
+        => Ok(await assignmentService.GetByCourseIdAsync(courseId));
+
     [HttpGet("{courseId}/stats")]
     [Authorize(Roles = "Student")]
     public async Task<IActionResult> GetStats(int courseId)
@@ -37,6 +42,11 @@ public class AssignmentsController(IAssignmentService assignmentService) : Contr
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> Create([FromBody] CreateAssignmentDto dto)
         => Ok(await assignmentService.CreateAsync(UserId, dto));
+
+    [HttpPut("{assignmentId}")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> Update(int assignmentId, [FromBody] UpdateAssignmentDto dto)
+        => Ok(await assignmentService.UpdateAsync(UserId, assignmentId, dto));
 
     [HttpGet("{assignmentId}/submissions")]
     [Authorize(Roles = "Instructor")]

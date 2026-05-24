@@ -361,8 +361,8 @@ public class GradeService : IGradeService
         var assignment = await Assignments.GetByIdAsync(submission.AssignmentId);
         if (assignment is null) return null;
 
-        var cls = await Classes.GetByIdAsync(assignment.ClassId);
-        if (cls?.InstructorId != instructorId)
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
+        if (!teachesCourse)
             throw new InvalidOperationException("Not authorized.");
 
         complaint.Status = "Reviewed";

@@ -20,9 +20,9 @@ public class AssignmentConfiguration : IEntityTypeConfiguration<Assignment>
         builder.Property(a => a.MaxGrade)
             .HasPrecision(10, 2);
 
-        builder.HasOne(a => a.Class)
+        builder.HasOne(a => a.Course)
             .WithMany(c => c.Assignments)
-            .HasForeignKey(a => a.ClassId)
+            .HasForeignKey(a => a.CourseId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -19,5 +19,4 @@ public class Class
     public Instructor? Instructor { get; set; }
     public ICollection<Session> Sessions { get; set; } = new List<Session>();
     public ICollection<StudentCourse> StudentCourses { get; set; } = new List<StudentCourse>();
-    public ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
 }

@@ -9,6 +9,7 @@ public interface IAssignmentService
     Task<AssignmentDto?> GetByIdAsync(int assignmentId, int? studentId = null);
     Task<IEnumerable<AssignmentDto>> GetByCourseIdAsync(int courseId, int? studentId = null);
     Task<AssignmentDto> CreateAsync(int instructorId, CreateAssignmentDto dto);
+    Task<AssignmentDto> UpdateAsync(int instructorId, int assignmentId, UpdateAssignmentDto dto);
     Task<bool> DeleteAsync(int assignmentId, int instructorId);
     Task<IEnumerable<SubmissionDto>> GetAllSubmissionsAsync(int assignmentId, int instructorId);
     Task<AssignmentDto?> GradeSubmissionAsync(int instructorId, GradeSubmissionDto dto);

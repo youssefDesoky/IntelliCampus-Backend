@@ -1,6 +1,6 @@
-namespace IntelliCampus.Shared.Dtos.Assignment;
+﻿namespace IntelliCampus.Shared.Dtos.Assignment;
 
-public class CreateAssignmentDto
+public class UpdateAssignmentDto
 {
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }

@@ -3,6 +3,7 @@ namespace IntelliCampus.Shared.Dtos.Assignment;
 public class SubmissionDto
 {
     public string Id { get; set; } = string.Empty;
+    public string? StudentName { get; set; }
     public string Status { get; set; } = string.Empty;
     public string SubmittedAt { get; set; } = string.Empty;
     public bool IsLate { get; set; }

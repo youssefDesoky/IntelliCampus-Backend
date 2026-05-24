@@ -18,18 +18,11 @@ public static class AssignmentSeeder
         var students = await context.Students.ToListAsync();
         var instructors = await context.Instructors.ToListAsync();
 
-        var dataStructures = courses.FirstOrDefault(c => c.CourseCode == "CS-201");
-        var dbms = courses.FirstOrDefault(c => c.CourseCode == "CS-301");
-        var computerNetworks = courses.FirstOrDefault(c => c.CourseCode == "CS-302");
+        var dsCourse = courses.FirstOrDefault(c => c.CourseCode == "CS-201");
+        var dbmsCourse = courses.FirstOrDefault(c => c.CourseCode == "CS-301");
+        var cnCourse = courses.FirstOrDefault(c => c.CourseCode == "CS-302");
 
-        if (dataStructures is null || dbms is null || computerNetworks is null)
-            return;
-
-        var dsClass = classes.FirstOrDefault(c => c.CourseId == dataStructures.CourseId && c.ClassType == ClassType.Lecture);
-        var dbmsClass = classes.FirstOrDefault(c => c.CourseId == dbms.CourseId && c.ClassType == ClassType.Lecture);
-        var cnClass = classes.FirstOrDefault(c => c.CourseId == computerNetworks.CourseId && c.ClassType == ClassType.Lecture);
-
-        if (dsClass is null || dbmsClass is null || cnClass is null)
+        if (dsCourse is null || dbmsCourse is null || cnCourse is null)
             return;
 
         var drAhmed = instructors.FirstOrDefault(i => i.Email == "ahmed.hassan@instructor.com");
@@ -45,7 +38,7 @@ public static class AssignmentSeeder
                 FullInstructions = "Write a program that implements a dynamic array with insert, delete, and search operations. Then implement a singly linked list with the same operations. Compare time complexities.",
                 DueDate = now.AddDays(-3),
                 MaxGrade = 20,
-                ClassId = dsClass.ClassId
+                CourseId = dsCourse.CourseId
             },
             new()
             {
@@ -54,7 +47,7 @@ public static class AssignmentSeeder
                 FullInstructions = "Implement stack and queue data structures using both array-based and linked-list-based approaches. Include standard operations: push, pop, peek, enqueue, dequeue.",
                 DueDate = now.AddDays(7),
                 MaxGrade = 25,
-                ClassId = dsClass.ClassId
+                CourseId = dsCourse.CourseId
             },
             new()
             {
@@ -63,7 +56,7 @@ public static class AssignmentSeeder
                 FullInstructions = "Implement a Binary Search Tree with insertion, deletion, search, inorder/preorder/postorder traversal. Also implement finding minimum, maximum, and successor/predecessor.",
                 DueDate = now.AddDays(-1),
                 MaxGrade = 30,
-                ClassId = dsClass.ClassId
+                CourseId = dsCourse.CourseId
             },
             new()
             {
@@ -72,7 +65,7 @@ public static class AssignmentSeeder
                 FullInstructions = "Design a complete ER diagram for a university system covering students, courses, instructors, departments, enrollments, grades, and attendance. Include all relationships and cardinality constraints.",
                 DueDate = now.AddDays(5),
                 MaxGrade = 50,
-                ClassId = dbmsClass.ClassId
+                CourseId = dbmsCourse.CourseId
             },
             new()
             {
@@ -81,7 +74,7 @@ public static class AssignmentSeeder
                 FullInstructions = "Given a library database schema, write SQL queries for: finding books by author, listing overdue books, calculating fines, finding most borrowed books, and generating member reports.",
                 DueDate = now.AddDays(-1),
                 MaxGrade = 20,
-                ClassId = dbmsClass.ClassId
+                CourseId = dbmsCourse.CourseId
             },
             new()
             {
@@ -90,7 +83,7 @@ public static class AssignmentSeeder
                 FullInstructions = "Research bus, star, ring, mesh, and hybrid topologies. For each: describe structure, list advantages and disadvantages, and provide a real-world use case. Include diagrams.",
                 DueDate = now.AddDays(2),
                 MaxGrade = 15,
-                ClassId = cnClass.ClassId
+                CourseId = cnCourse.CourseId
             }
         };
         context.Assignments.AddRange(assignments);

@@ -9,15 +9,15 @@ public class AssignmentSpec : BaseSpecifications<Assignment>
         : base(a => a.AssignmentId == assignmentId)
     {
         AddInclude(a => a.Attachments);
-        AddInclude("Class.Course");
+        AddInclude(a => a.Course);
     }
 
-    // GetByCourseIdAsync (via Class.CourseId)
+    // GetByCourseIdAsync
     public AssignmentSpec(int courseId, bool byCourse)
-        : base(a => a.Class.CourseId == courseId)
+        : base(a => a.CourseId == courseId)
     {
         AddInclude(a => a.Attachments);
-        AddInclude("Class.Course");
+        AddInclude(a => a.Course);
         AddOrderByDescending(a => a.DueDate);
     }
 }

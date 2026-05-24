@@ -13,11 +13,11 @@ public class Assignment
     // Max grade for the assignment
     public decimal MaxGrade { get; set; }
 
-    // FK to the class this assignment belongs to
-    public int ClassId { get; set; }
+    // FK to the course this assignment belongs to
+    public int CourseId { get; set; }
 
     // Navigation properties
-    public Class Class { get; set; } = null!;
+    public Course Course { get; set; } = null!;
     public ICollection<StudentAssignment> StudentAssignments { get; set; } = [];
     public ICollection<AssignmentAttachment> Attachments { get; set; } = [];
 }
