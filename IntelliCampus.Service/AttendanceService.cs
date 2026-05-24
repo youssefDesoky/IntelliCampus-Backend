@@ -138,6 +138,8 @@ public class AttendanceService : IAttendanceService
         qrToken.ExpiresAt = DateTime.UtcNow.AddSeconds(-1);
         QrTokens.Update(qrToken);
 
+        var student = await Students.GetByIdAsync(payload.UserId);
+
         var attendance = new Attendance
         {
             StudentId = payload.UserId,
@@ -157,7 +159,7 @@ public class AttendanceService : IAttendanceService
         return new AttendanceResultDto
         {
             StudentId = payload.UserId,
-            StudentName = qrToken.Student?.FullName ?? payload.Name,
+            StudentName = student?.FullName ?? payload.Name,
             StudentCode = payload.StudentCode,
             Status = dto.Status,
             RecordedAt = attendance.Date,
@@ -176,12 +178,13 @@ public class AttendanceService : IAttendanceService
         if (classEntity?.InstructorId != instructorId)
             throw new InvalidOperationException("Not authorized.");
 
-        var student = await Students.GetByIdAsync(dto.StudentId);
+        var allStudents = await Students.GetAllAsync();
+        var student = allStudents.FirstOrDefault(s => s.StudentCode == dto.StudentCode);
         if (student is null)
-            throw new InvalidOperationException("Student not found.");
+            throw new InvalidOperationException($"Student with code '{dto.StudentCode}' not found.");
 
         var alreadyRecorded = await Attendances.AnyAsync(
-            a => a.StudentId == dto.StudentId
+            a => a.StudentId == student.UserId
               && a.SessionId == dto.SessionId);
 
         if (alreadyRecorded)
@@ -190,7 +193,7 @@ public class AttendanceService : IAttendanceService
 
         var attendance = new Attendance
         {
-            StudentId = dto.StudentId,
+            StudentId = student.UserId,
             SessionId = dto.SessionId,
             Status = dto.Status,
             Date = DateTime.UtcNow
@@ -200,15 +203,15 @@ public class AttendanceService : IAttendanceService
         await _unitOfWork.SaveChangesAsync();
 
         await CheckAndNotifyThresholdAsync(
-            dto.StudentId,
+            student.UserId,
             classEntity.CourseId,
             classEntity.GroupCode ?? "");
 
         return new AttendanceResultDto
         {
-            StudentId = dto.StudentId,
+            StudentId = student.UserId,
             StudentName = student.FullName,
-            StudentCode = student.StudentCode ?? dto.StudentId.ToString(),
+            StudentCode = student.StudentCode ?? dto.StudentCode,
             Status = dto.Status,
             RecordedAt = attendance.Date,
             Method = "Manual"
@@ -325,7 +328,6 @@ public class AttendanceService : IAttendanceService
                 StudentId = studentId,
                 StudentName = sa.First().Student?.FullName,
                 Present = present,
-                Late = late,
                 Absent = absent,
                 AttendancePercentage = pct,
                 BelowThreshold = pct < AttendanceThreshold

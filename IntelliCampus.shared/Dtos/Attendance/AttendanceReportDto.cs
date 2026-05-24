@@ -18,7 +18,6 @@ public class StudentAttendanceSummary
     public int StudentId { get; set; }
     public string? StudentName { get; set; }
     public int Present { get; set; }
-    public int Late { get; set; }
     public int Absent { get; set; }
     public decimal AttendancePercentage { get; set; }
     public bool BelowThreshold { get; set; }
