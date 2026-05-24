@@ -11,7 +11,7 @@ public class StudentAssignmentSpec : BaseSpecifications<StudentAssignment>
         AddInclude(sa => sa.Files);
         AddInclude(sa => sa.GradedByInstructor);
         AddInclude(sa => sa.Student);
-        AddInclude("Assignment.Class");
+        AddInclude("Assignment.Course");
     }
 
     // GetAllSubmissionsAsync — all submissions for an assignment
