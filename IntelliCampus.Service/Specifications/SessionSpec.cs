@@ -8,6 +8,7 @@ public class SessionSpec : BaseSpecifications<Session>
         : base(s => s.ClassId == classId)
     {
         AddInclude(s => s.Attendances);
+        AddInclude("Attendances.Student");
         AddInclude(s => s.Class);
         AddOrderByDescending(s => s.Date);
     }
@@ -16,6 +17,7 @@ public class SessionSpec : BaseSpecifications<Session>
         : base(s => s.SessionId == sessionId)
     {
         AddInclude(s => s.Attendances);
+        AddInclude("Attendances.Student");
         AddInclude(s => s.Class);
     }
 }
