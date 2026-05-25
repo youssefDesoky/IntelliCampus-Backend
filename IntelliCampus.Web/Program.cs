@@ -5,6 +5,7 @@ using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Settings;
 using IntelliCampus.Presistence.Data.Contexts;
 using IntelliCampus.Presistence.Data.DataSeeding;
+using IntelliCampus.Presentation.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
@@ -31,11 +32,13 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.SetIsOriginAllowed(_ => true)
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -109,6 +112,7 @@ builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<IAttendanceExcuseService, AttendanceExcuseService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddSingleton<INotificationStreamService, NotificationStreamService>(); 
+builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<UrlResolver>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
@@ -141,6 +145,7 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHub<ChatHub>("/hubs/chat");
 app.MapControllers();
 
 app.Run();
