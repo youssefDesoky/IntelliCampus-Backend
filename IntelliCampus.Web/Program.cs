@@ -1,5 +1,6 @@
 using System.Text;
 using IntelliCampus.Service;
+using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Settings;
 using IntelliCampus.Presistence.Data.Contexts;
@@ -108,6 +109,7 @@ builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<IAttendanceExcuseService, AttendanceExcuseService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddSingleton<INotificationStreamService, NotificationStreamService>(); 
+builder.Services.AddScoped<UrlResolver>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
 
