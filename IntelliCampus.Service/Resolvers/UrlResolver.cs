@@ -5,7 +5,7 @@ namespace IntelliCampus.Service.Resolvers;
 public class UrlResolver
 {
     private readonly string _baseUrl;
-    private const string DefaultAvatar = "/images/default-avatar.png";
+    private const string DefaultAvatar = "/images/default-avatar.jpg";
 
     public UrlResolver(IConfiguration configuration)
     {
