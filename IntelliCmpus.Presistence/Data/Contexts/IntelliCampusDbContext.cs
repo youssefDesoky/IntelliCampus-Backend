@@ -70,6 +70,9 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<UserNotification> UserNotifications { get; set; }
     public DbSet<CoursePrerequisite> CoursePrerequisites { get; set; }
 
+    // Chat
+    public DbSet<ChatMessage> ChatMessages { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
