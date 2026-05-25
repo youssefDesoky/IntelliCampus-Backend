@@ -187,6 +187,16 @@ public class MaterialService(
         return true;
     }
 
+    public async Task<(string? FileUrl, string? FileName)?> GetDownloadInfoAsync(int materialId)
+    {
+        var material = await Materials.GetByIdAsync(new MaterialSpec(materialId));
+
+        if (material is null)
+            return null;
+
+        return (material.FileUrl, Path.GetFileName(material.FileUrl));
+    }
+
     #endregion
 
     #region Folders

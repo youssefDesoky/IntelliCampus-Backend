@@ -121,22 +121,25 @@ public class MaterialsController(IMaterialService materialService) : ControllerB
     [HttpGet("{id}/download")]
     public async Task<IActionResult> Download(int id)
     {
-        var material = await _materialService.GetByIdAsync(id);
+        var downloadInfo = await _materialService.GetDownloadInfoAsync(id);
 
-        if (material is null)
+        if (downloadInfo is null)
             return NotFound();
 
-        if (string.IsNullOrEmpty(material.FileUrl))
+        var (fileUrl, fileName) = downloadInfo.Value;
+
+        if (string.IsNullOrEmpty(fileUrl))
             return BadRequest(new { message = "No file associated with this material." });
 
-        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", material.FileUrl.TrimStart('/'));
+        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", fileUrl.TrimStart('/'));
 
         if (!System.IO.File.Exists(filePath))
             return NotFound(new { message = "File not found on server." });
 
-        var fileName = Path.GetFileName(filePath);
         // Remove the GUID prefix for a clean download name
-        var downloadName = fileName.Contains('_') ? fileName[(fileName.IndexOf('_') + 1)..] : fileName;
+        var downloadName = fileName is not null && fileName.Contains('_')
+            ? fileName[(fileName.IndexOf('_') + 1)..]
+            : fileName ?? Path.GetFileName(filePath);
 
         var contentType = GetContentType(filePath);
         var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
