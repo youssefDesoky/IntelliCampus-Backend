@@ -12,18 +12,17 @@ public static class QuizSeeder
         if (await context.Quizzes.AnyAsync())
             return;
 
-        var classes = await context.Classes.ToListAsync();
         var courses = await context.Courses.ToListAsync();
         var students = await context.Students.ToListAsync();
-        if (classes.Count == 0 || courses.Count == 0 || students.Count == 0)
+        if (courses.Count == 0 || students.Count == 0)
             return;
 
-        var cs201Lecture = classes.FirstOrDefault(c => c.GroupCode == "CS-L1" && c.ClassType == ClassType.Lecture && c.CourseId == courses.First(cr => cr.CourseCode == "CS-201").CourseId);
-        var cs301Lecture = classes.FirstOrDefault(c => c.GroupCode == "CS-L1" && c.ClassType == ClassType.Lecture && c.CourseId == courses.First(cr => cr.CourseCode == "CS-301").CourseId);
-        var cs302Lecture = classes.FirstOrDefault(c => c.GroupCode == "CS-L1" && c.ClassType == ClassType.Lecture && c.CourseId == courses.First(cr => cr.CourseCode == "CS-302").CourseId);
-        var is202Lecture = classes.FirstOrDefault(c => c.GroupCode == "IS-L1" && c.ClassType == ClassType.Lecture && c.CourseId == courses.First(cr => cr.CourseCode == "IS-202").CourseId);
+        var cs201 = courses.FirstOrDefault(c => c.CourseCode == "CS-201");
+        var cs301 = courses.FirstOrDefault(c => c.CourseCode == "CS-301");
+        var cs302 = courses.FirstOrDefault(c => c.CourseCode == "CS-302");
+        var is202 = courses.FirstOrDefault(c => c.CourseCode == "IS-202");
 
-        if (cs201Lecture is null || cs301Lecture is null || cs302Lecture is null || is202Lecture is null)
+        if (cs201 is null || cs301 is null || cs302 is null || is202 is null)
             return;
 
         var now = DateTime.UtcNow;
@@ -31,20 +30,20 @@ public static class QuizSeeder
         var quizzes = new List<Quiz>
         {
             // CS-201 — Data Structures
-            new() { Title = "Data Structures Basics", Description = "Arrays, linked lists, stacks, and queues", DueDate = now.AddDays(-5), DurationMinutes = 30, MaxGrade = 20, TotalMarks = 20, ClassId = cs201Lecture.ClassId },
-            new() { Title = "Advanced Trees", Description = "BST, AVL trees, and tree traversals", DueDate = now.AddDays(-2), DurationMinutes = 45, MaxGrade = 30, TotalMarks = 30, ClassId = cs201Lecture.ClassId },
-            new() { Title = "Sorting & Searching", Description = "Sorting algorithms and search techniques", DueDate = now.AddDays(7), DurationMinutes = 40, MaxGrade = 25, TotalMarks = 25, ClassId = cs201Lecture.ClassId },
+            new() { Title = "Data Structures Basics", Description = "Arrays, linked lists, stacks, and queues", DueDate = now.AddDays(-5), DurationMinutes = 30, MaxGrade = 20, TotalMarks = 20, CourseId = cs201.CourseId },
+            new() { Title = "Advanced Trees", Description = "BST, AVL trees, and tree traversals", DueDate = now.AddDays(-2), DurationMinutes = 45, MaxGrade = 30, TotalMarks = 30, CourseId = cs201.CourseId },
+            new() { Title = "Sorting & Searching", Description = "Sorting algorithms and search techniques", DueDate = now.AddDays(7), DurationMinutes = 40, MaxGrade = 25, TotalMarks = 25, CourseId = cs201.CourseId },
 
             // CS-301 — Database Systems
-            new() { Title = "SQL Fundamentals", Description = "SELECT, JOINs, subqueries, and aggregate functions", DueDate = now.AddDays(-3), DurationMinutes = 30, MaxGrade = 20, TotalMarks = 20, ClassId = cs301Lecture.ClassId },
-            new() { Title = "Database Normalization", Description = "Normal forms, functional dependencies, and schema design", DueDate = now.AddDays(10), DurationMinutes = 35, MaxGrade = 25, TotalMarks = 25, ClassId = cs301Lecture.ClassId },
+            new() { Title = "SQL Fundamentals", Description = "SELECT, JOINs, subqueries, and aggregate functions", DueDate = now.AddDays(-3), DurationMinutes = 30, MaxGrade = 20, TotalMarks = 20, CourseId = cs301.CourseId },
+            new() { Title = "Database Normalization", Description = "Normal forms, functional dependencies, and schema design", DueDate = now.AddDays(10), DurationMinutes = 35, MaxGrade = 25, TotalMarks = 25, CourseId = cs301.CourseId },
 
             // IS-202 — Web Development
-            new() { Title = "HTML & CSS Basics", Description = "HTML5 structure, semantic tags, and CSS styling", DueDate = now.AddDays(-1), DurationMinutes = 20, MaxGrade = 15, TotalMarks = 15, ClassId = is202Lecture.ClassId },
-            new() { Title = "JavaScript Fundamentals", Description = "Variables, functions, DOM manipulation, and events", DueDate = now.AddDays(5), DurationMinutes = 30, MaxGrade = 20, TotalMarks = 20, ClassId = is202Lecture.ClassId },
+            new() { Title = "HTML & CSS Basics", Description = "HTML5 structure, semantic tags, and CSS styling", DueDate = now.AddDays(-1), DurationMinutes = 20, MaxGrade = 15, TotalMarks = 15, CourseId = is202.CourseId },
+            new() { Title = "JavaScript Fundamentals", Description = "Variables, functions, DOM manipulation, and events", DueDate = now.AddDays(5), DurationMinutes = 30, MaxGrade = 20, TotalMarks = 20, CourseId = is202.CourseId },
 
             // CS-302 — Computer Networks
-            new() { Title = "Networking Basics", Description = "OSI model, TCP/IP, IP addressing, and subnetting", DueDate = now.AddDays(14), DurationMinutes = 40, MaxGrade = 25, TotalMarks = 25, ClassId = cs302Lecture.ClassId },
+            new() { Title = "Networking Basics", Description = "OSI model, TCP/IP, IP addressing, and subnetting", DueDate = now.AddDays(14), DurationMinutes = 40, MaxGrade = 25, TotalMarks = 25, CourseId = cs302.CourseId },
         };
         await context.Quizzes.AddRangeAsync(quizzes);
         await context.SaveChangesAsync();

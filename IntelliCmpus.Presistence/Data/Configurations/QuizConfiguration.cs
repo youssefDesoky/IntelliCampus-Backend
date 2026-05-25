@@ -26,9 +26,9 @@ public class QuizConfiguration : IEntityTypeConfiguration<Quiz>
         builder.Property(q => q.TotalMarks)
             .IsRequired();
 
-        builder.HasOne(q => q.Class)
-            .WithMany()
-            .HasForeignKey(q => q.ClassId)
+        builder.HasOne(q => q.Course)
+            .WithMany(c => c.Quizzes)
+            .HasForeignKey(q => q.CourseId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(q => q.Questions)

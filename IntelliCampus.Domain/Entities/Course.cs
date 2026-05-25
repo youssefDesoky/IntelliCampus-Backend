@@ -23,4 +23,5 @@ public class Course
     public ICollection<Material> Materials { get; set; } = new List<Material>();
     public ICollection<MaterialFolder> MaterialFolders { get; set; } = new List<MaterialFolder>();
     public ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
+    public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
 }

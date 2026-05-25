@@ -12,10 +12,10 @@ public class Quiz
     public int DurationMinutes { get; set; }
     public decimal MaxGrade { get; set; }
     public int TotalMarks { get; set; }
-    public int ClassId { get; set; }
+    public int CourseId { get; set; }
 
     // Navigation properties
-    public Class Class { get; set; } = null!;
+    public Course Course { get; set; } = null!;
     public ICollection<Question> Questions { get; set; } = new List<Question>();
     public ICollection<StudentQuiz> StudentQuizzes { get; set; } = new List<StudentQuiz>();
 }

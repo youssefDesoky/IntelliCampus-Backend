@@ -13,12 +13,9 @@ public class UpdateInstructorDto
     public string? Role { get; set; }
     public string? Specialization { get; set; }
 
-    [JsonPropertyName("instructorId")]
     public string? InstructorCode { get; set; }
 
-    [JsonPropertyName("departmentId")]
     public string? DepartmentName { get; set; }
 
-    [JsonPropertyName("HireDate")]
     public string? HireDate { get; set; }
 }

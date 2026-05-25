@@ -8,7 +8,6 @@ public class CreateAdminDto
     public string FullName { get; set; } = null!;
     public string? FullNameAr { get; set; }
 
-    [JsonPropertyName("phone")]
     public string? PhoneNumber { get; set; }
 
     public string Email { get; set; } = null!;
@@ -16,9 +15,7 @@ public class CreateAdminDto
     public string? Password { get; set; }
     public string? Nationality { get; set; }
 
-    [JsonPropertyName("adminId")]
     public string? AdminCode { get; set; }
 
-    [JsonPropertyName("hireDate")]
     public string? HireDate { get; set; }
 }

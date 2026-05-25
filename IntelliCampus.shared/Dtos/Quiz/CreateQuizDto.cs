@@ -7,5 +7,5 @@ public class CreateQuizDto
     public DateTime DueDate { get; set; }
     public int DurationMinutes { get; set; }
     public decimal MaxGrade { get; set; }
-    public int ClassId { get; set; }
+    public int CourseId { get; set; }
 }

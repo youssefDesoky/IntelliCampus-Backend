@@ -67,7 +67,7 @@ public class QuizService : IQuizService
         var quiz = await Quizzes.GetByIdAsync(spec);
         if (quiz is null) return null;
 
-        if (quiz.Class?.CourseId != parsedCourseId)
+        if (quiz.CourseId != parsedCourseId)
             return null;
 
         var submission = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quizId));
@@ -85,21 +85,22 @@ public class QuizService : IQuizService
         };
     }
 
-    public async Task<IEnumerable<QuizDto>> GetByClassIdAsync(int classId)
+    public async Task<IEnumerable<QuizDto>> GetByCourseIdAsync(int courseId)
     {
-        var spec = new QuizSpec(classId, byClass: true);
+        var spec = new QuizSpec(courseId, byCourse: true);
         var quizzes = await Quizzes.GetAllAsync(spec);
         return quizzes.Select(MapToDto);
     }
 
     public async Task<QuizDto> CreateAsync(int instructorId, CreateQuizDto dto)
     {
-        var classEntity = await Classes.GetByIdAsync(dto.ClassId);
-        if (classEntity is null)
-            throw new InvalidOperationException("Class not found.");
+        var course = await Courses.GetByIdAsync(dto.CourseId);
+        if (course is null)
+            throw new InvalidOperationException("Course not found.");
 
-        if (classEntity.InstructorId != instructorId)
-            throw new InvalidOperationException("Not authorized to create quizzes for this class.");
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
+        if (!teachesCourse)
+            throw new InvalidOperationException("Not authorized to create quizzes for this course.");
 
         var quiz = new Quiz
         {
@@ -109,7 +110,7 @@ public class QuizService : IQuizService
             DurationMinutes = dto.DurationMinutes,
             MaxGrade = dto.MaxGrade,
             TotalMarks = (int)dto.MaxGrade,
-            ClassId = dto.ClassId
+            CourseId = dto.CourseId
         };
 
         Quizzes.Add(quiz);
@@ -125,8 +126,8 @@ public class QuizService : IQuizService
         var quiz = await Quizzes.GetByIdAsync(quizId);
         if (quiz is null) return false;
 
-        var classEntity = await Classes.GetByIdAsync(quiz.ClassId);
-        if (classEntity?.InstructorId != instructorId)
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
+        if (!teachesCourse)
             throw new InvalidOperationException("Not authorized.");
 
         Quizzes.Delete(quiz);
@@ -143,15 +144,9 @@ public class QuizService : IQuizService
         if (course is null)
             throw new InvalidOperationException("Course not found.");
 
-        var classEntity = await Classes.GetByIdAsync(dto.ClassId);
-        if (classEntity is null)
-            throw new InvalidOperationException("Class not found.");
-
-        if (classEntity.CourseId != parsedCourseId)
-            throw new InvalidOperationException("Class does not belong to this course.");
-
-        if (classEntity.InstructorId != instructorId)
-            throw new InvalidOperationException("Not authorized to create quizzes for this class.");
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == parsedCourseId && c.InstructorId == instructorId);
+        if (!teachesCourse)
+            throw new InvalidOperationException("Not authorized to create quizzes for this course.");
 
         var quiz = new Quiz
         {
@@ -161,7 +156,7 @@ public class QuizService : IQuizService
             DurationMinutes = dto.DurationMinutes,
             MaxGrade = dto.MaxGrade,
             TotalMarks = (int)dto.MaxGrade,
-            ClassId = dto.ClassId
+            CourseId = parsedCourseId
         };
 
         Quizzes.Add(quiz);
@@ -184,11 +179,11 @@ public class QuizService : IQuizService
         var quiz = await Quizzes.GetByIdAsync(spec);
         if (quiz is null) return false;
 
-        if (quiz.Class?.CourseId != parsedCourseId)
+        if (quiz.CourseId != parsedCourseId)
             return false;
 
-        var classEntity = await Classes.GetByIdAsync(quiz.ClassId);
-        if (classEntity?.InstructorId != instructorId)
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
+        if (!teachesCourse)
             throw new InvalidOperationException("Not authorized.");
 
         Quizzes.Delete(quiz);
@@ -210,11 +205,11 @@ public class QuizService : IQuizService
         if (quiz is null)
             throw new InvalidOperationException("Quiz not found.");
 
-        if (quiz.Class?.CourseId != parsedCourseId)
+        if (quiz.CourseId != parsedCourseId)
             throw new InvalidOperationException("Quiz does not belong to this course.");
 
-        var classEntity = await Classes.GetByIdAsync(quiz.ClassId);
-        if (classEntity?.InstructorId != instructorId)
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
+        if (!teachesCourse)
             throw new InvalidOperationException("Not authorized.");
 
         foreach (var q in questions)
@@ -249,10 +244,11 @@ public class QuizService : IQuizService
 
         var spec = new QuizSpec(question.QuizId);
         var quiz = await Quizzes.GetByIdAsync(spec);
-        if (quiz is null || quiz.Class?.CourseId != parsedCourseId)
+        if (quiz is null || quiz.CourseId != parsedCourseId)
             throw new InvalidOperationException("Question does not belong to this course.");
 
-        if (quiz.Class?.InstructorId != instructorId)
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
+        if (!teachesCourse)
             throw new InvalidOperationException("Not authorized.");
 
         QuestionsRepo.Delete(question);
@@ -269,10 +265,11 @@ public class QuizService : IQuizService
 
         var spec = new QuizSpec(quizId);
         var quiz = await Quizzes.GetByIdAsync(spec);
-        if (quiz is null || quiz.Class?.CourseId != parsedCourseId)
+        if (quiz is null || quiz.CourseId != parsedCourseId)
             return [];
 
-        if (quiz.Class?.InstructorId != instructorId)
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
+        if (!teachesCourse)
             return [];
 
         var allQuestions = (await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quizId))).ToList();
@@ -304,10 +301,11 @@ public class QuizService : IQuizService
 
         var spec = new QuizSpec(quizId);
         var quiz = await Quizzes.GetByIdAsync(spec);
-        if (quiz is null || quiz.Class?.CourseId != parsedCourseId)
+        if (quiz is null || quiz.CourseId != parsedCourseId)
             throw new InvalidOperationException("Quiz not found.");
 
-        if (quiz.Class?.InstructorId != instructorId)
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
+        if (!teachesCourse)
             throw new InvalidOperationException("Not authorized.");
 
         var existing = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quizId));
@@ -357,8 +355,8 @@ public class QuizService : IQuizService
         if (quiz is null)
             throw new InvalidOperationException("Quiz not found.");
 
-        var classEntity = await Classes.GetByIdAsync(quiz.ClassId);
-        if (classEntity?.InstructorId != instructorId)
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
+        if (!teachesCourse)
             throw new InvalidOperationException("Not authorized.");
 
         var spec = new StudentQuizSpec(quizId, allResults: true);
@@ -381,9 +379,8 @@ public class QuizService : IQuizService
         Deadline = q.DueDate,
         DurationMinutes = q.DurationMinutes,
         MaxScore = q.MaxGrade,
-        ClassId = q.ClassId,
-        ClassName = q.Class?.GroupCode,
-        CourseName = q.Class?.Course?.CourseName,
+        CourseId = q.CourseId,
+        CourseName = q.Course?.CourseName,
         Status = q.DueDate < DateTime.UtcNow ? "Completed" : "Upcoming"
     };
 

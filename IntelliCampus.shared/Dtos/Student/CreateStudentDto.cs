@@ -16,12 +16,9 @@ public class CreateStudentDto
     public int? Level { get; set; }
     public int? DepartmentId { get; set; }
 
-    [JsonPropertyName("department")]
     public string? DepartmentName { get; set; }
 
-    [JsonPropertyName("studentId")]
     public string? StudentCode { get; set; }
 
-    [JsonPropertyName("enrollmentDate")]
     public string? EnrollmentDate { get; set; }
 }

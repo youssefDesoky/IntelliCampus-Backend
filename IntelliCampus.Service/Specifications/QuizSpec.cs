@@ -7,20 +7,13 @@ public class QuizSpec : BaseSpecifications<Quiz>
     public QuizSpec(int quizId)
         : base(q => q.QuizId == quizId)
     {
-        AddInclude("Class.Course");
+        AddInclude(q => q.Course);
     }
 
-    public QuizSpec(int classId, bool byClass)
-        : base(q => q.ClassId == classId)
+    public QuizSpec(int courseId, bool byCourse)
+        : base(q => q.CourseId == courseId)
     {
-        AddInclude("Class.Course");
-        AddOrderByDescending(q => q.DueDate);
-    }
-
-    public QuizSpec(int courseId, string byCourse)
-        : base(q => q.Class.CourseId == courseId)
-    {
-        AddInclude("Class.Course");
+        AddInclude(q => q.Course);
         AddOrderByDescending(q => q.DueDate);
     }
 }

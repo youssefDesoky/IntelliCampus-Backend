@@ -7,7 +7,7 @@ public interface IQuizService
     // Basic CRUD as requested
     Task<QuizHistoryItemDto?> GetByIdAsync(int quizId, int studentId);
     Task<QuizHistoryItemDto?> GetByIdInCourseAsync(int quizId, int studentId, string courseId);
-    Task<IEnumerable<QuizDto>> GetByClassIdAsync(int classId);
+    Task<IEnumerable<QuizDto>> GetByCourseIdAsync(int courseId);
     Task<QuizDto> CreateInCourseAsync(int instructorId, string courseId, CreateQuizDto dto);
     Task<bool> DeleteInCourseAsync(int quizId, int instructorId, string courseId);
     Task AddQuestionsAsync(int quizId, int instructorId, string courseId, List<CreateQuestionDto> questions);

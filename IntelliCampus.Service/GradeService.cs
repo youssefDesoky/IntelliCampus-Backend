@@ -43,7 +43,7 @@ public class GradeService : IGradeService
         var assignments = await Assignments.GetAllAsync(new AssignmentSpec(courseId, byCourse: true));
         var assignmentIds = assignments.Select(a => a.AssignmentId).ToHashSet();
 
-        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseId, "course"));
+        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseId, byCourse: true));
         var quizIds = quizzes.Select(q => q.QuizId).ToHashSet();
 
         // Assignment submissions
@@ -260,7 +260,7 @@ public class GradeService : IGradeService
         }));
 
         // Quiz grades
-        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseId, "course"));
+        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseId, byCourse: true));
         var quizIds = quizzes.Select(q => q.QuizId).ToHashSet();
 
         var quizSubmissions = (await StudentQuizzes.GetAllAsync(new StudentQuizSpec(studentId, true, true)))
