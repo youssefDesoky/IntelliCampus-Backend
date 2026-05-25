@@ -1,16 +1,18 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Announcement;
 
 namespace IntelliCampus.Service;
 
-public class AnnouncementService(IUnitOfWork unitOfWork) : IAnnouncementService
+public class AnnouncementService(IUnitOfWork unitOfWork,     UrlResolver urlResolver) : IAnnouncementService
 {
     private const string DefaultAvatar = "/images/default-avatar.png";
 
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly UrlResolver _urlResolver = urlResolver;
 
     private IGenericRepository<Announcement, int> Announcements
         => _unitOfWork.GetRepository<Announcement, int>();
@@ -130,7 +132,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork) : IAnnouncementService
             {
                 Id = userId.ToString(),
                 Name = user?.FullName ?? "Unknown",
-                Avatar = user?.ProfileImage ?? DefaultAvatar
+                Avatar = _urlResolver.Resolve(user?.ProfileImage ?? DefaultAvatar)
             },
             Date = comment.CreatedAt,
             Content = comment.Content
@@ -169,14 +171,14 @@ public class AnnouncementService(IUnitOfWork unitOfWork) : IAnnouncementService
             {
                 Id = comment.User.UserId.ToString(),
                 Name = comment.User.FullName,
-                Avatar = comment.User.ProfileImage ?? DefaultAvatar
+                Avatar = _urlResolver.Resolve(comment.User.ProfileImage ?? DefaultAvatar)
             },
             Date = comment.UpdatedAt,
             Content = comment.Content
         };
     }
 
-    private static AnnouncementDto MapToDto(Announcement announcement)
+    private AnnouncementDto MapToDto(Announcement announcement)
     {
         return new AnnouncementDto
         {
@@ -186,7 +188,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork) : IAnnouncementService
             {
                 Id = announcement.Sender?.UserId.ToString() ?? "0",
                 Name = announcement.Sender?.FullName ?? "Unknown",
-                Avatar = announcement.Sender?.ProfileImage ?? DefaultAvatar
+                Avatar = _urlResolver.Resolve(announcement.Sender?.ProfileImage ?? DefaultAvatar)
             },
             Date = announcement.CreatedAt,
             Content = announcement.Content,
@@ -194,7 +196,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork) : IAnnouncementService
             {
                 Id = a.AnnouncementAttachmentId.ToString(),
                 Name = a.FileName,
-                Url = a.FileUrl,
+                Url = _urlResolver.Resolve(a.FileUrl),
                 FileType = a.FileType,
                 FileSize = a.FileSize
             }).ToList(),
@@ -205,7 +207,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork) : IAnnouncementService
                 {
                     Id = c.User?.UserId.ToString() ?? "0",
                     Name = c.User?.FullName ?? "Unknown",
-                    Avatar = c.User?.ProfileImage ?? DefaultAvatar
+                    Avatar = _urlResolver.Resolve(c.User?.ProfileImage ?? DefaultAvatar)
                 },
                 Date = c.CreatedAt,
                 Content = c.Content

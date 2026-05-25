@@ -1,3 +1,4 @@
+using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Shared.Dtos.Material;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Entities;
@@ -9,10 +10,12 @@ namespace IntelliCampus.Service;
 
 public class MaterialService(
     IUnitOfWork unitOfWork,
-    INotificationService notificationService) : IMaterialService
+    INotificationService notificationService,
+    UrlResolver urlResolver) : IMaterialService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly INotificationService _notificationService = notificationService;
+    private readonly UrlResolver _urlResolver = urlResolver;
 
     private IGenericRepository<Material, int> Materials
         => _unitOfWork.GetRepository<Material, int>();
@@ -79,7 +82,7 @@ public class MaterialService(
                     Type = m.Type,
                     UploadDate = m.UploadDate,
                     FileSize = m.FileSize,
-                    FileUrl = m.FileUrl,
+                    FileUrl = _urlResolver.Resolve(m.FileUrl),
                     CourseId = m.CourseId,
                     CourseName = course.CourseName,
                     FolderId = m.FolderId,
@@ -158,7 +161,7 @@ public class MaterialService(
             Type = material.Type,
             UploadDate = material.UploadDate,
             FileSize = material.FileSize,
-            FileUrl = material.FileUrl,
+            FileUrl = _urlResolver.Resolve(material.FileUrl),
             CourseId = material.CourseId,
             CourseName = course.CourseName,
             FolderId = material.FolderId,
@@ -300,7 +303,7 @@ public class MaterialService(
 
     #region Mapping
 
-    private static MaterialDto MapToDto(Material material)
+    private MaterialDto MapToDto(Material material)
     {
         return new MaterialDto
         {
@@ -309,7 +312,7 @@ public class MaterialService(
             Type = material.Type,
             UploadDate = material.UploadDate,
             FileSize = material.FileSize,
-            FileUrl = material.FileUrl,
+            FileUrl = _urlResolver.Resolve(material.FileUrl),
             CourseId = material.CourseId,
             CourseName = material.Course?.CourseName,
             FolderId = material.FolderId,

@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Assignment;
@@ -11,11 +12,13 @@ namespace IntelliCampus.Service;
 public class AssignmentService(
     IUnitOfWork unitOfWork,
     IFileStorageService fileStorage,
-    INotificationService notificationService) : IAssignmentService
+    INotificationService notificationService,
+    UrlResolver urlResolver) : IAssignmentService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IFileStorageService _fileStorage = fileStorage;
     private readonly INotificationService _notificationService = notificationService;
+    private readonly UrlResolver _urlResolver = urlResolver;
 
     private IGenericRepository<Assignment, int> Assignments
         => _unitOfWork.GetRepository<Assignment, int>();
@@ -350,7 +353,7 @@ public class AssignmentService(
         return MapToDtoWithStatus(result!.Assignment, result);
     }
 
-    private static AssignmentDto MapToDtoWithStatus(Assignment a, StudentAssignment? submission) => new()
+    private AssignmentDto MapToDtoWithStatus(Assignment a, StudentAssignment? submission) => new()
     {
         Id = a.AssignmentId.ToString(),
         Title = a.Title,
@@ -363,7 +366,7 @@ public class AssignmentService(
             Id = att.Id,
             Name = att.Name,
             Size = att.Size,
-            Url = att.Url
+            Url = _urlResolver.Resolve(att.Url)
         }).ToList() ?? [],
 
         Status = submission is null ? "pending"
@@ -382,7 +385,7 @@ public class AssignmentService(
         } : null
     };
 
-    private static SubmissionDto MapSubmissionToDto(StudentAssignment sa) => new()
+    private SubmissionDto MapSubmissionToDto(StudentAssignment sa) => new()
     {
         Id = sa.StudentAssignmentId.ToString(),
         StudentName = sa.Student?.FullName,
@@ -395,7 +398,7 @@ public class AssignmentService(
             Id = f.Id,
             Name = f.Name,
             Size = f.Size,
-            Url = f.Url
+            Url = _urlResolver.Resolve(f.Url)
         }).ToList() ?? []
     };
 }

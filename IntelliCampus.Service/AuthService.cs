@@ -1,3 +1,4 @@
+using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Shared.Dtos.Auth;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Interfaces;
@@ -10,13 +11,15 @@ public class AuthService(
     IUnitOfWork unitOfWork,
     IPasswordService passwordService,
     ITokenService tokenService,
-    INotificationService notificationService) : IAuthService
+    INotificationService notificationService,
+    UrlResolver urlResolver) : IAuthService
 {
     private const string DefaultProfileImage = "/images/default-avatar.png";
 
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IPasswordService _passwordService = passwordService;
     private readonly ITokenService _tokenService = tokenService;
+    private readonly UrlResolver _urlResolver = urlResolver;
 
     public async Task<AuthResponseDto?> LoginAsync(LoginDto dto)
     {
@@ -57,7 +60,7 @@ public class AuthService(
             FullName = user.FullName,
             Email = user.Email,
             Role = user.Role.ToString(),
-            ProfileImage = user.ProfileImage ?? DefaultProfileImage,
+            ProfileImage = _urlResolver.Resolve(user.ProfileImage ?? DefaultProfileImage),
             Notifications = (await _notificationService.GetUnreadAsync(userId)).ToList()
         };
     }
@@ -79,7 +82,7 @@ public class AuthService(
             Email = user.Email,
             Address = user.Address,
             Role = user.Role.ToString(),
-            ProfileImage = user.ProfileImage ?? DefaultProfileImage
+            ProfileImage = _urlResolver.Resolve(user.ProfileImage ?? DefaultProfileImage)
         };
     }
 
@@ -112,7 +115,7 @@ public class AuthService(
             Email = user.Email,
             Address = user.Address,
             Role = user.Role.ToString(),
-            ProfileImage = user.ProfileImage ?? DefaultProfileImage
+            ProfileImage = _urlResolver.Resolve(user.ProfileImage ?? DefaultProfileImage)
         };
     }
 
