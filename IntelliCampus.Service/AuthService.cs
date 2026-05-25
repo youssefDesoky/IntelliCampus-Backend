@@ -14,8 +14,6 @@ public class AuthService(
     INotificationService notificationService,
     UrlResolver urlResolver) : IAuthService
 {
-    private const string DefaultProfileImage = "/images/default-avatar.png";
-
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IPasswordService _passwordService = passwordService;
     private readonly ITokenService _tokenService = tokenService;
@@ -60,7 +58,7 @@ public class AuthService(
             FullName = user.FullName,
             Email = user.Email,
             Role = user.Role.ToString(),
-            ProfileImage = _urlResolver.Resolve(user.ProfileImage ?? DefaultProfileImage),
+            ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage),
             Notifications = (await _notificationService.GetUnreadAsync(userId)).ToList()
         };
     }
@@ -82,7 +80,7 @@ public class AuthService(
             Email = user.Email,
             Address = user.Address,
             Role = user.Role.ToString(),
-            ProfileImage = _urlResolver.Resolve(user.ProfileImage ?? DefaultProfileImage)
+            ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage)
         };
     }
 
@@ -115,7 +113,7 @@ public class AuthService(
             Email = user.Email,
             Address = user.Address,
             Role = user.Role.ToString(),
-            ProfileImage = _urlResolver.Resolve(user.ProfileImage ?? DefaultProfileImage)
+            ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage)
         };
     }
 

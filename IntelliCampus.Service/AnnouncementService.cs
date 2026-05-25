@@ -7,10 +7,8 @@ using IntelliCampus.Shared.Dtos.Announcement;
 
 namespace IntelliCampus.Service;
 
-public class AnnouncementService(IUnitOfWork unitOfWork,     UrlResolver urlResolver) : IAnnouncementService
+public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver) : IAnnouncementService
 {
-    private const string DefaultAvatar = "/images/default-avatar.png";
-
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly UrlResolver _urlResolver = urlResolver;
 
@@ -132,7 +130,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork,     UrlResolver urlReso
             {
                 Id = userId.ToString(),
                 Name = user?.FullName ?? "Unknown",
-                Avatar = _urlResolver.Resolve(user?.ProfileImage ?? DefaultAvatar)
+                Avatar = _urlResolver.ResolveProfile(user?.ProfileImage)
             },
             Date = comment.CreatedAt,
             Content = comment.Content
@@ -171,7 +169,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork,     UrlResolver urlReso
             {
                 Id = comment.User.UserId.ToString(),
                 Name = comment.User.FullName,
-                Avatar = _urlResolver.Resolve(comment.User.ProfileImage ?? DefaultAvatar)
+                Avatar = _urlResolver.ResolveProfile(comment.User.ProfileImage)
             },
             Date = comment.UpdatedAt,
             Content = comment.Content
@@ -188,7 +186,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork,     UrlResolver urlReso
             {
                 Id = announcement.Sender?.UserId.ToString() ?? "0",
                 Name = announcement.Sender?.FullName ?? "Unknown",
-                Avatar = _urlResolver.Resolve(announcement.Sender?.ProfileImage ?? DefaultAvatar)
+                Avatar = _urlResolver.ResolveProfile(announcement.Sender?.ProfileImage)
             },
             Date = announcement.CreatedAt,
             Content = announcement.Content,
@@ -207,7 +205,9 @@ public class AnnouncementService(IUnitOfWork unitOfWork,     UrlResolver urlReso
                 {
                     Id = c.User?.UserId.ToString() ?? "0",
                     Name = c.User?.FullName ?? "Unknown",
-                    Avatar = _urlResolver.Resolve(c.User?.ProfileImage ?? DefaultAvatar)
+                    Avatar = _urlResolver.ResolveProfile(c.User?.ProfileImage)
+
+
                 },
                 Date = c.CreatedAt,
                 Content = c.Content
