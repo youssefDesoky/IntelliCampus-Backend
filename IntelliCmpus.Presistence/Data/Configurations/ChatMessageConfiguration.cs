@@ -22,6 +22,12 @@ public class ChatMessageConfiguration : IEntityTypeConfiguration<ChatMessage>
             .IsRequired()
             .HasMaxLength(50);
 
+        builder.Property(m => m.IsEdited)
+            .HasDefaultValue(false);
+
+        builder.Property(m => m.IsPinned)
+            .HasDefaultValue(false);
+
         builder.Ignore(m => m.Sender);
         builder.Ignore(m => m.Recipient);
     }

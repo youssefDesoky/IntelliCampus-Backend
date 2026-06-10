@@ -76,6 +76,14 @@ public class IntelliCampusDbContext : DbContext
     // Chat
     public DbSet<ChatMessage> ChatMessages { get; set; }
 
+    // Friends
+    public DbSet<FriendRequest> FriendRequests { get; set; }
+    public DbSet<Friendship> Friendships { get; set; }
+
+    // Groups
+    public DbSet<Group> Groups { get; set; }
+    public DbSet<GroupMember> GroupMembers { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

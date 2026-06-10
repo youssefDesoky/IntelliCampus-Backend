@@ -113,6 +113,8 @@ builder.Services.AddScoped<IAttendanceExcuseService, AttendanceExcuseService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddSingleton<INotificationStreamService, NotificationStreamService>(); 
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IFriendService, FriendService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<UrlResolver>();
 builder.Services.AddScoped<IBaylawService, BaylawService>();
 builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
