@@ -17,20 +17,24 @@ public class ChatService : IChatService
     private IGenericRepository<ChatMessage, int> Messages
         => _unitOfWork.GetRepository<ChatMessage, int>();
 
-    public async Task<ChatMessageDto> SendMessageAsync(string senderId, string recipientId, string content)
+    private IGenericRepository<User, int> Users
+        => _unitOfWork.GetRepository<User, int>();
+
+    public async Task<ChatMessageDto> SendMessageAsync(string senderId, string recipientId, string content, string? groupName = null)
     {
         var message = new ChatMessage
         {
             SenderId = senderId,
             RecipientId = recipientId,
             Content = content,
-            Timestamp = DateTime.UtcNow
+            Timestamp = DateTime.UtcNow,
+            GroupName = groupName
         };
 
         Messages.Add(message);
         await _unitOfWork.SaveChangesAsync();
 
-        return MapToDto(message);
+        return await MapToDtoAsync(message);
     }
 
     public async Task<IEnumerable<ChatMessageDto>> GetChatHistoryAsync(string userId1, string userId2)
@@ -43,7 +47,7 @@ public class ChatService : IChatService
             .OrderByDescending(m => m.Timestamp)
             .ToList();
 
-        return messages.Select(MapToDto);
+        return await MapToDtoListAsync(messages);
     }
 
     public async Task<IEnumerable<ChatMessageDto>> GetGroupChatHistoryAsync(string groupName)
@@ -53,20 +57,38 @@ public class ChatService : IChatService
             .OrderByDescending(m => m.Timestamp)
             .ToList();
 
-        return messages.Select(MapToDto);
+        return await MapToDtoListAsync(messages);
     }
 
-    private static ChatMessageDto MapToDto(ChatMessage m) => new()
+    private async Task<ChatMessageDto> MapToDtoAsync(ChatMessage m)
     {
-        MessageId = m.MessageId,
-        Content = m.Content,
-        Timestamp = m.Timestamp,
-        SenderId = m.SenderId,
-        SenderName = m.Sender?.FullName,
-        RecipientId = m.RecipientId,
-        RecipientName = m.Recipient?.FullName,
-        GroupName = m.GroupName
-    };
+        var sender = await Users.GetByIdAsync(int.Parse(m.SenderId));
+        User? recipient = null;
+        if (!string.IsNullOrEmpty(m.RecipientId))
+            recipient = await Users.GetByIdAsync(int.Parse(m.RecipientId));
+
+        return new ChatMessageDto
+        {
+            MessageId = m.MessageId,
+            Content = m.Content,
+            Timestamp = m.Timestamp,
+            SenderId = m.SenderId,
+            SenderName = sender?.FullName,
+            RecipientId = m.RecipientId,
+            RecipientName = recipient?.FullName,
+            GroupName = m.GroupName,
+            IsEdited = m.IsEdited,
+            IsPinned = m.IsPinned
+        };
+    }
+
+    private async Task<IEnumerable<ChatMessageDto>> MapToDtoListAsync(IEnumerable<ChatMessage> messages)
+    {
+        var results = new List<ChatMessageDto>();
+        foreach (var m in messages)
+            results.Add(await MapToDtoAsync(m));
+        return results;
+    }
 
     public Task MarkMessageAsReadAsync(string userId, string messageId)
     {
@@ -74,7 +96,7 @@ public class ChatService : IChatService
         throw new NotSupportedException("Mark as read is not supported. Add IsRead property to ChatMessage if needed.");
     }
 
-    public async Task DeleteMessageAsync(string userId, string messageId)
+    public async Task<ChatMessageDto?> DeleteMessageAsync(string userId, string messageId)
     {
         if (!int.TryParse(messageId, out var msgId))
             throw new ArgumentException("Invalid messageId");
@@ -87,11 +109,71 @@ public class ChatService : IChatService
         if (message.SenderId != userId && message.RecipientId != userId)
             throw new UnauthorizedAccessException("User cannot delete this message");
 
+        var dto = await MapToDtoAsync(message);
         Messages.Delete(message);
         await _unitOfWork.SaveChangesAsync();
+        return dto;
     }
 
-    public async Task EditMessageAsync(string userId, string messageId, string newContent)
+    public async Task<ChatMessageDto?> PinMessageAsync(string userId, string messageId)
+    {
+        if (!int.TryParse(messageId, out var msgId))
+            throw new ArgumentException("Invalid messageId");
+
+        var message = await Messages.GetByIdAsync(msgId);
+        if (message == null)
+            throw new InvalidOperationException("Message not found");
+
+        if (message.SenderId != userId && message.RecipientId != userId)
+            throw new UnauthorizedAccessException("User cannot pin this message");
+
+        // Unpin any previously pinned message in the same chat
+        var allMessages = await Messages.GetAllAsync();
+        ChatMessage? oldPinned;
+        if (!string.IsNullOrEmpty(message.GroupName))
+        {
+            oldPinned = allMessages.FirstOrDefault(m =>
+                m.GroupName == message.GroupName && m.IsPinned && m.MessageId != msgId);
+        }
+        else
+        {
+            oldPinned = allMessages.FirstOrDefault(m =>
+                ((m.SenderId == message.SenderId && m.RecipientId == message.RecipientId) ||
+                 (m.SenderId == message.RecipientId && m.RecipientId == message.SenderId))
+                && m.IsPinned && m.MessageId != msgId);
+        }
+
+        if (oldPinned != null)
+        {
+            oldPinned.IsPinned = false;
+            Messages.Update(oldPinned);
+        }
+
+        message.IsPinned = true;
+        Messages.Update(message);
+        await _unitOfWork.SaveChangesAsync();
+        return await MapToDtoAsync(message);
+    }
+
+    public async Task<ChatMessageDto?> UnpinMessageAsync(string userId, string messageId)
+    {
+        if (!int.TryParse(messageId, out var msgId))
+            throw new ArgumentException("Invalid messageId");
+
+        var message = await Messages.GetByIdAsync(msgId);
+        if (message == null)
+            throw new InvalidOperationException("Message not found");
+
+        if (message.SenderId != userId && message.RecipientId != userId)
+            throw new UnauthorizedAccessException("User cannot unpin this message");
+
+        message.IsPinned = false;
+        Messages.Update(message);
+        await _unitOfWork.SaveChangesAsync();
+        return await MapToDtoAsync(message);
+    }
+
+    public async Task<ChatMessageDto?> EditMessageAsync(string userId, string messageId, string newContent)
     {
         if (!int.TryParse(messageId, out var msgId))
             throw new ArgumentException("Invalid messageId");
@@ -105,7 +187,9 @@ public class ChatService : IChatService
             throw new UnauthorizedAccessException("User cannot edit this message");
 
         message.Content = newContent;
+        message.IsEdited = true;
         Messages.Update(message);
         await _unitOfWork.SaveChangesAsync();
+        return await MapToDtoAsync(message);
     }
 }
