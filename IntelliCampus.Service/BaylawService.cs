@@ -1,5 +1,6 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Baylaw;
 using Microsoft.AspNetCore.Http;
@@ -10,11 +11,13 @@ public class BaylawService : IBaylawService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IFileStorageService _fileStorageService;
+    private readonly UrlResolver _urlResolver;
 
-    public BaylawService(IUnitOfWork unitOfWork, IFileStorageService fileStorageService)
+    public BaylawService(IUnitOfWork unitOfWork, IFileStorageService fileStorageService, UrlResolver urlResolver)
     {
         _unitOfWork = unitOfWork;
         _fileStorageService = fileStorageService;
+        _urlResolver = urlResolver;
     }
 
     private IGenericRepository<Baylaw, int> Baylaws
@@ -132,7 +135,7 @@ public class BaylawService : IBaylawService
         return MapToDto(baylaw);
     }
 
-    private static BaylawDto MapToDto(Baylaw baylaw)
+    private BaylawDto MapToDto(Baylaw baylaw)
     {
         return new BaylawDto
         {
@@ -140,7 +143,7 @@ public class BaylawService : IBaylawService
             Name = baylaw.Name,
             Version = baylaw.Version,
             Description = baylaw.Description,
-            FileUrl = baylaw.FileUrl,
+            FileUrl = _urlResolver.Resolve(baylaw.FileUrl),
             FileName = baylaw.FileName,
             IsActive = baylaw.IsActive,
             CreatedAt = baylaw.CreatedAt,
