@@ -60,6 +60,9 @@ public class IntelliCampusDbContext : DbContext
     // Attendance
     public DbSet<QrToken> QrTokens { get; set; }
 
+    // Baylaw
+    public DbSet<Baylaw> Baylaws { get; set; }
+
     // Junction tables
     public DbSet<StudentCourse> StudentCourses { get; set; }
     public DbSet<StudentQuiz> StudentQuizzes { get; set; }

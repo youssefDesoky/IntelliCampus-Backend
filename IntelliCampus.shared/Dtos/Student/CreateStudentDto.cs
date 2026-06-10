@@ -18,6 +18,9 @@ public class CreateStudentDto
 
     public string? DepartmentName { get; set; }
 
+    public int? BaylawId { get; set; }
+    public string? BaylawName { get; set; }
+
     public string? StudentCode { get; set; }
 
     public string? EnrollmentDate { get; set; }

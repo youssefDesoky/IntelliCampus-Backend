@@ -16,6 +16,8 @@ public class UpdateStudentDto
 
     public string? DepartmentName { get; set; }
 
+    public int? BaylawId { get; set; }
+
     public string? StudentCode { get; set; }
 
     public string? EnrollmentDate { get; set; }

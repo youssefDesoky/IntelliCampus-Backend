@@ -4,6 +4,7 @@ using IntelliCampus.Presistence.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Data.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260610154629_AddBaylawEntity")]
+    partial class AddBaylawEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1672,43 +1675,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UploadedByAdminId")
                         .OnDelete(DeleteBehavior.SetNull);
-
-                    b.OwnsMany("IntelliCampus.Domain.Entities.GradeScaleItem", "GradeScales", b1 =>
-                        {
-                            b1.Property<int>("BaylawId")
-                                .HasColumnType("int");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            b1.Property<decimal>("GpaValue")
-                                .HasPrecision(4, 2)
-                                .HasColumnType("decimal(4,2)");
-
-                            b1.Property<string>("GradeLetter")
-                                .IsRequired()
-                                .HasMaxLength(5)
-                                .HasColumnType("nvarchar(5)");
-
-                            b1.Property<decimal>("MinPercentage")
-                                .HasPrecision(5, 2)
-                                .HasColumnType("decimal(5,2)");
-
-                            b1.Property<int>("SortOrder")
-                                .HasColumnType("int");
-
-                            b1.HasKey("BaylawId", "Id");
-
-                            b1.ToTable("Baylaws");
-
-                            b1.ToJson("GradeScales");
-
-                            b1.WithOwner()
-                                .HasForeignKey("BaylawId");
-                        });
-
-                    b.Navigation("GradeScales");
 
                     b.Navigation("UploadedBy");
                 });
