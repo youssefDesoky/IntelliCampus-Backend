@@ -7,10 +7,12 @@ public class Student : User
     public string? Faculty { get; set; }
     public int? Level { get; set; }
     public int? DepartmentId { get; set; }
+    public int? BaylawId { get; set; }
     public DateTime? EnrollmentDate { get; set; }
 
     // Navigation properties
     public Department? Department { get; set; }
+    public Baylaw? Baylaw { get; set; }
     public ICollection<StudentQuiz> StudentQuizzes { get; set; } = [];
     public ICollection<StudentAssignment> StudentAssignments { get; set; } = [];
     public ICollection<ChatbotQuery> ChatbotQueries { get; set; } = [];

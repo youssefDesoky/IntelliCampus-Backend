@@ -28,6 +28,9 @@ public class StudentService : IStudentService
     private IGenericRepository<Department, int> Departments
         => _unitOfWork.GetRepository<Department, int>();
 
+    private IGenericRepository<Baylaw, int> Baylaws
+        => _unitOfWork.GetRepository<Baylaw, int>();
+
     public async Task<StudentDto?> GetByIdAsync(int studentId)
     {
         var spec = new StudentSpec(studentId);
@@ -56,6 +59,7 @@ public class StudentService : IStudentService
             throw new InvalidOperationException("National ID already exists.");
 
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentId, dto.DepartmentName);
+        var baylawId = await ResolveBaylawIdAsync(dto.BaylawId, dto.BaylawName);
         var enrollmentDate = ParseEnrollmentDate(dto.EnrollmentDate) ?? DateTime.UtcNow;
         var password = string.IsNullOrWhiteSpace(dto.Password) ? "Student@123" : dto.Password;
 
@@ -74,6 +78,7 @@ public class StudentService : IStudentService
             Faculty = dto.Faculty,
             Level = dto.Level,
             DepartmentId = departmentId,
+            BaylawId = baylawId,
             EnrollmentDate = enrollmentDate
         };
 
@@ -117,6 +122,8 @@ public class StudentService : IStudentService
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentId, dto.DepartmentName);
         if (departmentId.HasValue) student.DepartmentId = departmentId;
 
+        if (dto.BaylawId.HasValue) student.BaylawId = dto.BaylawId;
+
         var enrollmentDate = ParseEnrollmentDate(dto.EnrollmentDate);
         if (enrollmentDate.HasValue) student.EnrollmentDate = enrollmentDate.Value;
 
@@ -145,6 +152,21 @@ public class StudentService : IStudentService
         await _unitOfWork.SaveChangesAsync();
 
         return true;
+    }
+
+    private async Task<int?> ResolveBaylawIdAsync(int? baylawId, string? baylawName)
+    {
+        if (baylawId.HasValue)
+            return baylawId;
+
+        if (string.IsNullOrWhiteSpace(baylawName))
+            return null;
+
+        var baylaws = await Baylaws.GetAllAsync();
+        var matched = baylaws.FirstOrDefault(b =>
+            string.Equals(b.Name, baylawName, StringComparison.OrdinalIgnoreCase));
+
+        return matched?.BaylawId;
     }
 
     private async Task<int?> ResolveDepartmentIdAsync(int? departmentId, string? departmentName)
@@ -211,6 +233,9 @@ public class StudentService : IStudentService
             Level = student.Level,
             DepartmentId = student.DepartmentId,
             DepartmentName = student.Department?.DepartmentName,
+            BaylawId = student.BaylawId,
+            BaylawName = student.Baylaw?.Name,
+            BaylawVersion = student.Baylaw?.Version,
             EnrollmentDate = student.EnrollmentDate
         };
     }

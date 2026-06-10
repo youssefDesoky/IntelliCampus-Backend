@@ -7,12 +7,14 @@ namespace IntelliCampus.Service.Specifications
         public StudentSpec()
         {
             AddInclude(s => s.Department);
+            AddInclude(s => s.Baylaw);
         }
 
         public StudentSpec(int studentId)
             : base(s => s.UserId == studentId)
         {
             AddInclude(s => s.Department);
+            AddInclude(s => s.Baylaw);
         }
     }
 }

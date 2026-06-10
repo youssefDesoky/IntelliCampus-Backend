@@ -114,6 +114,8 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddSingleton<INotificationStreamService, NotificationStreamService>(); 
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<UrlResolver>();
+builder.Services.AddScoped<IBaylawService, BaylawService>();
+builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
 
