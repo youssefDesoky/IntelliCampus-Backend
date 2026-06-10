@@ -4,6 +4,7 @@ using IntelliCampus.Presistence.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,13 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Data.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260529211806_AddGroupProfileImage")]
+    partial class AddGroupProfileImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.28")
+                .HasAnnotation("ProductVersion", "8.0.27")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -266,50 +269,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("AttendanceExcuses");
-                });
-
-            modelBuilder.Entity("IntelliCampus.Domain.Entities.Baylaw", b =>
-                {
-                    b.Property<int>("BaylawId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BaylawId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("FileName")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("FileUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int?>("UploadedByAdminId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("int");
-
-                    b.HasKey("BaylawId");
-
-                    b.HasIndex("UploadedByAdminId");
-
-                    b.ToTable("Baylaws");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.ChatMessage", b =>
@@ -1653,9 +1612,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 {
                     b.HasBaseType("IntelliCampus.Domain.Entities.User");
 
-                    b.Property<int?>("BaylawId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
@@ -1678,8 +1634,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
-
-                    b.HasIndex("BaylawId");
 
                     b.HasIndex("DepartmentId");
 
@@ -1793,53 +1747,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     b.Navigation("Session");
 
                     b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("IntelliCampus.Domain.Entities.Baylaw", b =>
-                {
-                    b.HasOne("IntelliCampus.Domain.Entities.Admin", "UploadedBy")
-                        .WithMany()
-                        .HasForeignKey("UploadedByAdminId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.OwnsMany("IntelliCampus.Domain.Entities.GradeScaleItem", "GradeScales", b1 =>
-                        {
-                            b1.Property<int>("BaylawId")
-                                .HasColumnType("int");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            b1.Property<decimal>("GpaValue")
-                                .HasPrecision(4, 2)
-                                .HasColumnType("decimal(4,2)");
-
-                            b1.Property<string>("GradeLetter")
-                                .IsRequired()
-                                .HasMaxLength(5)
-                                .HasColumnType("nvarchar(5)");
-
-                            b1.Property<decimal>("MinPercentage")
-                                .HasPrecision(5, 2)
-                                .HasColumnType("decimal(5,2)");
-
-                            b1.Property<int>("SortOrder")
-                                .HasColumnType("int");
-
-                            b1.HasKey("BaylawId", "Id");
-
-                            b1.ToTable("Baylaws");
-
-                            b1.ToJson("GradeScales");
-
-                            b1.WithOwner()
-                                .HasForeignKey("BaylawId");
-                        });
-
-                    b.Navigation("GradeScales");
-
-                    b.Navigation("UploadedBy");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.ChatbotQuery", b =>
@@ -2394,11 +2301,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Student", b =>
                 {
-                    b.HasOne("IntelliCampus.Domain.Entities.Baylaw", "Baylaw")
-                        .WithMany("Students")
-                        .HasForeignKey("BaylawId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("IntelliCampus.Domain.Entities.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
@@ -2409,8 +2311,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         .HasForeignKey("IntelliCampus.Domain.Entities.Student", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Baylaw");
 
                     b.Navigation("Department");
                 });
@@ -2427,11 +2327,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     b.Navigation("Attachments");
 
                     b.Navigation("StudentAssignments");
-                });
-
-            modelBuilder.Entity("IntelliCampus.Domain.Entities.Baylaw", b =>
-                {
-                    b.Navigation("Students");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Class", b =>

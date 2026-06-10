@@ -8,6 +8,8 @@ public class ChatMessage
     public string SenderId { get; set; } = string.Empty;
     public string RecipientId { get; set; } = string.Empty;
     public string? GroupName { get; set; }
+    public bool IsEdited { get; set; }
+    public bool IsPinned { get; set; }
 
     // Navigation properties
     public User Sender { get; set; } = null!;

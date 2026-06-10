@@ -10,4 +10,6 @@ public class ChatMessageDto
     public string RecipientId { get; set; } = string.Empty;
     public string? RecipientName { get; set; }
     public string? GroupName { get; set; }
+    public bool IsEdited { get; set; }
+    public bool IsPinned { get; set; }
 }

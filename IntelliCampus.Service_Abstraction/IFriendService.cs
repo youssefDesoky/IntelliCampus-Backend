@@ -1,0 +1,13 @@
+using IntelliCampus.Shared.Dtos.Friend;
+
+namespace IntelliCampus.Service_Abstraction;
+
+public interface IFriendService
+{
+    Task<FriendRequestDto> SendRequestAsync(int senderId, int recipientId);
+    Task<IEnumerable<FriendRequestDto>> GetPendingRequestsAsync(int userId);
+    Task<FriendRequestDto> AcceptRequestAsync(int requestId, int userId);
+    Task<FriendRequestDto> RejectRequestAsync(int requestId, int userId);
+    Task<IEnumerable<FriendDto>> GetFriendsAsync(int userId);
+    Task<bool> AreFriendsAsync(int userId1, int userId2);
+}
