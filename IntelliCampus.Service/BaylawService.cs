@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Resolvers;
+using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Baylaw;
 using Microsoft.AspNetCore.Http;
@@ -25,7 +26,8 @@ public class BaylawService : IBaylawService
 
     public async Task<BaylawDto?> GetByIdAsync(int baylawId)
     {
-        var baylaw = await Baylaws.GetByIdAsync(baylawId);
+        var spec = new BaylawSpec(baylawId);
+        var baylaw = await Baylaws.GetByIdAsync(spec);
 
         if (baylaw is null)
             return null;
@@ -35,7 +37,8 @@ public class BaylawService : IBaylawService
 
     public async Task<IEnumerable<BaylawDto>> GetAllAsync()
     {
-        var baylaws = await Baylaws.GetAllAsync();
+        var spec = new BaylawSpec();
+        var baylaws = await Baylaws.GetAllAsync(spec);
         return baylaws.Select(MapToDto);
     }
 
@@ -69,7 +72,8 @@ public class BaylawService : IBaylawService
 
     public async Task<BaylawDto?> UploadDocumentAsync(int baylawId, IFormFile file)
     {
-        var baylaw = await Baylaws.GetByIdAsync(baylawId);
+        var spec = new BaylawSpec(baylawId);
+        var baylaw = await Baylaws.GetByIdAsync(spec);
 
         if (baylaw is null)
             return null;
@@ -86,7 +90,8 @@ public class BaylawService : IBaylawService
 
     public async Task<bool> DeleteAsync(int baylawId)
     {
-        var baylaw = await Baylaws.GetByIdAsync(baylawId);
+        var spec = new BaylawSpec(baylawId);
+        var baylaw = await Baylaws.GetByIdAsync(spec);
 
         if (baylaw is null)
             return false;
@@ -99,7 +104,8 @@ public class BaylawService : IBaylawService
 
     public async Task<bool> ToggleActiveAsync(int baylawId)
     {
-        var baylaw = await Baylaws.GetByIdAsync(baylawId);
+        var spec = new BaylawSpec(baylawId);
+        var baylaw = await Baylaws.GetByIdAsync(spec);
 
         if (baylaw is null)
             return false;
@@ -113,7 +119,8 @@ public class BaylawService : IBaylawService
 
     public async Task<BaylawDto> SetGradeScalesAsync(int baylawId, List<GradeScaleItemDto> items)
     {
-        var baylaw = await Baylaws.GetByIdAsync(baylawId);
+        var spec = new BaylawSpec(baylawId);
+        var baylaw = await Baylaws.GetByIdAsync(spec);
 
         if (baylaw is null)
             throw new InvalidOperationException("Baylaw not found.");
