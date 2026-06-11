@@ -36,6 +36,9 @@ public class GradeService : IGradeService
     private IGenericRepository<StudentQuiz, (int StudentId, int QuizId)> StudentQuizzes
         => _unitOfWork.GetRepository<StudentQuiz, (int StudentId, int QuizId)>();
 
+    private IGenericRepository<Student, int> Students
+        => _unitOfWork.GetRepository<Student, int>();
+
     // Student
 
     public async Task<CourseGradeDto?> GetCourseGradeAsync(int studentId, int courseId)
@@ -144,12 +147,15 @@ public class GradeService : IGradeService
             });
         }
 
+        var (letter, gpa) = await ResolveGradeScaleAsync(studentId, overallPercent);
+
         return new CourseGradeDto
         {
             OverallGrade = new OverallGradeDto
             {
                 Percent = overallPercent,
-                Letter = GetLetterGrade(overallPercent)
+                Letter = letter,
+                Gpa = gpa
             },
             AssessmentBreakdown = breakdown,
             History = history
@@ -379,21 +385,24 @@ public class GradeService : IGradeService
 
     // Helpers
 
-    private static string GetLetterGrade(decimal percent) => percent switch
+    private async Task<(string Letter, decimal Gpa)> ResolveGradeScaleAsync(int studentId, decimal percent)
     {
-        >= 96 => "A+",
-        >= 93 => "A",
-        >= 90 => "A-",
-        >= 87 => "B+",
-        >= 83 => "B",
-        >= 80 => "B-",
-        >= 77 => "C+",
-        >= 73 => "C",
-        >= 70 => "C-",
-        >= 67 => "D+",
-        >= 60 => "D",
-        _ => "F"
-    };
+        var spec = new StudentSpec(studentId);
+        var student = await Students.GetByIdAsync(spec);
+
+        var scales = student?.Bylaw?.GradeScales;
+        if (scales?.Count > 0)
+        {
+            var scale = scales
+                .OrderByDescending(s => s.MinPercentage)
+                .FirstOrDefault(s => percent >= s.MinPercentage);
+
+            if (scale is not null)
+                return (scale.GradeLetter, scale.GpaValue);
+        }
+
+        return ("-", 0);
+    }
 
     private static string MapGradeType(GradeType type) => type switch
     {
