@@ -63,6 +63,12 @@ public class ExcelImportController : ControllerBase
         return await Import(ImportEntityType.Grades, file);
     }
 
+    [HttpPost("exams")]
+    public async Task<ActionResult<ExcelImportResultDto>> ImportExams(IFormFile file)
+    {
+        return await Import(ImportEntityType.Exams, file);
+    }
+
     [HttpGet("students/template")]
     public IActionResult GetStudentTemplate([FromQuery] int? bylawId = null)
     {
@@ -115,6 +121,19 @@ public class ExcelImportController : ControllerBase
                 "NationalId", "FullName", "FullNameAr", "PhoneNumber", "Email",
                 "Address", "Nationality", "InstructorCode", "Role", "Specialization",
                 "DepartmentName", "HireDate"
+            }
+        });
+    }
+
+    [HttpGet("exams/template")]
+    public IActionResult GetExamTemplate()
+    {
+        return Ok(new
+        {
+            columns = new[]
+            {
+                "CourseCode", "Title", "ExamType (Midterm/Final)", "Date (yyyy-MM-dd)",
+                "Time (HH:mm)", "DurationMinutes", "RoomName", "Description"
             }
         });
     }

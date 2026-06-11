@@ -59,7 +59,7 @@ public class ExamScheduleConfiguration : IEntityTypeConfiguration<ExamSchedule>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(e => e.Exam)
-            .WithMany()
+            .WithMany(e => e.ExamSchedules)
             .HasForeignKey(e => e.ExamId)
             .OnDelete(DeleteBehavior.SetNull);
     }

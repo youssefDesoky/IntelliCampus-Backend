@@ -1,0 +1,1 @@
+{"title":"Data Structures Midterm","description":"Covers weeks 1-8","examType":0,"date":"2026-07-15T09:00:00","time":"09:00:00","durationMinutes":120,"maxGrade":100,"totalMarks":50,"roomId":1,"courseId":3}
