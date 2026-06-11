@@ -49,26 +49,22 @@ public class ExamScheduleService : IExamScheduleService
 
     public async Task SyncFromExamAsync(int examId)
     {
-        var exam = await Exams.GetByIdAsync(new ExamWithCourseSpec(examId));
+        var spec = new ExamWithDetailsSpec(examId);
+        var exam = await Exams.GetByIdAsync(spec);
         if (exam is null)
             throw new InvalidOperationException("Exam not found.");
 
         await RemoveByExamAsync(examId);
 
-        // Current domain model: Exam has only Date + Time (no StartTime/EndTime), so we derive.
         var startTime = exam.Time;
-        var endTime = startTime.Add(TimeSpan.FromHours(2));
+        var endTime = startTime.Add(TimeSpan.FromMinutes(exam.DurationMinutes));
 
         var duration = endTime - startTime;
         var durationText = duration.TotalMinutes % 60 == 0
             ? $"{(int)duration.TotalHours} hour{((int)duration.TotalHours == 1 ? "" : "s")}" 
             : $"{duration.TotalHours:0.#} hours";
 
-        var status = exam.Date > DateTime.UtcNow ? ExamStatus.Upcoming : ExamStatus.Completed;
-
-        // Current domain model: Exam does not store exam type; default to Midterm.
-        // (If you add ExamType to Exam later, update this to use it.)
-        const ExamType examType = ExamType.Midterm;
+        var status = exam.Status;
 
         foreach (var sc in exam.Course.StudentCourses)
         {
@@ -81,8 +77,8 @@ public class ExamScheduleService : IExamScheduleService
                 StartTime = startTime,
                 EndTime = endTime,
                 Duration = durationText,
-                Location = exam.Location,
-                ExamType = examType,
+                Location = exam.Room?.RoomName,
+                ExamType = exam.ExamType,
                 Status = status,
                 StudentId = sc.StudentId,
                 ExamId = exam.ExamId

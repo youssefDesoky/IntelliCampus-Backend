@@ -1,0 +1,12 @@
+{
+    "courseId":  3,
+    "description":  "Covers all topics from weeks 1-8",
+    "durationMinutes":  120,
+    "maxGrade":  100,
+    "time":  "09:00:00",
+    "date":  "2026-07-15T09:00:00",
+    "examType":  "Midterm",
+    "roomId":  1,
+    "title":  "Data Structures Midterm",
+    "totalMarks":  50
+}

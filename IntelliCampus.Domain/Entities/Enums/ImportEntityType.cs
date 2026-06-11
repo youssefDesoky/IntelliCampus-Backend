@@ -8,5 +8,6 @@ public enum ImportEntityType
     Rooms,
     Departments,
     Sections,
-    Grades
+    Grades,
+    Exams
 }

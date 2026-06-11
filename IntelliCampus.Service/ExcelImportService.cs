@@ -11,6 +11,7 @@ using IntelliCampus.Shared.Dtos.Course;
 using IntelliCampus.Shared.Dtos.Room;
 using IntelliCampus.Shared.Dtos.Department;
 using IntelliCampus.Shared.Dtos.Class;
+using IntelliCampus.Shared.Dtos.Exam;
 using Microsoft.AspNetCore.Http;
 
 namespace IntelliCampus.Service;
@@ -23,6 +24,7 @@ public class ExcelImportService : IExcelImportService
     private readonly IRoomService _roomService;
     private readonly IDepartmentService _departmentService;
     private readonly IClassService _classService;
+    private readonly IExamService _examService;
     private readonly IUnitOfWork _unitOfWork;
 
     public ExcelImportService(
@@ -32,6 +34,7 @@ public class ExcelImportService : IExcelImportService
         IRoomService roomService,
         IDepartmentService departmentService,
         IClassService classService,
+        IExamService examService,
         IUnitOfWork unitOfWork)
     {
         _studentService = studentService;
@@ -40,6 +43,7 @@ public class ExcelImportService : IExcelImportService
         _roomService = roomService;
         _departmentService = departmentService;
         _classService = classService;
+        _examService = examService;
         _unitOfWork = unitOfWork;
     }
 
@@ -107,6 +111,9 @@ public class ExcelImportService : IExcelImportService
                 break;
             case ImportEntityType.Grades:
                 await ImportGradeRowAsync(row);
+                break;
+            case ImportEntityType.Exams:
+                await ImportExamRowAsync(row);
                 break;
         }
     }
@@ -235,6 +242,53 @@ public class ExcelImportService : IExcelImportService
 
         gradesRepo.Add(grade);
         await _unitOfWork.SaveChangesAsync();
+    }
+
+    private async Task ImportExamRowAsync(IXLRangeRow row)
+    {
+        var courseCode = row.Cell(1).GetString().Trim();
+        var courseRepo = _unitOfWork.GetRepository<Course, int>();
+        var courseSpec = new Specifications.CourseByCodeSpec(courseCode);
+        var courses = await courseRepo.GetAllAsync(courseSpec);
+        var course = courses.FirstOrDefault();
+        if (course is null)
+            throw new InvalidOperationException($"Course not found: {courseCode}");
+
+        var roomName = GetOptionalString(row, 7);
+        int? roomId = null;
+        if (!string.IsNullOrWhiteSpace(roomName))
+        {
+            var roomRepo = _unitOfWork.GetRepository<Room, int>();
+            var rooms = await roomRepo.GetAllAsync();
+            var room = rooms.FirstOrDefault(r =>
+                r.RoomName.Equals(roomName, StringComparison.OrdinalIgnoreCase));
+            if (room is not null)
+                roomId = room.RoomId;
+        }
+
+        var dto = new CreateExamDto
+        {
+            CourseId = course.CourseId,
+            Title = row.Cell(2).GetString().Trim(),
+            ExamType = ParseExamType(row.Cell(3).GetString().Trim()),
+            Date = DateTime.Parse(row.Cell(4).GetString().Trim()),
+            Time = TimeSpan.Parse(row.Cell(5).GetString().Trim()),
+            DurationMinutes = int.Parse(row.Cell(6).GetString().Trim()),
+            RoomId = roomId,
+            Description = GetOptionalString(row, 8)
+        };
+
+        await _examService.CreateAsync(dto);
+    }
+
+    private static ExamType ParseExamType(string value)
+    {
+        return value.ToLowerInvariant() switch
+        {
+            "midterm" => ExamType.Midterm,
+            "final" => ExamType.Final,
+            _ => throw new InvalidOperationException($"Invalid exam type: {value}")
+        };
     }
 
     private static string? GetOptionalString(IXLRangeRow row, int col)

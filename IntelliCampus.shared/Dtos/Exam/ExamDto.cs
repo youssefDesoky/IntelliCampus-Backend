@@ -1,8 +1,8 @@
 using IntelliCampus.Domain.Entities.Enums;
 
-namespace IntelliCampus.Domain.Entities;
+namespace IntelliCampus.Shared.Dtos.Exam;
 
-public class Exam
+public class ExamDto
 {
     public int ExamId { get; set; }
     public string Title { get; set; } = null!;
@@ -15,11 +15,9 @@ public class Exam
     public decimal MaxGrade { get; set; }
     public int? TotalMarks { get; set; }
     public int? RoomId { get; set; }
+    public string? RoomName { get; set; }
     public int CourseId { get; set; }
+    public string? CourseName { get; set; }
+    public string? CourseCode { get; set; }
     public DateTime CreatedAt { get; set; }
-
-    // Navigation properties
-    public Course Course { get; set; } = null!;
-    public Room? Room { get; set; }
-    public ICollection<ExamSchedule> ExamSchedules { get; set; } = new List<ExamSchedule>();
 }
