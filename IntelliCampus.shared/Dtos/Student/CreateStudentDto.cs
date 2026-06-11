@@ -18,8 +18,8 @@ public class CreateStudentDto
 
     public string? DepartmentName { get; set; }
 
-    public int? BaylawId { get; set; }
-    public string? BaylawName { get; set; }
+    public int? BylawId { get; set; }
+    public string? BylawName { get; set; }
 
     public string? StudentCode { get; set; }
 

@@ -1,4 +1,4 @@
-namespace IntelliCampus.Shared.Dtos.Baylaw;
+namespace IntelliCampus.Shared.Dtos.Bylaw;
 
 public class ExcelImportResultDto
 {

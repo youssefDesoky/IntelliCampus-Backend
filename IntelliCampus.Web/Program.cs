@@ -116,7 +116,7 @@ builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IFriendService, FriendService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<UrlResolver>();
-builder.Services.AddScoped<IBaylawService, BaylawService>();
+builder.Services.AddScoped<IBylawService, BylawService>();
 builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();

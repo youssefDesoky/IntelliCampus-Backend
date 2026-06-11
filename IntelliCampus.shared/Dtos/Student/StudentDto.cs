@@ -16,8 +16,8 @@ public class StudentDto
     public int? Level { get; set; }
     public int? DepartmentId { get; set; }
     public string? DepartmentName { get; set; }
-    public int? BaylawId { get; set; }
-    public string? BaylawName { get; set; }
-    public int? BaylawVersion { get; set; }
+    public int? BylawId { get; set; }
+    public string? BylawName { get; set; }
+    public int? BylawVersion { get; set; }
     public DateTime? EnrollmentDate { get; set; }
 }

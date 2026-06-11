@@ -16,7 +16,7 @@ public class UpdateStudentDto
 
     public string? DepartmentName { get; set; }
 
-    public int? BaylawId { get; set; }
+    public int? BylawId { get; set; }
 
     public string? StudentCode { get; set; }
 

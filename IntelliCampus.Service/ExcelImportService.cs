@@ -4,7 +4,7 @@ using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
-using IntelliCampus.Shared.Dtos.Baylaw;
+using IntelliCampus.Shared.Dtos.Bylaw;
 using IntelliCampus.Shared.Dtos.Student;
 using IntelliCampus.Shared.Dtos.Instructor;
 using IntelliCampus.Shared.Dtos.Course;
@@ -43,7 +43,7 @@ public class ExcelImportService : IExcelImportService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ExcelImportResultDto> ImportAsync(ImportEntityType entityType, IFormFile file, int? baylawId = null)
+    public async Task<ExcelImportResultDto> ImportAsync(ImportEntityType entityType, IFormFile file, int? bylawId = null)
     {
         var result = new ExcelImportResultDto();
 
@@ -70,7 +70,7 @@ public class ExcelImportService : IExcelImportService
         {
             try
             {
-                await ImportRowAsync(entityType, row, baylawId);
+                await ImportRowAsync(entityType, row, bylawId);
                 result.SuccessCount++;
             }
             catch (Exception ex)
@@ -83,12 +83,12 @@ public class ExcelImportService : IExcelImportService
         return result;
     }
 
-    private async Task ImportRowAsync(ImportEntityType entityType, IXLRangeRow row, int? baylawId)
+    private async Task ImportRowAsync(ImportEntityType entityType, IXLRangeRow row, int? bylawId)
     {
         switch (entityType)
         {
             case ImportEntityType.Students:
-                await ImportStudentRowAsync(row, baylawId);
+                await ImportStudentRowAsync(row, bylawId);
                 break;
             case ImportEntityType.Courses:
                 await ImportCourseRowAsync(row);
@@ -111,7 +111,7 @@ public class ExcelImportService : IExcelImportService
         }
     }
 
-    private async Task ImportStudentRowAsync(IXLRangeRow row, int? baylawId)
+    private async Task ImportStudentRowAsync(IXLRangeRow row, int? bylawId)
     {
         var dto = new CreateStudentDto
         {
@@ -126,7 +126,7 @@ public class ExcelImportService : IExcelImportService
             Faculty = GetOptionalString(row, 9),
             Level = GetOptionalInt(row, 10),
             DepartmentName = GetOptionalString(row, 11),
-            BaylawId = baylawId,
+            BylawId = bylawId,
             EnrollmentDate = GetOptionalString(row, 12)
         };
 

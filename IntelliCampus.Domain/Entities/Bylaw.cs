@@ -8,9 +8,9 @@ public class GradeScaleItem
     public int SortOrder { get; set; }
 }
 
-public class Baylaw
+public class Bylaw
 {
-    public int BaylawId { get; set; }
+    public int BylawId { get; set; }
     public string Name { get; set; } = null!;
     public int Version { get; set; }
     public string? Description { get; set; }

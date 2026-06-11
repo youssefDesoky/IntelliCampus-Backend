@@ -1,6 +1,6 @@
-namespace IntelliCampus.Shared.Dtos.Baylaw;
+namespace IntelliCampus.Shared.Dtos.Bylaw;
 
-public class CreateBaylawDto
+public class CreateBylawDto
 {
     public string Name { get; set; } = null!;
     public int Version { get; set; }

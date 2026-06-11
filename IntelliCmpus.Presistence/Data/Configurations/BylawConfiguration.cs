@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace IntelliCampus.Presistence.Data.Configurations;
 
-public class BaylawConfiguration : IEntityTypeConfiguration<Baylaw>
+public class BylawConfiguration : IEntityTypeConfiguration<Bylaw>
 {
-    public void Configure(EntityTypeBuilder<Baylaw> builder)
+    public void Configure(EntityTypeBuilder<Bylaw> builder)
     {
-        builder.HasKey(b => b.BaylawId);
+        builder.HasKey(b => b.BylawId);
 
         builder.Property(b => b.Name)
             .IsRequired()

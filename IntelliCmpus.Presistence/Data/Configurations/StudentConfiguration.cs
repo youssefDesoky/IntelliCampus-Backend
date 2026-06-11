@@ -25,9 +25,9 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .HasForeignKey(s => s.DepartmentId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasOne(s => s.Baylaw)
+        builder.HasOne(s => s.Bylaw)
             .WithMany(b => b.Students)
-            .HasForeignKey(s => s.BaylawId)
+            .HasForeignKey(s => s.BylawId)
             .OnDelete(DeleteBehavior.SetNull);
     }
 }

@@ -1,17 +1,17 @@
-﻿using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Entities;
 
 namespace IntelliCampus.Service.Specifications
 {
-    internal class BaylawSpec : BaseSpecifications<Baylaw>
+    internal class BylawSpec : BaseSpecifications<Bylaw>
     {
-        public BaylawSpec()
+        public BylawSpec()
         {
             AddInclude(b => b.UploadedBy);
             AddInclude(b => b.Students);
         }
 
-        public BaylawSpec(int baylawId)
-            : base(b => b.BaylawId == baylawId)
+        public BylawSpec(int bylawId)
+            : base(b => b.BylawId == bylawId)
         {
             AddInclude(b => b.UploadedBy);
             AddInclude(b => b.Students);

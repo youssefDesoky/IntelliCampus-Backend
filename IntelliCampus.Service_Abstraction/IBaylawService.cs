@@ -1,16 +1,17 @@
 using IntelliCampus.Shared.Dtos.Student;
-using IntelliCampus.Shared.Dtos.Baylaw;
+using IntelliCampus.Shared.Dtos.Bylaw;
 using Microsoft.AspNetCore.Http;
 
 namespace IntelliCampus.Service_Abstraction;
 
-public interface IBaylawService
+public interface IBylawService
 {
-    Task<BaylawDto?> GetByIdAsync(int baylawId);
-    Task<IEnumerable<BaylawDto>> GetAllAsync();
-    Task<BaylawDto> CreateAsync(CreateBaylawDto dto, int adminId);
-    Task<BaylawDto?> UploadDocumentAsync(int baylawId, IFormFile file);
-    Task<bool> DeleteAsync(int baylawId);
-    Task<bool> ToggleActiveAsync(int baylawId);
-    Task<BaylawDto> SetGradeScalesAsync(int baylawId, List<GradeScaleItemDto> items);
+    Task<BylawDto?> GetByIdAsync(int bylawId);
+    Task<IEnumerable<BylawDto>> GetAllAsync();
+    Task<BylawDto> CreateAsync(CreateBylawDto dto, int adminId);
+    Task<BylawDto?> UploadDocumentAsync(int bylawId, IFormFile file);
+    Task<bool> DeleteAsync(int bylawId);
+    Task<bool> ToggleActiveAsync(int bylawId);
+    Task<BylawDto> SetGradeScalesAsync(int bylawId, List<GradeScaleItemDto> items);
+    Task<BylawDto?> UpdateGradeScaleAsync(int bylawId, int sortOrder, GradeScaleItemDto item);
 }
