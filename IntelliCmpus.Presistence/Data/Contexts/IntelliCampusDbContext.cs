@@ -84,6 +84,9 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupMember> GroupMembers { get; set; }
 
+    // Meetings
+    public DbSet<Meeting> Meetings { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
