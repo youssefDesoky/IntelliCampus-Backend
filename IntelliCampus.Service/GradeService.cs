@@ -42,6 +42,12 @@ public class GradeService : IGradeService
     private IGenericRepository<Student, int> Students
         => _unitOfWork.GetRepository<Student, int>();
 
+    private IGenericRepository<StudentCourse, (int StudentId, int CourseId)> StudentCourses
+        => _unitOfWork.GetRepository<StudentCourse, (int StudentId, int CourseId)>();
+
+    private IGenericRepository<Course, int> Courses
+        => _unitOfWork.GetRepository<Course, int>();
+
     // Student
 
     public async Task<int> GetCourseWorkAsync(int studentId, int courseId)
@@ -303,6 +309,74 @@ public class GradeService : IGradeService
         }
 
         return result.OrderByDescending(h => h.Date).ToList();
+    }
+
+    public async Task<IEnumerable<TranscriptCourseDto>> GetTranscriptAsync(int studentId)
+    {
+        var studentCourses = await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId));
+        var courseIds = studentCourses.Select(sc => sc.CourseId).ToList();
+
+        if (courseIds.Count == 0)
+            return Enumerable.Empty<TranscriptCourseDto>();
+
+        var courses = await Courses.GetAllAsync(new CourseSpec(courseIds));
+        var courseDict = courses.ToDictionary(c => c.CourseId);
+
+        var result = new List<TranscriptCourseDto>();
+
+        foreach (var sc in studentCourses)
+        {
+            if (!courseDict.TryGetValue(sc.CourseId, out var course))
+                continue;
+
+            var courseId = course.CourseId;
+
+            var (assignTotalScore, assignTotalMax) = await GetAssignmentScoresAsync(studentId, courseId);
+            var (quizTotalScore, quizTotalMax) = await GetQuizScoresAsync(studentId, courseId);
+
+            var courseGrades = await Grades.GetAllAsync(new GradeSpec(studentId, courseId));
+            var midterm = courseGrades.FirstOrDefault(g => g.GradeType == GradeType.Midterm && g.Status == "Graded");
+            var final = courseGrades.FirstOrDefault(g => g.GradeType == GradeType.Final && g.Status == "Graded");
+
+            var hasCoursework = assignTotalMax > 0 || quizTotalMax > 0 || midterm is not null;
+
+            string courseworkStr = "-";
+            string totalGradeStr = "-";
+            string letter = "-";
+
+            if (hasCoursework)
+            {
+                var (assignQuizContrib, midtermContrib, finalContrib) = CalculateWeightedContributions(
+                    assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax, midterm, final);
+
+                courseworkStr = Math.Round(assignQuizContrib + midtermContrib, 0).ToString();
+
+                if (final is not null)
+                {
+                    var overall = Math.Round(assignQuizContrib + midtermContrib + finalContrib, 0);
+                    totalGradeStr = overall.ToString();
+                    var (l, _) = await ResolveGradeScaleAsync(studentId, overall);
+                    letter = l;
+                }
+                else
+                {
+                    totalGradeStr = "Not Graded";
+                }
+            }
+
+            result.Add(new TranscriptCourseDto
+            {
+                CourseId = course.CourseId,
+                CourseName = course.CourseName,
+                CourseCode = course.CourseCode,
+                CreditHours = course.CreditHours,
+                Coursework = courseworkStr,
+                TotalGrade = totalGradeStr,
+                Letter = letter
+            });
+        }
+
+        return result;
     }
 
     // Instructor (read-only)

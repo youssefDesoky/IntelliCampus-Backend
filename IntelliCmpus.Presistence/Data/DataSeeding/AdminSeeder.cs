@@ -181,14 +181,37 @@ public static class AdminSeeder
 
         classes = await context.Classes.ToListAsync();
 
+        // ???????????????????? Bylaw & Grade Scales ????????????????????
+        var bylaw = new Bylaw
+        {
+            Name = "Engineering Faculty Grading Policy",
+            Version = 1,
+            Description = "Standard grading scale for engineering faculty students",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            GradeScales =
+            [
+                new() { GradeLetter = "A", MinPercentage = 90, GpaValue = 4.0m, SortOrder = 1 },
+                new() { GradeLetter = "B+", MinPercentage = 85, GpaValue = 3.5m, SortOrder = 2 },
+                new() { GradeLetter = "B", MinPercentage = 80, GpaValue = 3.0m, SortOrder = 3 },
+                new() { GradeLetter = "C+", MinPercentage = 75, GpaValue = 2.5m, SortOrder = 4 },
+                new() { GradeLetter = "C", MinPercentage = 70, GpaValue = 2.0m, SortOrder = 5 },
+                new() { GradeLetter = "D+", MinPercentage = 65, GpaValue = 1.5m, SortOrder = 6 },
+                new() { GradeLetter = "D", MinPercentage = 60, GpaValue = 1.0m, SortOrder = 7 },
+                new() { GradeLetter = "F", MinPercentage = 0, GpaValue = 0.0m, SortOrder = 8 },
+            ]
+        };
+        context.Bylaws.Add(bylaw);
+        await context.SaveChangesAsync();
+
         // ???????????????????? Students ????????????????????
         var students = new List<Student>
         {
-            new() { NationalId = "55555555555555", StudentCode = "20230001", FullName = "Mohammed Hassan", FullNameAr = "???? ???", Email = "mohammed.hassan@student.com", PhoneNumber = "01100000010", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 2, DepartmentId = departments[0].DepartmentId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
-            new() { NationalId = "66666666666666", StudentCode = "20230002", FullName = "Layla Ahmed", FullNameAr = "???? ????", Email = "layla.ahmed@student.com", PhoneNumber = "01100000011", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 2, DepartmentId = departments[0].DepartmentId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
-            new() { NationalId = "77777777777777", StudentCode = "20220001", FullName = "Karim Mohamed", FullNameAr = "???? ????", Email = "karim.mohamed@student.com", PhoneNumber = "01100000012", Address = "Alexandria, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 3, DepartmentId = departments[0].DepartmentId, EnrollmentDate = DateTime.UtcNow.AddYears(-3) },
-            new() { NationalId = "88888888888888", StudentCode = "20230003", FullName = "Noor Ali", FullNameAr = "??? ???", Email = "noor.ali@student.com", PhoneNumber = "01100000013", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 2, DepartmentId = departments[1].DepartmentId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
-            new() { NationalId = "99999999999999", StudentCode = "20240001", FullName = "Youssef Salim", FullNameAr = "???? ????", Email = "youssef.salim@student.com", PhoneNumber = "01100000014", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 1, DepartmentId = departments[1].DepartmentId, EnrollmentDate = DateTime.UtcNow.AddYears(-1) },
+            new() { NationalId = "55555555555555", StudentCode = "20230001", FullName = "Mohammed Hassan", FullNameAr = "???? ???", Email = "mohammed.hassan@student.com", PhoneNumber = "01100000010", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 2, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
+            new() { NationalId = "66666666666666", StudentCode = "20230002", FullName = "Layla Ahmed", FullNameAr = "???? ????", Email = "layla.ahmed@student.com", PhoneNumber = "01100000011", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 2, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
+            new() { NationalId = "77777777777777", StudentCode = "20220001", FullName = "Karim Mohamed", FullNameAr = "???? ????", Email = "karim.mohamed@student.com", PhoneNumber = "01100000012", Address = "Alexandria, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 3, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-3) },
+            new() { NationalId = "88888888888888", StudentCode = "20230003", FullName = "Noor Ali", FullNameAr = "??? ???", Email = "noor.ali@student.com", PhoneNumber = "01100000013", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 2, DepartmentId = departments[1].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
+            new() { NationalId = "99999999999999", StudentCode = "20240001", FullName = "Youssef Salim", FullNameAr = "???? ????", Email = "youssef.salim@student.com", PhoneNumber = "01100000014", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 1, DepartmentId = departments[1].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-1) },
         };
         await context.Students.AddRangeAsync(students);
         await context.SaveChangesAsync();

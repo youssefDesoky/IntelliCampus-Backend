@@ -33,6 +33,11 @@ public class GradesController(IGradeService gradeService) : ControllerBase
     public async Task<IActionResult> GetAllMyGrades()
         => Ok(await gradeService.GetAllGradesAsync(UserId));
 
+    [HttpGet("transcript")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> GetTranscript()
+        => Ok(await gradeService.GetTranscriptAsync(UserId));
+
     [HttpPost("complaint")]
     [Authorize(Roles = "Student")]
     public async Task<IActionResult> FileComplaint([FromBody] GradeComplaintDto dto)
