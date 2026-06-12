@@ -23,6 +23,11 @@ public class GradesController(IGradeService gradeService) : ControllerBase
         return result is null ? NotFound() : Ok(result);
     }
 
+    [HttpGet("coursework/{courseId}")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> GetCourseWork(int courseId)
+        => Ok(await gradeService.GetCourseWorkAsync(UserId, courseId));
+
     [HttpGet("my-grades")]
     [Authorize(Roles = "Student")]
     public async Task<IActionResult> GetAllMyGrades()

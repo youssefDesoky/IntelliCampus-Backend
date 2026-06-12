@@ -6,6 +6,7 @@ public interface IGradeService
 {
     // Student
     Task<CourseGradeDto?> GetCourseGradeAsync(int studentId, int courseId);
+    Task<int> GetCourseWorkAsync(int studentId, int courseId);
     Task<IEnumerable<GradeHistoryItemDto>> GetAllGradesAsync(int studentId);
 
     // Instructor (read-only)
