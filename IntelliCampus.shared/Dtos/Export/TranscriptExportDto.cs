@@ -7,6 +7,14 @@ public class TranscriptExportDto
     public string? Faculty { get; set; }
     public int? Level { get; set; }
     public string? Department { get; set; }
+    public int TotalCredits { get; set; }
+    public double GPA { get; set; }
+    public List<TranscriptSemesterDto> Semesters { get; set; } = [];
+}
+
+public class TranscriptSemesterDto
+{
+    public string SemesterName { get; set; } = string.Empty;
     public List<TranscriptCourseItem> Courses { get; set; } = [];
 }
 

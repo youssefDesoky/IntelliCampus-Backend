@@ -6,48 +6,47 @@ namespace IntelliCampus.Service;
 
 public class PdfExportService : IPdfExportService
 {
-    public byte[] ExportTranscript(TranscriptExportDto data)
-    {
-        var doc = new PdfDoc();
-        doc.AddHeader("IntelliCampus", "Academic Transcript");
-        doc.AddStudentInfo(data.StudentName, data.StudentCode, data.Faculty, data.Level, data.Department);
-        doc.AddTable(
-            ["Code", "Course Name", "Credit Hrs", "Coursework", "Total Grade", "Letter"],
-            data.Courses.Select(c => new[] { c.CourseCode, c.CourseName, c.CreditHours.ToString(), c.Coursework, c.TotalGrade, c.Letter }),
-            (0.2f, 0.4f, 0.6f),
-            centredHeaders: ["Code", "Credit Hrs", "Coursework", "Total Grade", "Letter"]);
-        return doc.GetBytes();
-    }
-
-    public byte[] ExportSchedule(ScheduleExportDto data)
-    {
-        try
+        public byte[] ExportTranscript(TranscriptExportDto data)
         {
             var doc = new PdfDoc();
-            doc.AddHeader("IntelliCampus", data.Title);
-            doc.AddStudentInfo(data.StudentName, data.StudentCode, null, null, null);
-            doc.AddScheduleGrid(MergeContinuousLectures(data.Items));
+            doc.AddHeader("IntelliCampus", "Academic Transcript");
+            doc.AddStudentInfo(data.StudentName, data.StudentCode, data.Faculty, data.Level, data.Department,
+                                data.TotalCredits, data.GPA);
+            string[] headers        = ["Code", "Course Name", "Credit Hrs", "Coursework", "Total", "Grade"];
+            string[] centredHeaders  = ["Code", "Credit Hrs", "Coursework", "Total", "Grade"];
+            doc.AddTranscriptTable(data.Semesters, headers, (0.2f, 0.4f, 0.6f), centredHeaders);
             return doc.GetBytes();
         }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine($"ExportSchedule ERROR: {ex}");
-            throw;
-        }
-    }
 
-    public byte[] ExportExamSchedule(ExamScheduleExportDto data)
-    {
-        var doc = new PdfDoc();
-        doc.AddHeader("IntelliCampus", data.Title);
-        doc.AddStudentInfo(data.StudentName, data.StudentCode, null, null, null);
-        doc.AddTable(
-            ["Code", "Course Name", "Day", "Date", "Time", "Location", "Type"],
-            data.Items.Select(e => new[] { e.CourseCode, e.CourseName, e.Day, e.Date, $"{e.StartTime} - {e.EndTime}", e.Location ?? "-", e.ExamType }),
-            (0.2f, 0.4f, 0.6f),
-            centredHeaders: ["Code", "Date", "Time", "Location", "Type"]);
-        return doc.GetBytes();
-    }
+        public byte[] ExportSchedule(ScheduleExportDto data)
+        {
+            try
+            {
+                var doc = new PdfDoc();
+                doc.AddHeader("IntelliCampus", data.Title, 742f);
+                doc.AddStudentInfo(data.StudentName, data.StudentCode, null, null, null);
+                doc.AddScheduleGrid(MergeContinuousLectures(data.Items));
+                return doc.GetBytes();
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"ExportSchedule ERROR: {ex}");
+                throw;
+            }
+        }
+
+        public byte[] ExportExamSchedule(ExamScheduleExportDto data)
+        {
+            var doc = new PdfDoc();
+            doc.AddHeader("IntelliCampus", data.Title, 742f);
+            doc.AddStudentInfo(data.StudentName, data.StudentCode, null, null, null);
+            doc.AddTable(
+                ["Code", "Course Name", "Day", "Date", "Time", "Location", "Type"],
+                data.Items.Select(e => new[] { e.CourseCode, e.CourseName, e.Day, e.Date, $"{e.StartTime} - {e.EndTime}", e.Location ?? "-", e.ExamType }),
+                (0.2f, 0.4f, 0.6f),
+                centredHeaders: ["Code", "Date", "Time", "Location", "Type"]);
+            return doc.GetBytes();
+        }
 
     // ── Merge consecutive lectures for the same course ──────────────────
     private IEnumerable<ScheduleItemExportDto> MergeContinuousLectures(
@@ -175,6 +174,14 @@ public class PdfExportService : IPdfExportService
         // ── PDF coordinate helper ─────────────────────────────────────────
         private float ToY(float layoutY) => PageH - layoutY;
 
+        // ── Divider ───────────────────────────────────────────────────────
+        public void DrawDivider(float width)
+        {
+            float lineY = ToY(_layoutY);
+            WriteRaw($"0 0 0 RG 1 w {Margin} {lineY:F1} m {Margin + width} {lineY:F1} l S");
+            _layoutY += 10f;
+        }
+
         // ── Block-fill colours (schedule grid) ───────────────────────────
         private static (float R, float G, float B) BlockFill(string type) =>
             type.ToLowerInvariant() switch
@@ -203,7 +210,7 @@ public class PdfExportService : IPdfExportService
         }
 
         // ── Header ────────────────────────────────────────────────────────
-        public void AddHeader(string title, string subtitle)
+        public void AddHeader(string title, string subtitle, float dividerWidth = 720f)
         {
             _layoutY += 12f;
 
@@ -215,31 +222,48 @@ public class PdfExportService : IPdfExportService
             WriteRaw($"0 0 0 rg BT /F2 {subSize} Tf {Margin} {ToY(_layoutY + subSize):F1} Td ({Escape(subtitle)}) Tj ET");
             _layoutY += subSize + 18f;
 
-            float lineY = ToY(_layoutY);
-            WriteRaw($"0 0 0 RG 1 w {Margin} {lineY:F1} m {PageW - Margin} {lineY:F1} l S");
+            if (dividerWidth > 0f)
+            {
+                float lineY = ToY(_layoutY);
+                WriteRaw($"0 0 0 RG 1 w {Margin} {lineY:F1} m {Margin + dividerWidth} {lineY:F1} l S");
+            }
             _layoutY += 10f;
         }
 
         // ── Student info ──────────────────────────────────────────────────
-        public void AddStudentInfo(string name, string code, string? faculty, int? level, string? department)
+        public void AddStudentInfo(string name, string code, string? faculty, int? level, string? department,
+                                    int totalCredits = 0, double gpa = 0.0)
         {
-            float sz    = 11f;
-            float lineH = sz + 4f;
+            float sz     = 11f;
+            float lineH  = sz + 4f;
+            float charW  = sz * 0.58f;
+
+            float tableRight = Margin + 720f;
+
+            string idText = "ID: " + code;
+            float rightColX = tableRight - idText.Length * charW;
 
             WriteRaw($"0 0 0 rg BT /F2 {sz} Tf {Margin} {ToY(_layoutY + sz):F1} Td ({Escape("Name: " + name)}) Tj ET");
-            WriteRaw($"BT /F1 {sz} Tf 380 {ToY(_layoutY + sz):F1} Td ({Escape("ID: " + code)}) Tj ET");
+            WriteRaw($"BT /F1 {sz} Tf {rightColX:F1} {ToY(_layoutY + sz):F1} Td ({Escape(idText)}) Tj ET");
             _layoutY += lineH;
 
             if (!string.IsNullOrEmpty(faculty))
             {
                 WriteRaw($"BT /F1 {sz} Tf {Margin} {ToY(_layoutY + sz):F1} Td ({Escape("Faculty: " + faculty)}) Tj ET");
                 if (level.HasValue)
-                    WriteRaw($"BT /F1 {sz} Tf 380 {ToY(_layoutY + sz):F1} Td ({Escape("Level: " + level)}) Tj ET");
+                    WriteRaw($"BT /F1 {sz} Tf {rightColX:F1} {ToY(_layoutY + sz):F1} Td ({Escape("Level: " + level)}) Tj ET");
                 _layoutY += lineH;
             }
             if (!string.IsNullOrEmpty(department))
             {
                 WriteRaw($"BT /F1 {sz} Tf {Margin} {ToY(_layoutY + sz):F1} Td ({Escape("Department: " + department)}) Tj ET");
+                if (totalCredits > 0)
+                    WriteRaw($"BT /F1 {sz} Tf {rightColX:F1} {ToY(_layoutY + sz):F1} Td ({Escape($"Total Credits: {totalCredits}")}) Tj ET");
+                _layoutY += lineH;
+            }
+            if (gpa > 0.0)
+            {
+                WriteRaw($"BT /F1 {sz} Tf {Margin} {ToY(_layoutY + sz):F1} Td ({Escape($"GPA: {gpa:F2}")}) Tj ET");
                 _layoutY += lineH;
             }
             _layoutY += 16f;
@@ -437,12 +461,9 @@ public class PdfExportService : IPdfExportService
                 if (tableW <= available) break;
                 fontSize -= 0.5f;
             }
-            if (tableW > available)
-            {
-                float scale = available / tableW;
-                colW   = colW.Select(w => MathF.Floor(w * scale)).ToArray();
-                tableW = colW.Sum();
-            }
+            float scale = available / tableW;
+            colW   = colW.Select(w => MathF.Floor(w * scale)).ToArray();
+            tableW = colW.Sum();
 
             float charW = fontSize * 0.611f;
             float rowH  = fontSize + 10f;
@@ -536,6 +557,137 @@ public class PdfExportService : IPdfExportService
             }
 
             // ── 6. Close the table on the last page ───────────────────────
+            CloseTableOnPage(_layoutY);
+            _layoutY += 10f;
+        }
+
+        // ── Transcript Table with Semester Bands ──────────────────────────
+        public void AddTranscriptTable(
+            List<TranscriptSemesterDto> semesters,
+            string[] headers,
+            (float R, float G, float B) headerBg,
+            string[]? centredHeaders = null)
+        {
+            var allRows = semesters
+                .SelectMany(s => s.Courses)
+                .Select(c => new[] { c.CourseCode, c.CourseName, c.CreditHours.ToString(),
+                                     c.Coursework, c.TotalGrade, c.Letter })
+                .ToList();
+
+            int   cols   = headers.Length;
+            float[] colW = [80f, 420f, 65f, 65f, 45f, 45f];
+            float tableW = colW.Sum();
+            float fontSize = MaxFontSz;
+            float charW = fontSize * 0.611f;
+            float rowH  = fontSize + 10f;
+
+            var xPos = new float[cols];
+            xPos[0] = Margin;
+            for (int i = 1; i < cols; i++) xPos[i] = xPos[i - 1] + colW[i - 1];
+
+            var isNumeric = new bool[cols];
+            for (int i = 0; i < cols; i++)
+                isNumeric[i] = allRows.Count > 0 && allRows.All(row => {
+                    if (i >= row.Length) return true;
+                    var v = row[i]?.Trim() ?? "-";
+                    return v == "-" || float.TryParse(v, out _);
+                });
+
+            var centreSet = new HashSet<string>(centredHeaders ?? [], StringComparer.OrdinalIgnoreCase);
+            var isCentred = isNumeric.Select((num, i) => num || centreSet.Contains(headers[i])).ToArray();
+
+            float pageTableTop = _layoutY;
+
+            void DrawColumnHeader()
+            {
+                FillRect(Margin, _layoutY, tableW, rowH, headerBg.R, headerBg.G, headerBg.B);
+                for (int i = 0; i < cols; i++)
+                {
+                    string lbl = headers[i];
+                    float  lw  = lbl.Length * charW;
+                    float  lx  = isCentred[i] ? xPos[i] + (colW[i] - lw) / 2f : xPos[i] + PadL;
+                    float  ly  = ToY(_layoutY + rowH / 2f + fontSize / 2f - 1f);
+                    WriteRaw($"1 1 1 rg BT /F2 {fontSize} Tf {lx:F2} {ly:F2} Td ({Escape(lbl)}) Tj ET 0 0 0 rg");
+                }
+                _layoutY += rowH;
+            }
+
+            void DrawSemesterBand(string semesterName)
+            {
+                FillRect(Margin, _layoutY, tableW, rowH, 0.686f, 0.725f, 0.784f);
+                float ty = ToY(_layoutY + rowH / 2f + fontSize / 2f - 1f);
+                float lw = semesterName.Length * charW;
+                float lx = Margin + (tableW - lw) / 2f;
+                WriteRaw($"1 1 1 rg BT /F2 {fontSize} Tf {lx:F2} {ty:F2} Td ({Escape(semesterName)}) Tj ET 0 0 0 rg");
+                _layoutY += rowH;
+            }
+
+            void CloseTableOnPage(float bottomY)
+            {
+                for (int i = 1; i < cols; i++)
+                    WriteRaw($"0.75 0.75 0.75 RG 0.4 w {xPos[i]:F2} {ToY(pageTableTop):F2} m {xPos[i]:F2} {ToY(bottomY):F2} l S 0 0 0 RG");
+                WriteRaw($"0 0 0 RG 0.6 w " +
+                         $"{Margin:F2} {ToY(pageTableTop):F2} m {Margin + tableW:F2} {ToY(pageTableTop):F2} l S " +
+                         $"{Margin:F2} {ToY(bottomY):F2} m {Margin + tableW:F2} {ToY(bottomY):F2} l S " +
+                         $"{Margin:F2} {ToY(pageTableTop):F2} m {Margin:F2} {ToY(bottomY):F2} l S " +
+                         $"{Margin + tableW:F2} {ToY(pageTableTop):F2} m {Margin + tableW:F2} {ToY(bottomY):F2} l S " +
+                         $"0 0 0 RG");
+            }
+
+            EnsureSpace(rowH * 3);
+            pageTableTop = _layoutY;
+            DrawColumnHeader();
+
+            int globalRow = 0;
+
+            foreach (var semester in semesters)
+            {
+                if (NearBottom(rowH * 2))
+                {
+                    CloseTableOnPage(_layoutY);
+                    FlushPage();
+                    pageTableTop = _layoutY;
+                }
+
+                DrawSemesterBand(semester.SemesterName);
+
+                foreach (var course in semester.Courses)
+                {
+                    if (NearBottom(rowH))
+                    {
+                        CloseTableOnPage(_layoutY);
+                        FlushPage();
+                        pageTableTop = _layoutY;
+                    }
+
+                    if (globalRow % 2 == 0)
+                        FillRect(Margin, _layoutY, tableW, rowH, 1f, 1f, 1f);
+                    else
+                        FillRect(Margin, _layoutY, tableW, rowH, 0.95f, 0.95f, 0.95f);
+
+                    var row = new[]
+                    {
+                        course.CourseCode, course.CourseName, course.CreditHours.ToString(),
+                        course.Coursework, course.TotalGrade, course.Letter
+                    };
+
+                    float textY = ToY(_layoutY + rowH / 2f + fontSize / 2f - 1f);
+                    for (int i = 0; i < row.Length && i < cols; i++)
+                    {
+                        string cell = row[i] ?? "-";
+                        float  cw2  = cell.Length * charW;
+                        float  cx   = isCentred[i] ? xPos[i] + (colW[i] - cw2) / 2f : xPos[i] + PadL;
+                        WriteRaw($"0 0 0 rg BT /F1 {fontSize} Tf {cx:F2} {textY:F2} Td ({Escape(cell)}) Tj ET");
+                    }
+
+                    float sepY = ToY(_layoutY + rowH);
+                    WriteRaw($"0.88 0.88 0.88 RG 0.4 w {Margin} {sepY:F2} m {Margin + tableW} {sepY:F2} l S 0 0 0 RG");
+
+                    _layoutY += rowH;
+                    globalRow++;
+                }
+            }
+
             CloseTableOnPage(_layoutY);
             _layoutY += 10f;
         }

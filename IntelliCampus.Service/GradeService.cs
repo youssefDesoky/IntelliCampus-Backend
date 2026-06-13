@@ -366,7 +366,7 @@ public class GradeService : IGradeService
                 }
                 else
                 {
-                    totalGradeStr = "Not Graded";
+                    totalGradeStr = "-";
                 }
             }
 
@@ -388,7 +388,44 @@ public class GradeService : IGradeService
     public async Task<byte[]> ExportTranscriptPdfAsync(int studentId)
     {
         var student = await _studentService.GetByIdAsync(studentId);
-        var courses = await GetTranscriptAsync(studentId);
+        var courseDtos = await GetTranscriptAsync(studentId);
+
+        var studentCourses = await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId));
+        var courseIdToSemester = studentCourses
+            .Where(sc => !string.IsNullOrEmpty(sc.Semester))
+            .ToDictionary(sc => sc.CourseId, sc => sc.Semester!);
+
+        var courseItemList = courseDtos.Select(c => (
+            Item: new TranscriptCourseItem
+            {
+                CourseCode = c.CourseCode,
+                CourseName = c.CourseName,
+                CreditHours = c.CreditHours,
+                Coursework = c.Coursework,
+                TotalGrade = c.TotalGrade,
+                Letter = c.Letter
+            },
+            c.CourseId
+        )).ToList();
+
+        var spec = new StudentSpec(studentId);
+        var studentEntity = await Students.GetByIdAsync(spec);
+
+        int totalCredits = courseItemList.Sum(c => c.Item.CreditHours);
+        double gpa = CalculateGpa(courseItemList.Select(c => c.Item).ToList(), studentEntity?.Bylaw?.GradeScales);
+
+        var semesterGroups = courseItemList
+            .GroupBy(c => courseIdToSemester.GetValueOrDefault(c.CourseId, "Courses"))
+            .ToList();
+
+        var semesters = semesterGroups
+            .Select(g => new TranscriptSemesterDto
+            {
+                SemesterName = g.Key,
+                Courses = g.Select(c => c.Item).ToList()
+            })
+            .OrderBy(s => s.SemesterName)
+            .ToList();
 
         var dto = new TranscriptExportDto
         {
@@ -397,15 +434,9 @@ public class GradeService : IGradeService
             Faculty = student?.Faculty,
             Level = student?.Level,
             Department = student?.DepartmentName,
-            Courses = courses.Select(c => new TranscriptCourseItem
-            {
-                CourseCode = c.CourseCode,
-                CourseName = c.CourseName,
-                CreditHours = c.CreditHours,
-                Coursework = c.Coursework,
-                TotalGrade = c.TotalGrade,
-                Letter = c.Letter
-            }).ToList()
+            TotalCredits = totalCredits,
+            GPA = gpa,
+            Semesters = semesters
         };
 
         return _pdfExportService.ExportTranscript(dto);
@@ -659,4 +690,20 @@ public class GradeService : IGradeService
         Status = c.Status,
         SubmittedAt = c.SubmittedAt.ToString("dd MM yyyy HH:mm")
     };
+
+    private static double CalculateGpa(List<TranscriptCourseItem> courses, List<GradeScaleItem>? scales)
+    {
+        if (courses.Count == 0) return 0.0;
+        double total = 0;
+        int credits = 0;
+        foreach (var c in courses)
+        {
+            double gp = scales?.FirstOrDefault(s => s.GradeLetter == c.Letter)?.GpaValue is decimal v
+                ? (double)v
+                : 0.0;
+            total += gp * c.CreditHours;
+            credits += c.CreditHours;
+        }
+        return credits > 0 ? total / credits : 0.0;
+    }
 }
