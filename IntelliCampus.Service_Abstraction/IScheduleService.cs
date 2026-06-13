@@ -11,6 +11,7 @@ public interface IScheduleService
     Task<IEnumerable<ScheduleDto>> GetByStudentIdAndTypeAsync(int studentId, ScheduleType type);
 
     Task<IEnumerable<ScheduleDto>> GetByStudentIdAndTypesAsync(int studentId, IReadOnlyCollection<ScheduleType> types);
+    Task<byte[]> ExportSchedulePdfAsync(int studentId, IReadOnlyCollection<ScheduleType>? types);
 
     Task SyncFromCourseRegistrationAsync(int studentId, int classId);
     Task RemoveByStudentAndCourseAsync(int studentId, int courseId);

@@ -30,9 +30,9 @@ public static class QuizSeeder
         var quizzes = new List<Quiz>
         {
             // CS-201 — Data Structures
-            new() { Title = "Data Structures Basics", Description = "Arrays, linked lists, stacks, and queues", DueDate = now.AddDays(-5), DurationMinutes = 30, MaxGrade = 20, TotalMarks = 20, CourseId = cs201.CourseId },
-            new() { Title = "Advanced Trees", Description = "BST, AVL trees, and tree traversals", DueDate = now.AddDays(-2), DurationMinutes = 45, MaxGrade = 30, TotalMarks = 30, CourseId = cs201.CourseId },
-            new() { Title = "Sorting & Searching", Description = "Sorting algorithms and search techniques", DueDate = now.AddDays(7), DurationMinutes = 40, MaxGrade = 25, TotalMarks = 25, CourseId = cs201.CourseId },
+            new() { Title = "Data Structures Basics", Description = "Arrays, linked lists, stacks, and queues", DueDate = now.AddDays(-5), DurationMinutes = 30, MaxGrade = 5, TotalMarks = 5, CourseId = cs201.CourseId },
+            new() { Title = "Advanced Trees", Description = "BST, AVL trees, and tree traversals", DueDate = now.AddDays(-2), DurationMinutes = 45, MaxGrade = 5, TotalMarks = 5, CourseId = cs201.CourseId },
+            new() { Title = "Sorting & Searching", Description = "Sorting algorithms and search techniques", DueDate = now.AddDays(7), DurationMinutes = 40, MaxGrade = 5, TotalMarks = 5, CourseId = cs201.CourseId },
 
             // CS-301 — Database Systems
             new() { Title = "SQL Fundamentals", Description = "SELECT, JOINs, subqueries, and aggregate functions", DueDate = now.AddDays(-3), DurationMinutes = 30, MaxGrade = 20, TotalMarks = 20, CourseId = cs301.CourseId },
@@ -56,11 +56,11 @@ public static class QuizSeeder
         var studentQuizzes = new List<StudentQuiz>
         {
             // Student 0 (Mohammed Hassan): submitted DS Basics (on time) + Advanced Trees (late)
-            new() { StudentId = students[0].UserId, QuizId = quizzes[0].QuizId, Score = 16, SubmittedAt = now.AddDays(-5).AddHours(2), IsLate = false },
-            new() { StudentId = students[0].UserId, QuizId = quizzes[1].QuizId, Score = 24, SubmittedAt = now.AddDays(-2).AddHours(1), IsLate = true },
+            new() { StudentId = students[0].UserId, QuizId = quizzes[0].QuizId, Score = 5, SubmittedAt = now.AddDays(-5).AddHours(2), IsLate = false },
+            new() { StudentId = students[0].UserId, QuizId = quizzes[1].QuizId, Score = 4, SubmittedAt = now.AddDays(-2).AddHours(1), IsLate = true },
 
             // Student 1: submitted DS Basics (on time) + HTML & CSS (late)
-            new() { StudentId = students[1].UserId, QuizId = quizzes[0].QuizId, Score = 18, SubmittedAt = now.AddDays(-5).AddHours(3), IsLate = false },
+            new() { StudentId = students[1].UserId, QuizId = quizzes[0].QuizId, Score = 4, SubmittedAt = now.AddDays(-5).AddHours(3), IsLate = false },
             new() { StudentId = students[1].UserId, QuizId = quizzes[5].QuizId, Score = 12, SubmittedAt = now.AddDays(-1).AddHours(2), IsLate = true },
 
             // Student 2: submitted SQL Fundamentals (on time)

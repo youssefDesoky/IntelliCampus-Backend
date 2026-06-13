@@ -119,6 +119,7 @@ builder.Services.AddScoped<UrlResolver>();
 builder.Services.AddScoped<IBylawService, BylawService>();
 builder.Services.AddScoped<IExamService, ExamService>();
 builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
+builder.Services.AddScoped<IPdfExportService, PdfExportService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
 

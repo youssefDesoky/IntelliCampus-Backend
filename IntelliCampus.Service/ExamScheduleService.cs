@@ -3,6 +3,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Shared.Dtos.Export;
 using IntelliCampus.Shared.Dtos.Schedule;
 
 namespace IntelliCampus.Service;
@@ -10,8 +11,15 @@ namespace IntelliCampus.Service;
 public class ExamScheduleService : IExamScheduleService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IStudentService _studentService;
+    private readonly IPdfExportService _pdfExportService;
 
-    public ExamScheduleService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
+    public ExamScheduleService(IUnitOfWork unitOfWork, IStudentService studentService, IPdfExportService pdfExportService)
+    {
+        _unitOfWork = unitOfWork;
+        _studentService = studentService;
+        _pdfExportService = pdfExportService;
+    }
 
     private IGenericRepository<ExamSchedule, int> ExamSchedules
         => _unitOfWork.GetRepository<ExamSchedule, int>();
@@ -99,6 +107,40 @@ public class ExamScheduleService : IExamScheduleService
         await _unitOfWork.SaveChangesAsync();
     }
 
+    public async Task<byte[]> ExportExamSchedulePdfAsync(int studentId, ExamType? type, ExamStatus? status)
+    {
+        var student = await _studentService.GetByIdAsync(studentId);
+
+        IEnumerable<ExamScheduleDto> exams;
+        if (type.HasValue)
+            exams = await GetByTypeAsync(studentId, type.Value);
+        else if (status.HasValue)
+            exams = await GetByStatusAsync(studentId, status.Value);
+        else
+            exams = await GetByStudentIdAsync(studentId);
+
+        var dto = new ExamScheduleExportDto
+        {
+            StudentName = student?.FullName ?? "",
+            StudentCode = student?.StudentCode ?? "-",
+            Title = "Exam Schedule",
+            Items = exams.Select(e => new ExamScheduleItem
+            {
+                CourseCode = e.CourseCode,
+                CourseName = e.CourseName,
+                Day = ToFullDayName(e.Day),
+                Date = e.Date.ToString("dd MMM yyyy"),
+                StartTime = e.StartTime,
+                EndTime = e.EndTime,
+                Duration = e.Duration,
+                Location = e.Location,
+                ExamType = e.ExamType.ToString()
+            }).ToList()
+        };
+
+        return _pdfExportService.ExportExamSchedule(dto);
+    }
+
     private static ExamScheduleDto MapToDto(ExamSchedule e) => new()
     {
         ExamScheduleId = e.ExamScheduleId,
@@ -125,6 +167,18 @@ public class ExamScheduleService : IExamScheduleService
         "thursday" or "thu" => "thu",
         "friday" or "fri" => "fri",
         _ => day?.ToLowerInvariant() ?? string.Empty
+    };
+
+    private static string ToFullDayName(string day) => day?.ToLowerInvariant() switch
+    {
+        "sat" or "saturday" => "Saturday",
+        "sun" or "sunday" => "Sunday",
+        "mon" or "monday" => "Monday",
+        "tue" or "tuesday" => "Tuesday",
+        "wed" or "wednesday" => "Wednesday",
+        "thu" or "thursday" => "Thursday",
+        "fri" or "friday" => "Friday",
+        _ => day ?? string.Empty
     };
 
     private static string FormatTime(TimeSpan time) =>

@@ -25,9 +25,6 @@ public class ScheduleController(IScheduleService scheduleService) : ControllerBa
     public async Task<IActionResult> GetByStudentId(int studentId)
         => Ok(await scheduleService.GetByStudentIdAsync(studentId));
 
-    // GET api/schedule/my-schedule
-    // GET api/schedule/my-schedule?type=Lecture
-    // GET api/schedule/my-schedule?type=Lecture&type=Lab
     [HttpGet("my-schedule")]
     [Authorize(Roles = "Student")]
     public async Task<IActionResult> GetMySchedule([FromQuery(Name = "type")] ScheduleType[]? types)
@@ -36,5 +33,13 @@ public class ScheduleController(IScheduleService scheduleService) : ControllerBa
             return Ok(await scheduleService.GetByStudentIdAsync(UserId));
 
         return Ok(await scheduleService.GetByStudentIdAndTypesAsync(UserId, types));
+    }
+
+    [HttpGet("my-schedule/export")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> ExportMySchedule([FromQuery(Name = "type")] ScheduleType[]? types)
+    {
+        var pdf = await scheduleService.ExportSchedulePdfAsync(UserId, types);
+        return File(pdf, "application/pdf", "WeeklySchedule.pdf");
     }
 }

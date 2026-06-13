@@ -37,7 +37,7 @@ public static class AssignmentSeeder
                 Description = "Implement dynamic array and singly linked list operations.",
                 FullInstructions = "Write a program that implements a dynamic array with insert, delete, and search operations. Then implement a singly linked list with the same operations. Compare time complexities.",
                 DueDate = now.AddDays(-3),
-                MaxGrade = 20,
+                MaxGrade = 5,
                 CourseId = dsCourse.CourseId
             },
             new()
@@ -46,7 +46,7 @@ public static class AssignmentSeeder
                 Description = "Implement stack and queue using arrays and linked lists.",
                 FullInstructions = "Implement stack and queue data structures using both array-based and linked-list-based approaches. Include standard operations: push, pop, peek, enqueue, dequeue.",
                 DueDate = now.AddDays(7),
-                MaxGrade = 25,
+                MaxGrade = 5,
                 CourseId = dsCourse.CourseId
             },
             new()
@@ -55,7 +55,7 @@ public static class AssignmentSeeder
                 Description = "Implement BST with insert, delete, search, and traversal operations.",
                 FullInstructions = "Implement a Binary Search Tree with insertion, deletion, search, inorder/preorder/postorder traversal. Also implement finding minimum, maximum, and successor/predecessor.",
                 DueDate = now.AddDays(-1),
-                MaxGrade = 30,
+                MaxGrade = 5,
                 CourseId = dsCourse.CourseId
             },
             new()
@@ -115,7 +115,11 @@ public static class AssignmentSeeder
                 AssignmentId = arraysAssignment.AssignmentId,
                 Note = "Submitted implementation with both array and linked list versions.",
                 SubmittedAt = now.AddDays(-4),
-                IsLate = false
+                IsLate = false,
+                Grade = 4,
+                Feedback = "Good work, missing some edge cases.",
+                GradedByInstructorId = drAhmed?.UserId,
+                GradedAt = now.AddDays(-3)
             });
         if (layla is not null)
             submissions.Add(new StudentAssignment
@@ -134,7 +138,7 @@ public static class AssignmentSeeder
                 Note = "Includes bonus circular linked list implementation.",
                 SubmittedAt = now.AddDays(-2),
                 IsLate = true,
-                Grade = 15,
+                Grade = 4,
                 Feedback = "Good work on the implementations, but missing some edge cases for deletion. Bonus circular list was well done.",
                 GradedByInstructorId = drAhmed?.UserId,
                 GradedAt = now.AddDays(-1)
@@ -148,7 +152,11 @@ public static class AssignmentSeeder
                 AssignmentId = bstAssignment.AssignmentId,
                 Note = "Submitted late, had trouble with deletion logic.",
                 SubmittedAt = now.AddHours(-6),
-                IsLate = true
+                IsLate = true,
+                Grade = 4,
+                Feedback = "Good effort, deletion logic needs improvement.",
+                GradedByInstructorId = drAhmed?.UserId,
+                GradedAt = now.AddHours(-3)
             });
         if (karim is not null)
             submissions.Add(new StudentAssignment
@@ -158,7 +166,7 @@ public static class AssignmentSeeder
                 Note = "Includes AVL tree rotation as bonus.",
                 SubmittedAt = now.AddDays(-2),
                 IsLate = false,
-                Grade = 25,
+                Grade = 5,
                 Feedback = "Excellent implementation! The AVL tree bonus was impressive. Clean code and good comments.",
                 GradedByInstructorId = drAhmed?.UserId,
                 GradedAt = now.AddHours(-12)
