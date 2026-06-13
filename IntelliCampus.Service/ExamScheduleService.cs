@@ -128,7 +128,7 @@ public class ExamScheduleService : IExamScheduleService
             {
                 CourseCode = e.CourseCode,
                 CourseName = e.CourseName,
-                Day = e.Day,
+                Day = ToFullDayName(e.Day),
                 Date = e.Date.ToString("dd MMM yyyy"),
                 StartTime = e.StartTime,
                 EndTime = e.EndTime,
@@ -167,6 +167,18 @@ public class ExamScheduleService : IExamScheduleService
         "thursday" or "thu" => "thu",
         "friday" or "fri" => "fri",
         _ => day?.ToLowerInvariant() ?? string.Empty
+    };
+
+    private static string ToFullDayName(string day) => day?.ToLowerInvariant() switch
+    {
+        "sat" or "saturday" => "Saturday",
+        "sun" or "sunday" => "Sunday",
+        "mon" or "monday" => "Monday",
+        "tue" or "tuesday" => "Tuesday",
+        "wed" or "wednesday" => "Wednesday",
+        "thu" or "thursday" => "Thursday",
+        "fri" or "friday" => "Friday",
+        _ => day ?? string.Empty
     };
 
     private static string FormatTime(TimeSpan time) =>

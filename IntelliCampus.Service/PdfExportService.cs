@@ -26,18 +26,7 @@ public class PdfExportService : IPdfExportService
             var doc = new PdfDoc();
             doc.AddHeader("IntelliCampus", data.Title);
             doc.AddStudentInfo(data.StudentName, data.StudentCode, null, null, null);
-            doc.AddTable(
-                ["Day", "Time", "Course", "Location", "Type", "Instructor"],
-                data.Items.Select(s => new[] {
-                    s.Day,
-                    $"{s.StartTime} - {s.EndTime}",
-                    s.CourseName,
-                    s.Location ?? "-",
-                    s.Type,
-                    s.Instructor ?? "-"
-                }),
-                (0.2f, 0.4f, 0.6f),
-                centredHeaders: ["Day", "Time", "Course", "Location", "Type", "Instructor"]);
+            doc.AddScheduleGrid(MergeContinuousLectures(data.Items));
             return doc.GetBytes();
         }
         catch (Exception ex)
@@ -60,75 +49,394 @@ public class PdfExportService : IPdfExportService
         return doc.GetBytes();
     }
 
+    // ── Merge consecutive lectures for the same course ──────────────────
+    private IEnumerable<ScheduleItemExportDto> MergeContinuousLectures(
+        IEnumerable<ScheduleItemExportDto> items)
+    {
+        var result = new List<ScheduleItemExportDto>();
+
+        var grouped = items
+            .GroupBy(i => new
+            {
+                Day        = i.Day.ToLowerInvariant(),
+                CourseName = i.CourseName.Trim(),
+                Type       = i.Type.Trim()
+            });
+
+        foreach (var group in grouped)
+        {
+            var list = group.ToList();
+
+            if (!group.Key.Type.Equals("Lecture", StringComparison.OrdinalIgnoreCase))
+            {
+                result.AddRange(list);
+                continue;
+            }
+
+            var sorted = list
+                .OrderBy(i => ParseTime(i.StartTime))
+                .ToList();
+
+            var current = sorted[0];
+
+            for (int i = 1; i < sorted.Count; i++)
+            {
+                var next       = sorted[i];
+                var currentEnd = ParseTime(current.EndTime);
+                var nextStart  = ParseTime(next.StartTime);
+
+                if (nextStart == currentEnd)
+                {
+                    current = new ScheduleItemExportDto
+                    {
+                        Day        = current.Day,
+                        CourseName = current.CourseName,
+                        Type       = current.Type,
+                        Location   = current.Location,
+                        Instructor = current.Instructor,
+                        StartTime  = current.StartTime,
+                        EndTime    = next.EndTime
+                    };
+                }
+                else
+                {
+                    result.Add(current);
+                    current = next;
+                }
+            }
+
+            result.Add(current);
+        }
+
+        return result;
+    }
+
+    private static TimeSpan ParseTime(string t)
+    {
+        if (DateTime.TryParseExact(t, "hh:mm tt",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out var dt))
+            return dt.TimeOfDay;
+        return TimeSpan.Zero;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    //  PdfDoc – raw PDF-1.4 builder  (multi-page capable)
+    //  Y-axis: PDF origin is BOTTOM-LEFT; positive Y goes UP.
+    //  _layoutY = distance consumed from the TOP of the current page.
+    // ═══════════════════════════════════════════════════════════════════════
     private class PdfDoc
     {
         private readonly StringBuilder _sb = new();
-        private const float PageW  = 595;
-        private const float PageH  = 842;
-        private const float Margin = 50;
-        private float _y = PageH - 60;
 
-        private const float PadL   = 6f;
-        private const float PadR   = 6f;
+        // ── Page constants ────────────────────────────────────────────────
+        private const float PageW      = 842f;   // A4 landscape
+        private const float PageH      = 595f;
+        private const float Margin     = 50f;
+        private const float PadL       = 6f;
+        private const float PadR       = 6f;
+        private const float MaxFontSz  = 9f;
+        private const float MinFontSz  = 6f;
+        private const float BottomSafe = 40f;    // stop drawing this many pts from page bottom
 
-        private const float MaxFontSz = 9f;
-        private const float MinFontSz = 6f;
+        // ── Multi-page state ──────────────────────────────────────────────
+        private float _layoutY   = 30f;   // distance from top of current page
+        private int   _pageCount = 1;
+
+        // Each page's content is buffered separately so we can emit proper
+        // PDF page objects (each with its own /Contents stream).
+        private readonly List<string> _pageStreams = [];
+        private StringBuilder         _cur         = new();   // current page stream
 
         public PdfDoc()
         {
-            _sb.AppendLine("%PDF-1.4");
+            _cur.AppendLine("%PDF-1.4");   // marker only; stripped later
         }
 
+        // ── Page management ───────────────────────────────────────────────
+        private void FlushPage()
+        {
+            _cur.AppendLine("Q");
+            _pageStreams.Add(_cur.ToString());
+            _cur = new StringBuilder();
+            _layoutY = 30f;
+            _pageCount++;
+        }
+
+        /// <summary>Returns true when less than <paramref name="needed"/> pts remain on page.</summary>
+        private bool NearBottom(float needed) =>
+            _layoutY + needed > PageH - BottomSafe;
+
+        private void EnsureSpace(float needed)
+        {
+            if (NearBottom(needed)) FlushPage();
+        }
+
+        // ── PDF coordinate helper ─────────────────────────────────────────
+        private float ToY(float layoutY) => PageH - layoutY;
+
+        // ── Block-fill colours (schedule grid) ───────────────────────────
+        private static (float R, float G, float B) BlockFill(string type) =>
+            type.ToLowerInvariant() switch
+            {
+                "lecture"  => (0.22f, 0.43f, 0.68f),
+                "section"  => (0.31f, 0.62f, 0.78f),
+                "lab"      => (0.30f, 0.63f, 0.53f),
+                "activity" => (0.72f, 0.48f, 0.22f),
+                _          => (0.45f, 0.45f, 0.55f),
+            };
+
+        private static TimeSpan ParseTime(string t)
+        {
+            if (DateTime.TryParseExact(t, "hh:mm tt",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None, out var dt))
+                return dt.TimeOfDay;
+            return TimeSpan.Zero;
+        }
+
+        private static string TruncFit(string text, float availW, float charW)
+        {
+            int max = (int)(availW / charW);
+            if (max <= 0) return string.Empty;
+            return text.Length <= max ? text : text[..Math.Max(max - 1, 0)] + "~";
+        }
+
+        // ── Header ────────────────────────────────────────────────────────
         public void AddHeader(string title, string subtitle)
         {
-            WriteText(title, 20, bold: true, colorR: 0.2f, colorG: 0.4f, colorB: 0.6f);
-            WriteText(subtitle, 16, bold: true);
-            _y -= 8;
-            DrawLine(Margin, _y, PageW - Margin, _y);
-            _y -= 16;
+            _layoutY += 12f;
+
+            float titleSize = 20f;
+            WriteRaw($"0.2 0.4 0.6 rg BT /F2 {titleSize} Tf {Margin} {ToY(_layoutY + titleSize):F1} Td ({Escape(title)}) Tj ET 0 0 0 rg");
+            _layoutY += titleSize + 4f;
+
+            float subSize = 16f;
+            WriteRaw($"0 0 0 rg BT /F2 {subSize} Tf {Margin} {ToY(_layoutY + subSize):F1} Td ({Escape(subtitle)}) Tj ET");
+            _layoutY += subSize + 18f;
+
+            float lineY = ToY(_layoutY);
+            WriteRaw($"0 0 0 RG 1 w {Margin} {lineY:F1} m {PageW - Margin} {lineY:F1} l S");
+            _layoutY += 10f;
         }
 
+        // ── Student info ──────────────────────────────────────────────────
         public void AddStudentInfo(string name, string code, string? faculty, int? level, string? department)
         {
-            WriteTextAt($"Name: {name}", Margin, _y, 10, bold: true);
-            WriteTextAt($"Code: {code}", 350, _y, 10);
-            _y -= 16;
+            float sz    = 11f;
+            float lineH = sz + 4f;
+
+            WriteRaw($"0 0 0 rg BT /F2 {sz} Tf {Margin} {ToY(_layoutY + sz):F1} Td ({Escape("Name: " + name)}) Tj ET");
+            WriteRaw($"BT /F1 {sz} Tf 380 {ToY(_layoutY + sz):F1} Td ({Escape("ID: " + code)}) Tj ET");
+            _layoutY += lineH;
 
             if (!string.IsNullOrEmpty(faculty))
             {
-                WriteTextAt($"Faculty: {faculty}", Margin, _y, 10);
-                WriteTextAt(level.HasValue ? $"Level: {level}" : "", 350, _y, 10);
-                _y -= 14;
+                WriteRaw($"BT /F1 {sz} Tf {Margin} {ToY(_layoutY + sz):F1} Td ({Escape("Faculty: " + faculty)}) Tj ET");
+                if (level.HasValue)
+                    WriteRaw($"BT /F1 {sz} Tf 380 {ToY(_layoutY + sz):F1} Td ({Escape("Level: " + level)}) Tj ET");
+                _layoutY += lineH;
             }
             if (!string.IsNullOrEmpty(department))
             {
-                WriteTextAt($"Department: {department}", Margin, _y, 10);
-                _y -= 14;
+                WriteRaw($"BT /F1 {sz} Tf {Margin} {ToY(_layoutY + sz):F1} Td ({Escape("Department: " + department)}) Tj ET");
+                _layoutY += lineH;
             }
-            _y -= 8;
+            _layoutY += 16f;
         }
 
+        // ── Schedule Grid (unchanged logic, single-page) ──────────────────
+        public void AddScheduleGrid(IEnumerable<ScheduleItemExportDto> items)
+        {
+            var list = items.ToList();
+            if (list.Count == 0)
+            {
+                WriteRaw($"BT /F1 9 Tf {Margin} {ToY(_layoutY + 9):F1} Td (No schedule items.) Tj ET");
+                _layoutY += 20;
+                return;
+            }
 
+            const float TimelineStartHour = 8f;
+            const float TimelineEndHour   = 18f;
+            const float TimelineDuration  = TimelineEndHour - TimelineStartHour;
 
-        public void AddTable(string[] headers, IEnumerable<string[]> rows, (float R, float G, float B) headerBg, string[]? centredHeaders = null)
+            var hourTicks = Enumerable.Range(0, 11)
+                .Select(i => TimelineStartHour + i)
+                .ToArray();
+
+            var dayOrder = new[] { "sat", "sun", "mon", "tue", "wed", "thu", "fri" };
+            var dayFull  = new Dictionary<string, string>
+            {
+                ["sat"] = "Saturday", ["sun"] = "Sunday",   ["mon"] = "Monday",
+                ["tue"] = "Tuesday",  ["wed"] = "Wednesday", ["thu"] = "Thursday",
+                ["fri"] = "Friday"
+            };
+
+            var days = list
+                .Select(i => i.Day.ToLowerInvariant())
+                .Distinct()
+                .OrderBy(d => { int idx = Array.IndexOf(dayOrder, d); return idx < 0 ? 99 : idx; })
+                .ToList();
+
+            const float DayColW  = 62f;
+            const float HeaderH  = 24f;
+            const float RowH     = 54f;
+            const float BlockPad =  2f;
+
+            float gridLeft  = Margin + DayColW;
+            float gridRight = PageW - Margin;
+            float gridW     = gridRight - gridLeft;
+
+            float gridTotalH = HeaderH + days.Count * RowH;
+            float gridTop    = _layoutY;
+            float gridBottom = gridTop + gridTotalH;
+
+            float TimeToX(float hour)
+            {
+                float pct = (hour - TimelineStartHour) / TimelineDuration;
+                pct = Math.Clamp(pct, 0f, 1f);
+                return gridLeft + pct * gridW;
+            }
+
+            static float TsToHour(TimeSpan ts) => ts.Hours + ts.Minutes / 60f;
+
+            FillRect(Margin, gridTop, DayColW + gridW, HeaderH, 0.18f, 0.35f, 0.55f);
+            WriteCell("DAY", Margin, gridTop, DayColW, HeaderH, 7.5f,
+                      bold: true, tr: 1f, tg: 1f, tb: 1f, centerH: true);
+            StrokeLine(gridLeft, gridTop, gridLeft, gridTop + HeaderH, 0.4f, 0.55f, 0.7f, 0.6f);
+
+            for (int ti = 0; ti < hourTicks.Length; ti++)
+            {
+                float h  = hourTicks[ti];
+                float tx = TimeToX(h);
+                StrokeLine(tx, gridTop, tx, gridTop + HeaderH, 0.4f, 0.55f, 0.7f, 0.5f);
+
+                float nextH   = h + 1f;
+                float centerX = (TimeToX(h) + TimeToX(Math.Min(nextH, TimelineEndHour))) / 2f;
+                int    hi     = (int)h;
+                string ampm   = hi < 12 ? "AM" : "PM";
+                int    h12    = hi % 12; if (h12 == 0) h12 = 12;
+                string label  = $"{h12} {ampm}";
+                float  labelW = label.Length * 6.5f * 0.58f;
+                float  labelX = centerX - labelW / 2f;
+                if (labelX >= gridLeft && labelX + labelW <= gridRight)
+                    WriteRaw($"1 1 1 rg BT /F1 6.5 Tf {labelX:F1} {ToY(gridTop + HeaderH / 2f + 6.5f / 2f - 1f):F1} Td ({Escape(label)}) Tj ET 0 0 0 rg");
+            }
+
+            for (int di = 0; di < days.Count; di++)
+            {
+                string day    = days[di];
+                float  rowTop = gridTop + HeaderH + di * RowH;
+                float bgR = di % 2 == 0 ? 1.00f : 0.96f;
+                float bgG = di % 2 == 0 ? 1.00f : 0.97f;
+                float bgB = di % 2 == 0 ? 1.00f : 0.98f;
+                FillRect(gridLeft, rowTop, gridW, RowH, bgR, bgG, bgB);
+                FillRect(Margin, rowTop, DayColW, RowH, 0.20f, 0.35f, 0.55f);
+                string dayLabel = dayFull.TryGetValue(day, out var fn) ? fn : day;
+                WriteCell(dayLabel, Margin, rowTop, DayColW, RowH, 7f,
+                          bold: true, tr: 1f, tg: 1f, tb: 1f, centerH: true);
+                StrokeLine(Margin, rowTop + RowH, PageW - Margin, rowTop + RowH, 0.78f, 0.80f, 0.84f, 0.5f);
+                foreach (float h in hourTicks)
+                    StrokeLine(TimeToX(h), rowTop, TimeToX(h), rowTop + RowH, 0.85f, 0.87f, 0.90f, 0.4f);
+
+                foreach (var item in list.Where(i => i.Day.ToLowerInvariant() == day))
+                {
+                    var tS = ParseTime(item.StartTime);
+                    var tE = ParseTime(item.EndTime);
+                    if (tE <= tS) continue;
+                    float startHour = Math.Clamp(TsToHour(tS), TimelineStartHour, TimelineEndHour);
+                    float endHour   = Math.Clamp(TsToHour(tE), TimelineStartHour, TimelineEndHour);
+                    if (endHour <= startHour) continue;
+                    float bx = TimeToX(startHour);
+                    float bw = TimeToX(endHour) - bx;
+                    if (bw < 2f) continue;
+
+                    var (fr, fg, fb) = BlockFill(item.Type);
+                    FillRect(bx + BlockPad, rowTop + BlockPad, bw - BlockPad * 2, RowH - BlockPad * 2, fr, fg, fb);
+                    FillRect(bx + BlockPad, rowTop + BlockPad, 3f, RowH - BlockPad * 2, fr * 0.68f, fg * 0.68f, fb * 0.68f);
+
+                    float textX  = bx + BlockPad + 5f;
+                    float textW  = bw - BlockPad * 2 - 7f;
+                    float innerH = RowH - BlockPad * 2;
+
+                    string cname = TruncFit(item.CourseName, textW, 4.1f);
+                    WriteRaw($"1 1 1 rg BT /F2 7 Tf {textX:F1} {ToY(rowTop + BlockPad + innerH * 0.28f):F1} Td ({Escape(cname)}) Tj ET 0 0 0 rg");
+
+                    if (!string.IsNullOrWhiteSpace(item.Location) && item.Location != "-")
+                    {
+                        string loc = TruncFit(item.Location, textW, 5.2f);
+                        WriteRaw($"0.88 0.93 1.00 rg BT /F1 6 Tf {textX:F1} {ToY(rowTop + BlockPad + innerH * 0.52f):F1} Td ({Escape(loc)}) Tj ET 0 0 0 rg");
+                    }
+                    if (!string.IsNullOrWhiteSpace(item.Instructor) && bw > 50f)
+                    {
+                        string ins = TruncFit(item.Instructor, textW, 4.8f);
+                        WriteRaw($"0.80 0.90 0.98 rg BT /F1 5.5 Tf {textX:F1} {ToY(rowTop + BlockPad + innerH * 0.70f):F1} Td ({Escape(ins)}) Tj ET 0 0 0 rg");
+                    }
+                    if (bw > 40f)
+                    {
+                        string tLabel = TruncFit($"{item.StartTime}-{item.EndTime}", textW, 4.5f);
+                        WriteRaw($"0.78 0.86 0.95 rg BT /F1 5 Tf {textX:F1} {ToY(rowTop + BlockPad + innerH * 0.88f):F1} Td ({Escape(tLabel)}) Tj ET 0 0 0 rg");
+                    }
+                }
+            }
+
+            StrokeLine(Margin,         gridTop,    PageW - Margin, gridTop,    0, 0, 0, 0.8f);
+            StrokeLine(Margin,         gridBottom, PageW - Margin, gridBottom, 0, 0, 0, 0.8f);
+            StrokeLine(Margin,         gridTop,    Margin,         gridBottom, 0, 0, 0, 0.8f);
+            StrokeLine(PageW - Margin, gridTop,    PageW - Margin, gridBottom, 0, 0, 0, 0.8f);
+            StrokeLine(gridLeft, gridTop, gridLeft, gridBottom, 0, 0, 0, 0.6f);
+            StrokeLine(Margin, gridTop + HeaderH, PageW - Margin, gridTop + HeaderH, 0, 0, 0, 0.6f);
+
+            _layoutY = gridBottom + 10f;
+            AddLegend();
+        }
+
+        // ── Legend ────────────────────────────────────────────────────────
+        private void AddLegend()
+        {
+            const float Sz       = 7f;
+            const float SwatchSz = 9f;
+            float y = _layoutY + 3f;
+            float x = Margin;
+
+            WriteRaw($"0 0 0 rg BT /F2 {Sz} Tf {x:F1} {ToY(y + Sz):F1} Td (Legend:) Tj ET");
+            x += 42f;
+
+            foreach (var (label, key) in new[] { ("Lecture","lecture"),("Section","section"),("Lab","lab"),("Activity","activity") })
+            {
+                var (fr, fg, fb) = BlockFill(key);
+                float pillW = SwatchSz + 4f + label.Length * Sz * 0.58f + 10f;
+                FillRect(x, y - 1f, pillW, SwatchSz + 4f, 0.96f, 0.96f, 0.97f);
+                FillRect(x + 3f, y + 1f, SwatchSz - 2f, SwatchSz - 2f, fr, fg, fb);
+                WriteRaw($"0.25 0.25 0.30 rg BT /F1 {Sz} Tf {x + SwatchSz + 4f:F1} {ToY(y + Sz):F1} Td ({Escape(label)}) Tj ET 0 0 0 rg");
+                x += pillW + 6f;
+            }
+
+            _layoutY = y + SwatchSz + 8f;
+        }
+
+        // ── Table – multi-page aware ───────────────────────────────────────
+        public void AddTable(string[] headers, IEnumerable<string[]> rows,
+                             (float R, float G, float B) headerBg,
+                             string[]? centredHeaders = null)
         {
             var rowList = rows.ToList();
-            int cols = headers.Length;
+            int   cols      = headers.Length;
             float available = PageW - Margin * 2;
 
+            // ── 1. Compute font size & column widths ───────────────────────
             float fontSize = MaxFontSz;
             float[] colW   = [];
             float   tableW = 0;
 
             while (fontSize >= MinFontSz)
             {
-                float charW = fontSize * 0.611f;
-                colW   = ComputeColWidths(headers, rowList, cols, charW);
+                float cw = fontSize * 0.611f;
+                colW   = ComputeColWidths(headers, rowList, cols, cw);
                 tableW = colW.Sum();
                 if (tableW <= available) break;
                 fontSize -= 0.5f;
             }
-
             if (tableW > available)
             {
                 float scale = available / tableW;
@@ -136,188 +444,229 @@ public class PdfExportService : IPdfExportService
                 tableW = colW.Sum();
             }
 
-            float charW2 = fontSize * 0.611f;
-            float rowH   = fontSize + 10f;
+            float charW = fontSize * 0.611f;
+            float rowH  = fontSize + 10f;
 
+            // ── 2. Column X positions ─────────────────────────────────────
             var xPos = new float[cols];
             xPos[0] = Margin;
-            for (int i = 1; i < cols; i++)
-                xPos[i] = xPos[i - 1] + colW[i - 1];
+            for (int i = 1; i < cols; i++) xPos[i] = xPos[i - 1] + colW[i - 1];
 
+            // ── 3. Centre flags ───────────────────────────────────────────
             var isNumeric = new bool[cols];
             for (int i = 0; i < cols; i++)
-            {
-                isNumeric[i] = rowList.Count > 0 && rowList.All(row =>
-                {
+                isNumeric[i] = rowList.Count > 0 && rowList.All(row => {
                     if (i >= row.Length) return true;
                     var v = row[i]?.Trim() ?? "-";
                     return v == "-" || float.TryParse(v, out _);
                 });
-            }
 
             var centreSet = new HashSet<string>(centredHeaders ?? [], StringComparer.OrdinalIgnoreCase);
             var isCentred = isNumeric.Select((num, i) => num || centreSet.Contains(headers[i])).ToArray();
 
-            if (_y - rowH < 50) NewPage();
-            float headerY  = _y;
-            float baseTextY = headerY - rowH / 2f - fontSize / 2f + 1f;
-            DrawRect(Margin, headerY - rowH, tableW, rowH,
-                     fillR: headerBg.R, fillG: headerBg.G, fillB: headerBg.B);
-
-            for (int i = 0; i < cols; i++)
+            // ── Helper: draw the header band on whatever page we're on ────
+            void DrawHeader()
             {
-                string label = headers[i];
-                float labelW = label.Length * charW2;
-                float labelX = isCentred[i]
-                    ? xPos[i] + (colW[i] - labelW) / 2f
-                    : xPos[i] + PadL;
-                WriteTextAt(label, labelX, baseTextY,
-                            fontSize, bold: true, colorR: 1, colorG: 1, colorB: 1);
+                FillRect(Margin, _layoutY, tableW, rowH, headerBg.R, headerBg.G, headerBg.B);
+                for (int i = 0; i < cols; i++)
+                {
+                    string lbl = headers[i];
+                    float  lw  = lbl.Length * charW;
+                    float  lx  = isCentred[i] ? xPos[i] + (colW[i] - lw) / 2f : xPos[i] + PadL;
+                    float  ly  = ToY(_layoutY + rowH / 2f + fontSize / 2f - 1f);
+                    WriteRaw($"1 1 1 rg BT /F2 {fontSize} Tf {lx:F2} {ly:F2} Td ({Escape(lbl)}) Tj ET 0 0 0 rg");
+                }
+                _layoutY += rowH;
             }
-            _y = headerY - rowH;
 
-            int r = 0;
+            // ── 4. First header ───────────────────────────────────────────
+            EnsureSpace(rowH * 2);   // at least header + one row
+            float tableTopFirstPage = _layoutY;
+            DrawHeader();
+
+            // ── 5. Data rows ──────────────────────────────────────────────
+            // We track the top of the header on each page so we can draw the
+            // outer box and vertical separators when we leave a page.
+            float pageTableTop = tableTopFirstPage;
+            int   r            = 0;
+
+            void CloseTableOnPage(float bottomY)
+            {
+                // Vertical column separators
+                for (int i = 1; i < cols; i++)
+                    WriteRaw($"0.75 0.75 0.75 RG 0.4 w {xPos[i]:F2} {ToY(pageTableTop):F2} m {xPos[i]:F2} {ToY(bottomY):F2} l S 0 0 0 RG");
+                // Outer box
+                WriteRaw($"0 0 0 RG 0.6 w " +
+                         $"{Margin:F2} {ToY(pageTableTop):F2} m {Margin + tableW:F2} {ToY(pageTableTop):F2} l S " +
+                         $"{Margin:F2} {ToY(bottomY):F2} m {Margin + tableW:F2} {ToY(bottomY):F2} l S " +
+                         $"{Margin:F2} {ToY(pageTableTop):F2} m {Margin:F2} {ToY(bottomY):F2} l S " +
+                         $"{Margin + tableW:F2} {ToY(pageTableTop):F2} m {Margin + tableW:F2} {ToY(bottomY):F2} l S " +
+                         $"0 0 0 RG");
+            }
+
             foreach (var row in rowList)
             {
-                if (_y - rowH < 50) NewPage();
+                // If this row won't fit, close the current page and start fresh
+                if (NearBottom(rowH))
+                {
+                    CloseTableOnPage(_layoutY);
+                    FlushPage();
+                    pageTableTop = _layoutY;
+                    DrawHeader();            // repeat header on new page
+                }
 
                 if (r % 2 == 1)
-                    DrawRect(Margin, _y - rowH, tableW, rowH,
-                             fillR: 0.95f, fillG: 0.95f, fillB: 0.95f);
+                    FillRect(Margin, _layoutY, tableW, rowH, 0.95f, 0.95f, 0.95f);
 
-                float textY = _y - rowH / 2f - fontSize / 2f + 1f;
+                float textY = ToY(_layoutY + rowH / 2f + fontSize / 2f - 1f);
                 for (int i = 0; i < row.Length && i < cols; i++)
                 {
                     string cell  = row[i] ?? "-";
-                    float  cellW = cell.Length * charW2;
-                    float  cellX = isCentred[i]
-                        ? xPos[i] + (colW[i] - cellW) / 2f
-                        : xPos[i] + PadL;
-                    WriteTextAt(cell, cellX, textY, fontSize);
+                    float  cw2   = cell.Length * charW;
+                    float  cx    = isCentred[i] ? xPos[i] + (colW[i] - cw2) / 2f : xPos[i] + PadL;
+                    WriteRaw($"0 0 0 rg BT /F1 {fontSize} Tf {cx:F2} {textY:F2} Td ({Escape(cell)}) Tj ET");
                 }
 
-                DrawLine(Margin, _y - rowH, Margin + tableW, _y - rowH,
-                         strokeR: 0.88f, strokeG: 0.88f, strokeB: 0.88f);
+                // Row separator
+                float sepY = ToY(_layoutY + rowH);
+                WriteRaw($"0.88 0.88 0.88 RG 0.4 w {Margin} {sepY:F2} m {Margin + tableW} {sepY:F2} l S 0 0 0 RG");
 
-                _y -= rowH;
+                _layoutY += rowH;
                 r++;
             }
 
-            float bottomY = _y;
-            for (int i = 1; i < cols; i++)
-                DrawLine(xPos[i], headerY, xPos[i], bottomY,
-                         strokeR: 0.75f, strokeG: 0.75f, strokeB: 0.75f);
-
-            DrawLine(Margin,          headerY, Margin + tableW, headerY);
-            DrawLine(Margin,          bottomY, Margin + tableW, bottomY);
-            DrawLine(Margin,          headerY, Margin,          bottomY);
-            DrawLine(Margin + tableW, headerY, Margin + tableW, bottomY);
+            // ── 6. Close the table on the last page ───────────────────────
+            CloseTableOnPage(_layoutY);
+            _layoutY += 10f;
         }
+
+        // ── Drawing primitives ────────────────────────────────────────────
+        private void FillRect(float lx, float ly, float w, float h, float r, float g, float b)
+        {
+            float pdfY = ToY(ly + h);
+            WriteRaw($"{r:F3} {g:F3} {b:F3} rg {lx:F2} {pdfY:F2} {w:F2} {h:F2} re f 0 0 0 rg");
+        }
+
+        private void StrokeLine(float lx1, float ly1, float lx2, float ly2,
+                                 float r, float g, float b, float lw = 0.5f)
+        {
+            float py1 = ToY(ly1), py2 = ToY(ly2);
+            WriteRaw($"{r:F3} {g:F3} {b:F3} RG {lw} w {lx1:F2} {py1:F2} m {lx2:F2} {py2:F2} l S 0 0 0 RG");
+        }
+
+        private void WriteCell(string text, float lx, float ly, float w, float h, float sz,
+                                bool bold = false, float tr = 0, float tg = 0, float tb = 0,
+                                bool centerH = false)
+        {
+            float charW = sz * 0.58f;
+            float textW = text.Length * charW;
+            float tx    = centerH ? lx + (w - textW) / 2f : lx + PadL;
+            float ty    = ToY(ly + h / 2f + sz / 2f - 1f);
+            string font = bold ? "F2" : "F1";
+            WriteRaw($"{tr:F3} {tg:F3} {tb:F3} rg BT /{font} {sz} Tf {tx:F2} {ty:F2} Td ({Escape(text)}) Tj ET 0 0 0 rg");
+        }
+
+        private void WriteRaw(string pdfOps) => _cur.AppendLine(pdfOps);
+
+        private static string Escape(string s) =>
+            s.Replace("\\", "\\\\").Replace("(", "\\(").Replace(")", "\\)")
+             .Replace("\n", "\\n").Replace("\r", "\\r");
 
         private static float[] ComputeColWidths(string[] headers, List<string[]> rows, int cols, float charW)
         {
-            var maxTextW = new float[cols];
-            for (int i = 0; i < cols; i++)
-                maxTextW[i] = headers[i].Length * charW;
-
+            var max = new float[cols];
+            for (int i = 0; i < cols; i++) max[i] = headers[i].Length * charW;
             foreach (var row in rows)
                 for (int i = 0; i < row.Length && i < cols; i++)
-                    maxTextW[i] = Math.Max(maxTextW[i], (row[i] ?? "-").Length * charW);
-
-            return maxTextW.Select(w => w + PadL + PadR).ToArray();
+                    max[i] = Math.Max(max[i], (row[i] ?? "-").Length * charW);
+            return max.Select(w => w + PadL + PadR).ToArray();
         }
 
-        private void NewPage() => _y = PageH - 60;
-
-        private void WriteText(string text, float size, bool bold = false,
-                               float colorR = 0, float colorG = 0, float colorB = 0)
-        {
-            WriteTextAt(text, Margin, _y, size, bold, colorR, colorG, colorB);
-            _y -= size + 2;
-        }
-
-        private void WriteTextAt(string text, float x, float y, float size, bool bold = false,
-                                  float colorR = 0, float colorG = 0, float colorB = 0)
-        {
-            _sb.AppendLine($"{colorR} {colorG} {colorB} rg");
-            _sb.AppendLine($"BT /F{(bold ? 2 : 1)} {size} Tf {x} {y} Td ({Escape(text)}) Tj ET");
-            _sb.AppendLine("0 0 0 rg");
-        }
-
-        private void DrawLine(float x1, float y1, float x2, float y2,
-                               float strokeR = 0, float strokeG = 0, float strokeB = 0)
-        {
-            _sb.AppendLine($"{strokeR} {strokeG} {strokeB} RG");
-            _sb.AppendLine("1 w");
-            _sb.AppendLine($"{x1} {y1} m {x2} {y2} l S");
-        }
-
-        private void DrawRect(float x, float y, float w, float h,
-                               float fillR = 1, float fillG = 1, float fillB = 1)
-        {
-            _sb.AppendLine($"{fillR} {fillG} {fillB} rg");
-            _sb.AppendLine($"{x} {y} {w} {h} re f");
-        }
-
-        private static string Escape(string s) =>
-            s.Replace("\\", "\\\\")
-             .Replace("(", "\\(")
-             .Replace(")", "\\)")
-             .Replace("\n", "\\n")
-             .Replace("\r", "\\r");
-
+        // ── GetBytes – multi-page PDF ──────────────────────────────────────
         public byte[] GetBytes()
         {
-            _sb.AppendLine("Q");
+            // Flush the last (or only) page
+            _cur.AppendLine("Q");
+            _pageStreams.Add(_cur.ToString());
 
-            var content     = _sb.ToString();
-            var contentBytes = Encoding.ASCII.GetBytes(content);
-            var contentLen  = contentBytes.Length;
+            int totalPages = _pageStreams.Count;
 
             var final  = new StringBuilder();
-            long offset = 0;
+            long off   = 0;
+            void Ap(string s) { final.Append(s); off += Encoding.ASCII.GetByteCount(s); }
 
-            void Append(string s)
-            {
-                final.Append(s);
-                offset += Encoding.ASCII.GetByteCount(s);
-            }
-
-            offset = 0;
-            Append("%PDF-1.4\r\n");
+            off = 0;
+            Ap("%PDF-1.4\r\n");
 
             var offsets = new List<long>();
 
-            offsets.Add(offset);
-            Append("1 0 obj\r\n<< /Type /Pages /Kids [4 0 R] /Count 1 >>\r\nendobj\r\n");
+            // Object layout:
+            //  1 = Pages (parent)
+            //  2 = Font F1 (Helvetica)
+            //  3 = Font F2 (Helvetica-Bold)
+            //  4..3+N        = Page objects
+            //  4+N..3+2N     = Content streams
 
-            offsets.Add(offset);
-            Append("2 0 obj\r\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\r\nendobj\r\n");
+            int firstPageObj   = 4;
+            int firstStreamObj = firstPageObj + totalPages;
 
-            offsets.Add(offset);
-            Append("3 0 obj\r\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>\r\nendobj\r\n");
+            // ── Obj 1: Pages ───────────────────────────────────────────────
+            offsets.Add(off);
+            string kids = string.Join(" ", Enumerable.Range(firstPageObj, totalPages).Select(n => $"{n} 0 R"));
+            Ap($"1 0 obj\r\n<< /Type /Pages /Kids [{kids}] /Count {totalPages} >>\r\nendobj\r\n");
 
-            offsets.Add(offset);
-            Append("4 0 obj\r\n<< /Type /Page /Parent 1 0 R /Resources << /Font << /F1 2 0 R /F2 3 0 R >> >> /MediaBox [0 0 595 842] /Contents 5 0 R >>\r\nendobj\r\n");
+            // ── Obj 2: Font F1 ─────────────────────────────────────────────
+            offsets.Add(off);
+            Ap("2 0 obj\r\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\r\nendobj\r\n");
 
-            offsets.Add(offset);
-            Append($"5 0 obj\r\n<< /Length {contentLen} >>\r\nstream\r\n{content}\r\nendstream\r\nendobj\r\n");
+            // ── Obj 3: Font F2 ─────────────────────────────────────────────
+            offsets.Add(off);
+            Ap("3 0 obj\r\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>\r\nendobj\r\n");
 
-            offsets.Add(offset);
-            Append("6 0 obj\r\n<< /Type /Catalog /Pages 1 0 R >>\r\nendobj\r\n");
+            // ── Page objects ───────────────────────────────────────────────
+            for (int p = 0; p < totalPages; p++)
+            {
+                offsets.Add(off);
+                int streamObj = firstStreamObj + p;
+                Ap($"{firstPageObj + p} 0 obj\r\n" +
+                   $"<< /Type /Page /Parent 1 0 R " +
+                   $"/Resources << /Font << /F1 2 0 R /F2 3 0 R >> >> " +
+                   $"/MediaBox [0 0 842 595] /Contents {streamObj} 0 R >>\r\n" +
+                   $"endobj\r\n");
+            }
 
-            var xrefOffset = offset;
-            Append("xref\r\n");
-            Append($"0 {offsets.Count + 1}\r\n");
-            Append("0000000000 65535 f\r\n");
-            foreach (var off in offsets)
-                Append($"{off:D10} 00000 n\r\n");
+            // ── Content streams ────────────────────────────────────────────
+            for (int p = 0; p < totalPages; p++)
+            {
+                // Strip the "%PDF-1.4" marker that was written into page 0's buffer
+                string raw = _pageStreams[p];
+                if (p == 0 && raw.StartsWith("%PDF-1.4"))
+                    raw = raw[(raw.IndexOf('\n') + 1)..];
 
-            Append("trailer\r\n");
-            Append($"<< /Size {offsets.Count + 1} /Root 6 0 R >>\r\n");
-            Append("startxref\r\n");
-            Append($"{xrefOffset}\r\n");
-            Append("%%EOF\r\n");
+                byte[] bytes = Encoding.ASCII.GetBytes(raw);
+                offsets.Add(off);
+                Ap($"{firstStreamObj + p} 0 obj\r\n<< /Length {bytes.Length} >>\r\nstream\r\n");
+                final.Append(raw);
+                off += bytes.Length;
+                Ap("\r\nendstream\r\nendobj\r\n");
+            }
+
+            // ── Catalog ────────────────────────────────────────────────────
+            int catalogObj = firstStreamObj + totalPages;
+            offsets.Add(off);
+            Ap($"{catalogObj} 0 obj\r\n<< /Type /Catalog /Pages 1 0 R >>\r\nendobj\r\n");
+
+            // ── xref ──────────────────────────────────────────────────────
+            long xref = off;
+            Ap("xref\r\n");
+            Ap($"0 {offsets.Count + 1}\r\n");
+            Ap("0000000000 65535 f\r\n");
+            foreach (var o in offsets) Ap($"{o:D10} 00000 n\r\n");
+            Ap("trailer\r\n");
+            Ap($"<< /Size {offsets.Count + 1} /Root {catalogObj} 0 R >>\r\n");
+            Ap("startxref\r\n");
+            Ap($"{xref}\r\n");
+            Ap("%%EOF\r\n");
 
             return Encoding.ASCII.GetBytes(final.ToString());
         }
