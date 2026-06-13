@@ -240,8 +240,10 @@ public class PdfExportService : IPdfExportService
 
             float tableRight = Margin + 720f;
 
-            string idText = "ID: " + code;
-            float rightColX = tableRight - idText.Length * charW;
+            string idText  = "ID: " + code;
+            string creditsText = "Total Credits: " + totalCredits;
+            int maxRightLen = Math.Max(idText.Length, Math.Max(("Level: " + (level ?? 0)).Length, creditsText.Length));
+            float rightColX = tableRight - maxRightLen * charW;
 
             WriteRaw($"0 0 0 rg BT /F2 {sz} Tf {Margin} {ToY(_layoutY + sz):F1} Td ({Escape("Name: " + name)}) Tj ET");
             WriteRaw($"BT /F1 {sz} Tf {rightColX:F1} {ToY(_layoutY + sz):F1} Td ({Escape(idText)}) Tj ET");
