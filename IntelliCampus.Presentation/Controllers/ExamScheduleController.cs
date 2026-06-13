@@ -39,4 +39,12 @@ public class ExamScheduleController(IExamScheduleService examScheduleService) : 
     [Authorize(Roles = "Student")]
     public async Task<IActionResult> GetUpcoming()
         => Ok(await examScheduleService.GetByStatusAsync(UserId, ExamStatus.Upcoming));
+
+    [HttpGet("my-exams/export")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> ExportMyExams([FromQuery] ExamType? type, [FromQuery] ExamStatus? status)
+    {
+        var pdf = await examScheduleService.ExportExamSchedulePdfAsync(UserId, type, status);
+        return File(pdf, "application/pdf", "ExamSchedule.pdf");
+    }
 }

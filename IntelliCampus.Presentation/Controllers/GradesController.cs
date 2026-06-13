@@ -13,7 +13,7 @@ public class GradesController(IGradeService gradeService) : ControllerBase
 {
     private int UserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-    // ??? Student endpoints ???????????????????????????????????????
+    // Student endpoints
 
     [HttpGet("course/{courseId}")]
     [Authorize(Roles = "Student")]
@@ -38,6 +38,14 @@ public class GradesController(IGradeService gradeService) : ControllerBase
     public async Task<IActionResult> GetTranscript()
         => Ok(await gradeService.GetTranscriptAsync(UserId));
 
+    [HttpGet("transcript/export")]
+    [Authorize(Roles = "Student")]
+    public async Task<IActionResult> ExportTranscript()
+    {
+        var pdf = await gradeService.ExportTranscriptPdfAsync(UserId);
+        return File(pdf, "application/pdf", "Transcript.pdf");
+    }
+
     [HttpPost("complaint")]
     [Authorize(Roles = "Student")]
     public async Task<IActionResult> FileComplaint([FromBody] GradeComplaintDto dto)
@@ -48,7 +56,7 @@ public class GradesController(IGradeService gradeService) : ControllerBase
     public async Task<IActionResult> GetComplaints()
         => Ok(await gradeService.GetComplaintsAsync(UserId));
 
-    // ??? Instructor endpoints ????????????????????????????????????
+    // Instructor endpoints
 
     [HttpGet("student/{studentId}/course/{courseId}")]
     [Authorize(Roles = "Instructor")]

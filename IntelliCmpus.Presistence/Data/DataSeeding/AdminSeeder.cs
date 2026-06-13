@@ -236,6 +236,45 @@ public static class AdminSeeder
         await context.StudentCourses.AddRangeAsync(studentCourses);
         await context.SaveChangesAsync();
 
+        // ???????????????????? Schedules (weekly) ????????????????????
+        var schedules = new List<Schedule>();
+        foreach (var sc in studentCourses)
+        {
+            var cls = classes.First(c => c.ClassId == sc.ClassId);
+            var course = courses.First(c => c.CourseId == sc.CourseId);
+            schedules.Add(new Schedule
+            {
+                Title = course.CourseName,
+                Day = cls.Day switch
+                {
+                    DayOfWeekEnum.Sunday    => "sun",
+                    DayOfWeekEnum.Monday    => "mon",
+                    DayOfWeekEnum.Tuesday   => "tue",
+                    DayOfWeekEnum.Wednesday => "wed",
+                    DayOfWeekEnum.Thursday  => "thu",
+                    DayOfWeekEnum.Saturday  => "sat",
+                    _                       => ""
+                },
+                Date = DateTime.MinValue,
+                StartTime = cls.StartTime ?? TimeSpan.Zero,
+                EndTime = cls.EndTime ?? TimeSpan.Zero,
+                Location = cls.Room,
+                ScheduleType = cls.ClassType switch
+                {
+                    ClassType.Lecture => ScheduleType.Lecture,
+                    ClassType.Section => ScheduleType.Section,
+                    ClassType.Lab     => ScheduleType.Activity,
+                    _                 => ScheduleType.Lecture
+                },
+                InstructorName = instructors.FirstOrDefault(i => i.UserId == cls.InstructorId)?.FullName,
+                CourseId = sc.CourseId,
+                ClassId = sc.ClassId,
+                StudentId = sc.StudentId
+            });
+        }
+        await context.Schedules.AddRangeAsync(schedules);
+        await context.SaveChangesAsync();
+
         // ???????????????????? Material Folders ????????????????????
         var materialFolders = new List<MaterialFolder>
         {
@@ -424,6 +463,47 @@ public static class AdminSeeder
         };
 
         context.Exams.AddRange(exams);
+        await context.SaveChangesAsync();
+
+        // ???????????????????? Exam Schedules ????????????????????
+        var examSchedules = new List<ExamSchedule>();
+        var studentsForExams = await context.Students.Include(s => s.StudentCourses).ToListAsync();
+        var allExams = await context.Exams.Include(e => e.Course).Include(e => e.Room).ToListAsync();
+
+        foreach (var exam in allExams)
+        {
+            var enrolled = studentsForExams
+                .Where(s => s.StudentCourses.Any(sc => sc.CourseId == exam.CourseId))
+                .ToList();
+
+            var startTime = exam.Time;
+            var endTime = startTime.Add(TimeSpan.FromMinutes(exam.DurationMinutes));
+            var duration = endTime - startTime;
+            var durationText = duration.TotalMinutes % 60 == 0
+                ? $"{(int)duration.TotalHours} hour{((int)duration.TotalHours == 1 ? "" : "s")}"
+                : $"{duration.TotalHours:0.#} hours";
+
+            foreach (var student in enrolled)
+            {
+                examSchedules.Add(new ExamSchedule
+                {
+                    CourseCode = exam.Course?.CourseCode ?? "",
+                    CourseName = exam.Course?.CourseName ?? "",
+                    Day = exam.Date.DayOfWeek.ToString(),
+                    Date = exam.Date,
+                    StartTime = startTime,
+                    EndTime = endTime,
+                    Duration = durationText,
+                    Location = exam.Room?.RoomName,
+                    ExamType = exam.ExamType,
+                    Status = exam.Status,
+                    StudentId = student.UserId,
+                    ExamId = exam.ExamId
+                });
+            }
+        }
+
+        await context.AddRangeAsync(examSchedules);
         await context.SaveChangesAsync();
     }
 }

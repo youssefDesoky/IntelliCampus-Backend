@@ -3,6 +3,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Shared.Dtos.Export;
 using IntelliCampus.Shared.Dtos.Grade;
 
 namespace IntelliCampus.Service;
@@ -11,11 +12,16 @@ public class GradeService : IGradeService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly INotificationService _notificationService;
+    private readonly IStudentService _studentService;
+    private readonly IPdfExportService _pdfExportService;
 
-    public GradeService(IUnitOfWork unitOfWork, INotificationService notificationService)
+    public GradeService(IUnitOfWork unitOfWork, INotificationService notificationService,
+        IStudentService studentService, IPdfExportService pdfExportService)
     {
         _unitOfWork = unitOfWork;
         _notificationService = notificationService;
+        _studentService = studentService;
+        _pdfExportService = pdfExportService;
     }
 
     private IGenericRepository<GradeComplaint, int> Complaints
@@ -377,6 +383,32 @@ public class GradeService : IGradeService
         }
 
         return result;
+    }
+
+    public async Task<byte[]> ExportTranscriptPdfAsync(int studentId)
+    {
+        var student = await _studentService.GetByIdAsync(studentId);
+        var courses = await GetTranscriptAsync(studentId);
+
+        var dto = new TranscriptExportDto
+        {
+            StudentName = student?.FullName ?? "",
+            StudentCode = student?.StudentCode ?? "-",
+            Faculty = student?.Faculty,
+            Level = student?.Level,
+            Department = student?.DepartmentName,
+            Courses = courses.Select(c => new TranscriptCourseItem
+            {
+                CourseCode = c.CourseCode,
+                CourseName = c.CourseName,
+                CreditHours = c.CreditHours,
+                Coursework = c.Coursework,
+                TotalGrade = c.TotalGrade,
+                Letter = c.Letter
+            }).ToList()
+        };
+
+        return _pdfExportService.ExportTranscript(dto);
     }
 
     // Instructor (read-only)

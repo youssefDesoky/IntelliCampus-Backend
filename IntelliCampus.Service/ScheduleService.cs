@@ -3,6 +3,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Shared.Dtos.Export;
 using IntelliCampus.Shared.Dtos.Schedule;
 
 namespace IntelliCampus.Service;
@@ -10,8 +11,15 @@ namespace IntelliCampus.Service;
 public class ScheduleService : IScheduleService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IStudentService _studentService;
+    private readonly IPdfExportService _pdfExportService;
 
-    public ScheduleService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
+    public ScheduleService(IUnitOfWork unitOfWork, IStudentService studentService, IPdfExportService pdfExportService)
+    {
+        _unitOfWork = unitOfWork;
+        _studentService = studentService;
+        _pdfExportService = pdfExportService;
+    }
 
     private IGenericRepository<Schedule, int> Schedules
         => _unitOfWork.GetRepository<Schedule, int>();
@@ -121,6 +129,43 @@ public class ScheduleService : IScheduleService
         }
 
         await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<byte[]> ExportSchedulePdfAsync(int studentId, IReadOnlyCollection<ScheduleType>? types)
+    {
+        var student = await _studentService.GetByIdAsync(studentId);
+
+        IEnumerable<ScheduleDto> schedules;
+        if (types is null || types.Count == 0)
+            schedules = await GetByStudentIdAsync(studentId);
+        else
+            schedules = await GetByStudentIdAndTypesAsync(studentId, types);
+
+        var dto = new ScheduleExportDto
+        {
+            StudentName = student?.FullName ?? "",
+            StudentCode = student?.StudentCode ?? "-",
+            Title = "Weekly Schedule",
+            Items = schedules.Select(s => new ScheduleItemExportDto
+            {
+                Day = s.Day,
+                StartTime = s.StartTime,
+                EndTime = s.EndTime,
+                CourseName = s.CourseName ?? s.Title,
+                Type = s.Type,
+                Location = s.Location,
+                Instructor = s.Instructor
+            }).ToList()
+        };
+
+        try
+        {
+            return _pdfExportService.ExportSchedule(dto);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"ExportSchedule failed: {ex.Message}", ex);
+        }
     }
 
     private static ScheduleDto MapToDto(Schedule s) => new()

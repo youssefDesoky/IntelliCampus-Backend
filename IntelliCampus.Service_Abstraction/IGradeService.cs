@@ -9,6 +9,7 @@ public interface IGradeService
     Task<int> GetCourseWorkAsync(int studentId, int courseId);
     Task<IEnumerable<GradeHistoryItemDto>> GetAllGradesAsync(int studentId);
     Task<IEnumerable<TranscriptCourseDto>> GetTranscriptAsync(int studentId);
+    Task<byte[]> ExportTranscriptPdfAsync(int studentId);
 
     // Instructor (read-only)
     Task<IEnumerable<GradeDto>> GetByStudentAndCourseAsync(int instructorId, int studentId, int courseId);
