@@ -30,20 +30,20 @@ public static class QuizSeeder
         var quizzes = new List<Quiz>
         {
             // CS-201 — Data Structures
-            new() { Title = "Data Structures Basics", Description = "Arrays, linked lists, stacks, and queues", DueDate = now.AddDays(-5), DurationMinutes = 30, MaxGrade = 5, TotalMarks = 5, CourseId = cs201.CourseId },
-            new() { Title = "Advanced Trees", Description = "BST, AVL trees, and tree traversals", DueDate = now.AddDays(-2), DurationMinutes = 45, MaxGrade = 5, TotalMarks = 5, CourseId = cs201.CourseId },
-            new() { Title = "Sorting & Searching", Description = "Sorting algorithms and search techniques", DueDate = now.AddDays(7), DurationMinutes = 40, MaxGrade = 5, TotalMarks = 5, CourseId = cs201.CourseId },
+            new() { Title = "Data Structures Basics", Description = "Arrays, linked lists, stacks, and queues", StartDate = now.AddDays(-5).AddHours(-1), DueDate = now.AddDays(-5), DurationMinutes = 30, MaxGrade = 5, TotalMarks = 5, CourseId = cs201.CourseId },
+            new() { Title = "Advanced Trees", Description = "BST, AVL trees, and tree traversals", StartDate = now.AddDays(-2).AddHours(-1), DueDate = now.AddDays(-2), DurationMinutes = 45, MaxGrade = 5, TotalMarks = 5, CourseId = cs201.CourseId },
+            new() { Title = "Sorting & Searching", Description = "Sorting algorithms and search techniques", StartDate = now.AddDays(7).AddHours(-1), DueDate = now.AddDays(7), DurationMinutes = 40, MaxGrade = 5, TotalMarks = 5, CourseId = cs201.CourseId },
 
             // CS-301 — Database Systems
-            new() { Title = "SQL Fundamentals", Description = "SELECT, JOINs, subqueries, and aggregate functions", DueDate = now.AddDays(-3), DurationMinutes = 30, MaxGrade = 20, TotalMarks = 20, CourseId = cs301.CourseId },
-            new() { Title = "Database Normalization", Description = "Normal forms, functional dependencies, and schema design", DueDate = now.AddDays(10), DurationMinutes = 35, MaxGrade = 25, TotalMarks = 25, CourseId = cs301.CourseId },
+            new() { Title = "SQL Fundamentals", Description = "SELECT, JOINs, subqueries, and aggregate functions", StartDate = now.AddDays(-3).AddHours(-1), DueDate = now.AddDays(-3), DurationMinutes = 30, MaxGrade = 20, TotalMarks = 20, CourseId = cs301.CourseId },
+            new() { Title = "Database Normalization", Description = "Normal forms, functional dependencies, and schema design", StartDate = now.AddDays(10).AddHours(-1), DueDate = now.AddDays(10), DurationMinutes = 35, MaxGrade = 25, TotalMarks = 25, CourseId = cs301.CourseId },
 
             // IS-202 — Web Development
-            new() { Title = "HTML & CSS Basics", Description = "HTML5 structure, semantic tags, and CSS styling", DueDate = now.AddDays(-1), DurationMinutes = 20, MaxGrade = 15, TotalMarks = 15, CourseId = is202.CourseId },
-            new() { Title = "JavaScript Fundamentals", Description = "Variables, functions, DOM manipulation, and events", DueDate = now.AddDays(5), DurationMinutes = 30, MaxGrade = 20, TotalMarks = 20, CourseId = is202.CourseId },
+            new() { Title = "HTML & CSS Basics", Description = "HTML5 structure, semantic tags, and CSS styling", StartDate = now.AddDays(-1).AddHours(-1), DueDate = now.AddDays(-1), DurationMinutes = 20, MaxGrade = 15, TotalMarks = 15, CourseId = is202.CourseId },
+            new() { Title = "JavaScript Fundamentals", Description = "Variables, functions, DOM manipulation, and events", StartDate = now.AddDays(5).AddHours(-1), DueDate = now.AddDays(5), DurationMinutes = 30, MaxGrade = 20, TotalMarks = 20, CourseId = is202.CourseId },
 
             // CS-302 — Computer Networks
-            new() { Title = "Networking Basics", Description = "OSI model, TCP/IP, IP addressing, and subnetting", DueDate = now.AddDays(14), DurationMinutes = 40, MaxGrade = 25, TotalMarks = 25, CourseId = cs302.CourseId },
+            new() { Title = "Networking Basics", Description = "OSI model, TCP/IP, IP addressing, and subnetting", StartDate = now.AddDays(14).AddHours(-1), DueDate = now.AddDays(14), DurationMinutes = 40, MaxGrade = 25, TotalMarks = 25, CourseId = cs302.CourseId },
         };
         await context.Quizzes.AddRangeAsync(quizzes);
         await context.SaveChangesAsync();
@@ -52,19 +52,19 @@ public static class QuizSeeder
         await context.Questions.AddRangeAsync(questions);
         await context.SaveChangesAsync();
 
-        // Student submissions — all scores ≤ MaxGrade
+        // Student submissions — all scores ≤ MaxGrade; submitted within [StartDate, DueDate] or late
         var studentQuizzes = new List<StudentQuiz>
         {
             // Student 0 (Mohammed Hassan): submitted DS Basics (on time) + Advanced Trees (late)
-            new() { StudentId = students[0].UserId, QuizId = quizzes[0].QuizId, Score = 5, SubmittedAt = now.AddDays(-5).AddHours(2), IsLate = false },
-            new() { StudentId = students[0].UserId, QuizId = quizzes[1].QuizId, Score = 4, SubmittedAt = now.AddDays(-2).AddHours(1), IsLate = true },
+            new() { StudentId = students[0].UserId, QuizId = quizzes[0].QuizId, Score = 5, SubmittedAt = quizzes[0].StartDate.AddMinutes(30), IsLate = false },
+            new() { StudentId = students[0].UserId, QuizId = quizzes[1].QuizId, Score = 4, SubmittedAt = quizzes[1].DueDate.AddMinutes(10), IsLate = true },
 
             // Student 1: submitted DS Basics (on time) + HTML & CSS (late)
-            new() { StudentId = students[1].UserId, QuizId = quizzes[0].QuizId, Score = 4, SubmittedAt = now.AddDays(-5).AddHours(3), IsLate = false },
-            new() { StudentId = students[1].UserId, QuizId = quizzes[5].QuizId, Score = 12, SubmittedAt = now.AddDays(-1).AddHours(2), IsLate = true },
+            new() { StudentId = students[1].UserId, QuizId = quizzes[0].QuizId, Score = 4, SubmittedAt = quizzes[0].StartDate.AddMinutes(45), IsLate = false },
+            new() { StudentId = students[1].UserId, QuizId = quizzes[5].QuizId, Score = 12, SubmittedAt = quizzes[5].DueDate.AddMinutes(5), IsLate = true },
 
             // Student 2: submitted SQL Fundamentals (on time)
-            new() { StudentId = students[2].UserId, QuizId = quizzes[3].QuizId, Score = 15, SubmittedAt = now.AddDays(-3).AddHours(1), IsLate = false },
+            new() { StudentId = students[2].UserId, QuizId = quizzes[3].QuizId, Score = 15, SubmittedAt = quizzes[3].StartDate.AddMinutes(20), IsLate = false },
         };
         await context.StudentQuizzes.AddRangeAsync(studentQuizzes);
         await context.SaveChangesAsync();
