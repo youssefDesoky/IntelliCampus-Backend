@@ -10,9 +10,12 @@ public class Instructor : User
     public string? Specialization { get; set; }
     public int? DepartmentId { get; set; }
     public DateTime? HireDate { get; set; }
+    public InstructorStatus? Status { get; set; }
+    public int? OfficeHoursRoomId { get; set; }
 
     // Navigation properties
     public Department? Department { get; set; }
+    public Room? OfficeHoursRoom { get; set; }
     public ICollection<InstructorMaterial> InstructorMaterials { get; set; } = [];
     public ICollection<Class> Classes { get; set; } = [];
     public ICollection<MaterialFolder> CreatedFolders { get; set; } = [];
