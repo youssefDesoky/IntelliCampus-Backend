@@ -10,11 +10,13 @@ public class QuizHistoryItemDto
 
     public string Title { get; set; } = string.Empty;
 
-    public decimal Score { get; set; }
+    public decimal? Score { get; set; }
 
     public decimal MaxScore { get; set; }
 
-    public DateTime Deadline { get; set; }
+    public DateTime StartDate { get; set; }
+
+    public DateTime DueDate { get; set; }
 
     public string Status { get; set; } = string.Empty;
 }

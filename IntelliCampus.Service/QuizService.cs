@@ -41,17 +41,19 @@ public class QuizService : IQuizService
         if (quiz is null) return null;
 
         var submission = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quizId));
-        var score = submission?.Score ?? 0;
         var hasSubmission = submission is not null;
 
         return new QuizHistoryItemDto
         {
             Id = quiz.QuizId.ToString(),
             Title = quiz.Title,
-            Score = score,
+            Score = submission?.Score,
             MaxScore = quiz.MaxGrade,
-            Deadline = quiz.DueDate,
-            Status = hasSubmission ? "Completed" : quiz.DueDate < DateTime.UtcNow ? "Overdue" : "Upcoming"
+            DurationMinutes = quiz.DurationMinutes,
+            StartDate = quiz.StartDate,
+            DueDate = quiz.DueDate,
+            Status = hasSubmission ? "Completed" : quiz.DueDate < DateTime.UtcNow ? "Overdue" :
+                     quiz.StartDate > DateTime.UtcNow ? "Upcoming" : "Active"
         };
     }
 
@@ -71,17 +73,19 @@ public class QuizService : IQuizService
             return null;
 
         var submission = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quizId));
-        var score = submission?.Score ?? 0;
         var hasSubmission = submission is not null;
 
         return new QuizHistoryItemDto
         {
             Id = quiz.QuizId.ToString(),
             Title = quiz.Title,
-            Score = score,
+            Score = submission?.Score,
             MaxScore = quiz.MaxGrade,
-            Deadline = quiz.DueDate,
-            Status = hasSubmission ? "Completed" : quiz.DueDate < DateTime.UtcNow ? "Overdue" : "Upcoming"
+            DurationMinutes = quiz.DurationMinutes,
+            StartDate = quiz.StartDate,
+            DueDate = quiz.DueDate,
+            Status = hasSubmission ? "Completed" : quiz.DueDate < DateTime.UtcNow ? "Overdue" :
+                     quiz.StartDate > DateTime.UtcNow ? "Upcoming" : "Active"
         };
     }
 
@@ -106,6 +110,7 @@ public class QuizService : IQuizService
         {
             Title = dto.Title,
             Description = dto.Description,
+            StartDate = dto.StartDate,
             DueDate = dto.DueDate,
             DurationMinutes = dto.DurationMinutes,
             MaxGrade = dto.MaxGrade,
@@ -152,6 +157,7 @@ public class QuizService : IQuizService
         {
             Title = dto.Title,
             Description = dto.Description,
+            StartDate = dto.StartDate,
             DueDate = dto.DueDate,
             DurationMinutes = dto.DurationMinutes,
             MaxGrade = dto.MaxGrade,
@@ -282,7 +288,7 @@ public class QuizService : IQuizService
         {
             StudentId = sq.StudentId,
             StudentName = sq.Student?.FullName,
-            Score = sq.Score ?? 0,
+            Score = sq.Score,
             MaxScore = maxScore,
             SubmittedAt = sq.SubmittedAt.ToString("dd MM yy HH:mm"),
             Answers = sq.AnswersJson is not null ? JsonSerializer.Deserialize<Dictionary<string, object>>(sq.AnswersJson) : null,
@@ -376,12 +382,14 @@ public class QuizService : IQuizService
         Id = q.QuizId,
         Title = q.Title,
         Description = q.Description,
-        Deadline = q.DueDate,
+        StartDate = q.StartDate,
+        DueDate = q.DueDate,
         DurationMinutes = q.DurationMinutes,
         MaxScore = q.MaxGrade,
         CourseId = q.CourseId,
         CourseName = q.Course?.CourseName,
-        Status = q.DueDate < DateTime.UtcNow ? "Completed" : "Upcoming"
+        Status = q.DueDate < DateTime.UtcNow ? "Completed" :
+                 q.StartDate > DateTime.UtcNow ? "Upcoming" : "Active"
     };
 
     private static StudentQuizDto MapResultToDto(StudentQuiz sq) => new()
@@ -390,7 +398,7 @@ public class QuizService : IQuizService
         StudentName = sq.Student?.FullName,
         QuizId = sq.QuizId,
         QuizTitle = sq.Quiz?.Title,
-        Score = sq.Score ?? 0,
+        Score = sq.Score,
         MaxGrade = sq.Quiz?.MaxGrade ?? 0,
         SubmittedAt = sq.SubmittedAt.ToString("dd MM yy HH:mm"),
         IsLate = sq.IsLate
@@ -409,16 +417,22 @@ public class QuizService : IQuizService
         if (quiz is null)
             return null;
 
+        var now = DateTime.UtcNow;
+        if (now < quiz.StartDate || now > quiz.DueDate)
+            return null;
+
         var existing = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quiz.QuizId));
         var allQ = (await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quiz.QuizId))).ToList();
-        var (qResults, bType, tScore) = GradeAnswers(allQ, dto.Answers);
+        var (qResults, bType, _) = GradeAnswers(allQ, dto.Answers);
+
+        decimal? finalScore = null;
 
         var answersJson = JsonSerializer.Serialize(dto.Answers);
         var resultsJson = JsonSerializer.Serialize(qResults);
 
         if (existing is not null)
         {
-            existing.Score = tScore;
+            existing.Score = finalScore;
             existing.SubmittedAt = DateTime.UtcNow;
             existing.AnswersJson = answersJson;
             existing.QuestionResultsJson = resultsJson;
@@ -430,9 +444,9 @@ public class QuizService : IQuizService
             {
                 CourseId = courseId,
                 CourseName = course.CourseName,
-                Score = tScore,
+                Score = finalScore,
                 MaxScore = maxScore,
-                Percentage = maxScore > 0 ? Math.Round(tScore / maxScore * 100, 0) : 0,
+                Percentage = maxScore > 0 && finalScore.HasValue ? Math.Round(finalScore.Value / maxScore * 100, 0) : 0,
                 AnsweredCount = dto.Answers.Count,
                 ByType = bType.ToDictionary(kv => kv.Key, kv => new QuizTypeStatsDto { Answered = kv.Value.Answered, Total = kv.Value.Total, Score = kv.Value.Score }),
                 QuestionResults = qResults,
@@ -445,9 +459,9 @@ public class QuizService : IQuizService
         {
             StudentId = studentId,
             QuizId = quiz.QuizId,
-            Score = tScore,
+            Score = finalScore,
             SubmittedAt = DateTime.UtcNow,
-            IsLate = quiz.DueDate < DateTime.UtcNow,
+            IsLate = now > quiz.DueDate,
             AnswersJson = answersJson,
             QuestionResultsJson = resultsJson
         };
@@ -464,9 +478,9 @@ public class QuizService : IQuizService
         {
             CourseId = courseId,
             CourseName = course.CourseName,
-            Score = tScore,
+            Score = finalScore,
             MaxScore = maxS,
-            Percentage = maxS > 0 ? Math.Round(tScore / maxS * 100, 0) : 0,
+            Percentage = maxS > 0 && finalScore.HasValue ? Math.Round(finalScore.Value / maxS * 100, 0) : 0,
             AnsweredCount = dto.Answers.Count,
             ByType = bType.ToDictionary(kv => kv.Key, kv => new QuizTypeStatsDto { Answered = kv.Value.Answered, Total = kv.Value.Total, Score = kv.Value.Score }),
             QuestionResults = qResults,
@@ -509,8 +523,14 @@ public class QuizService : IQuizService
         if (quiz is null)
             return null;
 
-        var questions = (await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quiz.QuizId))).ToList();
+        var now = DateTime.UtcNow;
         var submission = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quiz.QuizId));
+        var isWithinWindow = now >= quiz.StartDate && now <= quiz.DueDate;
+
+        if (submission is null && !isWithinWindow)
+            return null;
+
+        var questions = (await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quiz.QuizId))).ToList();
 
         var tfCount = questions.Count(q => q.Type == "TF");
         var mcqCount = questions.Count(q => q.Type == "MCQ");
@@ -554,9 +574,9 @@ public class QuizService : IQuizService
             {
                 CourseId = courseId,
                 CourseName = course.CourseName,
-                Score = submission.Score ?? 0,
+                Score = submission.Score,
                 MaxScore = maxScore,
-                Percentage = maxScore > 0 ? Math.Round((submission.Score ?? 0) / maxScore * 100, 0) : 0,
+                Percentage = maxScore > 0 && submission.Score.HasValue ? Math.Round(submission.Score.Value / maxScore * 100, 0) : 0,
                 AnsweredCount = deserializedAnswers.Count,
                 ByType = byType,
                 QuestionResults = deserializedResults,
@@ -623,14 +643,15 @@ public class QuizService : IQuizService
                 {
                     Id = quiz.QuizId.ToString(),
                     Title = quiz.Title,
-                    Score = submission.Score ?? 0,
+                    Score = submission.Score,
                     MaxScore = quiz.MaxGrade,
                     DurationMinutes = quiz.DurationMinutes,
-                    Deadline = quiz.DueDate,
+                    StartDate = quiz.StartDate,
+                    DueDate = quiz.DueDate,
                     Status = "Completed"
                 });
             }
-            else if (quiz.DueDate < now)
+            else if (now < quiz.StartDate)
             {
                 upcoming.Add(new QuizUpcomingItemDto
                 {
@@ -638,7 +659,21 @@ public class QuizService : IQuizService
                     Title = quiz.Title,
                     MaxScore = quiz.MaxGrade,
                     DurationMinutes = quiz.DurationMinutes,
-                    Deadline = quiz.DueDate,
+                    StartDate = quiz.StartDate,
+                    DueDate = quiz.DueDate,
+                    Status = "Upcoming"
+                });
+            }
+            else if (now > quiz.DueDate)
+            {
+                upcoming.Add(new QuizUpcomingItemDto
+                {
+                    Id = quiz.QuizId.ToString(),
+                    Title = quiz.Title,
+                    MaxScore = quiz.MaxGrade,
+                    DurationMinutes = quiz.DurationMinutes,
+                    StartDate = quiz.StartDate,
+                    DueDate = quiz.DueDate,
                     Status = "Missed"
                 });
             }
@@ -650,8 +685,9 @@ public class QuizService : IQuizService
                     Title = quiz.Title,
                     MaxScore = quiz.MaxGrade,
                     DurationMinutes = quiz.DurationMinutes,
-                    Deadline = quiz.DueDate,
-                    Status = "Upcoming"
+                    StartDate = quiz.StartDate,
+                    DueDate = quiz.DueDate,
+                    Status = "Active"
                 });
             }
         }
@@ -669,7 +705,7 @@ public class QuizService : IQuizService
                 Completed = completed,
                 Missed = missed,
                 Upcoming = upcomingCount,
-                AverageScore = completed > 0 ? history.Average(h => h.Score) : 0
+                AverageScore = completed > 0 ? history.Where(h => h.Score.HasValue).Select(h => h.Score.Value).DefaultIfEmpty().Average() : 0
             },
             History = history,
             Upcoming = upcoming
