@@ -12,10 +12,12 @@ namespace IntelliCampus.Web.Controllers;
 public class StudentsController : ControllerBase
 {
     private readonly IStudentService _studentService;
+    private readonly IGradeService _gradeService;
 
-    public StudentsController(IStudentService studentService)
+    public StudentsController(IStudentService studentService, IGradeService gradeService)
     {
         _studentService = studentService;
+        _gradeService = gradeService;
     }
 
     [HttpGet]
@@ -78,5 +80,14 @@ public class StudentsController : ControllerBase
             return NotFound();
 
         return NoContent();
+    }
+
+    [HttpPost("{id}/recalculate-gpa")]
+    public async Task<ActionResult<object>> RecalculateGpa(int id)
+    {
+        var gpa = await _gradeService.UpdateStudentGpaIfCompleteAsync(id);
+        if (gpa is null)
+            return NotFound(new { message = "Student not found." });
+        return Ok(new { gpa });
     }
 }

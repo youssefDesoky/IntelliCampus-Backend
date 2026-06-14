@@ -257,7 +257,9 @@ public class StudentService : IStudentService
             BylawId = student.BylawId,
             BylawName = student.Bylaw?.Name,
             BylawVersion = student.Bylaw?.Version,
-            EnrollmentDate = student.EnrollmentDate,
+            EnrollmentDate = student.EnrollmentDate?.ToString("dd MM yyyy"),
+            Gpa = student.Gpa,
+            Program = student.Program,
             Roles = student.Roles.Select(r => r.ToString()).ToList()
         };
     }

@@ -1,3 +1,5 @@
+using IntelliCampus.Domain.Entities.Enums;
+
 namespace IntelliCampus.Domain.Entities;
 
 public class Student : User
@@ -8,6 +10,8 @@ public class Student : User
     public int? DepartmentId { get; set; }
     public int? BylawId { get; set; }
     public DateTime? EnrollmentDate { get; set; }
+    public StudentProgram? Program { get; set; }
+    public double Gpa { get; set; }
 
     // Navigation properties
     public Department? Department { get; set; }
