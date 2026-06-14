@@ -8,7 +8,7 @@ public class StudentSubmissionDto
 
     public string? StudentName { get; set; }
 
-    public decimal Score { get; set; }
+    public decimal? Score { get; set; }
 
     public decimal MaxScore { get; set; }
 

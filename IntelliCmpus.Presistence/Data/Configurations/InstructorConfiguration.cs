@@ -24,6 +24,15 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
         builder.Property(i => i.Specialization)
             .HasMaxLength(100);
 
+        builder.Property(i => i.Status)
+            .HasConversion<string>()
+            .HasMaxLength(20);
+
+        builder.HasOne(i => i.OfficeHoursRoom)
+            .WithMany()
+            .HasForeignKey(i => i.OfficeHoursRoomId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         builder.HasOne(i => i.Department)
             .WithMany(d => d.Instructors)
             .HasForeignKey(i => i.DepartmentId)

@@ -8,7 +8,7 @@ public class QuizSubmitResponseDto
 
     public string CourseName { get; set; } = string.Empty;
 
-    public decimal Score { get; set; }
+    public decimal? Score { get; set; }
 
     public decimal MaxScore { get; set; }
 

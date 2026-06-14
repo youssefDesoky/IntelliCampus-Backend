@@ -19,5 +19,8 @@ public class InstructorDto
     public DateTime? HireDate { get; set; }
     public int? FacultyId { get; set; }
     public string? FacultyName { get; set; }
+    public string? Status { get; set; }
+    public int? OfficeHoursRoomId { get; set; }
+    public string? OfficeHoursRoomName { get; set; }
     public List<string> Roles { get; set; } = [];
 }

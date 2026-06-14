@@ -4,6 +4,7 @@ using IntelliCampus.Presistence.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Data.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260614193747_AddQuizStartDate")]
+    partial class AddQuizStartDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1769,20 +1772,11 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("OfficeHoursRoomId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Specialization")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Status")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.HasIndex("DepartmentId");
-
-                    b.HasIndex("OfficeHoursRoomId");
 
                     b.ToTable("Instructors", (string)null);
                 });
@@ -2576,11 +2570,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("IntelliCampus.Domain.Entities.Room", "OfficeHoursRoom")
-                        .WithMany()
-                        .HasForeignKey("OfficeHoursRoomId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("IntelliCampus.Domain.Entities.User", null)
                         .WithOne()
                         .HasForeignKey("IntelliCampus.Domain.Entities.Instructor", "UserId")
@@ -2588,8 +2577,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Department");
-
-                    b.Navigation("OfficeHoursRoom");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Student", b =>
