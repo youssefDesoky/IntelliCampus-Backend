@@ -183,17 +183,15 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
 
     private static void ValidateInstructorRoleForClassType(Instructor instructor, ClassType classType)
     {
-        var role = instructor.InstructorRole?.ToLower();
-
         switch (classType)
         {
             case ClassType.Lecture:
-                if (role != "professor")
+                if (instructor.InstructorRole != InstructorRole.Professor)
                     throw new InvalidOperationException("Only a Professor can be assigned to a Lecture class.");
                 break;
 
             case ClassType.Section:
-                if (role != "ta")
+                if (instructor.InstructorRole != InstructorRole.TeachingAssistant)
                     throw new InvalidOperationException("Only a TA can be assigned to a Section class.");
                 break;
         }

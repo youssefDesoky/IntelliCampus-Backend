@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace IntelliCampus.Presistence.Data.Migrations
+namespace IntelliCampus.Presistence.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -11,6 +11,25 @@ namespace IntelliCampus.Presistence.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "ChatMessages",
+                columns: table => new
+                {
+                    MessageId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Content = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SenderId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    RecipientId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    GroupName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsEdited = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    IsPinned = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChatMessages", x => x.MessageId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Communities",
                 columns: table => new
@@ -24,16 +43,33 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Quizzes",
+                name: "Faculties",
                 columns: table => new
                 {
-                    QuizId = table.Column<int>(type: "int", nullable: false)
+                    FacultyId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TotalMarks = table.Column<int>(type: "int", nullable: false)
+                    FacultyName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FacultyNameAr = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Quizzes", x => x.QuizId);
+                    table.PrimaryKey("PK_Faculties", x => x.FacultyId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    NotificationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.NotificationId);
                 });
 
             migrationBuilder.CreateTable(
@@ -62,15 +98,22 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     FullNameAr = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Nationality = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Role = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Roles = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Address = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     Password = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    ProfileImage = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                    ProfileImage = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    FacultyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.UserId);
+                    table.ForeignKey(
+                        name: "FK_Users_Faculties_FacultyId",
+                        column: x => x.FacultyId,
+                        principalTable: "Faculties",
+                        principalColumn: "FacultyId",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -92,6 +135,84 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FriendRequests",
+                columns: table => new
+                {
+                    FriendRequestId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SenderId = table.Column<int>(type: "int", nullable: false),
+                    RecipientId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FriendRequests", x => x.FriendRequestId);
+                    table.ForeignKey(
+                        name: "FK_FriendRequests_Users_RecipientId",
+                        column: x => x.RecipientId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_FriendRequests_Users_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Friendships",
+                columns: table => new
+                {
+                    FriendshipId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId1 = table.Column<int>(type: "int", nullable: false),
+                    UserId2 = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Friendships", x => x.FriendshipId);
+                    table.ForeignKey(
+                        name: "FK_Friendships_Users_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Friendships_Users_UserId2",
+                        column: x => x.UserId2,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Groups",
+                columns: table => new
+                {
+                    GroupId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    ProfileImage = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    CreatedById = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Groups", x => x.GroupId);
+                    table.ForeignKey(
+                        name: "FK_Groups_Users_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -124,6 +245,86 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserNotifications",
+                columns: table => new
+                {
+                    UserNotificationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    NotificationId = table.Column<int>(type: "int", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserNotifications", x => x.UserNotificationId);
+                    table.ForeignKey(
+                        name: "FK_UserNotifications_Notifications_NotificationId",
+                        column: x => x.NotificationId,
+                        principalTable: "Notifications",
+                        principalColumn: "NotificationId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserNotifications_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bylaws",
+                columns: table => new
+                {
+                    BylawId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Version = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    FileUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    FileName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UploadedByAdminId = table.Column<int>(type: "int", nullable: true),
+                    GradeScales = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bylaws", x => x.BylawId);
+                    table.ForeignKey(
+                        name: "FK_Bylaws_Admins_UploadedByAdminId",
+                        column: x => x.UploadedByAdminId,
+                        principalTable: "Admins",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupMembers",
+                columns: table => new
+                {
+                    GroupMemberId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    JoinedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupMembers", x => x.GroupMemberId);
+                    table.ForeignKey(
+                        name: "FK_GroupMembers_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "GroupId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupMembers_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
@@ -145,52 +346,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Comments_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Notifications",
-                columns: table => new
-                {
-                    NotificationId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    IsRead = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PostId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Notifications", x => x.NotificationId);
-                    table.ForeignKey(
-                        name: "FK_Notifications_Posts_PostId",
-                        column: x => x.PostId,
-                        principalTable: "Posts",
-                        principalColumn: "PostId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserNotifications",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    NotificationId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserNotifications", x => new { x.UserId, x.NotificationId });
-                    table.ForeignKey(
-                        name: "FK_UserNotifications_Notifications_NotificationId",
-                        column: x => x.NotificationId,
-                        principalTable: "Notifications",
-                        principalColumn: "NotificationId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserNotifications_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId");
@@ -283,7 +438,7 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     FullInstructions = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MaxGrade = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
-                    ClassId = table.Column<int>(type: "int", nullable: false)
+                    CourseId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -422,10 +577,18 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 {
                     ExamId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Location = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    ExamType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Time = table.Column<TimeSpan>(type: "time", nullable: false),
-                    CourseId = table.Column<int>(type: "int", nullable: false)
+                    DurationMinutes = table.Column<int>(type: "int", nullable: false),
+                    MaxGrade = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    TotalMarks = table.Column<int>(type: "int", nullable: true),
+                    RoomId = table.Column<int>(type: "int", nullable: true),
+                    CourseId = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -435,6 +598,61 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "CourseId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Exams_Rooms_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Rooms",
+                        principalColumn: "RoomId",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Quizzes",
+                columns: table => new
+                {
+                    QuizId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DurationMinutes = table.Column<int>(type: "int", nullable: false),
+                    MaxGrade = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    TotalMarks = table.Column<int>(type: "int", nullable: false),
+                    CourseId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Quizzes", x => x.QuizId);
+                    table.ForeignKey(
+                        name: "FK_Quizzes_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
+                        principalColumn: "CourseId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Questions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuizId = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Prompt = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Options = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Points = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
+                    CorrectAnswer = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Questions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Questions_Quizzes_QuizId",
+                        column: x => x.QuizId,
+                        principalTable: "Quizzes",
+                        principalColumn: "QuizId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -447,11 +665,18 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     DepartmentName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DepartmentNameAr = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    InstructorId = table.Column<int>(type: "int", nullable: true)
+                    InstructorId = table.Column<int>(type: "int", nullable: true),
+                    FacultyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Departments", x => x.DepartmentId);
+                    table.ForeignKey(
+                        name: "FK_Departments_Faculties_FacultyId",
+                        column: x => x.FacultyId,
+                        principalTable: "Faculties",
+                        principalColumn: "FacultyId",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -492,14 +717,20 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     StudentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StudentCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Faculty = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Level = table.Column<int>(type: "int", nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: true),
+                    BylawId = table.Column<int>(type: "int", nullable: true),
                     EnrollmentDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Students", x => x.UserId);
+                    table.ForeignKey(
+                        name: "FK_Students_Bylaws_BylawId",
+                        column: x => x.BylawId,
+                        principalTable: "Bylaws",
+                        principalColumn: "BylawId",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Students_Departments_DepartmentId",
                         column: x => x.DepartmentId,
@@ -635,6 +866,28 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Notes_Students_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Students",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QrTokens",
+                columns: table => new
+                {
+                    QrTokenId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StudentId = table.Column<int>(type: "int", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    GeneratedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QrTokens", x => x.QrTokenId);
+                    table.ForeignKey(
+                        name: "FK_QrTokens_Students_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Students",
                         principalColumn: "UserId",
@@ -806,7 +1059,11 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 {
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     QuizId = table.Column<int>(type: "int", nullable: false),
-                    Score = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: true)
+                    Score = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: true),
+                    SubmittedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsLate = table.Column<bool>(type: "bit", nullable: false),
+                    AnswersJson = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    QuestionResultsJson = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -980,9 +1237,9 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 column: "AssignmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Assignments_ClassId",
+                name: "IX_Assignments_CourseId",
                 table: "Assignments",
-                column: "ClassId");
+                column: "CourseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AttendanceExcuses_SessionId",
@@ -1003,6 +1260,11 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 name: "IX_Attendances_StudentId",
                 table: "Attendances",
                 column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bylaws_UploadedByAdminId",
+                table: "Bylaws",
+                column: "UploadedByAdminId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChatbotQueries_StudentId",
@@ -1040,6 +1302,11 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Departments_FacultyId",
+                table: "Departments",
+                column: "FacultyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Departments_InstructorId",
                 table: "Departments",
                 column: "InstructorId");
@@ -1050,6 +1317,11 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Exams_RoomId",
+                table: "Exams",
+                column: "RoomId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ExamSchedules_ExamId",
                 table: "ExamSchedules",
                 column: "ExamId");
@@ -1058,6 +1330,27 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 name: "IX_ExamSchedules_StudentId_Date",
                 table: "ExamSchedules",
                 columns: new[] { "StudentId", "Date" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FriendRequests_RecipientId",
+                table: "FriendRequests",
+                column: "RecipientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FriendRequests_SenderId",
+                table: "FriendRequests",
+                column: "SenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Friendships_UserId1_UserId2",
+                table: "Friendships",
+                columns: new[] { "UserId1", "UserId2" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Friendships_UserId2",
+                table: "Friendships",
+                column: "UserId2");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GradeComplaints_GradeId",
@@ -1078,6 +1371,22 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 name: "IX_Grades_StudentId",
                 table: "Grades",
                 column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupMembers_GroupId_UserId",
+                table: "GroupMembers",
+                columns: new[] { "GroupId", "UserId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupMembers_UserId",
+                table: "GroupMembers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Groups_CreatedById",
+                table: "Groups",
+                column: "CreatedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_InstructorMaterials_MaterialId",
@@ -1126,11 +1435,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Notifications_PostId",
-                table: "Notifications",
-                column: "PostId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Posts_CommunityId",
                 table: "Posts",
                 column: "CommunityId");
@@ -1139,6 +1443,26 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 name: "IX_Posts_UserId",
                 table: "Posts",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QrTokens_StudentId_GeneratedAt",
+                table: "QrTokens",
+                columns: new[] { "StudentId", "GeneratedAt" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QrTokens_Token",
+                table: "QrTokens",
+                column: "Token");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Questions_QuizId",
+                table: "Questions",
+                column: "QuizId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Quizzes_CourseId",
+                table: "Quizzes",
+                column: "CourseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reminders_StudentId",
@@ -1202,6 +1526,11 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 column: "QuizId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Students_BylawId",
+                table: "Students",
+                column: "BylawId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Students_DepartmentId",
                 table: "Students",
                 column: "DepartmentId");
@@ -1217,10 +1546,20 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 column: "NotificationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserNotifications_UserId",
+                table: "UserNotifications",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_FacultyId",
+                table: "Users",
+                column: "FacultyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_NationalId",
@@ -1261,11 +1600,11 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Assignments_Classes_ClassId",
+                name: "FK_Assignments_Courses_CourseId",
                 table: "Assignments",
-                column: "ClassId",
-                principalTable: "Classes",
-                principalColumn: "ClassId",
+                column: "CourseId",
+                principalTable: "Courses",
+                principalColumn: "CourseId",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
@@ -1369,9 +1708,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 table: "Departments");
 
             migrationBuilder.DropTable(
-                name: "Admins");
-
-            migrationBuilder.DropTable(
                 name: "AnnouncementAttachments");
 
             migrationBuilder.DropTable(
@@ -1390,6 +1726,9 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 name: "ChatbotQueries");
 
             migrationBuilder.DropTable(
+                name: "ChatMessages");
+
+            migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
@@ -1399,7 +1738,16 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 name: "ExamSchedules");
 
             migrationBuilder.DropTable(
+                name: "FriendRequests");
+
+            migrationBuilder.DropTable(
+                name: "Friendships");
+
+            migrationBuilder.DropTable(
                 name: "GradeComplaints");
+
+            migrationBuilder.DropTable(
+                name: "GroupMembers");
 
             migrationBuilder.DropTable(
                 name: "InstructorMaterials");
@@ -1408,10 +1756,13 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 name: "NoteSummaries");
 
             migrationBuilder.DropTable(
-                name: "Reminders");
+                name: "QrTokens");
 
             migrationBuilder.DropTable(
-                name: "Rooms");
+                name: "Questions");
+
+            migrationBuilder.DropTable(
+                name: "Reminders");
 
             migrationBuilder.DropTable(
                 name: "Schedules");
@@ -1435,10 +1786,16 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 name: "Announcements");
 
             migrationBuilder.DropTable(
+                name: "Posts");
+
+            migrationBuilder.DropTable(
                 name: "Exams");
 
             migrationBuilder.DropTable(
                 name: "Grades");
+
+            migrationBuilder.DropTable(
+                name: "Groups");
 
             migrationBuilder.DropTable(
                 name: "Materials");
@@ -1456,6 +1813,12 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 name: "Notifications");
 
             migrationBuilder.DropTable(
+                name: "Communities");
+
+            migrationBuilder.DropTable(
+                name: "Rooms");
+
+            migrationBuilder.DropTable(
                 name: "MaterialFolders");
 
             migrationBuilder.DropTable(
@@ -1468,16 +1831,16 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 name: "Students");
 
             migrationBuilder.DropTable(
-                name: "Posts");
-
-            migrationBuilder.DropTable(
                 name: "Classes");
 
             migrationBuilder.DropTable(
-                name: "Communities");
+                name: "Bylaws");
 
             migrationBuilder.DropTable(
                 name: "Courses");
+
+            migrationBuilder.DropTable(
+                name: "Admins");
 
             migrationBuilder.DropTable(
                 name: "Users");
@@ -1487,6 +1850,9 @@ namespace IntelliCampus.Presistence.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Departments");
+
+            migrationBuilder.DropTable(
+                name: "Faculties");
         }
     }
 }

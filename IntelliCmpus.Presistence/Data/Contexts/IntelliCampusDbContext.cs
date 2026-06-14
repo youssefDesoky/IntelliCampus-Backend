@@ -15,6 +15,7 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<Admin> Admins { get; set; }
     public DbSet<Instructor> Instructors { get; set; }
     public DbSet<Student> Students { get; set; }
+    public DbSet<Faculty> Faculties { get; set; }
 
     // Academic entities
     public DbSet<Course> Courses { get; set; }

@@ -8,4 +8,6 @@ public class DepartmentDto
     public string? Description { get; set; }
     public int? InstructorId { get; set; }
     public string? HeadInstructorName { get; set; }
+    public int? FacultyId { get; set; }
+    public string? FacultyName { get; set; }
 }

@@ -8,7 +8,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Student")]
+[Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
 public class RemindersController : ControllerBase
 {
     private readonly IReminderService _reminderService;
@@ -96,12 +96,12 @@ public class RemindersController : ControllerBase
     private int? GetCurrentStudentId()
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+        var roleClaims = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
         if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
             return null;
 
-        if (roleClaim != "Student")
+        if (!roleClaims.Any(r => r.StartsWith("Student_")))
             return null;
 
         return userId;

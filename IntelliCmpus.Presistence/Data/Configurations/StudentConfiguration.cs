@@ -17,9 +17,6 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
         builder.Property(s => s.StudentCode)
             .HasMaxLength(50);
 
-        builder.Property(s => s.Faculty)
-            .HasMaxLength(100);
-
         builder.HasOne(s => s.Department)
             .WithMany()
             .HasForeignKey(s => s.DepartmentId)

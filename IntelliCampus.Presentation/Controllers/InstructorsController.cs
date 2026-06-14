@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using IntelliCampus.Shared.Dtos.Instructor;
 using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,Admin_AcademicStaff,SuperAdmin")]
 public class InstructorsController : ControllerBase
 {
     private readonly IInstructorService _instructorService;
@@ -40,7 +41,8 @@ public class InstructorsController : ControllerBase
     {
         try
         {
-            var instructor = await _instructorService.CreateAsync(dto);
+            var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var instructor = await _instructorService.CreateAsync(dto, creatorUserId is not null ? int.Parse(creatorUserId) : null);
             return CreatedAtAction(nameof(GetById), new { id = instructor.UserId }, instructor);
         }
         catch (InvalidOperationException ex)

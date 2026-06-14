@@ -16,6 +16,8 @@ public class CreateAdminDto
     public string? Nationality { get; set; }
 
     public string? AdminCode { get; set; }
-
     public string? HireDate { get; set; }
+
+    public int? FacultyId { get; set; }
+    public string? AdminRole { get; set; }
 }

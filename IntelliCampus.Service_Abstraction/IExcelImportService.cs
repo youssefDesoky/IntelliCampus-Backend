@@ -6,5 +6,5 @@ namespace IntelliCampus.Service_Abstraction;
 
 public interface IExcelImportService
 {
-    Task<ExcelImportResultDto> ImportAsync(ImportEntityType entityType, IFormFile file, int? bylawId = null);
+    Task<ExcelImportResultDto> ImportAsync(ImportEntityType entityType, IFormFile file, int? bylawId = null, int? creatorUserId = null);
 }

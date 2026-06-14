@@ -17,7 +17,7 @@ public class AssignmentsController(IAssignmentService assignmentService) : Contr
     private int UserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpGet("{courseId}")]
-    [Authorize(Roles = "Student")]
+    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
     public async Task<IActionResult> GetByCourse(int courseId)
         => Ok(await assignmentService.GetByStudentAndCourseAsync(UserId, courseId));
 
@@ -27,12 +27,12 @@ public class AssignmentsController(IAssignmentService assignmentService) : Contr
         => Ok(await assignmentService.GetByCourseIdAsync(courseId));
 
     [HttpGet("{courseId}/stats")]
-    [Authorize(Roles = "Student")]
+    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
     public async Task<IActionResult> GetStats(int courseId)
         => Ok(await assignmentService.GetStatsAsync(courseId, UserId));
 
     [HttpPost("{assignmentId}/submit")]
-    [Authorize(Roles = "Student")]
+    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
     [RequestSizeLimit(MaxFileSize)]
     [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
     public async Task<IActionResult> Submit(int assignmentId, [FromForm] SubmitAssignmentDto dto, IFormFileCollection? files)

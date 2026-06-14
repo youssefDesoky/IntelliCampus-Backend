@@ -257,12 +257,12 @@ public class MaterialsController(IMaterialService materialService) : ControllerB
     private int? GetCurrentInstructorId()
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+        var roleClaims = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
         if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
             return null;
 
-        if (roleClaim != "Instructor")
+        if (!roleClaims.Contains("Instructor"))
             return null;
 
         return userId;

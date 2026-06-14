@@ -41,7 +41,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         return instructors.Select(MapToDto);
     }
 
-    public async Task<InstructorDto> CreateAsync(CreateInstructorDto dto)
+    public async Task<InstructorDto> CreateAsync(CreateInstructorDto dto, int? creatorUserId = null)
     {
         if (await Users.AnyAsync(u => u.Email == dto.Email))
             throw new InvalidOperationException("Email already exists.");
@@ -53,6 +53,13 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         var hireDate = ParseDate(dto.HireDate) ?? DateTime.UtcNow;
         var password = string.IsNullOrWhiteSpace(dto.Password) ? "Instructor@123" : dto.Password;
 
+        var facultyId = dto.FacultyId;
+        if (facultyId is null && creatorUserId.HasValue)
+        {
+            var creator = await Users.GetByIdAsync(creatorUserId.Value);
+            facultyId = creator?.FacultyId;
+        }
+
         var instructor = new Instructor
         {
             NationalId = dto.NationalId,
@@ -63,12 +70,13 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             Address = dto.Address,
             Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
-            Role = UserRole.Instructor,
+            Roles = [UserRole.Instructor],
             InstructorCode = dto.InstructorCode,
-            InstructorRole = dto.Role,
+            InstructorRole = ParseInstructorRole(dto.InstructorRole),
             Specialization = dto.Specialization,
             DepartmentId = departmentId,
-            HireDate = hireDate
+            HireDate = hireDate,
+            FacultyId = facultyId
         };
 
         Instructors.Add(instructor);
@@ -105,8 +113,9 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         if (dto.Address is not null) instructor.Address = dto.Address;
         if (dto.Nationality is not null) instructor.Nationality = dto.Nationality;
         if (dto.InstructorCode is not null) instructor.InstructorCode = dto.InstructorCode;
-        if (dto.Role is not null) instructor.InstructorRole = dto.Role;
+        if (dto.InstructorRole is not null) instructor.InstructorRole = ParseInstructorRole(dto.InstructorRole);
         if (dto.Specialization is not null) instructor.Specialization = dto.Specialization;
+        if (dto.FacultyId.HasValue) instructor.FacultyId = dto.FacultyId;
 
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentName);
         if (departmentId.HasValue) instructor.DepartmentId = departmentId;
@@ -125,6 +134,22 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         }
 
         return MapToDto(instructor);
+    }
+
+    private static InstructorRole? ParseInstructorRole(string? role)
+    {
+        if (string.IsNullOrWhiteSpace(role))
+            return null;
+
+        return role.ToLowerInvariant() switch
+        {
+            "ta" or "teachingassistant" or "teaching_assistant" or "معيد" => InstructorRole.TeachingAssistant,
+            "lecturer" or "مدرس" => InstructorRole.Lecturer,
+            "assistantlecturer" or "assistant_lecturer" or "مدرس مساعد" => InstructorRole.AssistantLecturer,
+            "associateprofessor" or "associate_professor" or "أستاذ مساعد" => InstructorRole.AssociateProfessor,
+            "professor" or "أستاذ" => InstructorRole.Professor,
+            _ => null
+        };
     }
 
     public async Task<bool> DeleteAsync(int instructorId)
@@ -205,11 +230,14 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             Address = instructor.Address,
             Nationality = instructor.Nationality,
             InstructorCode = instructor.InstructorCode,
-            Role = instructor.InstructorRole,
+            InstructorRole = instructor.InstructorRole?.ToString(),
             Specialization = instructor.Specialization,
             DepartmentId = instructor.DepartmentId,
             DepartmentName = instructor.Department?.DepartmentName,
-            HireDate = instructor.HireDate
+            HireDate = instructor.HireDate,
+            FacultyId = instructor.FacultyId,
+            FacultyName = instructor.Faculty?.FacultyName,
+            Roles = instructor.Roles.Select(r => r.ToString()).ToList()
         };
     }
 }

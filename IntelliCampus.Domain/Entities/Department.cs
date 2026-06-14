@@ -7,9 +7,11 @@ public class Department
     public string DepartmentName { get; set; } = null!;
     public string? DepartmentNameAr { get; set; }
     public int? InstructorId { get; set; }
+    public int? FacultyId { get; set; }
 
     // Navigation properties
     public Instructor? HeadInstructor { get; set; }
+    public Faculty? Faculty { get; set; }
     public ICollection<Instructor> Instructors { get; set; } = new List<Instructor>();
     public ICollection<StudentDepartment> StudentDepartments { get; set; } = new List<StudentDepartment>();
     public ICollection<Course> Courses { get; set; } = new List<Course>();

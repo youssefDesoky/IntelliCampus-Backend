@@ -431,7 +431,7 @@ public class GradeService : IGradeService
         {
             StudentName = student?.FullName ?? "",
             StudentCode = student?.StudentCode ?? "-",
-            Faculty = student?.Faculty,
+            Faculty = student?.FacultyName,
             Level = student?.Level,
             Department = student?.DepartmentName,
             TotalCredits = totalCredits,
@@ -698,6 +698,7 @@ public class GradeService : IGradeService
         int credits = 0;
         foreach (var c in courses)
         {
+            if (c.Letter is "-" or "Con" or "W" or "I") continue;
             double gp = scales?.FirstOrDefault(s => s.GradeLetter == c.Letter)?.GpaValue is decimal v
                 ? (double)v
                 : 0.0;

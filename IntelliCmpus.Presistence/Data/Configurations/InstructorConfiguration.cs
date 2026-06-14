@@ -18,6 +18,7 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
             .HasMaxLength(50);
 
         builder.Property(i => i.InstructorRole)
+            .HasConversion<string>()
             .HasMaxLength(50);
 
         builder.Property(i => i.Specialization)

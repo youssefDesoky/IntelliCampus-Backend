@@ -12,7 +12,8 @@ public class StudentDto
     public string? Address { get; set; }
     public string? Nationality { get; set; }
     public string? StudentCode { get; set; }
-    public string? Faculty { get; set; }
+    public int? FacultyId { get; set; }
+    public string? FacultyName { get; set; }
     public int? Level { get; set; }
     public int? DepartmentId { get; set; }
     public string? DepartmentName { get; set; }
@@ -20,4 +21,5 @@ public class StudentDto
     public string? BylawName { get; set; }
     public int? BylawVersion { get; set; }
     public DateTime? EnrollmentDate { get; set; }
+    public List<string> Roles { get; set; } = [];
 }

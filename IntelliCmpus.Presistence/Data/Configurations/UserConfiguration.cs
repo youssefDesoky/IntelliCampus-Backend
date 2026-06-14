@@ -47,11 +47,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(256);
 
-        builder.Property(u => u.Role)
-            .HasConversion<string>()
-            .HasMaxLength(20);
-
         builder.Property(u => u.ProfileImage)
             .HasMaxLength(500);
+
+        builder.Property(u => u.FacultyId);
+        builder.HasOne(u => u.Faculty)
+            .WithMany(f => f.Users)
+            .HasForeignKey(u => u.FacultyId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // Filter out soft-deleted or shared base queries — TPT handles mapping
     }
 }

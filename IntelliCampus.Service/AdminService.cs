@@ -35,7 +35,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         return admins.Select(MapToDto);
     }
 
-    public async Task<AdminDto> CreateAsync(CreateAdminDto dto)
+    public async Task<AdminDto> CreateAsync(CreateAdminDto dto, int? creatorUserId = null)
     {
         if (await Users.AnyAsync(u => u.Email == dto.Email))
             throw new InvalidOperationException("Email already exists.");
@@ -45,6 +45,13 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
 
         var hireDate = ParseDate(dto.HireDate) ?? DateTime.UtcNow;
         var password = string.IsNullOrWhiteSpace(dto.Password) ? "Admin@123" : dto.Password;
+
+        var facultyId = dto.FacultyId;
+        if (facultyId is null && creatorUserId.HasValue)
+        {
+            var creator = await Users.GetByIdAsync(creatorUserId.Value);
+            facultyId = creator?.FacultyId;
+        }
 
         var admin = new Admin
         {
@@ -56,9 +63,10 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             Address = dto.Address,
             Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
-            Role = UserRole.Admin,
+            Roles = ResolveAdminRoles(dto.AdminRole),
             AdminCode = dto.AdminCode,
-            HireDate = hireDate
+            HireDate = hireDate,
+            FacultyId = facultyId
         };
 
         Admins.Add(admin);
@@ -75,13 +83,28 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         if (admin is null)
             return false;
 
-        if (admin.Role == UserRole.SuperAdmin)
+        if (admin.Roles.Contains(UserRole.SuperAdmin))
             throw new InvalidOperationException("Cannot delete the SuperAdmin account.");
 
         Admins.Delete(admin);
         await _unitOfWork.SaveChangesAsync();
 
         return true;
+    }
+
+    private static List<UserRole> ResolveAdminRoles(string? adminRole)
+    {
+        if (string.IsNullOrWhiteSpace(adminRole))
+            return [UserRole.Admin_UnderGrad];
+
+        return adminRole.ToLowerInvariant() switch
+        {
+            "undergrad" or "under_grad" => [UserRole.Admin_UnderGrad],
+            "postgrad" or "post_grad" => [UserRole.Admin_PostGrad],
+            "academicstaff" or "academic_staff" => [UserRole.Admin_AcademicStaff],
+            "superadmin" => [UserRole.SuperAdmin],
+            _ => [UserRole.Admin_UnderGrad]
+        };
     }
 
     private static DateTime? ParseDate(string? dateStr)
@@ -114,7 +137,10 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             Address = admin.Address,
             Nationality = admin.Nationality,
             AdminCode = admin.AdminCode,
-            HireDate = admin.HireDate
+            HireDate = admin.HireDate,
+            FacultyId = admin.FacultyId,
+            FacultyName = admin.Faculty?.FacultyName,
+            Roles = admin.Roles.Select(r => r.ToString()).ToList()
         };
     }
 }

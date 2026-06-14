@@ -12,9 +12,12 @@ public class InstructorDto
     public string? Address { get; set; }
     public string? Nationality { get; set; }
     public string? InstructorCode { get; set; }
-    public string? Role { get; set; }
+    public string? InstructorRole { get; set; }
     public string? Specialization { get; set; }
     public int? DepartmentId { get; set; }
     public string? DepartmentName { get; set; }
     public DateTime? HireDate { get; set; }
+    public int? FacultyId { get; set; }
+    public string? FacultyName { get; set; }
+    public List<string> Roles { get; set; } = [];
 }
