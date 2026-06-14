@@ -122,6 +122,7 @@ builder.Services.AddScoped<IAutoExamSchedulingService, AutoExamSchedulingService
 builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
 builder.Services.AddScoped<IPdfExportService, PdfExportService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IDataSeed, DataSeed>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -136,11 +137,8 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<IntelliCampusDbContext>();
     await context.Database.MigrateAsync();
-    var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
-    await AdminSeeder.SeedAdminAsync(context, passwordService);
-    await ExamHallSeeder.SeedExamHallsAsync(context);
-    await QuizSeeder.SeedQuizzesAsync(context);
-    await AssignmentSeeder.SeedAssignmentsAsync(context);
+    var dataSeed = scope.ServiceProvider.GetRequiredService<IDataSeed>();
+    await dataSeed.SeedDataAsync();
 }
 
 

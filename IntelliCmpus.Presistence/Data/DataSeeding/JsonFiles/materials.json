@@ -1,0 +1,2338 @@
+[
+  {
+    "title": "Math-1 Syllabus",
+    "type": "Document",
+    "courseCode": "MA111",
+    "folderName": "Math-1 Materials",
+    "fileUrl": "/materials/MA111/syllabus.pdf",
+    "fileSize": 102400
+  },
+  {
+    "title": "Math-1 Lecture Notes",
+    "type": "Document",
+    "courseCode": "MA111",
+    "folderName": "Math-1 Materials",
+    "fileUrl": "/materials/MA111/lecture-notes.pdf",
+    "fileSize": 204800
+  },
+  {
+    "title": "Electronics Syllabus",
+    "type": "Document",
+    "courseCode": "IT111",
+    "folderName": "Electronics Materials",
+    "fileUrl": "/materials/IT111/syllabus.pdf",
+    "fileSize": 103400
+  },
+  {
+    "title": "Electronics Lecture Notes",
+    "type": "Document",
+    "courseCode": "IT111",
+    "folderName": "Electronics Materials",
+    "fileUrl": "/materials/IT111/lecture-notes.pdf",
+    "fileSize": 205800
+  },
+  {
+    "title": "Fundamentals of Computer Science Syllabus",
+    "type": "Document",
+    "courseCode": "CS111",
+    "folderName": "Fundamentals of Computer Science Materials",
+    "fileUrl": "/materials/CS111/syllabus.pdf",
+    "fileSize": 104400
+  },
+  {
+    "title": "Fundamentals of Computer Science Lecture Notes",
+    "type": "Document",
+    "courseCode": "CS111",
+    "folderName": "Fundamentals of Computer Science Materials",
+    "fileUrl": "/materials/CS111/lecture-notes.pdf",
+    "fileSize": 206800
+  },
+  {
+    "title": "Math-2 Syllabus",
+    "type": "Document",
+    "courseCode": "MA113",
+    "folderName": "Math-2 Materials",
+    "fileUrl": "/materials/MA113/syllabus.pdf",
+    "fileSize": 105400
+  },
+  {
+    "title": "Math-2 Lecture Notes",
+    "type": "Document",
+    "courseCode": "MA113",
+    "folderName": "Math-2 Materials",
+    "fileUrl": "/materials/MA113/lecture-notes.pdf",
+    "fileSize": 207800
+  },
+  {
+    "title": "Probability and Statistics-1 Syllabus",
+    "type": "Document",
+    "courseCode": "ST121",
+    "folderName": "Probability and Statistics-1 Materials",
+    "fileUrl": "/materials/ST121/syllabus.pdf",
+    "fileSize": 106400
+  },
+  {
+    "title": "Probability and Statistics-1 Lecture Notes",
+    "type": "Document",
+    "courseCode": "ST121",
+    "folderName": "Probability and Statistics-1 Materials",
+    "fileUrl": "/materials/ST121/lecture-notes.pdf",
+    "fileSize": 208800
+  },
+  {
+    "title": "Fundamentals of Management Syllabus",
+    "type": "Document",
+    "courseCode": "DS251",
+    "folderName": "Fundamentals of Management Materials",
+    "fileUrl": "/materials/DS251/syllabus.pdf",
+    "fileSize": 107400
+  },
+  {
+    "title": "Fundamentals of Management Lecture Notes",
+    "type": "Document",
+    "courseCode": "DS251",
+    "folderName": "Fundamentals of Management Materials",
+    "fileUrl": "/materials/DS251/lecture-notes.pdf",
+    "fileSize": 209800
+  },
+  {
+    "title": "Structured Programming Syllabus",
+    "type": "Document",
+    "courseCode": "CS112",
+    "folderName": "Structured Programming Materials",
+    "fileUrl": "/materials/CS112/syllabus.pdf",
+    "fileSize": 108400
+  },
+  {
+    "title": "Structured Programming Lecture Notes",
+    "type": "Document",
+    "courseCode": "CS112",
+    "folderName": "Structured Programming Materials",
+    "fileUrl": "/materials/CS112/lecture-notes.pdf",
+    "fileSize": 210800
+  },
+  {
+    "title": "Computer Networks Technology Syllabus",
+    "type": "Document",
+    "courseCode": "IT221",
+    "folderName": "Computer Networks Technology Materials",
+    "fileUrl": "/materials/IT221/syllabus.pdf",
+    "fileSize": 109400
+  },
+  {
+    "title": "Computer Networks Technology Lecture Notes",
+    "type": "Document",
+    "courseCode": "IT221",
+    "folderName": "Computer Networks Technology Materials",
+    "fileUrl": "/materials/IT221/lecture-notes.pdf",
+    "fileSize": 211800
+  },
+  {
+    "title": "Object Oriented Programming Syllabus",
+    "type": "Document",
+    "courseCode": "CS213",
+    "folderName": "Object Oriented Programming Materials",
+    "fileUrl": "/materials/CS213/syllabus.pdf",
+    "fileSize": 110400
+  },
+  {
+    "title": "Object Oriented Programming Lecture Notes",
+    "type": "Document",
+    "courseCode": "CS213",
+    "folderName": "Object Oriented Programming Materials",
+    "fileUrl": "/materials/CS213/lecture-notes.pdf",
+    "fileSize": 212800
+  },
+  {
+    "title": "Intro to Operations Research & Decision Support Syllabus",
+    "type": "Document",
+    "courseCode": "DS211",
+    "folderName": "Intro to Operations Research & Decision Support Materials",
+    "fileUrl": "/materials/DS211/syllabus.pdf",
+    "fileSize": 111400
+  },
+  {
+    "title": "Intro to Operations Research & Decision Support Lecture Notes",
+    "type": "Document",
+    "courseCode": "DS211",
+    "folderName": "Intro to Operations Research & Decision Support Materials",
+    "fileUrl": "/materials/DS211/lecture-notes.pdf",
+    "fileSize": 213800
+  },
+  {
+    "title": "Probability and Statistics-2 Syllabus",
+    "type": "Document",
+    "courseCode": "ST222",
+    "folderName": "Probability and Statistics-2 Materials",
+    "fileUrl": "/materials/ST222/syllabus.pdf",
+    "fileSize": 112400
+  },
+  {
+    "title": "Probability and Statistics-2 Lecture Notes",
+    "type": "Document",
+    "courseCode": "ST222",
+    "folderName": "Probability and Statistics-2 Materials",
+    "fileUrl": "/materials/ST222/lecture-notes.pdf",
+    "fileSize": 214800
+  },
+  {
+    "title": "Discrete Mathematics Syllabus",
+    "type": "Document",
+    "courseCode": "MA112",
+    "folderName": "Discrete Mathematics Materials",
+    "fileUrl": "/materials/MA112/syllabus.pdf",
+    "fileSize": 113400
+  },
+  {
+    "title": "Discrete Mathematics Lecture Notes",
+    "type": "Document",
+    "courseCode": "MA112",
+    "folderName": "Discrete Mathematics Materials",
+    "fileUrl": "/materials/MA112/lecture-notes.pdf",
+    "fileSize": 215800
+  },
+  {
+    "title": "Technical Report Writing Syllabus",
+    "type": "Document",
+    "courseCode": "HU111",
+    "folderName": "Technical Report Writing Materials",
+    "fileUrl": "/materials/HU111/syllabus.pdf",
+    "fileSize": 114400
+  },
+  {
+    "title": "Technical Report Writing Lecture Notes",
+    "type": "Document",
+    "courseCode": "HU111",
+    "folderName": "Technical Report Writing Materials",
+    "fileUrl": "/materials/HU111/lecture-notes.pdf",
+    "fileSize": 216800
+  },
+  {
+    "title": "Selected Topics in Humanities Syllabus",
+    "type": "Document",
+    "courseCode": "HU118",
+    "folderName": "Selected Topics in Humanities Materials",
+    "fileUrl": "/materials/HU118/syllabus.pdf",
+    "fileSize": 115400
+  },
+  {
+    "title": "Selected Topics in Humanities Lecture Notes",
+    "type": "Document",
+    "courseCode": "HU118",
+    "folderName": "Selected Topics in Humanities Materials",
+    "fileUrl": "/materials/HU118/lecture-notes.pdf",
+    "fileSize": 217800
+  },
+  {
+    "title": "Creative Thinking and Communication Skills Syllabus",
+    "type": "Document",
+    "courseCode": "HU113",
+    "folderName": "Creative Thinking and Communication Skills Materials",
+    "fileUrl": "/materials/HU113/syllabus.pdf",
+    "fileSize": 116400
+  },
+  {
+    "title": "Creative Thinking and Communication Skills Lecture Notes",
+    "type": "Document",
+    "courseCode": "HU113",
+    "folderName": "Creative Thinking and Communication Skills Materials",
+    "fileUrl": "/materials/HU113/lecture-notes.pdf",
+    "fileSize": 218800
+  },
+  {
+    "title": "Fundamentals of Economics Syllabus",
+    "type": "Document",
+    "courseCode": "HU121",
+    "folderName": "Fundamentals of Economics Materials",
+    "fileUrl": "/materials/HU121/syllabus.pdf",
+    "fileSize": 117400
+  },
+  {
+    "title": "Fundamentals of Economics Lecture Notes",
+    "type": "Document",
+    "courseCode": "HU121",
+    "folderName": "Fundamentals of Economics Materials",
+    "fileUrl": "/materials/HU121/lecture-notes.pdf",
+    "fileSize": 219800
+  },
+  {
+    "title": "Social Issues Syllabus",
+    "type": "Document",
+    "courseCode": "HU117",
+    "folderName": "Social Issues Materials",
+    "fileUrl": "/materials/HU117/syllabus.pdf",
+    "fileSize": 118400
+  },
+  {
+    "title": "Social Issues Lecture Notes",
+    "type": "Document",
+    "courseCode": "HU117",
+    "folderName": "Social Issues Materials",
+    "fileUrl": "/materials/HU117/lecture-notes.pdf",
+    "fileSize": 220800
+  },
+  {
+    "title": "Critical Thinking Syllabus",
+    "type": "Document",
+    "courseCode": "HU124",
+    "folderName": "Critical Thinking Materials",
+    "fileUrl": "/materials/HU124/syllabus.pdf",
+    "fileSize": 119400
+  },
+  {
+    "title": "Critical Thinking Lecture Notes",
+    "type": "Document",
+    "courseCode": "HU124",
+    "folderName": "Critical Thinking Materials",
+    "fileUrl": "/materials/HU124/lecture-notes.pdf",
+    "fileSize": 221800
+  },
+  {
+    "title": "Data Structures Syllabus",
+    "type": "Document",
+    "courseCode": "CS214",
+    "folderName": "Data Structures Materials",
+    "fileUrl": "/materials/CS214/syllabus.pdf",
+    "fileSize": 120400
+  },
+  {
+    "title": "Data Structures Lecture Notes",
+    "type": "Document",
+    "courseCode": "CS214",
+    "folderName": "Data Structures Materials",
+    "fileUrl": "/materials/CS214/lecture-notes.pdf",
+    "fileSize": 222800
+  },
+  {
+    "title": "Intro to Software Engineering Syllabus",
+    "type": "Document",
+    "courseCode": "CS251",
+    "folderName": "Intro to Software Engineering Materials",
+    "fileUrl": "/materials/CS251/syllabus.pdf",
+    "fileSize": 121400
+  },
+  {
+    "title": "Intro to Software Engineering Lecture Notes",
+    "type": "Document",
+    "courseCode": "CS251",
+    "folderName": "Intro to Software Engineering Materials",
+    "fileUrl": "/materials/CS251/lecture-notes.pdf",
+    "fileSize": 223800
+  },
+  {
+    "title": "Introduction to Database Systems Syllabus",
+    "type": "Document",
+    "courseCode": "IS211",
+    "folderName": "Introduction to Database Systems Materials",
+    "fileUrl": "/materials/IS211/syllabus.pdf",
+    "fileSize": 122400
+  },
+  {
+    "title": "Introduction to Database Systems Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS211",
+    "folderName": "Introduction to Database Systems Materials",
+    "fileUrl": "/materials/IS211/lecture-notes.pdf",
+    "fileSize": 224800
+  },
+  {
+    "title": "Web Technology Syllabus",
+    "type": "Document",
+    "courseCode": "IS231",
+    "folderName": "Web Technology Materials",
+    "fileUrl": "/materials/IS231/syllabus.pdf",
+    "fileSize": 123400
+  },
+  {
+    "title": "Web Technology Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS231",
+    "folderName": "Web Technology Materials",
+    "fileUrl": "/materials/IS231/lecture-notes.pdf",
+    "fileSize": 225800
+  },
+  {
+    "title": "Math-3 Syllabus",
+    "type": "Document",
+    "courseCode": "MA214",
+    "folderName": "Math-3 Materials",
+    "fileUrl": "/materials/MA214/syllabus.pdf",
+    "fileSize": 124400
+  },
+  {
+    "title": "Math-3 Lecture Notes",
+    "type": "Document",
+    "courseCode": "MA214",
+    "folderName": "Math-3 Materials",
+    "fileUrl": "/materials/MA214/lecture-notes.pdf",
+    "fileSize": 226800
+  },
+  {
+    "title": "Ethics and Professionalism Syllabus",
+    "type": "Document",
+    "courseCode": "HU112",
+    "folderName": "Ethics and Professionalism Materials",
+    "fileUrl": "/materials/HU112/syllabus.pdf",
+    "fileSize": 125400
+  },
+  {
+    "title": "Ethics and Professionalism Lecture Notes",
+    "type": "Document",
+    "courseCode": "HU112",
+    "folderName": "Ethics and Professionalism Materials",
+    "fileUrl": "/materials/HU112/lecture-notes.pdf",
+    "fileSize": 227800
+  },
+  {
+    "title": "Entrepreneurship Syllabus",
+    "type": "Document",
+    "courseCode": "HU225",
+    "folderName": "Entrepreneurship Materials",
+    "fileUrl": "/materials/HU225/syllabus.pdf",
+    "fileSize": 126400
+  },
+  {
+    "title": "Entrepreneurship Lecture Notes",
+    "type": "Document",
+    "courseCode": "HU225",
+    "folderName": "Entrepreneurship Materials",
+    "fileUrl": "/materials/HU225/lecture-notes.pdf",
+    "fileSize": 228800
+  },
+  {
+    "title": "Advanced Software Engineering Syllabus",
+    "type": "Document",
+    "courseCode": "CS352",
+    "folderName": "Advanced Software Engineering Materials",
+    "fileUrl": "/materials/CS352/syllabus.pdf",
+    "fileSize": 127400
+  },
+  {
+    "title": "Advanced Software Engineering Lecture Notes",
+    "type": "Document",
+    "courseCode": "CS352",
+    "folderName": "Advanced Software Engineering Materials",
+    "fileUrl": "/materials/CS352/lecture-notes.pdf",
+    "fileSize": 229800
+  },
+  {
+    "title": "Analysis and Design of Information Systems Syllabus",
+    "type": "Document",
+    "courseCode": "IS332",
+    "folderName": "Analysis and Design of Information Systems Materials",
+    "fileUrl": "/materials/IS332/syllabus.pdf",
+    "fileSize": 128400
+  },
+  {
+    "title": "Analysis and Design of Information Systems Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS332",
+    "folderName": "Analysis and Design of Information Systems Materials",
+    "fileUrl": "/materials/IS332/lecture-notes.pdf",
+    "fileSize": 230800
+  },
+  {
+    "title": "Algorithms Analysis and Design Syllabus",
+    "type": "Document",
+    "courseCode": "CS321",
+    "folderName": "Algorithms Analysis and Design Materials",
+    "fileUrl": "/materials/CS321/syllabus.pdf",
+    "fileSize": 129400
+  },
+  {
+    "title": "Algorithms Analysis and Design Lecture Notes",
+    "type": "Document",
+    "courseCode": "CS321",
+    "folderName": "Algorithms Analysis and Design Materials",
+    "fileUrl": "/materials/CS321/lecture-notes.pdf",
+    "fileSize": 231800
+  },
+  {
+    "title": "Operating Systems Syllabus",
+    "type": "Document",
+    "courseCode": "CS341",
+    "folderName": "Operating Systems Materials",
+    "fileUrl": "/materials/CS341/syllabus.pdf",
+    "fileSize": 130400
+  },
+  {
+    "title": "Operating Systems Lecture Notes",
+    "type": "Document",
+    "courseCode": "CS341",
+    "folderName": "Operating Systems Materials",
+    "fileUrl": "/materials/CS341/lecture-notes.pdf",
+    "fileSize": 232800
+  },
+  {
+    "title": "Database Management Systems Syllabus",
+    "type": "Document",
+    "courseCode": "IS312",
+    "folderName": "Database Management Systems Materials",
+    "fileUrl": "/materials/IS312/syllabus.pdf",
+    "fileSize": 131400
+  },
+  {
+    "title": "Database Management Systems Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS312",
+    "folderName": "Database Management Systems Materials",
+    "fileUrl": "/materials/IS312/lecture-notes.pdf",
+    "fileSize": 233800
+  },
+  {
+    "title": "File Management and Processing Syllabus",
+    "type": "Document",
+    "courseCode": "IS321",
+    "folderName": "File Management and Processing Materials",
+    "fileUrl": "/materials/IS321/syllabus.pdf",
+    "fileSize": 132400
+  },
+  {
+    "title": "File Management and Processing Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS321",
+    "folderName": "File Management and Processing Materials",
+    "fileUrl": "/materials/IS321/lecture-notes.pdf",
+    "fileSize": 234800
+  },
+  {
+    "title": "Information Retrieval Syllabus",
+    "type": "Document",
+    "courseCode": "IS322",
+    "folderName": "Information Retrieval Materials",
+    "fileUrl": "/materials/IS322/syllabus.pdf",
+    "fileSize": 133400
+  },
+  {
+    "title": "Information Retrieval Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS322",
+    "folderName": "Information Retrieval Materials",
+    "fileUrl": "/materials/IS322/lecture-notes.pdf",
+    "fileSize": 235800
+  },
+  {
+    "title": "Artificial Intelligence Syllabus",
+    "type": "Document",
+    "courseCode": "CS361",
+    "folderName": "Artificial Intelligence Materials",
+    "fileUrl": "/materials/CS361/syllabus.pdf",
+    "fileSize": 134400
+  },
+  {
+    "title": "Artificial Intelligence Lecture Notes",
+    "type": "Document",
+    "courseCode": "CS361",
+    "folderName": "Artificial Intelligence Materials",
+    "fileUrl": "/materials/CS361/lecture-notes.pdf",
+    "fileSize": 236800
+  },
+  {
+    "title": "Data Warehousing Syllabus",
+    "type": "Document",
+    "courseCode": "IS313",
+    "folderName": "Data Warehousing Materials",
+    "fileUrl": "/materials/IS313/syllabus.pdf",
+    "fileSize": 135400
+  },
+  {
+    "title": "Data Warehousing Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS313",
+    "folderName": "Data Warehousing Materials",
+    "fileUrl": "/materials/IS313/lecture-notes.pdf",
+    "fileSize": 237800
+  },
+  {
+    "title": "Business Process Management Syllabus",
+    "type": "Document",
+    "courseCode": "IS341",
+    "folderName": "Business Process Management Materials",
+    "fileUrl": "/materials/IS341/syllabus.pdf",
+    "fileSize": 136400
+  },
+  {
+    "title": "Business Process Management Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS341",
+    "folderName": "Business Process Management Materials",
+    "fileUrl": "/materials/IS341/lecture-notes.pdf",
+    "fileSize": 238800
+  },
+  {
+    "title": "Web-based Information Systems Development Syllabus",
+    "type": "Document",
+    "courseCode": "IS333",
+    "folderName": "Web-based Information Systems Development Materials",
+    "fileUrl": "/materials/IS333/syllabus.pdf",
+    "fileSize": 137400
+  },
+  {
+    "title": "Web-based Information Systems Development Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS333",
+    "folderName": "Web-based Information Systems Development Materials",
+    "fileUrl": "/materials/IS333/lecture-notes.pdf",
+    "fileSize": 239800
+  },
+  {
+    "title": "Logic Design Syllabus",
+    "type": "Document",
+    "courseCode": "IT212",
+    "folderName": "Logic Design Materials",
+    "fileUrl": "/materials/IT212/syllabus.pdf",
+    "fileSize": 138400
+  },
+  {
+    "title": "Logic Design Lecture Notes",
+    "type": "Document",
+    "courseCode": "IT212",
+    "folderName": "Logic Design Materials",
+    "fileUrl": "/materials/IT212/lecture-notes.pdf",
+    "fileSize": 240800
+  },
+  {
+    "title": "Field Training Syllabus",
+    "type": "Document",
+    "courseCode": "TR301",
+    "folderName": "Field Training Materials",
+    "fileUrl": "/materials/TR301/syllabus.pdf",
+    "fileSize": 139400
+  },
+  {
+    "title": "Field Training Lecture Notes",
+    "type": "Document",
+    "courseCode": "TR301",
+    "folderName": "Field Training Materials",
+    "fileUrl": "/materials/TR301/lecture-notes.pdf",
+    "fileSize": 241800
+  },
+  {
+    "title": "Graduation Project Syllabus",
+    "type": "Document",
+    "courseCode": "IS498",
+    "folderName": "Graduation Project Materials",
+    "fileUrl": "/materials/IS498/syllabus.pdf",
+    "fileSize": 140400
+  },
+  {
+    "title": "Graduation Project Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS498",
+    "folderName": "Graduation Project Materials",
+    "fileUrl": "/materials/IS498/lecture-notes.pdf",
+    "fileSize": 242800
+  },
+  {
+    "title": "IS Development Methodologies Syllabus",
+    "type": "Document",
+    "courseCode": "IS437",
+    "folderName": "IS Development Methodologies Materials",
+    "fileUrl": "/materials/IS437/syllabus.pdf",
+    "fileSize": 141400
+  },
+  {
+    "title": "IS Development Methodologies Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS437",
+    "folderName": "IS Development Methodologies Materials",
+    "fileUrl": "/materials/IS437/lecture-notes.pdf",
+    "fileSize": 243800
+  },
+  {
+    "title": "Data Analytics Syllabus",
+    "type": "Document",
+    "courseCode": "DS342",
+    "folderName": "Data Analytics Materials",
+    "fileUrl": "/materials/DS342/syllabus.pdf",
+    "fileSize": 142400
+  },
+  {
+    "title": "Data Analytics Lecture Notes",
+    "type": "Document",
+    "courseCode": "DS342",
+    "folderName": "Data Analytics Materials",
+    "fileUrl": "/materials/DS342/lecture-notes.pdf",
+    "fileSize": 244800
+  },
+  {
+    "title": "Machine Learning Syllabus",
+    "type": "Document",
+    "courseCode": "CS462",
+    "folderName": "Machine Learning Materials",
+    "fileUrl": "/materials/CS462/syllabus.pdf",
+    "fileSize": 143400
+  },
+  {
+    "title": "Machine Learning Lecture Notes",
+    "type": "Document",
+    "courseCode": "CS462",
+    "folderName": "Machine Learning Materials",
+    "fileUrl": "/materials/CS462/lecture-notes.pdf",
+    "fileSize": 245800
+  },
+  {
+    "title": "Service-Oriented Architecture Syllabus",
+    "type": "Document",
+    "courseCode": "IS434",
+    "folderName": "Service-Oriented Architecture Materials",
+    "fileUrl": "/materials/IS434/syllabus.pdf",
+    "fileSize": 144400
+  },
+  {
+    "title": "Service-Oriented Architecture Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS434",
+    "folderName": "Service-Oriented Architecture Materials",
+    "fileUrl": "/materials/IS434/lecture-notes.pdf",
+    "fileSize": 246800
+  },
+  {
+    "title": "Geographical Information Systems Syllabus",
+    "type": "Document",
+    "courseCode": "IS442",
+    "folderName": "Geographical Information Systems Materials",
+    "fileUrl": "/materials/IS442/syllabus.pdf",
+    "fileSize": 145400
+  },
+  {
+    "title": "Geographical Information Systems Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS442",
+    "folderName": "Geographical Information Systems Materials",
+    "fileUrl": "/materials/IS442/lecture-notes.pdf",
+    "fileSize": 247800
+  },
+  {
+    "title": "Managing and Modeling Big Data Syllabus",
+    "type": "Document",
+    "courseCode": "IS414",
+    "folderName": "Managing and Modeling Big Data Materials",
+    "fileUrl": "/materials/IS414/syllabus.pdf",
+    "fileSize": 146400
+  },
+  {
+    "title": "Managing and Modeling Big Data Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS414",
+    "folderName": "Managing and Modeling Big Data Materials",
+    "fileUrl": "/materials/IS414/lecture-notes.pdf",
+    "fileSize": 248800
+  },
+  {
+    "title": "Data Mining Syllabus",
+    "type": "Document",
+    "courseCode": "IS422",
+    "folderName": "Data Mining Materials",
+    "fileUrl": "/materials/IS422/syllabus.pdf",
+    "fileSize": 147400
+  },
+  {
+    "title": "Data Mining Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS422",
+    "folderName": "Data Mining Materials",
+    "fileUrl": "/materials/IS422/lecture-notes.pdf",
+    "fileSize": 249800
+  },
+  {
+    "title": "Selected Topics in Data Engineering Syllabus",
+    "type": "Document",
+    "courseCode": "IS424",
+    "folderName": "Selected Topics in Data Engineering Materials",
+    "fileUrl": "/materials/IS424/syllabus.pdf",
+    "fileSize": 148400
+  },
+  {
+    "title": "Selected Topics in Data Engineering Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS424",
+    "folderName": "Selected Topics in Data Engineering Materials",
+    "fileUrl": "/materials/IS424/lecture-notes.pdf",
+    "fileSize": 250800
+  },
+  {
+    "title": "E-Business Syllabus",
+    "type": "Document",
+    "courseCode": "IS448",
+    "folderName": "E-Business Materials",
+    "fileUrl": "/materials/IS448/syllabus.pdf",
+    "fileSize": 149400
+  },
+  {
+    "title": "E-Business Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS448",
+    "folderName": "E-Business Materials",
+    "fileUrl": "/materials/IS448/lecture-notes.pdf",
+    "fileSize": 251800
+  },
+  {
+    "title": "Selected Topics in Information Systems-1 Syllabus",
+    "type": "Document",
+    "courseCode": "IS495",
+    "folderName": "Selected Topics in Information Systems-1 Materials",
+    "fileUrl": "/materials/IS495/syllabus.pdf",
+    "fileSize": 150400
+  },
+  {
+    "title": "Selected Topics in Information Systems-1 Lecture Notes",
+    "type": "Document",
+    "courseCode": "IS495",
+    "folderName": "Selected Topics in Information Systems-1 Materials",
+    "fileUrl": "/materials/IS495/lecture-notes.pdf",
+    "fileSize": 252800
+  },
+  {
+    "title": "Project Management Syllabus",
+    "type": "Document",
+    "courseCode": "DS456",
+    "folderName": "Project Management Materials",
+    "fileUrl": "/materials/DS456/syllabus.pdf",
+    "fileSize": 151400
+  },
+  {
+    "title": "Project Management Lecture Notes",
+    "type": "Document",
+    "courseCode": "DS456",
+    "folderName": "Project Management Materials",
+    "fileUrl": "/materials/DS456/lecture-notes.pdf",
+    "fileSize": 253800
+  },
+  {
+    "title": "Fundamentals of Computers Syllabus",
+    "type": "Document",
+    "courseCode": "SCS111",
+    "folderName": "Fundamentals of Computers Materials",
+    "fileUrl": "/materials/SCS111/syllabus.pdf",
+    "fileSize": 152400
+  },
+  {
+    "title": "Fundamentals of Computers Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS111",
+    "folderName": "Fundamentals of Computers Materials",
+    "fileUrl": "/materials/SCS111/lecture-notes.pdf",
+    "fileSize": 254800
+  },
+  {
+    "title": "Electronics-1 Syllabus",
+    "type": "Document",
+    "courseCode": "SIT111",
+    "folderName": "Electronics-1 Materials",
+    "fileUrl": "/materials/SIT111/syllabus.pdf",
+    "fileSize": 153400
+  },
+  {
+    "title": "Electronics-1 Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT111",
+    "folderName": "Electronics-1 Materials",
+    "fileUrl": "/materials/SIT111/lecture-notes.pdf",
+    "fileSize": 255800
+  },
+  {
+    "title": "Math-1 Syllabus",
+    "type": "Document",
+    "courseCode": "SMA111",
+    "folderName": "Math-1 Materials",
+    "fileUrl": "/materials/SMA111/syllabus.pdf",
+    "fileSize": 154400
+  },
+  {
+    "title": "Math-1 Lecture Notes",
+    "type": "Document",
+    "courseCode": "SMA111",
+    "folderName": "Math-1 Materials",
+    "fileUrl": "/materials/SMA111/lecture-notes.pdf",
+    "fileSize": 256800
+  },
+  {
+    "title": "Technical Report Writing Syllabus",
+    "type": "Document",
+    "courseCode": "SHU111",
+    "folderName": "Technical Report Writing Materials",
+    "fileUrl": "/materials/SHU111/syllabus.pdf",
+    "fileSize": 155400
+  },
+  {
+    "title": "Technical Report Writing Lecture Notes",
+    "type": "Document",
+    "courseCode": "SHU111",
+    "folderName": "Technical Report Writing Materials",
+    "fileUrl": "/materials/SHU111/lecture-notes.pdf",
+    "fileSize": 257800
+  },
+  {
+    "title": "Discrete Mathematics Syllabus",
+    "type": "Document",
+    "courseCode": "SMA112",
+    "folderName": "Discrete Mathematics Materials",
+    "fileUrl": "/materials/SMA112/syllabus.pdf",
+    "fileSize": 156400
+  },
+  {
+    "title": "Discrete Mathematics Lecture Notes",
+    "type": "Document",
+    "courseCode": "SMA112",
+    "folderName": "Discrete Mathematics Materials",
+    "fileUrl": "/materials/SMA112/lecture-notes.pdf",
+    "fileSize": 258800
+  },
+  {
+    "title": "Human Rights Syllabus",
+    "type": "Document",
+    "courseCode": "SHU121",
+    "folderName": "Human Rights Materials",
+    "fileUrl": "/materials/SHU121/syllabus.pdf",
+    "fileSize": 157400
+  },
+  {
+    "title": "Human Rights Lecture Notes",
+    "type": "Document",
+    "courseCode": "SHU121",
+    "folderName": "Human Rights Materials",
+    "fileUrl": "/materials/SHU121/lecture-notes.pdf",
+    "fileSize": 259800
+  },
+  {
+    "title": "Fundamentals of Management Syllabus",
+    "type": "Document",
+    "courseCode": "SHU233",
+    "folderName": "Fundamentals of Management Materials",
+    "fileUrl": "/materials/SHU233/syllabus.pdf",
+    "fileSize": 158400
+  },
+  {
+    "title": "Fundamentals of Management Lecture Notes",
+    "type": "Document",
+    "courseCode": "SHU233",
+    "folderName": "Fundamentals of Management Materials",
+    "fileUrl": "/materials/SHU233/lecture-notes.pdf",
+    "fileSize": 260800
+  },
+  {
+    "title": "Critical Thinking Syllabus",
+    "type": "Document",
+    "courseCode": "SHU124",
+    "folderName": "Critical Thinking Materials",
+    "fileUrl": "/materials/SHU124/syllabus.pdf",
+    "fileSize": 159400
+  },
+  {
+    "title": "Critical Thinking Lecture Notes",
+    "type": "Document",
+    "courseCode": "SHU124",
+    "folderName": "Critical Thinking Materials",
+    "fileUrl": "/materials/SHU124/lecture-notes.pdf",
+    "fileSize": 261800
+  },
+  {
+    "title": "Structured Programming Syllabus",
+    "type": "Document",
+    "courseCode": "SCS112",
+    "folderName": "Structured Programming Materials",
+    "fileUrl": "/materials/SCS112/syllabus.pdf",
+    "fileSize": 160400
+  },
+  {
+    "title": "Structured Programming Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS112",
+    "folderName": "Structured Programming Materials",
+    "fileUrl": "/materials/SCS112/lecture-notes.pdf",
+    "fileSize": 262800
+  },
+  {
+    "title": "Logic Design Syllabus",
+    "type": "Document",
+    "courseCode": "SIT213",
+    "folderName": "Logic Design Materials",
+    "fileUrl": "/materials/SIT213/syllabus.pdf",
+    "fileSize": 161400
+  },
+  {
+    "title": "Logic Design Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT213",
+    "folderName": "Logic Design Materials",
+    "fileUrl": "/materials/SIT213/lecture-notes.pdf",
+    "fileSize": 263800
+  },
+  {
+    "title": "Math-2 Syllabus",
+    "type": "Document",
+    "courseCode": "SMA113",
+    "folderName": "Math-2 Materials",
+    "fileUrl": "/materials/SMA113/syllabus.pdf",
+    "fileSize": 162400
+  },
+  {
+    "title": "Math-2 Lecture Notes",
+    "type": "Document",
+    "courseCode": "SMA113",
+    "folderName": "Math-2 Materials",
+    "fileUrl": "/materials/SMA113/lecture-notes.pdf",
+    "fileSize": 264800
+  },
+  {
+    "title": "Probability and Statistics-1 Syllabus",
+    "type": "Document",
+    "courseCode": "SST121",
+    "folderName": "Probability and Statistics-1 Materials",
+    "fileUrl": "/materials/SST121/syllabus.pdf",
+    "fileSize": 163400
+  },
+  {
+    "title": "Probability and Statistics-1 Lecture Notes",
+    "type": "Document",
+    "courseCode": "SST121",
+    "folderName": "Probability and Statistics-1 Materials",
+    "fileUrl": "/materials/SST121/lecture-notes.pdf",
+    "fileSize": 265800
+  },
+  {
+    "title": "Entrepreneurship Syllabus",
+    "type": "Document",
+    "courseCode": "SHU234",
+    "folderName": "Entrepreneurship Materials",
+    "fileUrl": "/materials/SHU234/syllabus.pdf",
+    "fileSize": 164400
+  },
+  {
+    "title": "Entrepreneurship Lecture Notes",
+    "type": "Document",
+    "courseCode": "SHU234",
+    "folderName": "Entrepreneurship Materials",
+    "fileUrl": "/materials/SHU234/lecture-notes.pdf",
+    "fileSize": 266800
+  },
+  {
+    "title": "Object Oriented Programming Syllabus",
+    "type": "Document",
+    "courseCode": "SCS213",
+    "folderName": "Object Oriented Programming Materials",
+    "fileUrl": "/materials/SCS213/syllabus.pdf",
+    "fileSize": 165400
+  },
+  {
+    "title": "Object Oriented Programming Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS213",
+    "folderName": "Object Oriented Programming Materials",
+    "fileUrl": "/materials/SCS213/lecture-notes.pdf",
+    "fileSize": 267800
+  },
+  {
+    "title": "Fundamentals of Computer Networks Syllabus",
+    "type": "Document",
+    "courseCode": "SIT223",
+    "folderName": "Fundamentals of Computer Networks Materials",
+    "fileUrl": "/materials/SIT223/syllabus.pdf",
+    "fileSize": 166400
+  },
+  {
+    "title": "Fundamentals of Computer Networks Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT223",
+    "folderName": "Fundamentals of Computer Networks Materials",
+    "fileUrl": "/materials/SIT223/lecture-notes.pdf",
+    "fileSize": 268800
+  },
+  {
+    "title": "Probability and Statistics-2 Syllabus",
+    "type": "Document",
+    "courseCode": "SST222",
+    "folderName": "Probability and Statistics-2 Materials",
+    "fileUrl": "/materials/SST222/syllabus.pdf",
+    "fileSize": 167400
+  },
+  {
+    "title": "Probability and Statistics-2 Lecture Notes",
+    "type": "Document",
+    "courseCode": "SST222",
+    "folderName": "Probability and Statistics-2 Materials",
+    "fileUrl": "/materials/SST222/lecture-notes.pdf",
+    "fileSize": 269800
+  },
+  {
+    "title": "Math-3 Syllabus",
+    "type": "Document",
+    "courseCode": "SMA214",
+    "folderName": "Math-3 Materials",
+    "fileUrl": "/materials/SMA214/syllabus.pdf",
+    "fileSize": 168400
+  },
+  {
+    "title": "Math-3 Lecture Notes",
+    "type": "Document",
+    "courseCode": "SMA214",
+    "folderName": "Math-3 Materials",
+    "fileUrl": "/materials/SMA214/lecture-notes.pdf",
+    "fileSize": 270800
+  },
+  {
+    "title": "Fundamentals of Software Engineering Syllabus",
+    "type": "Document",
+    "courseCode": "SCS251",
+    "folderName": "Fundamentals of Software Engineering Materials",
+    "fileUrl": "/materials/SCS251/syllabus.pdf",
+    "fileSize": 169400
+  },
+  {
+    "title": "Fundamentals of Software Engineering Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS251",
+    "folderName": "Fundamentals of Software Engineering Materials",
+    "fileUrl": "/materials/SCS251/lecture-notes.pdf",
+    "fileSize": 271800
+  },
+  {
+    "title": "Data Structures Syllabus",
+    "type": "Document",
+    "courseCode": "SCS214",
+    "folderName": "Data Structures Materials",
+    "fileUrl": "/materials/SCS214/syllabus.pdf",
+    "fileSize": 170400
+  },
+  {
+    "title": "Data Structures Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS214",
+    "folderName": "Data Structures Materials",
+    "fileUrl": "/materials/SCS214/lecture-notes.pdf",
+    "fileSize": 272800
+  },
+  {
+    "title": "Database Systems Syllabus",
+    "type": "Document",
+    "courseCode": "SIS211",
+    "folderName": "Database Systems Materials",
+    "fileUrl": "/materials/SIS211/syllabus.pdf",
+    "fileSize": 171400
+  },
+  {
+    "title": "Database Systems Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS211",
+    "folderName": "Database Systems Materials",
+    "fileUrl": "/materials/SIS211/lecture-notes.pdf",
+    "fileSize": 273800
+  },
+  {
+    "title": "Introduction to Data Science Syllabus",
+    "type": "Document",
+    "courseCode": "SIS213",
+    "folderName": "Introduction to Data Science Materials",
+    "fileUrl": "/materials/SIS213/syllabus.pdf",
+    "fileSize": 172400
+  },
+  {
+    "title": "Introduction to Data Science Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS213",
+    "folderName": "Introduction to Data Science Materials",
+    "fileUrl": "/materials/SIS213/lecture-notes.pdf",
+    "fileSize": 274800
+  },
+  {
+    "title": "Marketing & Sales Syllabus",
+    "type": "Document",
+    "courseCode": "SHU132",
+    "folderName": "Marketing & Sales Materials",
+    "fileUrl": "/materials/SHU132/syllabus.pdf",
+    "fileSize": 173400
+  },
+  {
+    "title": "Marketing & Sales Lecture Notes",
+    "type": "Document",
+    "courseCode": "SHU132",
+    "folderName": "Marketing & Sales Materials",
+    "fileUrl": "/materials/SHU132/lecture-notes.pdf",
+    "fileSize": 275800
+  },
+  {
+    "title": "Business Process Management Syllabus",
+    "type": "Document",
+    "courseCode": "SIS334",
+    "folderName": "Business Process Management Materials",
+    "fileUrl": "/materials/SIS334/syllabus.pdf",
+    "fileSize": 174400
+  },
+  {
+    "title": "Business Process Management Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS334",
+    "folderName": "Business Process Management Materials",
+    "fileUrl": "/materials/SIS334/lecture-notes.pdf",
+    "fileSize": 276800
+  },
+  {
+    "title": "Mathematical Optimization Syllabus",
+    "type": "Document",
+    "courseCode": "SDS212",
+    "folderName": "Mathematical Optimization Materials",
+    "fileUrl": "/materials/SDS212/syllabus.pdf",
+    "fileSize": 175400
+  },
+  {
+    "title": "Mathematical Optimization Lecture Notes",
+    "type": "Document",
+    "courseCode": "SDS212",
+    "folderName": "Mathematical Optimization Materials",
+    "fileUrl": "/materials/SDS212/lecture-notes.pdf",
+    "fileSize": 277800
+  },
+  {
+    "title": "Operating Systems Syllabus",
+    "type": "Document",
+    "courseCode": "SCS241",
+    "folderName": "Operating Systems Materials",
+    "fileUrl": "/materials/SCS241/syllabus.pdf",
+    "fileSize": 176400
+  },
+  {
+    "title": "Operating Systems Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS241",
+    "folderName": "Operating Systems Materials",
+    "fileUrl": "/materials/SCS241/lecture-notes.pdf",
+    "fileSize": 278800
+  },
+  {
+    "title": "Advanced Database Syllabus",
+    "type": "Document",
+    "courseCode": "SIS314",
+    "folderName": "Advanced Database Materials",
+    "fileUrl": "/materials/SIS314/syllabus.pdf",
+    "fileSize": 177400
+  },
+  {
+    "title": "Advanced Database Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS314",
+    "folderName": "Advanced Database Materials",
+    "fileUrl": "/materials/SIS314/lecture-notes.pdf",
+    "fileSize": 279800
+  },
+  {
+    "title": "Database Management Systems Syllabus",
+    "type": "Document",
+    "courseCode": "SIS315",
+    "folderName": "Database Management Systems Materials",
+    "fileUrl": "/materials/SIS315/syllabus.pdf",
+    "fileSize": 178400
+  },
+  {
+    "title": "Database Management Systems Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS315",
+    "folderName": "Database Management Systems Materials",
+    "fileUrl": "/materials/SIS315/lecture-notes.pdf",
+    "fileSize": 280800
+  },
+  {
+    "title": "Data Visualization Lab Syllabus",
+    "type": "Document",
+    "courseCode": "SLB442",
+    "folderName": "Data Visualization Lab Materials",
+    "fileUrl": "/materials/SLB442/syllabus.pdf",
+    "fileSize": 179400
+  },
+  {
+    "title": "Data Visualization Lab Lecture Notes",
+    "type": "Document",
+    "courseCode": "SLB442",
+    "folderName": "Data Visualization Lab Materials",
+    "fileUrl": "/materials/SLB442/lecture-notes.pdf",
+    "fileSize": 281800
+  },
+  {
+    "title": "Algorithms Analysis & Design Syllabus",
+    "type": "Document",
+    "courseCode": "SCS316",
+    "folderName": "Algorithms Analysis & Design Materials",
+    "fileUrl": "/materials/SCS316/syllabus.pdf",
+    "fileSize": 180400
+  },
+  {
+    "title": "Algorithms Analysis & Design Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS316",
+    "folderName": "Algorithms Analysis & Design Materials",
+    "fileUrl": "/materials/SCS316/lecture-notes.pdf",
+    "fileSize": 282800
+  },
+  {
+    "title": "Geographical Information Systems Syllabus",
+    "type": "Document",
+    "courseCode": "SIS333",
+    "folderName": "Geographical Information Systems Materials",
+    "fileUrl": "/materials/SIS333/syllabus.pdf",
+    "fileSize": 181400
+  },
+  {
+    "title": "Geographical Information Systems Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS333",
+    "folderName": "Geographical Information Systems Materials",
+    "fileUrl": "/materials/SIS333/lecture-notes.pdf",
+    "fileSize": 283800
+  },
+  {
+    "title": "Artificial Intelligence Syllabus",
+    "type": "Document",
+    "courseCode": "SCS361",
+    "folderName": "Artificial Intelligence Materials",
+    "fileUrl": "/materials/SCS361/syllabus.pdf",
+    "fileSize": 182400
+  },
+  {
+    "title": "Artificial Intelligence Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS361",
+    "folderName": "Artificial Intelligence Materials",
+    "fileUrl": "/materials/SCS361/lecture-notes.pdf",
+    "fileSize": 284800
+  },
+  {
+    "title": "Web Technology Syllabus",
+    "type": "Document",
+    "courseCode": "SIS335",
+    "folderName": "Web Technology Materials",
+    "fileUrl": "/materials/SIS335/syllabus.pdf",
+    "fileSize": 183400
+  },
+  {
+    "title": "Web Technology Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS335",
+    "folderName": "Web Technology Materials",
+    "fileUrl": "/materials/SIS335/lecture-notes.pdf",
+    "fileSize": 285800
+  },
+  {
+    "title": "Data Mining Syllabus",
+    "type": "Document",
+    "courseCode": "SIS317",
+    "folderName": "Data Mining Materials",
+    "fileUrl": "/materials/SIS317/syllabus.pdf",
+    "fileSize": 184400
+  },
+  {
+    "title": "Data Mining Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS317",
+    "folderName": "Data Mining Materials",
+    "fileUrl": "/materials/SIS317/lecture-notes.pdf",
+    "fileSize": 286800
+  },
+  {
+    "title": "Machine Learning Syllabus",
+    "type": "Document",
+    "courseCode": "SCS462",
+    "folderName": "Machine Learning Materials",
+    "fileUrl": "/materials/SCS462/syllabus.pdf",
+    "fileSize": 185400
+  },
+  {
+    "title": "Machine Learning Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS462",
+    "folderName": "Machine Learning Materials",
+    "fileUrl": "/materials/SCS462/lecture-notes.pdf",
+    "fileSize": 287800
+  },
+  {
+    "title": "Forecasting and Predictive Analytics Syllabus",
+    "type": "Document",
+    "courseCode": "SDS344",
+    "folderName": "Forecasting and Predictive Analytics Materials",
+    "fileUrl": "/materials/SDS344/syllabus.pdf",
+    "fileSize": 186400
+  },
+  {
+    "title": "Forecasting and Predictive Analytics Lecture Notes",
+    "type": "Document",
+    "courseCode": "SDS344",
+    "folderName": "Forecasting and Predictive Analytics Materials",
+    "fileUrl": "/materials/SDS344/lecture-notes.pdf",
+    "fileSize": 288800
+  },
+  {
+    "title": "Field Training for Data Science Syllabus",
+    "type": "Document",
+    "courseCode": "STR304",
+    "folderName": "Field Training for Data Science Materials",
+    "fileUrl": "/materials/STR304/syllabus.pdf",
+    "fileSize": 187400
+  },
+  {
+    "title": "Field Training for Data Science Lecture Notes",
+    "type": "Document",
+    "courseCode": "STR304",
+    "folderName": "Field Training for Data Science Materials",
+    "fileUrl": "/materials/STR304/lecture-notes.pdf",
+    "fileSize": 289800
+  },
+  {
+    "title": "Business Process Mining Syllabus",
+    "type": "Document",
+    "courseCode": "SIS436",
+    "folderName": "Business Process Mining Materials",
+    "fileUrl": "/materials/SIS436/syllabus.pdf",
+    "fileSize": 188400
+  },
+  {
+    "title": "Business Process Mining Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS436",
+    "folderName": "Business Process Mining Materials",
+    "fileUrl": "/materials/SIS436/lecture-notes.pdf",
+    "fileSize": 290800
+  },
+  {
+    "title": "Big Data Management and Modeling Syllabus",
+    "type": "Document",
+    "courseCode": "SIS421",
+    "folderName": "Big Data Management and Modeling Materials",
+    "fileUrl": "/materials/SIS421/syllabus.pdf",
+    "fileSize": 189400
+  },
+  {
+    "title": "Big Data Management and Modeling Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS421",
+    "folderName": "Big Data Management and Modeling Materials",
+    "fileUrl": "/materials/SIS421/lecture-notes.pdf",
+    "fileSize": 291800
+  },
+  {
+    "title": "Social Networks Analysis Syllabus",
+    "type": "Document",
+    "courseCode": "SIS422",
+    "folderName": "Social Networks Analysis Materials",
+    "fileUrl": "/materials/SIS422/syllabus.pdf",
+    "fileSize": 190400
+  },
+  {
+    "title": "Social Networks Analysis Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS422",
+    "folderName": "Social Networks Analysis Materials",
+    "fileUrl": "/materials/SIS422/lecture-notes.pdf",
+    "fileSize": 292800
+  },
+  {
+    "title": "Unstructured Data Syllabus",
+    "type": "Document",
+    "courseCode": "SIS423",
+    "folderName": "Unstructured Data Materials",
+    "fileUrl": "/materials/SIS423/syllabus.pdf",
+    "fileSize": 191400
+  },
+  {
+    "title": "Unstructured Data Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS423",
+    "folderName": "Unstructured Data Materials",
+    "fileUrl": "/materials/SIS423/lecture-notes.pdf",
+    "fileSize": 293800
+  },
+  {
+    "title": "Deep Learning Syllabus",
+    "type": "Document",
+    "courseCode": "SCS469",
+    "folderName": "Deep Learning Materials",
+    "fileUrl": "/materials/SCS469/syllabus.pdf",
+    "fileSize": 192400
+  },
+  {
+    "title": "Deep Learning Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS469",
+    "folderName": "Deep Learning Materials",
+    "fileUrl": "/materials/SCS469/lecture-notes.pdf",
+    "fileSize": 294800
+  },
+  {
+    "title": "Graduation Project Syllabus",
+    "type": "Document",
+    "courseCode": "SPD498",
+    "folderName": "Graduation Project Materials",
+    "fileUrl": "/materials/SPD498/syllabus.pdf",
+    "fileSize": 193400
+  },
+  {
+    "title": "Graduation Project Lecture Notes",
+    "type": "Document",
+    "courseCode": "SPD498",
+    "folderName": "Graduation Project Materials",
+    "fileUrl": "/materials/SPD498/lecture-notes.pdf",
+    "fileSize": 295800
+  },
+  {
+    "title": "Selected Topics in Data Engineering Syllabus",
+    "type": "Document",
+    "courseCode": "SIS418",
+    "folderName": "Selected Topics in Data Engineering Materials",
+    "fileUrl": "/materials/SIS418/syllabus.pdf",
+    "fileSize": 194400
+  },
+  {
+    "title": "Selected Topics in Data Engineering Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS418",
+    "folderName": "Selected Topics in Data Engineering Materials",
+    "fileUrl": "/materials/SIS418/lecture-notes.pdf",
+    "fileSize": 296800
+  },
+  {
+    "title": "Selected Topics in Information Systems Syllabus",
+    "type": "Document",
+    "courseCode": "SIS438",
+    "folderName": "Selected Topics in Information Systems Materials",
+    "fileUrl": "/materials/SIS438/syllabus.pdf",
+    "fileSize": 195400
+  },
+  {
+    "title": "Selected Topics in Information Systems Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS438",
+    "folderName": "Selected Topics in Information Systems Materials",
+    "fileUrl": "/materials/SIS438/lecture-notes.pdf",
+    "fileSize": 297800
+  },
+  {
+    "title": "Applied Data Science Syllabus",
+    "type": "Document",
+    "courseCode": "SIS425",
+    "folderName": "Applied Data Science Materials",
+    "fileUrl": "/materials/SIS425/syllabus.pdf",
+    "fileSize": 196400
+  },
+  {
+    "title": "Applied Data Science Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS425",
+    "folderName": "Applied Data Science Materials",
+    "fileUrl": "/materials/SIS425/lecture-notes.pdf",
+    "fileSize": 298800
+  },
+  {
+    "title": "Deep Learning Applications Lab Syllabus",
+    "type": "Document",
+    "courseCode": "SLB441",
+    "folderName": "Deep Learning Applications Lab Materials",
+    "fileUrl": "/materials/SLB441/syllabus.pdf",
+    "fileSize": 197400
+  },
+  {
+    "title": "Deep Learning Applications Lab Lecture Notes",
+    "type": "Document",
+    "courseCode": "SLB441",
+    "folderName": "Deep Learning Applications Lab Materials",
+    "fileUrl": "/materials/SLB441/lecture-notes.pdf",
+    "fileSize": 299800
+  },
+  {
+    "title": "Big Data and Data Science Lab Syllabus",
+    "type": "Document",
+    "courseCode": "SLB443",
+    "folderName": "Big Data and Data Science Lab Materials",
+    "fileUrl": "/materials/SLB443/syllabus.pdf",
+    "fileSize": 198400
+  },
+  {
+    "title": "Big Data and Data Science Lab Lecture Notes",
+    "type": "Document",
+    "courseCode": "SLB443",
+    "folderName": "Big Data and Data Science Lab Materials",
+    "fileUrl": "/materials/SLB443/lecture-notes.pdf",
+    "fileSize": 300800
+  },
+  {
+    "title": "Math-0 Syllabus",
+    "type": "Document",
+    "courseCode": "SMA001",
+    "folderName": "Math-0 Materials",
+    "fileUrl": "/materials/SMA001/syllabus.pdf",
+    "fileSize": 199400
+  },
+  {
+    "title": "Math-0 Lecture Notes",
+    "type": "Document",
+    "courseCode": "SMA001",
+    "folderName": "Math-0 Materials",
+    "fileUrl": "/materials/SMA001/lecture-notes.pdf",
+    "fileSize": 301800
+  },
+  {
+    "title": "Project Management Syllabus",
+    "type": "Document",
+    "courseCode": "SDS321",
+    "folderName": "Project Management Materials",
+    "fileUrl": "/materials/SDS321/syllabus.pdf",
+    "fileSize": 200400
+  },
+  {
+    "title": "Project Management Lecture Notes",
+    "type": "Document",
+    "courseCode": "SDS321",
+    "folderName": "Project Management Materials",
+    "fileUrl": "/materials/SDS321/lecture-notes.pdf",
+    "fileSize": 302800
+  },
+  {
+    "title": "Software Modeling Syllabus",
+    "type": "Document",
+    "courseCode": "SCS252",
+    "folderName": "Software Modeling Materials",
+    "fileUrl": "/materials/SCS252/syllabus.pdf",
+    "fileSize": 201400
+  },
+  {
+    "title": "Software Modeling Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS252",
+    "folderName": "Software Modeling Materials",
+    "fileUrl": "/materials/SCS252/lecture-notes.pdf",
+    "fileSize": 303800
+  },
+  {
+    "title": "Software Process & Quality Management Syllabus",
+    "type": "Document",
+    "courseCode": "SCS253",
+    "folderName": "Software Process & Quality Management Materials",
+    "fileUrl": "/materials/SCS253/syllabus.pdf",
+    "fileSize": 202400
+  },
+  {
+    "title": "Software Process & Quality Management Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS253",
+    "folderName": "Software Process & Quality Management Materials",
+    "fileUrl": "/materials/SCS253/lecture-notes.pdf",
+    "fileSize": 304800
+  },
+  {
+    "title": "Software Requirement Analysis Syllabus",
+    "type": "Document",
+    "courseCode": "SCS254",
+    "folderName": "Software Requirement Analysis Materials",
+    "fileUrl": "/materials/SCS254/syllabus.pdf",
+    "fileSize": 203400
+  },
+  {
+    "title": "Software Requirement Analysis Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS254",
+    "folderName": "Software Requirement Analysis Materials",
+    "fileUrl": "/materials/SCS254/lecture-notes.pdf",
+    "fileSize": 305800
+  },
+  {
+    "title": "Computer Architecture Syllabus",
+    "type": "Document",
+    "courseCode": "SCS331",
+    "folderName": "Computer Architecture Materials",
+    "fileUrl": "/materials/SCS331/syllabus.pdf",
+    "fileSize": 204400
+  },
+  {
+    "title": "Computer Architecture Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS331",
+    "folderName": "Computer Architecture Materials",
+    "fileUrl": "/materials/SCS331/lecture-notes.pdf",
+    "fileSize": 306800
+  },
+  {
+    "title": "Database Management Engineering Syllabus",
+    "type": "Document",
+    "courseCode": "SIS212",
+    "folderName": "Database Management Engineering Materials",
+    "fileUrl": "/materials/SIS212/syllabus.pdf",
+    "fileSize": 205400
+  },
+  {
+    "title": "Database Management Engineering Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIS212",
+    "folderName": "Database Management Engineering Materials",
+    "fileUrl": "/materials/SIS212/lecture-notes.pdf",
+    "fileSize": 307800
+  },
+  {
+    "title": "Algorithms Analysis & Design Syllabus",
+    "type": "Document",
+    "courseCode": "SCS315",
+    "folderName": "Algorithms Analysis & Design Materials",
+    "fileUrl": "/materials/SCS315/syllabus.pdf",
+    "fileSize": 206400
+  },
+  {
+    "title": "Algorithms Analysis & Design Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS315",
+    "folderName": "Algorithms Analysis & Design Materials",
+    "fileUrl": "/materials/SCS315/lecture-notes.pdf",
+    "fileSize": 308800
+  },
+  {
+    "title": "Software Design & Architecture Syllabus",
+    "type": "Document",
+    "courseCode": "SCS355",
+    "folderName": "Software Design & Architecture Materials",
+    "fileUrl": "/materials/SCS355/syllabus.pdf",
+    "fileSize": 207400
+  },
+  {
+    "title": "Software Design & Architecture Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS355",
+    "folderName": "Software Design & Architecture Materials",
+    "fileUrl": "/materials/SCS355/lecture-notes.pdf",
+    "fileSize": 309800
+  },
+  {
+    "title": "Software Engineering Tools Lab Syllabus",
+    "type": "Document",
+    "courseCode": "SLB321",
+    "folderName": "Software Engineering Tools Lab Materials",
+    "fileUrl": "/materials/SLB321/syllabus.pdf",
+    "fileSize": 208400
+  },
+  {
+    "title": "Software Engineering Tools Lab Lecture Notes",
+    "type": "Document",
+    "courseCode": "SLB321",
+    "folderName": "Software Engineering Tools Lab Materials",
+    "fileUrl": "/materials/SLB321/lecture-notes.pdf",
+    "fileSize": 310800
+  },
+  {
+    "title": "Concepts of Programming Languages Syllabus",
+    "type": "Document",
+    "courseCode": "SCS317",
+    "folderName": "Concepts of Programming Languages Materials",
+    "fileUrl": "/materials/SCS317/syllabus.pdf",
+    "fileSize": 209400
+  },
+  {
+    "title": "Concepts of Programming Languages Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS317",
+    "folderName": "Concepts of Programming Languages Materials",
+    "fileUrl": "/materials/SCS317/lecture-notes.pdf",
+    "fileSize": 311800
+  },
+  {
+    "title": "Human Computer Interaction Syllabus",
+    "type": "Document",
+    "courseCode": "SCS356",
+    "folderName": "Human Computer Interaction Materials",
+    "fileUrl": "/materials/SCS356/syllabus.pdf",
+    "fileSize": 210400
+  },
+  {
+    "title": "Human Computer Interaction Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS356",
+    "folderName": "Human Computer Interaction Materials",
+    "fileUrl": "/materials/SCS356/lecture-notes.pdf",
+    "fileSize": 312800
+  },
+  {
+    "title": "Software Maintenance & Evolution Syllabus",
+    "type": "Document",
+    "courseCode": "SCS358",
+    "folderName": "Software Maintenance & Evolution Materials",
+    "fileUrl": "/materials/SCS358/syllabus.pdf",
+    "fileSize": 211400
+  },
+  {
+    "title": "Software Maintenance & Evolution Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS358",
+    "folderName": "Software Maintenance & Evolution Materials",
+    "fileUrl": "/materials/SCS358/lecture-notes.pdf",
+    "fileSize": 313800
+  },
+  {
+    "title": "Software Testing Syllabus",
+    "type": "Document",
+    "courseCode": "SCS357",
+    "folderName": "Software Testing Materials",
+    "fileUrl": "/materials/SCS357/syllabus.pdf",
+    "fileSize": 212400
+  },
+  {
+    "title": "Software Testing Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS357",
+    "folderName": "Software Testing Materials",
+    "fileUrl": "/materials/SCS357/lecture-notes.pdf",
+    "fileSize": 314800
+  },
+  {
+    "title": "Advanced Software Engineering Tools Lab Syllabus",
+    "type": "Document",
+    "courseCode": "SLB322",
+    "folderName": "Advanced Software Engineering Tools Lab Materials",
+    "fileUrl": "/materials/SLB322/syllabus.pdf",
+    "fileSize": 213400
+  },
+  {
+    "title": "Advanced Software Engineering Tools Lab Lecture Notes",
+    "type": "Document",
+    "courseCode": "SLB322",
+    "folderName": "Advanced Software Engineering Tools Lab Materials",
+    "fileUrl": "/materials/SLB322/lecture-notes.pdf",
+    "fileSize": 315800
+  },
+  {
+    "title": "Field Training (Software Engineering) Syllabus",
+    "type": "Document",
+    "courseCode": "STR302",
+    "folderName": "Field Training (Software Engineering) Materials",
+    "fileUrl": "/materials/STR302/syllabus.pdf",
+    "fileSize": 214400
+  },
+  {
+    "title": "Field Training (Software Engineering) Lecture Notes",
+    "type": "Document",
+    "courseCode": "STR302",
+    "folderName": "Field Training (Software Engineering) Materials",
+    "fileUrl": "/materials/STR302/lecture-notes.pdf",
+    "fileSize": 316800
+  },
+  {
+    "title": "Soft Computing Syllabus",
+    "type": "Document",
+    "courseCode": "SCS465",
+    "folderName": "Soft Computing Materials",
+    "fileUrl": "/materials/SCS465/syllabus.pdf",
+    "fileSize": 215400
+  },
+  {
+    "title": "Soft Computing Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS465",
+    "folderName": "Soft Computing Materials",
+    "fileUrl": "/materials/SCS465/lecture-notes.pdf",
+    "fileSize": 317800
+  },
+  {
+    "title": "Selected Topics in SE-1 Syllabus",
+    "type": "Document",
+    "courseCode": "SCS491",
+    "folderName": "Selected Topics in SE-1 Materials",
+    "fileUrl": "/materials/SCS491/syllabus.pdf",
+    "fileSize": 216400
+  },
+  {
+    "title": "Selected Topics in SE-1 Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS491",
+    "folderName": "Selected Topics in SE-1 Materials",
+    "fileUrl": "/materials/SCS491/lecture-notes.pdf",
+    "fileSize": 318800
+  },
+  {
+    "title": "Cloud Computing Syllabus",
+    "type": "Document",
+    "courseCode": "SCS472",
+    "folderName": "Cloud Computing Materials",
+    "fileUrl": "/materials/SCS472/syllabus.pdf",
+    "fileSize": 217400
+  },
+  {
+    "title": "Cloud Computing Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS472",
+    "folderName": "Cloud Computing Materials",
+    "fileUrl": "/materials/SCS472/lecture-notes.pdf",
+    "fileSize": 319800
+  },
+  {
+    "title": "Web Engineering Syllabus",
+    "type": "Document",
+    "courseCode": "SCS481",
+    "folderName": "Web Engineering Materials",
+    "fileUrl": "/materials/SCS481/syllabus.pdf",
+    "fileSize": 218400
+  },
+  {
+    "title": "Web Engineering Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS481",
+    "folderName": "Web Engineering Materials",
+    "fileUrl": "/materials/SCS481/lecture-notes.pdf",
+    "fileSize": 320800
+  },
+  {
+    "title": "Selected Labs in Software Engineering Syllabus",
+    "type": "Document",
+    "courseCode": "SLB423",
+    "folderName": "Selected Labs in Software Engineering Materials",
+    "fileUrl": "/materials/SLB423/syllabus.pdf",
+    "fileSize": 219400
+  },
+  {
+    "title": "Selected Labs in Software Engineering Lecture Notes",
+    "type": "Document",
+    "courseCode": "SLB423",
+    "folderName": "Selected Labs in Software Engineering Materials",
+    "fileUrl": "/materials/SLB423/lecture-notes.pdf",
+    "fileSize": 321800
+  },
+  {
+    "title": "Graduation Project Syllabus",
+    "type": "Document",
+    "courseCode": "SPS498",
+    "folderName": "Graduation Project Materials",
+    "fileUrl": "/materials/SPS498/syllabus.pdf",
+    "fileSize": 220400
+  },
+  {
+    "title": "Graduation Project Lecture Notes",
+    "type": "Document",
+    "courseCode": "SPS498",
+    "folderName": "Graduation Project Materials",
+    "fileUrl": "/materials/SPS498/lecture-notes.pdf",
+    "fileSize": 322800
+  },
+  {
+    "title": "Theory of Computations Syllabus",
+    "type": "Document",
+    "courseCode": "SCS432",
+    "folderName": "Theory of Computations Materials",
+    "fileUrl": "/materials/SCS432/syllabus.pdf",
+    "fileSize": 221400
+  },
+  {
+    "title": "Theory of Computations Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS432",
+    "folderName": "Theory of Computations Materials",
+    "fileUrl": "/materials/SCS432/lecture-notes.pdf",
+    "fileSize": 323800
+  },
+  {
+    "title": "Software Security Syllabus",
+    "type": "Document",
+    "courseCode": "SCS359",
+    "folderName": "Software Security Materials",
+    "fileUrl": "/materials/SCS359/syllabus.pdf",
+    "fileSize": 222400
+  },
+  {
+    "title": "Software Security Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS359",
+    "folderName": "Software Security Materials",
+    "fileUrl": "/materials/SCS359/lecture-notes.pdf",
+    "fileSize": 324800
+  },
+  {
+    "title": "Distributed Systems Syllabus",
+    "type": "Document",
+    "courseCode": "SCS471",
+    "folderName": "Distributed Systems Materials",
+    "fileUrl": "/materials/SCS471/syllabus.pdf",
+    "fileSize": 223400
+  },
+  {
+    "title": "Distributed Systems Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS471",
+    "folderName": "Distributed Systems Materials",
+    "fileUrl": "/materials/SCS471/lecture-notes.pdf",
+    "fileSize": 325800
+  },
+  {
+    "title": "Selected Topics in SE-2 Syllabus",
+    "type": "Document",
+    "courseCode": "SCS492",
+    "folderName": "Selected Topics in SE-2 Materials",
+    "fileUrl": "/materials/SCS492/syllabus.pdf",
+    "fileSize": 224400
+  },
+  {
+    "title": "Selected Topics in SE-2 Lecture Notes",
+    "type": "Document",
+    "courseCode": "SCS492",
+    "folderName": "Selected Topics in SE-2 Materials",
+    "fileUrl": "/materials/SCS492/lecture-notes.pdf",
+    "fileSize": 326800
+  },
+  {
+    "title": "Data Communication Syllabus",
+    "type": "Document",
+    "courseCode": "SIT221",
+    "folderName": "Data Communication Materials",
+    "fileUrl": "/materials/SIT221/syllabus.pdf",
+    "fileSize": 225400
+  },
+  {
+    "title": "Data Communication Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT221",
+    "folderName": "Data Communication Materials",
+    "fileUrl": "/materials/SIT221/lecture-notes.pdf",
+    "fileSize": 327800
+  },
+  {
+    "title": "Cryptography Syllabus",
+    "type": "Document",
+    "courseCode": "SIT271",
+    "folderName": "Cryptography Materials",
+    "fileUrl": "/materials/SIT271/syllabus.pdf",
+    "fileSize": 226400
+  },
+  {
+    "title": "Cryptography Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT271",
+    "folderName": "Cryptography Materials",
+    "fileUrl": "/materials/SIT271/lecture-notes.pdf",
+    "fileSize": 328800
+  },
+  {
+    "title": "Computer Networks-1 Syllabus",
+    "type": "Document",
+    "courseCode": "SIT222",
+    "folderName": "Computer Networks-1 Materials",
+    "fileUrl": "/materials/SIT222/syllabus.pdf",
+    "fileSize": 227400
+  },
+  {
+    "title": "Computer Networks-1 Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT222",
+    "folderName": "Computer Networks-1 Materials",
+    "fileUrl": "/materials/SIT222/lecture-notes.pdf",
+    "fileSize": 329800
+  },
+  {
+    "title": "Computer Networks-2 Syllabus",
+    "type": "Document",
+    "courseCode": "SIT324",
+    "folderName": "Computer Networks-2 Materials",
+    "fileUrl": "/materials/SIT324/syllabus.pdf",
+    "fileSize": 228400
+  },
+  {
+    "title": "Computer Networks-2 Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT324",
+    "folderName": "Computer Networks-2 Materials",
+    "fileUrl": "/materials/SIT324/lecture-notes.pdf",
+    "fileSize": 330800
+  },
+  {
+    "title": "Networks and Web Programming Syllabus",
+    "type": "Document",
+    "courseCode": "SIT351",
+    "folderName": "Networks and Web Programming Materials",
+    "fileUrl": "/materials/SIT351/syllabus.pdf",
+    "fileSize": 229400
+  },
+  {
+    "title": "Networks and Web Programming Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT351",
+    "folderName": "Networks and Web Programming Materials",
+    "fileUrl": "/materials/SIT351/lecture-notes.pdf",
+    "fileSize": 331800
+  },
+  {
+    "title": "Computer Security and Privacy Syllabus",
+    "type": "Document",
+    "courseCode": "SIT345",
+    "folderName": "Computer Security and Privacy Materials",
+    "fileUrl": "/materials/SIT345/syllabus.pdf",
+    "fileSize": 230400
+  },
+  {
+    "title": "Computer Security and Privacy Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT345",
+    "folderName": "Computer Security and Privacy Materials",
+    "fileUrl": "/materials/SIT345/lecture-notes.pdf",
+    "fileSize": 332800
+  },
+  {
+    "title": "Selected Labs in Networks-1 Syllabus",
+    "type": "Document",
+    "courseCode": "SLB316",
+    "folderName": "Selected Labs in Networks-1 Materials",
+    "fileUrl": "/materials/SLB316/syllabus.pdf",
+    "fileSize": 231400
+  },
+  {
+    "title": "Selected Labs in Networks-1 Lecture Notes",
+    "type": "Document",
+    "courseCode": "SLB316",
+    "folderName": "Selected Labs in Networks-1 Materials",
+    "fileUrl": "/materials/SLB316/lecture-notes.pdf",
+    "fileSize": 333800
+  },
+  {
+    "title": "Computer Graphics Syllabus",
+    "type": "Document",
+    "courseCode": "SIT333",
+    "folderName": "Computer Graphics Materials",
+    "fileUrl": "/materials/SIT333/syllabus.pdf",
+    "fileSize": 232400
+  },
+  {
+    "title": "Computer Graphics Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT333",
+    "folderName": "Computer Graphics Materials",
+    "fileUrl": "/materials/SIT333/lecture-notes.pdf",
+    "fileSize": 334800
+  },
+  {
+    "title": "Signals Processing Syllabus",
+    "type": "Document",
+    "courseCode": "SIT237",
+    "folderName": "Signals Processing Materials",
+    "fileUrl": "/materials/SIT237/syllabus.pdf",
+    "fileSize": 233400
+  },
+  {
+    "title": "Signals Processing Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT237",
+    "folderName": "Signals Processing Materials",
+    "fileUrl": "/materials/SIT237/lecture-notes.pdf",
+    "fileSize": 335800
+  },
+  {
+    "title": "Fundamentals of Cyber Security Syllabus",
+    "type": "Document",
+    "courseCode": "SIT381",
+    "folderName": "Fundamentals of Cyber Security Materials",
+    "fileUrl": "/materials/SIT381/syllabus.pdf",
+    "fileSize": 234400
+  },
+  {
+    "title": "Fundamentals of Cyber Security Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT381",
+    "folderName": "Fundamentals of Cyber Security Materials",
+    "fileUrl": "/materials/SIT381/lecture-notes.pdf",
+    "fileSize": 336800
+  },
+  {
+    "title": "Field Training for Cyber Security Syllabus",
+    "type": "Document",
+    "courseCode": "STR305",
+    "folderName": "Field Training for Cyber Security Materials",
+    "fileUrl": "/materials/STR305/syllabus.pdf",
+    "fileSize": 235400
+  },
+  {
+    "title": "Field Training for Cyber Security Lecture Notes",
+    "type": "Document",
+    "courseCode": "STR305",
+    "folderName": "Field Training for Cyber Security Materials",
+    "fileUrl": "/materials/STR305/lecture-notes.pdf",
+    "fileSize": 337800
+  },
+  {
+    "title": "Digital Forensics Syllabus",
+    "type": "Document",
+    "courseCode": "SIT472",
+    "folderName": "Digital Forensics Materials",
+    "fileUrl": "/materials/SIT472/syllabus.pdf",
+    "fileSize": 236400
+  },
+  {
+    "title": "Digital Forensics Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT472",
+    "folderName": "Digital Forensics Materials",
+    "fileUrl": "/materials/SIT472/lecture-notes.pdf",
+    "fileSize": 338800
+  },
+  {
+    "title": "Wireless and Mobile Networks Syllabus",
+    "type": "Document",
+    "courseCode": "SIT325",
+    "folderName": "Wireless and Mobile Networks Materials",
+    "fileUrl": "/materials/SIT325/syllabus.pdf",
+    "fileSize": 237400
+  },
+  {
+    "title": "Wireless and Mobile Networks Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT325",
+    "folderName": "Wireless and Mobile Networks Materials",
+    "fileUrl": "/materials/SIT325/lecture-notes.pdf",
+    "fileSize": 339800
+  },
+  {
+    "title": "Networks and Mobile Security Syllabus",
+    "type": "Document",
+    "courseCode": "SIT446",
+    "folderName": "Networks and Mobile Security Materials",
+    "fileUrl": "/materials/SIT446/syllabus.pdf",
+    "fileSize": 238400
+  },
+  {
+    "title": "Networks and Mobile Security Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT446",
+    "folderName": "Networks and Mobile Security Materials",
+    "fileUrl": "/materials/SIT446/lecture-notes.pdf",
+    "fileSize": 340800
+  },
+  {
+    "title": "Ethical Hacking Syllabus",
+    "type": "Document",
+    "courseCode": "SLB451",
+    "folderName": "Ethical Hacking Materials",
+    "fileUrl": "/materials/SLB451/syllabus.pdf",
+    "fileSize": 239400
+  },
+  {
+    "title": "Ethical Hacking Lecture Notes",
+    "type": "Document",
+    "courseCode": "SLB451",
+    "folderName": "Ethical Hacking Materials",
+    "fileUrl": "/materials/SLB451/lecture-notes.pdf",
+    "fileSize": 341800
+  },
+  {
+    "title": "Graduation Project Syllabus",
+    "type": "Document",
+    "courseCode": "SPC498",
+    "folderName": "Graduation Project Materials",
+    "fileUrl": "/materials/SPC498/syllabus.pdf",
+    "fileSize": 240400
+  },
+  {
+    "title": "Graduation Project Lecture Notes",
+    "type": "Document",
+    "courseCode": "SPC498",
+    "folderName": "Graduation Project Materials",
+    "fileUrl": "/materials/SPC498/lecture-notes.pdf",
+    "fileSize": 342800
+  },
+  {
+    "title": "Networking Fundamentals Lab Syllabus",
+    "type": "Document",
+    "courseCode": "SLB311",
+    "folderName": "Networking Fundamentals Lab Materials",
+    "fileUrl": "/materials/SLB311/syllabus.pdf",
+    "fileSize": 241400
+  },
+  {
+    "title": "Networking Fundamentals Lab Lecture Notes",
+    "type": "Document",
+    "courseCode": "SLB311",
+    "folderName": "Networking Fundamentals Lab Materials",
+    "fileUrl": "/materials/SLB311/lecture-notes.pdf",
+    "fileSize": 343800
+  },
+  {
+    "title": "Advanced Cryptography Syllabus",
+    "type": "Document",
+    "courseCode": "SIT473",
+    "folderName": "Advanced Cryptography Materials",
+    "fileUrl": "/materials/SIT473/syllabus.pdf",
+    "fileSize": 242400
+  },
+  {
+    "title": "Advanced Cryptography Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT473",
+    "folderName": "Advanced Cryptography Materials",
+    "fileUrl": "/materials/SIT473/lecture-notes.pdf",
+    "fileSize": 344800
+  },
+  {
+    "title": "Secure Programming Syllabus",
+    "type": "Document",
+    "courseCode": "SIT455",
+    "folderName": "Secure Programming Materials",
+    "fileUrl": "/materials/SIT455/syllabus.pdf",
+    "fileSize": 243400
+  },
+  {
+    "title": "Secure Programming Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT455",
+    "folderName": "Secure Programming Materials",
+    "fileUrl": "/materials/SIT455/lecture-notes.pdf",
+    "fileSize": 345800
+  },
+  {
+    "title": "Optical Networks Syllabus",
+    "type": "Document",
+    "courseCode": "SIT326",
+    "folderName": "Optical Networks Materials",
+    "fileUrl": "/materials/SIT326/syllabus.pdf",
+    "fileSize": 244400
+  },
+  {
+    "title": "Optical Networks Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT326",
+    "folderName": "Optical Networks Materials",
+    "fileUrl": "/materials/SIT326/lecture-notes.pdf",
+    "fileSize": 346800
+  },
+  {
+    "title": "Cloud Computing & Network Virtualization Syllabus",
+    "type": "Document",
+    "courseCode": "SIT452",
+    "folderName": "Cloud Computing & Network Virtualization Materials",
+    "fileUrl": "/materials/SIT452/syllabus.pdf",
+    "fileSize": 245400
+  },
+  {
+    "title": "Cloud Computing & Network Virtualization Lecture Notes",
+    "type": "Document",
+    "courseCode": "SIT452",
+    "folderName": "Cloud Computing & Network Virtualization Materials",
+    "fileUrl": "/materials/SIT452/lecture-notes.pdf",
+    "fileSize": 347800
+  },
+  {
+    "title": "Selected Labs in Networks-2 Syllabus",
+    "type": "Document",
+    "courseCode": "SLB417",
+    "folderName": "Selected Labs in Networks-2 Materials",
+    "fileUrl": "/materials/SLB417/syllabus.pdf",
+    "fileSize": 246400
+  },
+  {
+    "title": "Selected Labs in Networks-2 Lecture Notes",
+    "type": "Document",
+    "courseCode": "SLB417",
+    "folderName": "Selected Labs in Networks-2 Materials",
+    "fileUrl": "/materials/SLB417/lecture-notes.pdf",
+    "fileSize": 348800
+  },
+  {
+    "title": "Computer Networks Defense Syllabus",
+    "type": "Document",
+    "courseCode": "SLB452",
+    "folderName": "Computer Networks Defense Materials",
+    "fileUrl": "/materials/SLB452/syllabus.pdf",
+    "fileSize": 247400
+  },
+  {
+    "title": "Computer Networks Defense Lecture Notes",
+    "type": "Document",
+    "courseCode": "SLB452",
+    "folderName": "Computer Networks Defense Materials",
+    "fileUrl": "/materials/SLB452/lecture-notes.pdf",
+    "fileSize": 349800
+  }
+]

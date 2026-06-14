@@ -1,0 +1,1170 @@
+[
+  {
+    "courseCode": "MA111",
+    "courseName": "Math-1",
+    "courseNameAr": "Math-1",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IT111",
+    "courseName": "Electronics",
+    "courseNameAr": "Electronics",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "CS111",
+    "courseName": "Fundamentals of Computer Science",
+    "courseNameAr": "Fundamentals of Computer Science",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "MA113",
+    "courseName": "Math-2",
+    "courseNameAr": "Math-2",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "ST121",
+    "courseName": "Probability and Statistics-1",
+    "courseNameAr": "Probability and Statistics-1",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "DS251",
+    "courseName": "Fundamentals of Management",
+    "courseNameAr": "Fundamentals of Management",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "CS112",
+    "courseName": "Structured Programming",
+    "courseNameAr": "Structured Programming",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IT221",
+    "courseName": "Computer Networks Technology",
+    "courseNameAr": "Computer Networks Technology",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "CS213",
+    "courseName": "Object Oriented Programming",
+    "courseNameAr": "Object Oriented Programming",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "DS211",
+    "courseName": "Intro to Operations Research & Decision Support",
+    "courseNameAr": "Intro to Operations Research & Decision Support",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "ST222",
+    "courseName": "Probability and Statistics-2",
+    "courseNameAr": "Probability and Statistics-2",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "MA112",
+    "courseName": "Discrete Mathematics",
+    "courseNameAr": "Discrete Mathematics",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "HU111",
+    "courseName": "Technical Report Writing",
+    "courseNameAr": "Technical Report Writing",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "HU118",
+    "courseName": "Selected Topics in Humanities",
+    "courseNameAr": "Selected Topics in Humanities",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "HU113",
+    "courseName": "Creative Thinking and Communication Skills",
+    "courseNameAr": "Creative Thinking and Communication Skills",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "HU121",
+    "courseName": "Fundamentals of Economics",
+    "courseNameAr": "Fundamentals of Economics",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "HU117",
+    "courseName": "Social Issues",
+    "courseNameAr": "Social Issues",
+    "creditHours": 0,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "HU124",
+    "courseName": "Critical Thinking",
+    "courseNameAr": "Critical Thinking",
+    "creditHours": 0,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "CS214",
+    "courseName": "Data Structures",
+    "courseNameAr": "Data Structures",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "CS251",
+    "courseName": "Intro to Software Engineering",
+    "courseNameAr": "Intro to Software Engineering",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS211",
+    "courseName": "Introduction to Database Systems",
+    "courseNameAr": "Introduction to Database Systems",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS231",
+    "courseName": "Web Technology",
+    "courseNameAr": "Web Technology",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "MA214",
+    "courseName": "Math-3",
+    "courseNameAr": "Math-3",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "HU112",
+    "courseName": "Ethics and Professionalism",
+    "courseNameAr": "Ethics and Professionalism",
+    "creditHours": 1,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "HU225",
+    "courseName": "Entrepreneurship",
+    "courseNameAr": "Entrepreneurship",
+    "creditHours": 0,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "CS352",
+    "courseName": "Advanced Software Engineering",
+    "courseNameAr": "Advanced Software Engineering",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS332",
+    "courseName": "Analysis and Design of Information Systems",
+    "courseNameAr": "Analysis and Design of Information Systems",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "CS321",
+    "courseName": "Algorithms Analysis and Design",
+    "courseNameAr": "Algorithms Analysis and Design",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "CS341",
+    "courseName": "Operating Systems",
+    "courseNameAr": "Operating Systems",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS312",
+    "courseName": "Database Management Systems",
+    "courseNameAr": "Database Management Systems",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS321",
+    "courseName": "File Management and Processing",
+    "courseNameAr": "File Management and Processing",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS322",
+    "courseName": "Information Retrieval",
+    "courseNameAr": "Information Retrieval",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "CS361",
+    "courseName": "Artificial Intelligence",
+    "courseNameAr": "Artificial Intelligence",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS313",
+    "courseName": "Data Warehousing",
+    "courseNameAr": "Data Warehousing",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS341",
+    "courseName": "Business Process Management",
+    "courseNameAr": "Business Process Management",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS333",
+    "courseName": "Web-based Information Systems Development",
+    "courseNameAr": "Web-based Information Systems Development",
+    "creditHours": 4,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IT212",
+    "courseName": "Logic Design",
+    "courseNameAr": "Logic Design",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "TR301",
+    "courseName": "Field Training",
+    "courseNameAr": "Field Training",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS498",
+    "courseName": "Graduation Project",
+    "courseNameAr": "Graduation Project",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS437",
+    "courseName": "IS Development Methodologies",
+    "courseNameAr": "IS Development Methodologies",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "DS342",
+    "courseName": "Data Analytics",
+    "courseNameAr": "Data Analytics",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "CS462",
+    "courseName": "Machine Learning",
+    "courseNameAr": "Machine Learning",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS434",
+    "courseName": "Service-Oriented Architecture",
+    "courseNameAr": "Service-Oriented Architecture",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS442",
+    "courseName": "Geographical Information Systems",
+    "courseNameAr": "Geographical Information Systems",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS414",
+    "courseName": "Managing and Modeling Big Data",
+    "courseNameAr": "Managing and Modeling Big Data",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS422",
+    "courseName": "Data Mining",
+    "courseNameAr": "Data Mining",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS424",
+    "courseName": "Selected Topics in Data Engineering",
+    "courseNameAr": "Selected Topics in Data Engineering",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS448",
+    "courseName": "E-Business",
+    "courseNameAr": "E-Business",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "IS495",
+    "courseName": "Selected Topics in Information Systems-1",
+    "courseNameAr": "Selected Topics in Information Systems-1",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "DS456",
+    "courseName": "Project Management",
+    "courseNameAr": "Project Management",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Information Systems"
+  },
+  {
+    "courseCode": "SCS111",
+    "courseName": "Fundamentals of Computers",
+    "courseNameAr": "Fundamentals of Computers",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIT111",
+    "courseName": "Electronics-1",
+    "courseNameAr": "Electronics-1",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SMA111",
+    "courseName": "Math-1",
+    "courseNameAr": "Math-1",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SHU111",
+    "courseName": "Technical Report Writing",
+    "courseNameAr": "Technical Report Writing",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SMA112",
+    "courseName": "Discrete Mathematics",
+    "courseNameAr": "Discrete Mathematics",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SHU121",
+    "courseName": "Human Rights",
+    "courseNameAr": "Human Rights",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SHU233",
+    "courseName": "Fundamentals of Management",
+    "courseNameAr": "Fundamentals of Management",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SHU124",
+    "courseName": "Critical Thinking",
+    "courseNameAr": "Critical Thinking",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SCS112",
+    "courseName": "Structured Programming",
+    "courseNameAr": "Structured Programming",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIT213",
+    "courseName": "Logic Design",
+    "courseNameAr": "Logic Design",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SMA113",
+    "courseName": "Math-2",
+    "courseNameAr": "Math-2",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SST121",
+    "courseName": "Probability and Statistics-1",
+    "courseNameAr": "Probability and Statistics-1",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SHU234",
+    "courseName": "Entrepreneurship",
+    "courseNameAr": "Entrepreneurship",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SCS213",
+    "courseName": "Object Oriented Programming",
+    "courseNameAr": "Object Oriented Programming",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIT223",
+    "courseName": "Fundamentals of Computer Networks",
+    "courseNameAr": "Fundamentals of Computer Networks",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SST222",
+    "courseName": "Probability and Statistics-2",
+    "courseNameAr": "Probability and Statistics-2",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SMA214",
+    "courseName": "Math-3",
+    "courseNameAr": "Math-3",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SCS251",
+    "courseName": "Fundamentals of Software Engineering",
+    "courseNameAr": "Fundamentals of Software Engineering",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SCS214",
+    "courseName": "Data Structures",
+    "courseNameAr": "Data Structures",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS211",
+    "courseName": "Database Systems",
+    "courseNameAr": "Database Systems",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS213",
+    "courseName": "Introduction to Data Science",
+    "courseNameAr": "Introduction to Data Science",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SHU132",
+    "courseName": "Marketing & Sales",
+    "courseNameAr": "Marketing & Sales",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS334",
+    "courseName": "Business Process Management",
+    "courseNameAr": "Business Process Management",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SDS212",
+    "courseName": "Mathematical Optimization",
+    "courseNameAr": "Mathematical Optimization",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SCS241",
+    "courseName": "Operating Systems",
+    "courseNameAr": "Operating Systems",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS314",
+    "courseName": "Advanced Database",
+    "courseNameAr": "Advanced Database",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS315",
+    "courseName": "Database Management Systems",
+    "courseNameAr": "Database Management Systems",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SLB442",
+    "courseName": "Data Visualization Lab",
+    "courseNameAr": "Data Visualization Lab",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SCS316",
+    "courseName": "Algorithms Analysis & Design",
+    "courseNameAr": "Algorithms Analysis & Design",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS333",
+    "courseName": "Geographical Information Systems",
+    "courseNameAr": "Geographical Information Systems",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SCS361",
+    "courseName": "Artificial Intelligence",
+    "courseNameAr": "Artificial Intelligence",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS335",
+    "courseName": "Web Technology",
+    "courseNameAr": "Web Technology",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS317",
+    "courseName": "Data Mining",
+    "courseNameAr": "Data Mining",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SCS462",
+    "courseName": "Machine Learning",
+    "courseNameAr": "Machine Learning",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SDS344",
+    "courseName": "Forecasting and Predictive Analytics",
+    "courseNameAr": "Forecasting and Predictive Analytics",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "STR304",
+    "courseName": "Field Training for Data Science",
+    "courseNameAr": "Field Training for Data Science",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS436",
+    "courseName": "Business Process Mining",
+    "courseNameAr": "Business Process Mining",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS421",
+    "courseName": "Big Data Management and Modeling",
+    "courseNameAr": "Big Data Management and Modeling",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS422",
+    "courseName": "Social Networks Analysis",
+    "courseNameAr": "Social Networks Analysis",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS423",
+    "courseName": "Unstructured Data",
+    "courseNameAr": "Unstructured Data",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SCS469",
+    "courseName": "Deep Learning",
+    "courseNameAr": "Deep Learning",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SPD498",
+    "courseName": "Graduation Project",
+    "courseNameAr": "Graduation Project",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS418",
+    "courseName": "Selected Topics in Data Engineering",
+    "courseNameAr": "Selected Topics in Data Engineering",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS438",
+    "courseName": "Selected Topics in Information Systems",
+    "courseNameAr": "Selected Topics in Information Systems",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SIS425",
+    "courseName": "Applied Data Science",
+    "courseNameAr": "Applied Data Science",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SLB441",
+    "courseName": "Deep Learning Applications Lab",
+    "courseNameAr": "Deep Learning Applications Lab",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SLB443",
+    "courseName": "Big Data and Data Science Lab",
+    "courseNameAr": "Big Data and Data Science Lab",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SMA001",
+    "courseName": "Math-0",
+    "courseNameAr": "Math-0",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Data Science"
+  },
+  {
+    "courseCode": "SDS321",
+    "courseName": "Project Management",
+    "courseNameAr": "Project Management",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS252",
+    "courseName": "Software Modeling",
+    "courseNameAr": "Software Modeling",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS253",
+    "courseName": "Software Process & Quality Management",
+    "courseNameAr": "Software Process & Quality Management",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS254",
+    "courseName": "Software Requirement Analysis",
+    "courseNameAr": "Software Requirement Analysis",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS331",
+    "courseName": "Computer Architecture",
+    "courseNameAr": "Computer Architecture",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SIS212",
+    "courseName": "Database Management Engineering",
+    "courseNameAr": "Database Management Engineering",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS315",
+    "courseName": "Algorithms Analysis & Design",
+    "courseNameAr": "Algorithms Analysis & Design",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS355",
+    "courseName": "Software Design & Architecture",
+    "courseNameAr": "Software Design & Architecture",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SLB321",
+    "courseName": "Software Engineering Tools Lab",
+    "courseNameAr": "Software Engineering Tools Lab",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS317",
+    "courseName": "Concepts of Programming Languages",
+    "courseNameAr": "Concepts of Programming Languages",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS356",
+    "courseName": "Human Computer Interaction",
+    "courseNameAr": "Human Computer Interaction",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS358",
+    "courseName": "Software Maintenance & Evolution",
+    "courseNameAr": "Software Maintenance & Evolution",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS357",
+    "courseName": "Software Testing",
+    "courseNameAr": "Software Testing",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SLB322",
+    "courseName": "Advanced Software Engineering Tools Lab",
+    "courseNameAr": "Advanced Software Engineering Tools Lab",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "STR302",
+    "courseName": "Field Training (Software Engineering)",
+    "courseNameAr": "Field Training (Software Engineering)",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS465",
+    "courseName": "Soft Computing",
+    "courseNameAr": "Soft Computing",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS491",
+    "courseName": "Selected Topics in SE-1",
+    "courseNameAr": "Selected Topics in SE-1",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS472",
+    "courseName": "Cloud Computing",
+    "courseNameAr": "Cloud Computing",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS481",
+    "courseName": "Web Engineering",
+    "courseNameAr": "Web Engineering",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SLB423",
+    "courseName": "Selected Labs in Software Engineering",
+    "courseNameAr": "Selected Labs in Software Engineering",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SPS498",
+    "courseName": "Graduation Project",
+    "courseNameAr": "Graduation Project",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS432",
+    "courseName": "Theory of Computations",
+    "courseNameAr": "Theory of Computations",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS359",
+    "courseName": "Software Security",
+    "courseNameAr": "Software Security",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS471",
+    "courseName": "Distributed Systems",
+    "courseNameAr": "Distributed Systems",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SCS492",
+    "courseName": "Selected Topics in SE-2",
+    "courseNameAr": "Selected Topics in SE-2",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "courseCode": "SIT221",
+    "courseName": "Data Communication",
+    "courseNameAr": "Data Communication",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT271",
+    "courseName": "Cryptography",
+    "courseNameAr": "Cryptography",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT222",
+    "courseName": "Computer Networks-1",
+    "courseNameAr": "Computer Networks-1",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT324",
+    "courseName": "Computer Networks-2",
+    "courseNameAr": "Computer Networks-2",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT351",
+    "courseName": "Networks and Web Programming",
+    "courseNameAr": "Networks and Web Programming",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT345",
+    "courseName": "Computer Security and Privacy",
+    "courseNameAr": "Computer Security and Privacy",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SLB316",
+    "courseName": "Selected Labs in Networks-1",
+    "courseNameAr": "Selected Labs in Networks-1",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT333",
+    "courseName": "Computer Graphics",
+    "courseNameAr": "Computer Graphics",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT237",
+    "courseName": "Signals Processing",
+    "courseNameAr": "Signals Processing",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT381",
+    "courseName": "Fundamentals of Cyber Security",
+    "courseNameAr": "Fundamentals of Cyber Security",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "STR305",
+    "courseName": "Field Training for Cyber Security",
+    "courseNameAr": "Field Training for Cyber Security",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT472",
+    "courseName": "Digital Forensics",
+    "courseNameAr": "Digital Forensics",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT325",
+    "courseName": "Wireless and Mobile Networks",
+    "courseNameAr": "Wireless and Mobile Networks",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT446",
+    "courseName": "Networks and Mobile Security",
+    "courseNameAr": "Networks and Mobile Security",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SLB451",
+    "courseName": "Ethical Hacking",
+    "courseNameAr": "Ethical Hacking",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SPC498",
+    "courseName": "Graduation Project",
+    "courseNameAr": "Graduation Project",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SLB311",
+    "courseName": "Networking Fundamentals Lab",
+    "courseNameAr": "Networking Fundamentals Lab",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT473",
+    "courseName": "Advanced Cryptography",
+    "courseNameAr": "Advanced Cryptography",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT455",
+    "courseName": "Secure Programming",
+    "courseNameAr": "Secure Programming",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT326",
+    "courseName": "Optical Networks",
+    "courseNameAr": "Optical Networks",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SIT452",
+    "courseName": "Cloud Computing & Network Virtualization",
+    "courseNameAr": "Cloud Computing & Network Virtualization",
+    "creditHours": 3,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SLB417",
+    "courseName": "Selected Labs in Networks-2",
+    "courseNameAr": "Selected Labs in Networks-2",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "courseCode": "SLB452",
+    "courseName": "Computer Networks Defense",
+    "courseNameAr": "Computer Networks Defense",
+    "creditHours": 2,
+    "status": "Active",
+    "departmentName": "Networks and Cyber Security"
+  }
+]

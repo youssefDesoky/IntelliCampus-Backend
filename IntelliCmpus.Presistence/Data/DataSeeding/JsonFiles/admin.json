@@ -1,0 +1,15 @@
+[
+  {
+    "nationalId": "00000000000000",
+    "fullName": "Super Administrator",
+    "fullNameAr": "المشرف العام",
+    "email": "superadmin@intellicampus.com",
+    "phoneNumber": "01000000000",
+    "address": "Cairo, Egypt",
+    "nationality": "Egyptian",
+    "password": "SuperAdmin@123",
+    "roles": [
+      "SuperAdmin"
+    ]
+  }
+]
