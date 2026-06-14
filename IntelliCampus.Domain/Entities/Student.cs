@@ -23,4 +23,5 @@ public class Student : User
     public ICollection<StudentDepartment> StudentDepartments { get; set; } = [];
     public ICollection<Grade> Grades { get; set; } = [];
     public ICollection<StudentCourse> StudentCourses { get; set; } = [];
+    public ICollection<ExamSeatAssignment> ExamSeatAssignments { get; set; } = [];
 }

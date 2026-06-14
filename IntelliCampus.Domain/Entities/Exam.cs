@@ -22,4 +22,5 @@ public class Exam
     public Course Course { get; set; } = null!;
     public Room? Room { get; set; }
     public ICollection<ExamSchedule> ExamSchedules { get; set; } = new List<ExamSchedule>();
+    public ICollection<ExamSeatAssignment> ExamSeatAssignments { get; set; } = new List<ExamSeatAssignment>();
 }
