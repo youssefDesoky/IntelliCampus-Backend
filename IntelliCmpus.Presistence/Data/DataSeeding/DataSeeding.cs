@@ -767,6 +767,7 @@ public class DataSeed : IDataSeed
             {
                 Title = dto.Title,
                 Description = dto.Description,
+                StartDate = ParseDateOffset(dto.StartDateOffset),
                 DueDate = ParseDateOffset(dto.DueDateOffset),
                 DurationMinutes = dto.DurationMinutes,
                 MaxGrade = dto.MaxGrade,
@@ -1053,6 +1054,7 @@ public class DataSeed : IDataSeed
     {
         public string Title { get; init; } = "";
         public string? Description { get; init; }
+        public string StartDateOffset { get; init; } = "";
         public string DueDateOffset { get; init; } = "";
         public int DurationMinutes { get; init; }
         public decimal MaxGrade { get; init; }
