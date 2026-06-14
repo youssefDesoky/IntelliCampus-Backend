@@ -18,4 +18,6 @@ public class CreateInstructorDto
     public string? DepartmentName { get; set; }
     public string? HireDate { get; set; }
     public int? FacultyId { get; set; }
+    public string? Status { get; set; }
+    public int? OfficeHoursRoomId { get; set; }
 }

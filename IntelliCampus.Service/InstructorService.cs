@@ -76,7 +76,9 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             Specialization = dto.Specialization,
             DepartmentId = departmentId,
             HireDate = hireDate,
-            FacultyId = facultyId
+            FacultyId = facultyId,
+            Status = ParseStatus(dto.Status),
+            OfficeHoursRoomId = dto.OfficeHoursRoomId
         };
 
         Instructors.Add(instructor);
@@ -116,6 +118,8 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         if (dto.InstructorRole is not null) instructor.InstructorRole = ParseInstructorRole(dto.InstructorRole);
         if (dto.Specialization is not null) instructor.Specialization = dto.Specialization;
         if (dto.FacultyId.HasValue) instructor.FacultyId = dto.FacultyId;
+        if (dto.Status is not null) instructor.Status = ParseStatus(dto.Status);
+        if (dto.OfficeHoursRoomId.HasValue) instructor.OfficeHoursRoomId = dto.OfficeHoursRoomId;
 
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentName);
         if (departmentId.HasValue) instructor.DepartmentId = departmentId;
@@ -123,7 +127,6 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         var hireDate = ParseDate(dto.HireDate);
         if (hireDate.HasValue) instructor.HireDate = hireDate.Value;
 
-        Instructors.Update(instructor);
         await _unitOfWork.SaveChangesAsync();
 
         if (instructor.DepartmentId.HasValue)
@@ -148,6 +151,19 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             "assistantlecturer" or "assistant_lecturer" or "مدرس مساعد" => InstructorRole.AssistantLecturer,
             "associateprofessor" or "associate_professor" or "أستاذ مساعد" => InstructorRole.AssociateProfessor,
             "professor" or "أستاذ" => InstructorRole.Professor,
+            _ => null
+        };
+    }
+
+    private static InstructorStatus? ParseStatus(string? status)
+    {
+        if (string.IsNullOrWhiteSpace(status))
+            return null;
+
+        return status.ToLowerInvariant() switch
+        {
+            "employed" or "متعين" => InstructorStatus.Employed,
+            "loan" or "اعارة" or "إعارة" => InstructorStatus.Loan,
             _ => null
         };
     }
@@ -237,6 +253,9 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             HireDate = instructor.HireDate,
             FacultyId = instructor.FacultyId,
             FacultyName = instructor.Faculty?.FacultyName,
+            Status = instructor.Status?.ToString(),
+            OfficeHoursRoomId = instructor.OfficeHoursRoomId,
+            OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName,
             Roles = instructor.Roles.Select(r => r.ToString()).ToList()
         };
     }
