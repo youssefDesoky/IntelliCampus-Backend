@@ -29,6 +29,8 @@ public class ExamService : IExamService
         => _unitOfWork.GetRepository<Reminder, int>();
     private IGenericRepository<Class, int> ClassesRepo
         => _unitOfWork.GetRepository<Class, int>();
+    private IGenericRepository<StudentCourse, int> StudentCourseRepo
+        => _unitOfWork.GetRepository<StudentCourse, int>();
 
     public async Task<ExamDto?> GetByIdAsync(int examId)
     {
@@ -53,6 +55,10 @@ public class ExamService : IExamService
 
     public async Task<ExamDto> CreateAsync(CreateExamDto dto)
     {
+        var conflicts = await GetConflictsAsync(dto.CourseId, dto.Date, dto.Time, dto.Time.Add(TimeSpan.FromMinutes(dto.DurationMinutes)));
+        if (conflicts.Count > 0)
+            throw new InvalidOperationException($"Schedule conflict detected: {conflicts.Count} student(s) have overlapping exams.");
+
         var exam = new Exam
         {
             Title = dto.Title,
@@ -85,6 +91,19 @@ public class ExamService : IExamService
 
         if (exam is null)
             return null;
+
+        var effectiveCourseId = dto.CourseId ?? exam.CourseId;
+        var effectiveDate = dto.Date ?? exam.Date;
+        var effectiveTime = dto.Time ?? exam.Time;
+        var effectiveDuration = dto.DurationMinutes ?? exam.DurationMinutes;
+
+        if (dto.Date.HasValue || dto.Time.HasValue || dto.DurationMinutes.HasValue || dto.CourseId.HasValue)
+        {
+            var endTime = effectiveTime.Add(TimeSpan.FromMinutes(effectiveDuration));
+            var conflicts = await GetConflictsAsync(effectiveCourseId, effectiveDate, effectiveTime, endTime, excludeExamId: examId);
+            if (conflicts.Count > 0)
+                throw new InvalidOperationException($"Schedule conflict detected: {conflicts.Count} student(s) have overlapping exams.");
+        }
 
         if (dto.Title is not null)
             exam.Title = dto.Title;
@@ -144,6 +163,46 @@ public class ExamService : IExamService
         await _unitOfWork.SaveChangesAsync();
 
         return true;
+    }
+
+    private async Task<List<int>> GetConflictsAsync(int courseId, DateTime date, TimeSpan startTime, TimeSpan endTime, int? excludeExamId = null)
+    {
+        var allStudentCourses = await StudentCourseRepo.GetAllAsync();
+        var enrolledStudentIds = allStudentCourses
+            .Where(sc => sc.CourseId == courseId)
+            .Select(sc => sc.StudentId)
+            .ToHashSet();
+
+        if (enrolledStudentIds.Count == 0)
+            return [];
+
+        var otherEnrolledCourseIds = allStudentCourses
+            .Where(sc => enrolledStudentIds.Contains(sc.StudentId) && sc.CourseId != courseId)
+            .Select(sc => sc.CourseId)
+            .ToHashSet();
+
+        var allExams = await Exams.GetAllAsync();
+        var overlappingExams = allExams
+            .Where(ex =>
+                ex.Date.Date == date.Date &&
+                ex.Time < endTime &&
+                ex.Time.Add(TimeSpan.FromMinutes(ex.DurationMinutes)) > startTime &&
+                (!excludeExamId.HasValue || ex.ExamId != excludeExamId.Value) &&
+                otherEnrolledCourseIds.Contains(ex.CourseId))
+            .ToList();
+
+        if (overlappingExams.Count == 0)
+            return [];
+
+        var conflictingStudentIds = allStudentCourses
+            .Where(sc =>
+                overlappingExams.Select(e => e.CourseId).Contains(sc.CourseId) &&
+                enrolledStudentIds.Contains(sc.StudentId))
+            .Select(sc => sc.StudentId)
+            .Distinct()
+            .ToList();
+
+        return conflictingStudentIds;
     }
 
     private async Task SendExamNotificationsAsync(Exam exam)
