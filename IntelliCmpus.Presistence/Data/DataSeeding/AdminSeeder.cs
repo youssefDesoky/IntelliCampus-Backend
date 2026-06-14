@@ -14,16 +14,27 @@ public static class AdminSeeder
         if (await context.Users.AnyAsync())
             return;
 
+        // ???????????????????? Faculty ????????????????????
+        var faculty = new Faculty
+        {
+            FacultyName = "Engineering",
+            FacultyNameAr = "╪º┘ä┘ç┘å╪»╪│╪⌐",
+            Description = "Faculty of Engineering"
+        };
+        context.Faculties.Add(faculty);
+        await context.SaveChangesAsync();
+        faculty = await context.Faculties.FirstAsync();
+
         // ???????????????????? Departments ????????????????????
         var departments = new List<Department>
         {
-            new() { DepartmentName = "Computer Science", DepartmentNameAr = "╪╣┘ä┘ê┘à ╪º┘ä╪¡╪º╪│╪¿", Description = "Computer Science and Engineering Department" },
-            new() { DepartmentName = "Information Systems", DepartmentNameAr = "┘å╪╕┘à ╪º┘ä┘à╪╣┘ä┘ê┘à╪º╪¬", Description = "Information Systems Department" },
-            new() { DepartmentName = "Artificial Intelligence", DepartmentNameAr = "╪º┘ä╪░┘â╪º╪í ╪º┘ä╪º╪╡╪╖┘å╪º╪╣┘è", Description = "Artificial Intelligence Department" },
-            new() { DepartmentName = "Information Technology", DepartmentNameAr = "╪¬┘â┘å┘ê┘ä┘ê╪¼┘è╪º ╪º┘ä┘à╪╣┘ä┘ê┘à╪º╪¬", Description = "Information Technology Department" },
-            new() { DepartmentName = "Data Science", DepartmentNameAr = "╪╣┘ä┘ê┘à ╪º┘ä╪¿┘è╪º┘å╪º╪¬", Description = "Data Science Department" },
-            new() { DepartmentName = "Electrical Engineering", DepartmentNameAr = "╪º┘ä┘ç┘å╪»╪│╪⌐ ╪º┘ä┘â┘ç╪▒╪¿╪º╪ª┘è╪⌐", Description = "Electrical Engineering Department" },
-            new() { DepartmentName = "Mechanical Engineering", DepartmentNameAr = "╪º┘ä┘ç┘å╪»╪│╪⌐ ╪º┘ä┘à┘è┘â╪º┘å┘è┘â┘è╪⌐", Description = "Mechanical Engineering Department" }
+            new() { DepartmentName = "Computer Science", DepartmentNameAr = "╪╣┘ä┘ê┘à ╪º┘ä╪¡╪º╪│╪¿", Description = "Computer Science and Engineering Department", FacultyId = faculty.FacultyId },
+            new() { DepartmentName = "Information Systems", DepartmentNameAr = "┘å╪╕┘à ╪º┘ä┘à╪╣┘ä┘ê┘à╪º╪¬", Description = "Information Systems Department", FacultyId = faculty.FacultyId },
+            new() { DepartmentName = "Artificial Intelligence", DepartmentNameAr = "╪º┘ä╪░┘â╪º╪í ╪º┘ä╪º╪╡╪╖┘å╪º╪╣┘è", Description = "Artificial Intelligence Department", FacultyId = faculty.FacultyId },
+            new() { DepartmentName = "Information Technology", DepartmentNameAr = "╪¬┘â┘å┘ê┘ä┘ê╪¼┘è╪º ╪º┘ä┘à╪╣┘ä┘ê┘à╪º╪¬", Description = "Information Technology Department", FacultyId = faculty.FacultyId },
+            new() { DepartmentName = "Data Science", DepartmentNameAr = "╪╣┘ä┘ê┘à ╪º┘ä╪¿┘è╪º┘å╪º╪¬", Description = "Data Science Department", FacultyId = faculty.FacultyId },
+            new() { DepartmentName = "Electrical Engineering", DepartmentNameAr = "╪º┘ä┘ç┘å╪»╪│╪⌐ ╪º┘ä┘â┘ç╪▒╪¿╪º╪ª┘è╪⌐", Description = "Electrical Engineering Department", FacultyId = faculty.FacultyId },
+            new() { DepartmentName = "Mechanical Engineering", DepartmentNameAr = "╪º┘ä┘ç┘å╪»╪│╪⌐ ╪º┘ä┘à┘è┘â╪º┘å┘è┘â┘è╪⌐", Description = "Mechanical Engineering Department", FacultyId = faculty.FacultyId }
         };
         foreach (var dept in departments)
         {
@@ -36,6 +47,7 @@ public static class AdminSeeder
             {
                 existing.Description = dept.Description;
                 existing.DepartmentNameAr = dept.DepartmentNameAr;
+                existing.FacultyId = dept.FacultyId;
             }
         }
         await context.SaveChangesAsync();
@@ -54,7 +66,8 @@ public static class AdminSeeder
             Address = "Cairo, Egypt",
             Nationality = "Egyptian",
             Password = passwordService.HashPassword("SuperAdmin@123"),
-            Role = UserRole.SuperAdmin,
+            Roles = [UserRole.SuperAdmin],
+            FacultyId = faculty.FacultyId,
             HireDate = DateTime.UtcNow
         };
         await context.Admins.AddAsync(superAdmin);
@@ -63,15 +76,15 @@ public static class AdminSeeder
         // ???????????????????? Instructors ????????????????????
         var instructors = new List<Instructor>
         {
-            new() { NationalId = "11111111111111", FullName = "Dr. Ahmed Hassan", FullNameAr = "?. ???? ???", Email = "ahmed.hassan@instructor.com", PhoneNumber = "01100000001", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Role = UserRole.Instructor, InstructorRole = "Professor", Specialization = "Computer Networks", DepartmentId = departments[0].DepartmentId, HireDate = DateTime.UtcNow },
-            new() { NationalId = "22222222222222", FullName = "Dr. Fatima Mohamed", FullNameAr = "?. ????? ????", Email = "fatima.mohamed@instructor.com", PhoneNumber = "01100000002", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Role = UserRole.Instructor, InstructorRole = "Professor", Specialization = "Database Systems", DepartmentId = departments[0].DepartmentId, HireDate = DateTime.UtcNow },
-            new() { NationalId = "33333333333333", FullName = "Eng. Omar Khaled", FullNameAr = "?. ??? ????", Email = "omar.khaled@instructor.com", PhoneNumber = "01100000003", Address = "Alexandria, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Role = UserRole.Instructor, InstructorRole = "TA", Specialization = "Web Development", DepartmentId = departments[0].DepartmentId, HireDate = DateTime.UtcNow },
-            new() { NationalId = "44444444444444", FullName = "Eng. Sara Ali", FullNameAr = "?. ???? ???", Email = "sara.ali@instructor.com", PhoneNumber = "01100000004", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Role = UserRole.Instructor, InstructorRole = "TA", Specialization = "Data Structures", DepartmentId = departments[0].DepartmentId, HireDate = DateTime.UtcNow },
-            new() { NationalId = "10101010101010", FullName = "Dr. Mona Ibrahim", FullNameAr = "?. ??? ???????", Email = "mona.ibrahim@instructor.com", PhoneNumber = "01100000005", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Role = UserRole.Instructor, InstructorRole = "Professor", Specialization = "Information Systems", DepartmentId = departments[1].DepartmentId, HireDate = DateTime.UtcNow },
-            new() { NationalId = "20202020202020", FullName = "Eng. Khaled Youssef", FullNameAr = "?. ???? ????", Email = "khaled.youssef@instructor.com", PhoneNumber = "01100000006", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Role = UserRole.Instructor, InstructorRole = "TA", Specialization = "Systems Analysis", DepartmentId = departments[1].DepartmentId, HireDate = DateTime.UtcNow },
-            new() { NationalId = "30303030303030", FullName = "Dr. Hany Farouk", FullNameAr = "?. ???? ?????", Email = "hany.farouk@instructor.com", PhoneNumber = "01100000007", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Role = UserRole.Instructor, InstructorRole = "Professor", Specialization = "Machine Learning", DepartmentId = departments[2].DepartmentId, HireDate = DateTime.UtcNow },
-            new() { NationalId = "40404040404040", FullName = "Eng. Nada Samir", FullNameAr = "?. ??? ????", Email = "nada.samir@instructor.com", PhoneNumber = "01100000008", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Role = UserRole.Instructor, InstructorRole = "TA", Specialization = "Deep Learning", DepartmentId = departments[2].DepartmentId, HireDate = DateTime.UtcNow },
-            new() { NationalId = "50505050505050", FullName = "Dr. Tarek Nabil", FullNameAr = "?. ???? ????", Email = "tarek.nabil@instructor.com", PhoneNumber = "01100000009", Address = "Alexandria, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Role = UserRole.Instructor, InstructorRole = "Professor", Specialization = "Circuit Design", DepartmentId = departments[5].DepartmentId, HireDate = DateTime.UtcNow },
+            new() { NationalId = "11111111111111", FullName = "Dr. Ahmed Hassan", FullNameAr = "?. ???? ???", Email = "ahmed.hassan@instructor.com", PhoneNumber = "01100000001", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Roles = [UserRole.Instructor], InstructorRole = InstructorRole.Professor, Specialization = "Computer Networks", DepartmentId = departments[0].DepartmentId, FacultyId = faculty.FacultyId, HireDate = DateTime.UtcNow },
+            new() { NationalId = "22222222222222", FullName = "Dr. Fatima Mohamed", FullNameAr = "?. ????? ????", Email = "fatima.mohamed@instructor.com", PhoneNumber = "01100000002", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Roles = [UserRole.Instructor], InstructorRole = InstructorRole.Professor, Specialization = "Database Systems", DepartmentId = departments[0].DepartmentId, FacultyId = faculty.FacultyId, HireDate = DateTime.UtcNow },
+            new() { NationalId = "33333333333333", FullName = "Eng. Omar Khaled", FullNameAr = "?. ??? ????", Email = "omar.khaled@instructor.com", PhoneNumber = "01100000003", Address = "Alexandria, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Roles = [UserRole.Instructor], InstructorRole = InstructorRole.TeachingAssistant, Specialization = "Web Development", DepartmentId = departments[0].DepartmentId, FacultyId = faculty.FacultyId, HireDate = DateTime.UtcNow },
+            new() { NationalId = "44444444444444", FullName = "Eng. Sara Ali", FullNameAr = "?. ???? ???", Email = "sara.ali@instructor.com", PhoneNumber = "01100000004", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Roles = [UserRole.Instructor], InstructorRole = InstructorRole.TeachingAssistant, Specialization = "Data Structures", DepartmentId = departments[0].DepartmentId, FacultyId = faculty.FacultyId, HireDate = DateTime.UtcNow },
+            new() { NationalId = "10101010101010", FullName = "Dr. Mona Ibrahim", FullNameAr = "?. ??? ???????", Email = "mona.ibrahim@instructor.com", PhoneNumber = "01100000005", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Roles = [UserRole.Instructor], InstructorRole = InstructorRole.Professor, Specialization = "Information Systems", DepartmentId = departments[1].DepartmentId, FacultyId = faculty.FacultyId, HireDate = DateTime.UtcNow },
+            new() { NationalId = "20202020202020", FullName = "Eng. Khaled Youssef", FullNameAr = "?. ???? ????", Email = "khaled.youssef@instructor.com", PhoneNumber = "01100000006", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Roles = [UserRole.Instructor], InstructorRole = InstructorRole.TeachingAssistant, Specialization = "Systems Analysis", DepartmentId = departments[1].DepartmentId, FacultyId = faculty.FacultyId, HireDate = DateTime.UtcNow },
+            new() { NationalId = "30303030303030", FullName = "Dr. Hany Farouk", FullNameAr = "?. ???? ?????", Email = "hany.farouk@instructor.com", PhoneNumber = "01100000007", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Roles = [UserRole.Instructor], InstructorRole = InstructorRole.Professor, Specialization = "Machine Learning", DepartmentId = departments[2].DepartmentId, FacultyId = faculty.FacultyId, HireDate = DateTime.UtcNow },
+            new() { NationalId = "40404040404040", FullName = "Eng. Nada Samir", FullNameAr = "?. ??? ????", Email = "nada.samir@instructor.com", PhoneNumber = "01100000008", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Roles = [UserRole.Instructor], InstructorRole = InstructorRole.TeachingAssistant, Specialization = "Deep Learning", DepartmentId = departments[2].DepartmentId, FacultyId = faculty.FacultyId, HireDate = DateTime.UtcNow },
+            new() { NationalId = "50505050505050", FullName = "Dr. Tarek Nabil", FullNameAr = "?. ???? ????", Email = "tarek.nabil@instructor.com", PhoneNumber = "01100000009", Address = "Alexandria, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Instructor@123"), Roles = [UserRole.Instructor], InstructorRole = InstructorRole.Professor, Specialization = "Circuit Design", DepartmentId = departments[5].DepartmentId, FacultyId = faculty.FacultyId, HireDate = DateTime.UtcNow },
         };
         await context.Instructors.AddRangeAsync(instructors);
         await context.SaveChangesAsync();
@@ -207,11 +220,11 @@ public static class AdminSeeder
         // ???????????????????? Students ????????????????????
         var students = new List<Student>
         {
-            new() { NationalId = "55555555555555", StudentCode = "20230001", FullName = "Mohammed Hassan", FullNameAr = "???? ???", Email = "mohammed.hassan@student.com", PhoneNumber = "01100000010", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 2, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
-            new() { NationalId = "66666666666666", StudentCode = "20230002", FullName = "Layla Ahmed", FullNameAr = "???? ????", Email = "layla.ahmed@student.com", PhoneNumber = "01100000011", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 2, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
-            new() { NationalId = "77777777777777", StudentCode = "20220001", FullName = "Karim Mohamed", FullNameAr = "???? ????", Email = "karim.mohamed@student.com", PhoneNumber = "01100000012", Address = "Alexandria, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 3, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-3) },
-            new() { NationalId = "88888888888888", StudentCode = "20230003", FullName = "Noor Ali", FullNameAr = "??? ???", Email = "noor.ali@student.com", PhoneNumber = "01100000013", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 2, DepartmentId = departments[1].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
-            new() { NationalId = "99999999999999", StudentCode = "20240001", FullName = "Youssef Salim", FullNameAr = "???? ????", Email = "youssef.salim@student.com", PhoneNumber = "01100000014", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Role = UserRole.Student, Faculty = "Engineering", Level = 1, DepartmentId = departments[1].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-1) },
+            new() { NationalId = "55555555555555", StudentCode = "20230001", FullName = "Mohammed Hassan", FullNameAr = "???? ???", Email = "mohammed.hassan@student.com", PhoneNumber = "01100000010", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 2, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
+            new() { NationalId = "66666666666666", StudentCode = "20230002", FullName = "Layla Ahmed", FullNameAr = "???? ????", Email = "layla.ahmed@student.com", PhoneNumber = "01100000011", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 2, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
+            new() { NationalId = "77777777777777", StudentCode = "20220001", FullName = "Karim Mohamed", FullNameAr = "???? ????", Email = "karim.mohamed@student.com", PhoneNumber = "01100000012", Address = "Alexandria, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 3, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-3) },
+            new() { NationalId = "88888888888888", StudentCode = "20230003", FullName = "Noor Ali", FullNameAr = "??? ???", Email = "noor.ali@student.com", PhoneNumber = "01100000013", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 2, DepartmentId = departments[1].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
+            new() { NationalId = "99999999999999", StudentCode = "20240001", FullName = "Youssef Salim", FullNameAr = "???? ????", Email = "youssef.salim@student.com", PhoneNumber = "01100000014", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 1, DepartmentId = departments[1].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-1) },
         };
         await context.Students.AddRangeAsync(students);
         await context.SaveChangesAsync();

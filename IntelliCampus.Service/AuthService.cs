@@ -37,7 +37,7 @@ public class AuthService(
             UserId = user.UserId,
             Email = user.Email,
             FullName = user.FullName,
-            Role = user.Role.ToString(),
+            Roles = user.Roles.Select(r => r.ToString()).ToList(),
             Token = token,
             ExpiresAt = expiresAt
         };
@@ -57,7 +57,7 @@ public class AuthService(
             UserId = user.UserId,
             FullName = user.FullName,
             Email = user.Email,
-            Role = user.Role.ToString(),
+            Roles = user.Roles.Select(r => r.ToString()).ToList(),
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage),
             Notifications = (await _notificationService.GetUnreadAsync(userId)).ToList()
         };
@@ -79,7 +79,7 @@ public class AuthService(
             PhoneNumber = user.PhoneNumber,
             Email = user.Email,
             Address = user.Address,
-            Role = user.Role.ToString(),
+            Roles = user.Roles.Select(r => r.ToString()).ToList(),
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage)
         };
     }
@@ -112,7 +112,7 @@ public class AuthService(
             PhoneNumber = user.PhoneNumber,
             Email = user.Email,
             Address = user.Address,
-            Role = user.Role.ToString(),
+            Roles = user.Roles.Select(r => r.ToString()).ToList(),
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage)
         };
     }

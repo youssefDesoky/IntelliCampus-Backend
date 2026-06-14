@@ -50,7 +50,7 @@ public class StudentService : IStudentService
         return students.Select(MapToDto);
     }
 
-    public async Task<StudentDto> CreateAsync(CreateStudentDto dto)
+    public async Task<StudentDto> CreateAsync(CreateStudentDto dto, int? creatorUserId = null)
     {
         if (await Users.AnyAsync(u => u.Email == dto.Email))
             throw new InvalidOperationException("Email already exists.");
@@ -63,6 +63,13 @@ public class StudentService : IStudentService
         var enrollmentDate = ParseEnrollmentDate(dto.EnrollmentDate) ?? DateTime.UtcNow;
         var password = string.IsNullOrWhiteSpace(dto.Password) ? "Student@123" : dto.Password;
 
+        var facultyId = dto.FacultyId;
+        if (facultyId is null && creatorUserId.HasValue)
+        {
+            var creator = await Users.GetByIdAsync(creatorUserId.Value);
+            facultyId = creator?.FacultyId;
+        }
+
         var student = new Student
         {
             NationalId = dto.NationalId,
@@ -73,9 +80,9 @@ public class StudentService : IStudentService
             Address = dto.Address,
             Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
-            Role = UserRole.Student,
+            Roles = ResolveStudentRoles(dto.StudentType),
             StudentCode = dto.StudentCode,
-            Faculty = dto.Faculty,
+            FacultyId = facultyId,
             Level = dto.Level,
             DepartmentId = departmentId,
             BylawId = bylawId,
@@ -116,7 +123,7 @@ public class StudentService : IStudentService
         if (dto.Address is not null) student.Address = dto.Address;
         if (dto.Nationality is not null) student.Nationality = dto.Nationality;
         if (dto.StudentCode is not null) student.StudentCode = dto.StudentCode;
-        if (dto.Faculty is not null) student.Faculty = dto.Faculty;
+        if (dto.FacultyId.HasValue) student.FacultyId = dto.FacultyId;
         if (dto.Level.HasValue) student.Level = dto.Level;
 
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentId, dto.DepartmentName);
@@ -152,6 +159,19 @@ public class StudentService : IStudentService
         await _unitOfWork.SaveChangesAsync();
 
         return true;
+    }
+
+    private static List<UserRole> ResolveStudentRoles(string? studentType)
+    {
+        if (string.IsNullOrWhiteSpace(studentType))
+            return [UserRole.Student_UnderGrad];
+
+        return studentType.ToLowerInvariant() switch
+        {
+            "undergrad" or "under_grad" => [UserRole.Student_UnderGrad],
+            "postgrad" or "post_grad" => [UserRole.Student_PostGrad],
+            _ => [UserRole.Student_UnderGrad]
+        };
     }
 
     private async Task<int?> ResolveBylawIdAsync(int? bylawId, string? bylawName)
@@ -229,14 +249,16 @@ public class StudentService : IStudentService
             Address = student.Address,
             Nationality = student.Nationality,
             StudentCode = student.StudentCode,
-            Faculty = student.Faculty,
+            FacultyId = student.FacultyId,
+            FacultyName = student.Faculty?.FacultyName,
             Level = student.Level,
             DepartmentId = student.DepartmentId,
             DepartmentName = student.Department?.DepartmentName,
             BylawId = student.BylawId,
             BylawName = student.Bylaw?.Name,
             BylawVersion = student.Bylaw?.Version,
-            EnrollmentDate = student.EnrollmentDate
+            EnrollmentDate = student.EnrollmentDate,
+            Roles = student.Roles.Select(r => r.ToString()).ToList()
         };
     }
 }

@@ -47,7 +47,10 @@ public class ExcelImportService : IExcelImportService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ExcelImportResultDto> ImportAsync(ImportEntityType entityType, IFormFile file, int? bylawId = null)
+    private IGenericRepository<User, int> Users
+        => _unitOfWork.GetRepository<User, int>();
+
+    public async Task<ExcelImportResultDto> ImportAsync(ImportEntityType entityType, IFormFile file, int? bylawId = null, int? creatorUserId = null)
     {
         var result = new ExcelImportResultDto();
 
@@ -55,6 +58,13 @@ public class ExcelImportService : IExcelImportService
         {
             result.Errors.Add("File is empty or null.");
             return result;
+        }
+
+        int? facultyId = null;
+        if (creatorUserId.HasValue)
+        {
+            var creator = await Users.GetByIdAsync(creatorUserId.Value);
+            facultyId = creator?.FacultyId;
         }
 
         using var stream = file.OpenReadStream();
@@ -74,7 +84,7 @@ public class ExcelImportService : IExcelImportService
         {
             try
             {
-                await ImportRowAsync(entityType, row, bylawId);
+                await ImportRowAsync(entityType, row, bylawId, facultyId);
                 result.SuccessCount++;
             }
             catch (Exception ex)
@@ -87,24 +97,24 @@ public class ExcelImportService : IExcelImportService
         return result;
     }
 
-    private async Task ImportRowAsync(ImportEntityType entityType, IXLRangeRow row, int? bylawId)
+    private async Task ImportRowAsync(ImportEntityType entityType, IXLRangeRow row, int? bylawId, int? facultyId)
     {
         switch (entityType)
         {
             case ImportEntityType.Students:
-                await ImportStudentRowAsync(row, bylawId);
+                await ImportStudentRowAsync(row, bylawId, facultyId);
                 break;
             case ImportEntityType.Courses:
                 await ImportCourseRowAsync(row);
                 break;
             case ImportEntityType.Instructors:
-                await ImportInstructorRowAsync(row);
+                await ImportInstructorRowAsync(row, facultyId);
                 break;
             case ImportEntityType.Rooms:
                 await ImportRoomRowAsync(row);
                 break;
             case ImportEntityType.Departments:
-                await ImportDepartmentRowAsync(row);
+                await ImportDepartmentRowAsync(row, facultyId);
                 break;
             case ImportEntityType.Sections:
                 await ImportSectionRowAsync(row);
@@ -118,7 +128,7 @@ public class ExcelImportService : IExcelImportService
         }
     }
 
-    private async Task ImportStudentRowAsync(IXLRangeRow row, int? bylawId)
+    private async Task ImportStudentRowAsync(IXLRangeRow row, int? bylawId, int? facultyId)
     {
         var dto = new CreateStudentDto
         {
@@ -130,17 +140,18 @@ public class ExcelImportService : IExcelImportService
             Address = GetOptionalString(row, 6),
             Nationality = GetOptionalString(row, 7),
             StudentCode = GetOptionalString(row, 8),
-            Faculty = GetOptionalString(row, 9),
+            StudentType = GetOptionalString(row, 9),
             Level = GetOptionalInt(row, 10),
             DepartmentName = GetOptionalString(row, 11),
             BylawId = bylawId,
+            FacultyId = facultyId,
             EnrollmentDate = GetOptionalString(row, 12)
         };
 
         await _studentService.CreateAsync(dto);
     }
 
-    private async Task ImportInstructorRowAsync(IXLRangeRow row)
+    private async Task ImportInstructorRowAsync(IXLRangeRow row, int? facultyId)
     {
         var dto = new CreateInstructorDto
         {
@@ -152,10 +163,11 @@ public class ExcelImportService : IExcelImportService
             Address = GetOptionalString(row, 6),
             Nationality = GetOptionalString(row, 7),
             InstructorCode = GetOptionalString(row, 8),
-            Role = GetOptionalString(row, 9),
+            InstructorRole = GetOptionalString(row, 9),
             Specialization = GetOptionalString(row, 10),
             DepartmentName = GetOptionalString(row, 11),
-            HireDate = GetOptionalString(row, 12)
+            HireDate = GetOptionalString(row, 12),
+            FacultyId = facultyId
         };
 
         await _instructorService.CreateAsync(dto);
@@ -196,13 +208,14 @@ public class ExcelImportService : IExcelImportService
         await _roomService.CreateAsync(dto);
     }
 
-    private async Task ImportDepartmentRowAsync(IXLRangeRow row)
+    private async Task ImportDepartmentRowAsync(IXLRangeRow row, int? facultyId)
     {
         var dto = new CreateDepartmentDto
         {
             DepartmentName = row.Cell(1).GetString().Trim(),
             DepartmentNameAr = GetOptionalString(row, 2),
-            Description = GetOptionalString(row, 3)
+            Description = GetOptionalString(row, 3),
+            FacultyId = facultyId
         };
 
         await _departmentService.CreateAsync(dto);

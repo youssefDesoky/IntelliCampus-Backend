@@ -9,7 +9,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,SuperAdmin")]
 public class BylawController : ControllerBase
 {
     private readonly IBylawService _bylawService;

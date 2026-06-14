@@ -32,14 +32,25 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
         return departments.Select(MapToDto);
     }
 
-    public async Task<DepartmentDto> CreateAsync(CreateDepartmentDto dto)
+    private IGenericRepository<User, int> Users
+        => _unitOfWork.GetRepository<User, int>();
+
+    public async Task<DepartmentDto> CreateAsync(CreateDepartmentDto dto, int? creatorUserId = null)
     {
+        var facultyId = dto.FacultyId;
+        if (facultyId is null && creatorUserId.HasValue)
+        {
+            var creator = await Users.GetByIdAsync(creatorUserId.Value);
+            facultyId = creator?.FacultyId;
+        }
+
         var department = new Department
         {
             DepartmentName = dto.DepartmentName,
             DepartmentNameAr = dto.DepartmentNameAr,
             Description = dto.Description,
-            InstructorId = dto.InstructorId
+            InstructorId = dto.InstructorId,
+            FacultyId = facultyId
         };
 
         Departments.Add(department);
@@ -69,6 +80,9 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
 
         if (dto.InstructorId.HasValue)
             department.InstructorId = dto.InstructorId;
+
+        if (dto.FacultyId.HasValue)
+            department.FacultyId = dto.FacultyId;
 
         Departments.Update(department);
         await _unitOfWork.SaveChangesAsync();
@@ -100,7 +114,9 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
             DepartmentNameAr = department.DepartmentNameAr,
             Description = department.Description,
             InstructorId = department.InstructorId,
-            HeadInstructorName = department.HeadInstructor?.FullName
+            HeadInstructorName = department.HeadInstructor?.FullName,
+            FacultyId = department.FacultyId,
+            FacultyName = department.Faculty?.FacultyName
         };
     }
 }

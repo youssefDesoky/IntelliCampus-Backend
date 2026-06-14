@@ -43,7 +43,7 @@ public class ExamsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,SuperAdmin")]
     public async Task<ActionResult<ExamDto>> Create([FromBody] CreateExamDto dto)
     {
         try
@@ -58,7 +58,7 @@ public class ExamsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,SuperAdmin")]
     public async Task<ActionResult<ExamDto>> Update(int id, [FromBody] UpdateExamDto dto)
     {
         try
@@ -77,7 +77,7 @@ public class ExamsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,SuperAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _examService.DeleteAsync(id);

@@ -10,12 +10,10 @@ public class UpdateInstructorDto
     public string? Email { get; set; }
     public string? Address { get; set; }
     public string? Nationality { get; set; }
-    public string? Role { get; set; }
+    public string? InstructorRole { get; set; }
     public string? Specialization { get; set; }
-
     public string? InstructorCode { get; set; }
-
     public string? DepartmentName { get; set; }
-
     public string? HireDate { get; set; }
+    public int? FacultyId { get; set; }
 }

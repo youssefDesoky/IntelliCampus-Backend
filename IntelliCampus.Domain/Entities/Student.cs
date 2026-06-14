@@ -4,7 +4,6 @@ public class Student : User
 {
     public int StudentId { get; set; }
     public string? StudentCode { get; set; }
-    public string? Faculty { get; set; }
     public int? Level { get; set; }
     public int? DepartmentId { get; set; }
     public int? BylawId { get; set; }

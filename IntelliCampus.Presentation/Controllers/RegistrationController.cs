@@ -8,7 +8,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Student")]
+[Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
 public class RegistrationController : ControllerBase
 {
     private readonly IRegistrationService _registrationService;
@@ -69,15 +69,14 @@ public class RegistrationController : ControllerBase
     private int? GetCurrentStudentId()
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+        var roleClaims = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
         if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
             return null;
 
-        if (roleClaim != "Student")
+        if (!roleClaims.Any(r => r.StartsWith("Student_")))
             return null;
 
-        // For TPT, the UserId is the same as StudentId (they share the PK)
         return userId;
     }
 }

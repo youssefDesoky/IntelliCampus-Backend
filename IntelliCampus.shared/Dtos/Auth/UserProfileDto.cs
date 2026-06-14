@@ -9,6 +9,6 @@ public class UserProfileDto
     public string? PhoneNumber { get; set; }
     public string Email { get; set; } = null!;
     public string? Address { get; set; }
-    public string Role { get; set; } = null!;
+    public List<string> Roles { get; set; } = [];
     public string? ProfileImage { get; set; }
 }

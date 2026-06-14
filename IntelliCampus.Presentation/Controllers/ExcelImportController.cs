@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Bylaw;
@@ -9,7 +10,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Admin,SuperAdmin")]
+[Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,SuperAdmin")]
 public class ExcelImportController : ControllerBase
 {
     private readonly IExcelImportService _excelImportService;
@@ -79,7 +80,7 @@ public class ExcelImportController : ControllerBase
                 columns = new[]
                 {
                     "NationalId", "FullName", "FullNameAr", "PhoneNumber", "Email",
-                    "Address", "Nationality", "StudentCode", "Faculty", "Level",
+                    "Address", "Nationality", "StudentCode", "StudentType (undergrad/postgrad)", "Level",
                     "DepartmentName", "EnrollmentDate"
                 },
                 bylawId
@@ -91,7 +92,7 @@ public class ExcelImportController : ControllerBase
             columns = new[]
             {
                 "NationalId", "FullName", "FullNameAr", "PhoneNumber", "Email",
-                "Address", "Nationality", "StudentCode", "Faculty", "Level",
+                "Address", "Nationality", "StudentCode", "StudentType (undergrad/postgrad)", "Level",
                 "DepartmentName", "EnrollmentDate"
             },
             message = "Pass ?bylawId= to pre-assign students to a bylaw"
@@ -119,7 +120,7 @@ public class ExcelImportController : ControllerBase
             columns = new[]
             {
                 "NationalId", "FullName", "FullNameAr", "PhoneNumber", "Email",
-                "Address", "Nationality", "InstructorCode", "Role", "Specialization",
+                "Address", "Nationality", "InstructorCode", "InstructorRole (TA/Lecturer/AssistantLecturer/AssociateProfessor/Professor)", "Specialization",
                 "DepartmentName", "HireDate"
             }
         });
@@ -143,7 +144,8 @@ public class ExcelImportController : ControllerBase
         if (file is null || file.Length is 0)
             return BadRequest(new { message = "No file uploaded." });
 
-        var result = await _excelImportService.ImportAsync(type, file, bylawId);
+        var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var result = await _excelImportService.ImportAsync(type, file, bylawId, creatorUserId is not null ? int.Parse(creatorUserId) : null);
 
         if (result.FailCount > 0 && result.SuccessCount is 0)
             return BadRequest(result);

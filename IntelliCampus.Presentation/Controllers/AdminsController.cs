@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using IntelliCampus.Shared.Dtos.Admin;
 using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
@@ -40,7 +41,8 @@ public class AdminsController : ControllerBase
     {
         try
         {
-            var admin = await _adminService.CreateAsync(dto);
+            var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var admin = await _adminService.CreateAsync(dto, creatorUserId is not null ? int.Parse(creatorUserId) : null);
             return CreatedAtAction(nameof(GetById), new { id = admin.UserId }, admin);
         }
         catch (InvalidOperationException ex)

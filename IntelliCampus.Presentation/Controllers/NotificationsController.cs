@@ -55,7 +55,7 @@ public class NotificationsController(INotificationService notificationService, I
     }
 
     [HttpPost("send")]
-    [Authorize(Roles = "Admin,Instructor")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,Instructor")]
     public async Task<IActionResult> SendBulk(SendBulkNotificationDto dto)
     {
         if (dto.UserIds is null || dto.UserIds.Count == 0)
