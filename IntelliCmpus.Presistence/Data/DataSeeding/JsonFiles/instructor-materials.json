@@ -1,0 +1,1170 @@
+[
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Math-1 Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Math-1 Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Electronics Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Electronics Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Fundamentals of Computer Science Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Fundamentals of Computer Science Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Math-2 Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Math-2 Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Probability and Statistics-1 Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Probability and Statistics-1 Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Fundamentals of Management Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Fundamentals of Management Lecture Notes"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Structured Programming Syllabus"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Structured Programming Lecture Notes"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Computer Networks Technology Syllabus"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Computer Networks Technology Lecture Notes"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Object Oriented Programming Syllabus"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Object Oriented Programming Lecture Notes"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Intro to Operations Research & Decision Support Syllabus"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Intro to Operations Research & Decision Support Lecture Notes"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Probability and Statistics-2 Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Probability and Statistics-2 Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Discrete Mathematics Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Discrete Mathematics Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Technical Report Writing Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Technical Report Writing Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Selected Topics in Humanities Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Selected Topics in Humanities Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Creative Thinking and Communication Skills Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Creative Thinking and Communication Skills Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Fundamentals of Economics Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Fundamentals of Economics Lecture Notes"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Social Issues Syllabus"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Social Issues Lecture Notes"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Critical Thinking Syllabus"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Critical Thinking Lecture Notes"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Data Structures Syllabus"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Data Structures Lecture Notes"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Intro to Software Engineering Syllabus"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Intro to Software Engineering Lecture Notes"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Introduction to Database Systems Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Introduction to Database Systems Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Web Technology Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Web Technology Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Math-3 Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Math-3 Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Ethics and Professionalism Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Ethics and Professionalism Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Entrepreneurship Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Entrepreneurship Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Advanced Software Engineering Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Advanced Software Engineering Lecture Notes"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Analysis and Design of Information Systems Syllabus"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Analysis and Design of Information Systems Lecture Notes"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Algorithms Analysis and Design Syllabus"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Algorithms Analysis and Design Lecture Notes"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Operating Systems Syllabus"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Operating Systems Lecture Notes"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Database Management Systems Syllabus"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Database Management Systems Lecture Notes"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "File Management and Processing Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "File Management and Processing Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Information Retrieval Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Information Retrieval Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Artificial Intelligence Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Artificial Intelligence Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Data Warehousing Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Data Warehousing Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Business Process Management Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Business Process Management Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Web-based Information Systems Development Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Web-based Information Systems Development Lecture Notes"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Logic Design Syllabus"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Logic Design Lecture Notes"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Field Training Syllabus"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Field Training Lecture Notes"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Graduation Project Syllabus"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Graduation Project Lecture Notes"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "IS Development Methodologies Syllabus"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "IS Development Methodologies Lecture Notes"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Data Analytics Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Data Analytics Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Machine Learning Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Machine Learning Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Service-Oriented Architecture Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Service-Oriented Architecture Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Geographical Information Systems Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Geographical Information Systems Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Managing and Modeling Big Data Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Managing and Modeling Big Data Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Data Mining Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Data Mining Lecture Notes"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Selected Topics in Data Engineering Syllabus"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Selected Topics in Data Engineering Lecture Notes"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "E-Business Syllabus"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "E-Business Lecture Notes"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Selected Topics in Information Systems-1 Syllabus"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Selected Topics in Information Systems-1 Lecture Notes"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Project Management Syllabus"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Project Management Lecture Notes"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Fundamentals of Computers Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Fundamentals of Computers Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Electronics-1 Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Electronics-1 Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Math-1 Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Math-1 Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Technical Report Writing Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Technical Report Writing Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Discrete Mathematics Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Discrete Mathematics Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Human Rights Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Human Rights Lecture Notes"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Fundamentals of Management Syllabus"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Fundamentals of Management Lecture Notes"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Critical Thinking Syllabus"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Critical Thinking Lecture Notes"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Structured Programming Syllabus"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Structured Programming Lecture Notes"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Logic Design Syllabus"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Logic Design Lecture Notes"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Math-2 Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Math-2 Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Probability and Statistics-1 Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Probability and Statistics-1 Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Entrepreneurship Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Entrepreneurship Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Object Oriented Programming Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Object Oriented Programming Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Fundamentals of Computer Networks Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Fundamentals of Computer Networks Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Probability and Statistics-2 Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Probability and Statistics-2 Lecture Notes"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Math-3 Syllabus"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Math-3 Lecture Notes"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Fundamentals of Software Engineering Syllabus"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Fundamentals of Software Engineering Lecture Notes"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Data Structures Syllabus"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Data Structures Lecture Notes"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Database Systems Syllabus"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Database Systems Lecture Notes"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Introduction to Data Science Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Introduction to Data Science Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Marketing & Sales Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Marketing & Sales Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Business Process Management Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Business Process Management Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Mathematical Optimization Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Mathematical Optimization Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Operating Systems Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Operating Systems Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Advanced Database Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Advanced Database Lecture Notes"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Database Management Systems Syllabus"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Database Management Systems Lecture Notes"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Data Visualization Lab Syllabus"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Data Visualization Lab Lecture Notes"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Algorithms Analysis & Design Syllabus"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Algorithms Analysis & Design Lecture Notes"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Geographical Information Systems Syllabus"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Geographical Information Systems Lecture Notes"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Artificial Intelligence Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Artificial Intelligence Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Web Technology Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Web Technology Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Data Mining Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Data Mining Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Machine Learning Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Machine Learning Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Forecasting and Predictive Analytics Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Forecasting and Predictive Analytics Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Field Training for Data Science Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Field Training for Data Science Lecture Notes"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Business Process Mining Syllabus"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Business Process Mining Lecture Notes"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Big Data Management and Modeling Syllabus"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Big Data Management and Modeling Lecture Notes"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Social Networks Analysis Syllabus"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Social Networks Analysis Lecture Notes"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Unstructured Data Syllabus"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Unstructured Data Lecture Notes"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Deep Learning Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Deep Learning Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Graduation Project Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Graduation Project Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Selected Topics in Data Engineering Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Selected Topics in Data Engineering Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Selected Topics in Information Systems Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Selected Topics in Information Systems Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Applied Data Science Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Applied Data Science Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Deep Learning Applications Lab Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Deep Learning Applications Lab Lecture Notes"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Big Data and Data Science Lab Syllabus"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Big Data and Data Science Lab Lecture Notes"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Math-0 Syllabus"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Math-0 Lecture Notes"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Project Management Syllabus"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Project Management Lecture Notes"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Software Modeling Syllabus"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Software Modeling Lecture Notes"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Software Process & Quality Management Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Software Process & Quality Management Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Software Requirement Analysis Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Software Requirement Analysis Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Computer Architecture Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Computer Architecture Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Database Management Engineering Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Database Management Engineering Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Algorithms Analysis & Design Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Algorithms Analysis & Design Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Software Design & Architecture Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Software Design & Architecture Lecture Notes"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Software Engineering Tools Lab Syllabus"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Software Engineering Tools Lab Lecture Notes"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Concepts of Programming Languages Syllabus"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Concepts of Programming Languages Lecture Notes"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Human Computer Interaction Syllabus"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Human Computer Interaction Lecture Notes"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Software Maintenance & Evolution Syllabus"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Software Maintenance & Evolution Lecture Notes"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Software Testing Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Software Testing Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Advanced Software Engineering Tools Lab Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Advanced Software Engineering Tools Lab Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Field Training (Software Engineering) Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Field Training (Software Engineering) Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Soft Computing Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Soft Computing Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Selected Topics in SE-1 Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Selected Topics in SE-1 Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Cloud Computing Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Cloud Computing Lecture Notes"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Web Engineering Syllabus"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Web Engineering Lecture Notes"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Selected Labs in Software Engineering Syllabus"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Selected Labs in Software Engineering Lecture Notes"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Graduation Project Syllabus"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Graduation Project Lecture Notes"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Theory of Computations Syllabus"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Theory of Computations Lecture Notes"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Software Security Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Software Security Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Distributed Systems Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Distributed Systems Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Selected Topics in SE-2 Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Selected Topics in SE-2 Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Data Communication Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Data Communication Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Cryptography Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Cryptography Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Computer Networks-1 Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Computer Networks-1 Lecture Notes"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Computer Networks-2 Syllabus"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Computer Networks-2 Lecture Notes"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Networks and Web Programming Syllabus"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Networks and Web Programming Lecture Notes"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Computer Security and Privacy Syllabus"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Computer Security and Privacy Lecture Notes"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Selected Labs in Networks-1 Syllabus"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Selected Labs in Networks-1 Lecture Notes"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Computer Graphics Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Computer Graphics Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Signals Processing Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Signals Processing Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Fundamentals of Cyber Security Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Fundamentals of Cyber Security Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Field Training for Cyber Security Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Field Training for Cyber Security Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Digital Forensics Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Digital Forensics Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Wireless and Mobile Networks Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Wireless and Mobile Networks Lecture Notes"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Networks and Mobile Security Syllabus"
+  },
+  {
+    "instructorEmail": "hany.farouk@instructor.com",
+    "materialTitle": "Networks and Mobile Security Lecture Notes"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Ethical Hacking Syllabus"
+  },
+  {
+    "instructorEmail": "nada.samir@instructor.com",
+    "materialTitle": "Ethical Hacking Lecture Notes"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Graduation Project Syllabus"
+  },
+  {
+    "instructorEmail": "tarek.nabil@instructor.com",
+    "materialTitle": "Graduation Project Lecture Notes"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Networking Fundamentals Lab Syllabus"
+  },
+  {
+    "instructorEmail": "amr.galal@instructor.com",
+    "materialTitle": "Networking Fundamentals Lab Lecture Notes"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Advanced Cryptography Syllabus"
+  },
+  {
+    "instructorEmail": "ahmed.hassan@instructor.com",
+    "materialTitle": "Advanced Cryptography Lecture Notes"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Secure Programming Syllabus"
+  },
+  {
+    "instructorEmail": "fatima.mohamed@instructor.com",
+    "materialTitle": "Secure Programming Lecture Notes"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Optical Networks Syllabus"
+  },
+  {
+    "instructorEmail": "omar.khaled@instructor.com",
+    "materialTitle": "Optical Networks Lecture Notes"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Cloud Computing & Network Virtualization Syllabus"
+  },
+  {
+    "instructorEmail": "sara.ali@instructor.com",
+    "materialTitle": "Cloud Computing & Network Virtualization Lecture Notes"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Selected Labs in Networks-2 Syllabus"
+  },
+  {
+    "instructorEmail": "mona.ibrahim@instructor.com",
+    "materialTitle": "Selected Labs in Networks-2 Lecture Notes"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Computer Networks Defense Syllabus"
+  },
+  {
+    "instructorEmail": "khaled.youssef@instructor.com",
+    "materialTitle": "Computer Networks Defense Lecture Notes"
+  }
+]

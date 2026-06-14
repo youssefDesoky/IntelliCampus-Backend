@@ -1,0 +1,298 @@
+[
+  {
+    "courseCode": "CS213",
+    "prerequisiteCourseCode": "CS112"
+  },
+  {
+    "courseCode": "CS214",
+    "prerequisiteCourseCode": "CS112"
+  },
+  {
+    "courseCode": "CS321",
+    "prerequisiteCourseCode": "CS214"
+  },
+  {
+    "courseCode": "CS341",
+    "prerequisiteCourseCode": "CS214"
+  },
+  {
+    "courseCode": "CS361",
+    "prerequisiteCourseCode": "CS214"
+  },
+  {
+    "courseCode": "CS352",
+    "prerequisiteCourseCode": "CS251"
+  },
+  {
+    "courseCode": "IS211",
+    "prerequisiteCourseCode": "CS112"
+  },
+  {
+    "courseCode": "IS231",
+    "prerequisiteCourseCode": "CS112"
+  },
+  {
+    "courseCode": "IS312",
+    "prerequisiteCourseCode": "IS211"
+  },
+  {
+    "courseCode": "IS321",
+    "prerequisiteCourseCode": "CS214"
+  },
+  {
+    "courseCode": "IS332",
+    "prerequisiteCourseCode": "IS211"
+  },
+  {
+    "courseCode": "IS333",
+    "prerequisiteCourseCode": "IS231"
+  },
+  {
+    "courseCode": "IS341",
+    "prerequisiteCourseCode": "DS251"
+  },
+  {
+    "courseCode": "IS322",
+    "prerequisiteCourseCode": "IS312"
+  },
+  {
+    "courseCode": "IS313",
+    "prerequisiteCourseCode": "IS312"
+  },
+  {
+    "courseCode": "IS437",
+    "prerequisiteCourseCode": "IS332"
+  },
+  {
+    "courseCode": "IS434",
+    "prerequisiteCourseCode": "IS333"
+  },
+  {
+    "courseCode": "IS442",
+    "prerequisiteCourseCode": "IS312"
+  },
+  {
+    "courseCode": "DS342",
+    "prerequisiteCourseCode": "ST121"
+  },
+  {
+    "courseCode": "CS462",
+    "prerequisiteCourseCode": "CS361"
+  },
+  {
+    "courseCode": "MA214",
+    "prerequisiteCourseCode": "MA113"
+  },
+  {
+    "courseCode": "ST222",
+    "prerequisiteCourseCode": "ST121"
+  },
+  {
+    "courseCode": "IT212",
+    "prerequisiteCourseCode": "IT111"
+  },
+  {
+    "courseCode": "IT221",
+    "prerequisiteCourseCode": "IT111"
+  },
+  {
+    "courseCode": "SCS213",
+    "prerequisiteCourseCode": "SCS112"
+  },
+  {
+    "courseCode": "SCS214",
+    "prerequisiteCourseCode": "SCS112"
+  },
+  {
+    "courseCode": "SCS316",
+    "prerequisiteCourseCode": "SCS214"
+  },
+  {
+    "courseCode": "SCS241",
+    "prerequisiteCourseCode": "SCS214"
+  },
+  {
+    "courseCode": "SCS361",
+    "prerequisiteCourseCode": "SCS214"
+  },
+  {
+    "courseCode": "SCS251",
+    "prerequisiteCourseCode": "SCS112"
+  },
+  {
+    "courseCode": "SCS315",
+    "prerequisiteCourseCode": "SCS214"
+  },
+  {
+    "courseCode": "SCS355",
+    "prerequisiteCourseCode": "SCS251"
+  },
+  {
+    "courseCode": "SIS211",
+    "prerequisiteCourseCode": "SCS112"
+  },
+  {
+    "courseCode": "SIS315",
+    "prerequisiteCourseCode": "SIS211"
+  },
+  {
+    "courseCode": "SIS314",
+    "prerequisiteCourseCode": "SIS211"
+  },
+  {
+    "courseCode": "SIS335",
+    "prerequisiteCourseCode": "SCS112"
+  },
+  {
+    "courseCode": "SIS317",
+    "prerequisiteCourseCode": "SIS211"
+  },
+  {
+    "courseCode": "SCS462",
+    "prerequisiteCourseCode": "SCS361"
+  },
+  {
+    "courseCode": "SCS469",
+    "prerequisiteCourseCode": "SCS361"
+  },
+  {
+    "courseCode": "SDS344",
+    "prerequisiteCourseCode": "SST222"
+  },
+  {
+    "courseCode": "SMA214",
+    "prerequisiteCourseCode": "SMA113"
+  },
+  {
+    "courseCode": "SST222",
+    "prerequisiteCourseCode": "SST121"
+  },
+  {
+    "courseCode": "SIT213",
+    "prerequisiteCourseCode": "SIT111"
+  },
+  {
+    "courseCode": "SIT223",
+    "prerequisiteCourseCode": "SIT111"
+  },
+  {
+    "courseCode": "SIT221",
+    "prerequisiteCourseCode": "SIT111"
+  },
+  {
+    "courseCode": "SIT222",
+    "prerequisiteCourseCode": "SIT221"
+  },
+  {
+    "courseCode": "SIT324",
+    "prerequisiteCourseCode": "SIT222"
+  },
+  {
+    "courseCode": "SIT351",
+    "prerequisiteCourseCode": "SIT222"
+  },
+  {
+    "courseCode": "SIT345",
+    "prerequisiteCourseCode": "SIT222"
+  },
+  {
+    "courseCode": "SIT271",
+    "prerequisiteCourseCode": "SMA112"
+  },
+  {
+    "courseCode": "SIT381",
+    "prerequisiteCourseCode": "SIT345"
+  },
+  {
+    "courseCode": "SIT472",
+    "prerequisiteCourseCode": "SIT381"
+  },
+  {
+    "courseCode": "SIT446",
+    "prerequisiteCourseCode": "SIT345"
+  },
+  {
+    "courseCode": "SCS357",
+    "prerequisiteCourseCode": "SCS251"
+  },
+  {
+    "courseCode": "SCS356",
+    "prerequisiteCourseCode": "SCS355"
+  },
+  {
+    "courseCode": "SCS358",
+    "prerequisiteCourseCode": "SCS355"
+  },
+  {
+    "courseCode": "SCS331",
+    "prerequisiteCourseCode": "SIT213"
+  },
+  {
+    "courseCode": "SCS317",
+    "prerequisiteCourseCode": "SCS213"
+  },
+  {
+    "courseCode": "SCS481",
+    "prerequisiteCourseCode": "SCS355"
+  },
+  {
+    "courseCode": "SCS472",
+    "prerequisiteCourseCode": "SCS241"
+  },
+  {
+    "courseCode": "SCS465",
+    "prerequisiteCourseCode": "SCS361"
+  },
+  {
+    "courseCode": "SCS252",
+    "prerequisiteCourseCode": "SCS251"
+  },
+  {
+    "courseCode": "SCS253",
+    "prerequisiteCourseCode": "SCS251"
+  },
+  {
+    "courseCode": "SCS254",
+    "prerequisiteCourseCode": "SCS251"
+  },
+  {
+    "courseCode": "SDS321",
+    "prerequisiteCourseCode": "SHU233"
+  },
+  {
+    "courseCode": "SIS212",
+    "prerequisiteCourseCode": "SIS211"
+  },
+  {
+    "courseCode": "SIS436",
+    "prerequisiteCourseCode": "SIS334"
+  },
+  {
+    "courseCode": "SIS421",
+    "prerequisiteCourseCode": "SIS315"
+  },
+  {
+    "courseCode": "SIS422",
+    "prerequisiteCourseCode": "SIS211"
+  },
+  {
+    "courseCode": "SIS423",
+    "prerequisiteCourseCode": "SIS317"
+  },
+  {
+    "courseCode": "SDS212",
+    "prerequisiteCourseCode": "SMA113"
+  },
+  {
+    "courseCode": "SCS432",
+    "prerequisiteCourseCode": "SCS317"
+  },
+  {
+    "courseCode": "SCS359",
+    "prerequisiteCourseCode": "SCS357"
+  },
+  {
+    "courseCode": "SCS471",
+    "prerequisiteCourseCode": "SCS241"
+  }
+]

@@ -1,0 +1,162 @@
+[
+  {
+    "nationalId": "11111111111111",
+    "fullName": "Dr. Ahmed Hassan",
+    "fullNameAr": "د. أحمد حسن",
+    "email": "ahmed.hassan@instructor.com",
+    "phoneNumber": "01100000001",
+    "address": "Cairo, Egypt",
+    "nationality": "Egyptian",
+    "password": "Instructor@123",
+    "roles": [
+      "Instructor"
+    ],
+    "instructorRole": "Professor",
+    "specialization": "Information Systems",
+    "departmentName": "Information Systems"
+  },
+  {
+    "nationalId": "22222222222222",
+    "fullName": "Dr. Fatima Mohamed",
+    "fullNameAr": "د. فاطمة محمد",
+    "email": "fatima.mohamed@instructor.com",
+    "phoneNumber": "01100000002",
+    "address": "Giza, Egypt",
+    "nationality": "Egyptian",
+    "password": "Instructor@123",
+    "roles": [
+      "Instructor"
+    ],
+    "instructorRole": "Professor",
+    "specialization": "Database Systems",
+    "departmentName": "Information Systems"
+  },
+  {
+    "nationalId": "33333333333333",
+    "fullName": "Eng. Omar Khaled",
+    "fullNameAr": "م. عمر خالد",
+    "email": "omar.khaled@instructor.com",
+    "phoneNumber": "01100000003",
+    "address": "Alexandria, Egypt",
+    "nationality": "Egyptian",
+    "password": "Instructor@123",
+    "roles": [
+      "Instructor"
+    ],
+    "instructorRole": "TeachingAssistant",
+    "specialization": "Web Development",
+    "departmentName": "Information Systems"
+  },
+  {
+    "nationalId": "44444444444444",
+    "fullName": "Eng. Sara Ali",
+    "fullNameAr": "م. سارة علي",
+    "email": "sara.ali@instructor.com",
+    "phoneNumber": "01100000004",
+    "address": "Cairo, Egypt",
+    "nationality": "Egyptian",
+    "password": "Instructor@123",
+    "roles": [
+      "Instructor"
+    ],
+    "instructorRole": "TeachingAssistant",
+    "specialization": "Data Structures",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "nationalId": "10101010101010",
+    "fullName": "Dr. Mona Ibrahim",
+    "fullNameAr": "د. منى إبراهيم",
+    "email": "mona.ibrahim@instructor.com",
+    "phoneNumber": "01100000005",
+    "address": "Cairo, Egypt",
+    "nationality": "Egyptian",
+    "password": "Instructor@123",
+    "roles": [
+      "Instructor"
+    ],
+    "instructorRole": "Professor",
+    "specialization": "Data Science",
+    "departmentName": "Data Science"
+  },
+  {
+    "nationalId": "20202020202020",
+    "fullName": "Eng. Khaled Youssef",
+    "fullNameAr": "م. خالد يوسف",
+    "email": "khaled.youssef@instructor.com",
+    "phoneNumber": "01100000006",
+    "address": "Giza, Egypt",
+    "nationality": "Egyptian",
+    "password": "Instructor@123",
+    "roles": [
+      "Instructor"
+    ],
+    "instructorRole": "TeachingAssistant",
+    "specialization": "Systems Analysis",
+    "departmentName": "Information Systems"
+  },
+  {
+    "nationalId": "30303030303030",
+    "fullName": "Dr. Hany Farouk",
+    "fullNameAr": "د. هاني فاروق",
+    "email": "hany.farouk@instructor.com",
+    "phoneNumber": "01100000007",
+    "address": "Cairo, Egypt",
+    "nationality": "Egyptian",
+    "password": "Instructor@123",
+    "roles": [
+      "Instructor"
+    ],
+    "instructorRole": "Professor",
+    "specialization": "Software Engineering",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "nationalId": "40404040404040",
+    "fullName": "Eng. Nada Samir",
+    "fullNameAr": "م. ندى سمير",
+    "email": "nada.samir@instructor.com",
+    "phoneNumber": "01100000008",
+    "address": "Cairo, Egypt",
+    "nationality": "Egyptian",
+    "password": "Instructor@123",
+    "roles": [
+      "Instructor"
+    ],
+    "instructorRole": "TeachingAssistant",
+    "specialization": "Machine Learning",
+    "departmentName": "Data Science"
+  },
+  {
+    "nationalId": "50505050505050",
+    "fullName": "Dr. Tarek Nabil",
+    "fullNameAr": "د. طارق نبيل",
+    "email": "tarek.nabil@instructor.com",
+    "phoneNumber": "01100000009",
+    "address": "Alexandria, Egypt",
+    "nationality": "Egyptian",
+    "password": "Instructor@123",
+    "roles": [
+      "Instructor"
+    ],
+    "instructorRole": "Professor",
+    "specialization": "Network Security",
+    "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "nationalId": "60606060606060",
+    "fullName": "Eng. Amr Galal",
+    "fullNameAr": "م. عمرو جلال",
+    "email": "amr.galal@instructor.com",
+    "phoneNumber": "01100000010",
+    "address": "Cairo, Egypt",
+    "nationality": "Egyptian",
+    "password": "Instructor@123",
+    "roles": [
+      "Instructor"
+    ],
+    "instructorRole": "TeachingAssistant",
+    "specialization": "Cyber Security",
+    "departmentName": "Networks and Cyber Security"
+  }
+]

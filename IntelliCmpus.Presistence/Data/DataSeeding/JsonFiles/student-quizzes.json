@@ -1,0 +1,842 @@
+[
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "quizTitle": "Math-1 Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "quizTitle": "Math-1 Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Math-1 Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Math-1 Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "quizTitle": "Electronics Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Electronics Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Electronics Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "quizTitle": "Electronics Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Fundamentals of Computer Science Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Fundamentals of Computer Science Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "quizTitle": "Fundamentals of Computer Science Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "quizTitle": "Fundamentals of Computer Science Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Math-2 Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "quizTitle": "Math-2 Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "quizTitle": "Math-2 Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "quizTitle": "Math-2 Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "quizTitle": "Probability and Statistics-1 Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "quizTitle": "Probability and Statistics-1 Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "quizTitle": "Probability and Statistics-1 Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "quizTitle": "Probability and Statistics-1 Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "quizTitle": "Fundamentals of Management Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "quizTitle": "Fundamentals of Management Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "quizTitle": "Fundamentals of Management Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "quizTitle": "Fundamentals of Management Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "quizTitle": "Structured Programming Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "quizTitle": "Structured Programming Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "quizTitle": "Structured Programming Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "quizTitle": "Structured Programming Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "quizTitle": "Computer Networks Technology Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "quizTitle": "Computer Networks Technology Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "quizTitle": "Computer Networks Technology Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "quizTitle": "Computer Networks Technology Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "quizTitle": "Object Oriented Programming Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "quizTitle": "Object Oriented Programming Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "quizTitle": "Object Oriented Programming Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Object Oriented Programming Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "quizTitle": "Intro to Operations Research & Decision Support Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "quizTitle": "Intro to Operations Research & Decision Support Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Intro to Operations Research & Decision Support Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Intro to Operations Research & Decision Support Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "quizTitle": "Probability and Statistics-2 Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Probability and Statistics-2 Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Probability and Statistics-2 Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "quizTitle": "Probability and Statistics-2 Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Discrete Mathematics Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Discrete Mathematics Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "quizTitle": "Discrete Mathematics Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "quizTitle": "Discrete Mathematics Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Technical Report Writing Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "quizTitle": "Technical Report Writing Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "quizTitle": "Technical Report Writing Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "quizTitle": "Technical Report Writing Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "quizTitle": "Selected Topics in Humanities Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "quizTitle": "Selected Topics in Humanities Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "quizTitle": "Selected Topics in Humanities Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "quizTitle": "Selected Topics in Humanities Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "quizTitle": "Creative Thinking and Communication Skills Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "quizTitle": "Creative Thinking and Communication Skills Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "quizTitle": "Creative Thinking and Communication Skills Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "quizTitle": "Creative Thinking and Communication Skills Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "quizTitle": "Fundamentals of Economics Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "quizTitle": "Fundamentals of Economics Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "quizTitle": "Fundamentals of Economics Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "quizTitle": "Fundamentals of Economics Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "quizTitle": "Social Issues Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "quizTitle": "Social Issues Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "quizTitle": "Social Issues Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "quizTitle": "Social Issues Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "quizTitle": "Critical Thinking Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "quizTitle": "Critical Thinking Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "quizTitle": "Critical Thinking Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Critical Thinking Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "quizTitle": "Data Structures Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "quizTitle": "Data Structures Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Data Structures Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Data Structures Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "quizTitle": "Intro to Software Engineering Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Intro to Software Engineering Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Intro to Software Engineering Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "quizTitle": "Intro to Software Engineering Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Introduction to Database Systems Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Introduction to Database Systems Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "quizTitle": "Introduction to Database Systems Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "quizTitle": "Introduction to Database Systems Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Web Technology Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "quizTitle": "Web Technology Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "quizTitle": "Web Technology Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "quizTitle": "Web Technology Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "quizTitle": "Math-3 Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "quizTitle": "Math-3 Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "quizTitle": "Math-3 Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "quizTitle": "Math-3 Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "quizTitle": "Ethics and Professionalism Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "quizTitle": "Ethics and Professionalism Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "quizTitle": "Ethics and Professionalism Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "quizTitle": "Ethics and Professionalism Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "quizTitle": "Entrepreneurship Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "quizTitle": "Entrepreneurship Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "quizTitle": "Entrepreneurship Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "quizTitle": "Entrepreneurship Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "quizTitle": "Advanced Software Engineering Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "quizTitle": "Advanced Software Engineering Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "quizTitle": "Advanced Software Engineering Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "quizTitle": "Advanced Software Engineering Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "quizTitle": "Analysis and Design of Information Systems Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "quizTitle": "Analysis and Design of Information Systems Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "quizTitle": "Analysis and Design of Information Systems Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Analysis and Design of Information Systems Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "quizTitle": "Algorithms Analysis and Design Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "quizTitle": "Algorithms Analysis and Design Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Algorithms Analysis and Design Quiz 1",
+    "score": 9,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Algorithms Analysis and Design Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "quizTitle": "Operating Systems Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Operating Systems Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Operating Systems Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "quizTitle": "Operating Systems Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "quizTitle": "Database Management Systems Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "quizTitle": "Database Management Systems Quiz 1",
+    "score": 8,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "quizTitle": "Database Management Systems Quiz 1",
+    "score": 6,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "quizTitle": "Database Management Systems Quiz 1",
+    "score": 7,
+    "submittedAtOffset": "-2 days",
+    "isLate": false
+  }
+]

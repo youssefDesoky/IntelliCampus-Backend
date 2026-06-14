@@ -1,0 +1,1170 @@
+[
+  {
+    "title": "Math-1 Assignment 1",
+    "description": "First assignment for Math-1",
+    "fullInstructions": "Complete the following problems for Math-1. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "MA111"
+  },
+  {
+    "title": "Electronics Assignment 1",
+    "description": "First assignment for Electronics",
+    "fullInstructions": "Complete the following problems for Electronics. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IT111"
+  },
+  {
+    "title": "Fundamentals of Computer Science Assignment 1",
+    "description": "First assignment for Fundamentals of Computer Science",
+    "fullInstructions": "Complete the following problems for Fundamentals of Computer Science. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "CS111"
+  },
+  {
+    "title": "Math-2 Assignment 1",
+    "description": "First assignment for Math-2",
+    "fullInstructions": "Complete the following problems for Math-2. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "MA113"
+  },
+  {
+    "title": "Probability and Statistics-1 Assignment 1",
+    "description": "First assignment for Probability and Statistics-1",
+    "fullInstructions": "Complete the following problems for Probability and Statistics-1. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "ST121"
+  },
+  {
+    "title": "Fundamentals of Management Assignment 1",
+    "description": "First assignment for Fundamentals of Management",
+    "fullInstructions": "Complete the following problems for Fundamentals of Management. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "DS251"
+  },
+  {
+    "title": "Structured Programming Assignment 1",
+    "description": "First assignment for Structured Programming",
+    "fullInstructions": "Complete the following problems for Structured Programming. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "CS112"
+  },
+  {
+    "title": "Computer Networks Technology Assignment 1",
+    "description": "First assignment for Computer Networks Technology",
+    "fullInstructions": "Complete the following problems for Computer Networks Technology. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IT221"
+  },
+  {
+    "title": "Object Oriented Programming Assignment 1",
+    "description": "First assignment for Object Oriented Programming",
+    "fullInstructions": "Complete the following problems for Object Oriented Programming. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "CS213"
+  },
+  {
+    "title": "Intro to Operations Research & Decision Support Assignment 1",
+    "description": "First assignment for Intro to Operations Research & Decision Support",
+    "fullInstructions": "Complete the following problems for Intro to Operations Research & Decision Support. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "DS211"
+  },
+  {
+    "title": "Probability and Statistics-2 Assignment 1",
+    "description": "First assignment for Probability and Statistics-2",
+    "fullInstructions": "Complete the following problems for Probability and Statistics-2. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "ST222"
+  },
+  {
+    "title": "Discrete Mathematics Assignment 1",
+    "description": "First assignment for Discrete Mathematics",
+    "fullInstructions": "Complete the following problems for Discrete Mathematics. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "MA112"
+  },
+  {
+    "title": "Technical Report Writing Assignment 1",
+    "description": "First assignment for Technical Report Writing",
+    "fullInstructions": "Complete the following problems for Technical Report Writing. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "HU111"
+  },
+  {
+    "title": "Selected Topics in Humanities Assignment 1",
+    "description": "First assignment for Selected Topics in Humanities",
+    "fullInstructions": "Complete the following problems for Selected Topics in Humanities. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "HU118"
+  },
+  {
+    "title": "Creative Thinking and Communication Skills Assignment 1",
+    "description": "First assignment for Creative Thinking and Communication Skills",
+    "fullInstructions": "Complete the following problems for Creative Thinking and Communication Skills. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "HU113"
+  },
+  {
+    "title": "Fundamentals of Economics Assignment 1",
+    "description": "First assignment for Fundamentals of Economics",
+    "fullInstructions": "Complete the following problems for Fundamentals of Economics. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "HU121"
+  },
+  {
+    "title": "Social Issues Assignment 1",
+    "description": "First assignment for Social Issues",
+    "fullInstructions": "Complete the following problems for Social Issues. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "HU117"
+  },
+  {
+    "title": "Critical Thinking Assignment 1",
+    "description": "First assignment for Critical Thinking",
+    "fullInstructions": "Complete the following problems for Critical Thinking. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "HU124"
+  },
+  {
+    "title": "Data Structures Assignment 1",
+    "description": "First assignment for Data Structures",
+    "fullInstructions": "Complete the following problems for Data Structures. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "CS214"
+  },
+  {
+    "title": "Intro to Software Engineering Assignment 1",
+    "description": "First assignment for Intro to Software Engineering",
+    "fullInstructions": "Complete the following problems for Intro to Software Engineering. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "CS251"
+  },
+  {
+    "title": "Introduction to Database Systems Assignment 1",
+    "description": "First assignment for Introduction to Database Systems",
+    "fullInstructions": "Complete the following problems for Introduction to Database Systems. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS211"
+  },
+  {
+    "title": "Web Technology Assignment 1",
+    "description": "First assignment for Web Technology",
+    "fullInstructions": "Complete the following problems for Web Technology. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS231"
+  },
+  {
+    "title": "Math-3 Assignment 1",
+    "description": "First assignment for Math-3",
+    "fullInstructions": "Complete the following problems for Math-3. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "MA214"
+  },
+  {
+    "title": "Ethics and Professionalism Assignment 1",
+    "description": "First assignment for Ethics and Professionalism",
+    "fullInstructions": "Complete the following problems for Ethics and Professionalism. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "HU112"
+  },
+  {
+    "title": "Entrepreneurship Assignment 1",
+    "description": "First assignment for Entrepreneurship",
+    "fullInstructions": "Complete the following problems for Entrepreneurship. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "HU225"
+  },
+  {
+    "title": "Advanced Software Engineering Assignment 1",
+    "description": "First assignment for Advanced Software Engineering",
+    "fullInstructions": "Complete the following problems for Advanced Software Engineering. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "CS352"
+  },
+  {
+    "title": "Analysis and Design of Information Systems Assignment 1",
+    "description": "First assignment for Analysis and Design of Information Systems",
+    "fullInstructions": "Complete the following problems for Analysis and Design of Information Systems. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS332"
+  },
+  {
+    "title": "Algorithms Analysis and Design Assignment 1",
+    "description": "First assignment for Algorithms Analysis and Design",
+    "fullInstructions": "Complete the following problems for Algorithms Analysis and Design. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "CS321"
+  },
+  {
+    "title": "Operating Systems Assignment 1",
+    "description": "First assignment for Operating Systems",
+    "fullInstructions": "Complete the following problems for Operating Systems. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "CS341"
+  },
+  {
+    "title": "Database Management Systems Assignment 1",
+    "description": "First assignment for Database Management Systems",
+    "fullInstructions": "Complete the following problems for Database Management Systems. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS312"
+  },
+  {
+    "title": "File Management and Processing Assignment 1",
+    "description": "First assignment for File Management and Processing",
+    "fullInstructions": "Complete the following problems for File Management and Processing. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS321"
+  },
+  {
+    "title": "Information Retrieval Assignment 1",
+    "description": "First assignment for Information Retrieval",
+    "fullInstructions": "Complete the following problems for Information Retrieval. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS322"
+  },
+  {
+    "title": "Artificial Intelligence Assignment 1",
+    "description": "First assignment for Artificial Intelligence",
+    "fullInstructions": "Complete the following problems for Artificial Intelligence. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "CS361"
+  },
+  {
+    "title": "Data Warehousing Assignment 1",
+    "description": "First assignment for Data Warehousing",
+    "fullInstructions": "Complete the following problems for Data Warehousing. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS313"
+  },
+  {
+    "title": "Business Process Management Assignment 1",
+    "description": "First assignment for Business Process Management",
+    "fullInstructions": "Complete the following problems for Business Process Management. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS341"
+  },
+  {
+    "title": "Web-based Information Systems Development Assignment 1",
+    "description": "First assignment for Web-based Information Systems Development",
+    "fullInstructions": "Complete the following problems for Web-based Information Systems Development. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS333"
+  },
+  {
+    "title": "Logic Design Assignment 1",
+    "description": "First assignment for Logic Design",
+    "fullInstructions": "Complete the following problems for Logic Design. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IT212"
+  },
+  {
+    "title": "Field Training Assignment 1",
+    "description": "First assignment for Field Training",
+    "fullInstructions": "Complete the following problems for Field Training. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "TR301"
+  },
+  {
+    "title": "Graduation Project Assignment 1",
+    "description": "First assignment for Graduation Project",
+    "fullInstructions": "Complete the following problems for Graduation Project. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS498"
+  },
+  {
+    "title": "IS Development Methodologies Assignment 1",
+    "description": "First assignment for IS Development Methodologies",
+    "fullInstructions": "Complete the following problems for IS Development Methodologies. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS437"
+  },
+  {
+    "title": "Data Analytics Assignment 1",
+    "description": "First assignment for Data Analytics",
+    "fullInstructions": "Complete the following problems for Data Analytics. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "DS342"
+  },
+  {
+    "title": "Machine Learning Assignment 1",
+    "description": "First assignment for Machine Learning",
+    "fullInstructions": "Complete the following problems for Machine Learning. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "CS462"
+  },
+  {
+    "title": "Service-Oriented Architecture Assignment 1",
+    "description": "First assignment for Service-Oriented Architecture",
+    "fullInstructions": "Complete the following problems for Service-Oriented Architecture. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS434"
+  },
+  {
+    "title": "Geographical Information Systems Assignment 1",
+    "description": "First assignment for Geographical Information Systems",
+    "fullInstructions": "Complete the following problems for Geographical Information Systems. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS442"
+  },
+  {
+    "title": "Managing and Modeling Big Data Assignment 1",
+    "description": "First assignment for Managing and Modeling Big Data",
+    "fullInstructions": "Complete the following problems for Managing and Modeling Big Data. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS414"
+  },
+  {
+    "title": "Data Mining Assignment 1",
+    "description": "First assignment for Data Mining",
+    "fullInstructions": "Complete the following problems for Data Mining. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS422"
+  },
+  {
+    "title": "Selected Topics in Data Engineering Assignment 1",
+    "description": "First assignment for Selected Topics in Data Engineering",
+    "fullInstructions": "Complete the following problems for Selected Topics in Data Engineering. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS424"
+  },
+  {
+    "title": "E-Business Assignment 1",
+    "description": "First assignment for E-Business",
+    "fullInstructions": "Complete the following problems for E-Business. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS448"
+  },
+  {
+    "title": "Selected Topics in Information Systems-1 Assignment 1",
+    "description": "First assignment for Selected Topics in Information Systems-1",
+    "fullInstructions": "Complete the following problems for Selected Topics in Information Systems-1. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "IS495"
+  },
+  {
+    "title": "Project Management Assignment 1",
+    "description": "First assignment for Project Management",
+    "fullInstructions": "Complete the following problems for Project Management. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "DS456"
+  },
+  {
+    "title": "Fundamentals of Computers Assignment 1",
+    "description": "First assignment for Fundamentals of Computers",
+    "fullInstructions": "Complete the following problems for Fundamentals of Computers. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS111"
+  },
+  {
+    "title": "Electronics-1 Assignment 1",
+    "description": "First assignment for Electronics-1",
+    "fullInstructions": "Complete the following problems for Electronics-1. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT111"
+  },
+  {
+    "title": "Math-1 Assignment 1",
+    "description": "First assignment for Math-1",
+    "fullInstructions": "Complete the following problems for Math-1. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SMA111"
+  },
+  {
+    "title": "Technical Report Writing Assignment 1",
+    "description": "First assignment for Technical Report Writing",
+    "fullInstructions": "Complete the following problems for Technical Report Writing. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SHU111"
+  },
+  {
+    "title": "Discrete Mathematics Assignment 1",
+    "description": "First assignment for Discrete Mathematics",
+    "fullInstructions": "Complete the following problems for Discrete Mathematics. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SMA112"
+  },
+  {
+    "title": "Human Rights Assignment 1",
+    "description": "First assignment for Human Rights",
+    "fullInstructions": "Complete the following problems for Human Rights. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SHU121"
+  },
+  {
+    "title": "Fundamentals of Management Assignment 1",
+    "description": "First assignment for Fundamentals of Management",
+    "fullInstructions": "Complete the following problems for Fundamentals of Management. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SHU233"
+  },
+  {
+    "title": "Critical Thinking Assignment 1",
+    "description": "First assignment for Critical Thinking",
+    "fullInstructions": "Complete the following problems for Critical Thinking. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SHU124"
+  },
+  {
+    "title": "Structured Programming Assignment 1",
+    "description": "First assignment for Structured Programming",
+    "fullInstructions": "Complete the following problems for Structured Programming. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS112"
+  },
+  {
+    "title": "Logic Design Assignment 1",
+    "description": "First assignment for Logic Design",
+    "fullInstructions": "Complete the following problems for Logic Design. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT213"
+  },
+  {
+    "title": "Math-2 Assignment 1",
+    "description": "First assignment for Math-2",
+    "fullInstructions": "Complete the following problems for Math-2. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SMA113"
+  },
+  {
+    "title": "Probability and Statistics-1 Assignment 1",
+    "description": "First assignment for Probability and Statistics-1",
+    "fullInstructions": "Complete the following problems for Probability and Statistics-1. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SST121"
+  },
+  {
+    "title": "Entrepreneurship Assignment 1",
+    "description": "First assignment for Entrepreneurship",
+    "fullInstructions": "Complete the following problems for Entrepreneurship. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SHU234"
+  },
+  {
+    "title": "Object Oriented Programming Assignment 1",
+    "description": "First assignment for Object Oriented Programming",
+    "fullInstructions": "Complete the following problems for Object Oriented Programming. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS213"
+  },
+  {
+    "title": "Fundamentals of Computer Networks Assignment 1",
+    "description": "First assignment for Fundamentals of Computer Networks",
+    "fullInstructions": "Complete the following problems for Fundamentals of Computer Networks. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT223"
+  },
+  {
+    "title": "Probability and Statistics-2 Assignment 1",
+    "description": "First assignment for Probability and Statistics-2",
+    "fullInstructions": "Complete the following problems for Probability and Statistics-2. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SST222"
+  },
+  {
+    "title": "Math-3 Assignment 1",
+    "description": "First assignment for Math-3",
+    "fullInstructions": "Complete the following problems for Math-3. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SMA214"
+  },
+  {
+    "title": "Fundamentals of Software Engineering Assignment 1",
+    "description": "First assignment for Fundamentals of Software Engineering",
+    "fullInstructions": "Complete the following problems for Fundamentals of Software Engineering. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS251"
+  },
+  {
+    "title": "Data Structures Assignment 1",
+    "description": "First assignment for Data Structures",
+    "fullInstructions": "Complete the following problems for Data Structures. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS214"
+  },
+  {
+    "title": "Database Systems Assignment 1",
+    "description": "First assignment for Database Systems",
+    "fullInstructions": "Complete the following problems for Database Systems. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS211"
+  },
+  {
+    "title": "Introduction to Data Science Assignment 1",
+    "description": "First assignment for Introduction to Data Science",
+    "fullInstructions": "Complete the following problems for Introduction to Data Science. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS213"
+  },
+  {
+    "title": "Marketing & Sales Assignment 1",
+    "description": "First assignment for Marketing & Sales",
+    "fullInstructions": "Complete the following problems for Marketing & Sales. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SHU132"
+  },
+  {
+    "title": "Business Process Management Assignment 1",
+    "description": "First assignment for Business Process Management",
+    "fullInstructions": "Complete the following problems for Business Process Management. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS334"
+  },
+  {
+    "title": "Mathematical Optimization Assignment 1",
+    "description": "First assignment for Mathematical Optimization",
+    "fullInstructions": "Complete the following problems for Mathematical Optimization. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SDS212"
+  },
+  {
+    "title": "Operating Systems Assignment 1",
+    "description": "First assignment for Operating Systems",
+    "fullInstructions": "Complete the following problems for Operating Systems. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS241"
+  },
+  {
+    "title": "Advanced Database Assignment 1",
+    "description": "First assignment for Advanced Database",
+    "fullInstructions": "Complete the following problems for Advanced Database. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS314"
+  },
+  {
+    "title": "Database Management Systems Assignment 1",
+    "description": "First assignment for Database Management Systems",
+    "fullInstructions": "Complete the following problems for Database Management Systems. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS315"
+  },
+  {
+    "title": "Data Visualization Lab Assignment 1",
+    "description": "First assignment for Data Visualization Lab",
+    "fullInstructions": "Complete the following problems for Data Visualization Lab. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SLB442"
+  },
+  {
+    "title": "Algorithms Analysis & Design Assignment 1",
+    "description": "First assignment for Algorithms Analysis & Design",
+    "fullInstructions": "Complete the following problems for Algorithms Analysis & Design. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS316"
+  },
+  {
+    "title": "Geographical Information Systems Assignment 1",
+    "description": "First assignment for Geographical Information Systems",
+    "fullInstructions": "Complete the following problems for Geographical Information Systems. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS333"
+  },
+  {
+    "title": "Artificial Intelligence Assignment 1",
+    "description": "First assignment for Artificial Intelligence",
+    "fullInstructions": "Complete the following problems for Artificial Intelligence. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS361"
+  },
+  {
+    "title": "Web Technology Assignment 1",
+    "description": "First assignment for Web Technology",
+    "fullInstructions": "Complete the following problems for Web Technology. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS335"
+  },
+  {
+    "title": "Data Mining Assignment 1",
+    "description": "First assignment for Data Mining",
+    "fullInstructions": "Complete the following problems for Data Mining. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS317"
+  },
+  {
+    "title": "Machine Learning Assignment 1",
+    "description": "First assignment for Machine Learning",
+    "fullInstructions": "Complete the following problems for Machine Learning. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS462"
+  },
+  {
+    "title": "Forecasting and Predictive Analytics Assignment 1",
+    "description": "First assignment for Forecasting and Predictive Analytics",
+    "fullInstructions": "Complete the following problems for Forecasting and Predictive Analytics. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SDS344"
+  },
+  {
+    "title": "Field Training for Data Science Assignment 1",
+    "description": "First assignment for Field Training for Data Science",
+    "fullInstructions": "Complete the following problems for Field Training for Data Science. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "STR304"
+  },
+  {
+    "title": "Business Process Mining Assignment 1",
+    "description": "First assignment for Business Process Mining",
+    "fullInstructions": "Complete the following problems for Business Process Mining. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS436"
+  },
+  {
+    "title": "Big Data Management and Modeling Assignment 1",
+    "description": "First assignment for Big Data Management and Modeling",
+    "fullInstructions": "Complete the following problems for Big Data Management and Modeling. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS421"
+  },
+  {
+    "title": "Social Networks Analysis Assignment 1",
+    "description": "First assignment for Social Networks Analysis",
+    "fullInstructions": "Complete the following problems for Social Networks Analysis. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS422"
+  },
+  {
+    "title": "Unstructured Data Assignment 1",
+    "description": "First assignment for Unstructured Data",
+    "fullInstructions": "Complete the following problems for Unstructured Data. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS423"
+  },
+  {
+    "title": "Deep Learning Assignment 1",
+    "description": "First assignment for Deep Learning",
+    "fullInstructions": "Complete the following problems for Deep Learning. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS469"
+  },
+  {
+    "title": "Graduation Project Assignment 1",
+    "description": "First assignment for Graduation Project",
+    "fullInstructions": "Complete the following problems for Graduation Project. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SPD498"
+  },
+  {
+    "title": "Selected Topics in Data Engineering Assignment 1",
+    "description": "First assignment for Selected Topics in Data Engineering",
+    "fullInstructions": "Complete the following problems for Selected Topics in Data Engineering. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS418"
+  },
+  {
+    "title": "Selected Topics in Information Systems Assignment 1",
+    "description": "First assignment for Selected Topics in Information Systems",
+    "fullInstructions": "Complete the following problems for Selected Topics in Information Systems. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS438"
+  },
+  {
+    "title": "Applied Data Science Assignment 1",
+    "description": "First assignment for Applied Data Science",
+    "fullInstructions": "Complete the following problems for Applied Data Science. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS425"
+  },
+  {
+    "title": "Deep Learning Applications Lab Assignment 1",
+    "description": "First assignment for Deep Learning Applications Lab",
+    "fullInstructions": "Complete the following problems for Deep Learning Applications Lab. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SLB441"
+  },
+  {
+    "title": "Big Data and Data Science Lab Assignment 1",
+    "description": "First assignment for Big Data and Data Science Lab",
+    "fullInstructions": "Complete the following problems for Big Data and Data Science Lab. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SLB443"
+  },
+  {
+    "title": "Math-0 Assignment 1",
+    "description": "First assignment for Math-0",
+    "fullInstructions": "Complete the following problems for Math-0. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SMA001"
+  },
+  {
+    "title": "Project Management Assignment 1",
+    "description": "First assignment for Project Management",
+    "fullInstructions": "Complete the following problems for Project Management. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SDS321"
+  },
+  {
+    "title": "Software Modeling Assignment 1",
+    "description": "First assignment for Software Modeling",
+    "fullInstructions": "Complete the following problems for Software Modeling. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS252"
+  },
+  {
+    "title": "Software Process & Quality Management Assignment 1",
+    "description": "First assignment for Software Process & Quality Management",
+    "fullInstructions": "Complete the following problems for Software Process & Quality Management. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS253"
+  },
+  {
+    "title": "Software Requirement Analysis Assignment 1",
+    "description": "First assignment for Software Requirement Analysis",
+    "fullInstructions": "Complete the following problems for Software Requirement Analysis. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS254"
+  },
+  {
+    "title": "Computer Architecture Assignment 1",
+    "description": "First assignment for Computer Architecture",
+    "fullInstructions": "Complete the following problems for Computer Architecture. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS331"
+  },
+  {
+    "title": "Database Management Engineering Assignment 1",
+    "description": "First assignment for Database Management Engineering",
+    "fullInstructions": "Complete the following problems for Database Management Engineering. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIS212"
+  },
+  {
+    "title": "Algorithms Analysis & Design Assignment 1",
+    "description": "First assignment for Algorithms Analysis & Design",
+    "fullInstructions": "Complete the following problems for Algorithms Analysis & Design. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS315"
+  },
+  {
+    "title": "Software Design & Architecture Assignment 1",
+    "description": "First assignment for Software Design & Architecture",
+    "fullInstructions": "Complete the following problems for Software Design & Architecture. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS355"
+  },
+  {
+    "title": "Software Engineering Tools Lab Assignment 1",
+    "description": "First assignment for Software Engineering Tools Lab",
+    "fullInstructions": "Complete the following problems for Software Engineering Tools Lab. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SLB321"
+  },
+  {
+    "title": "Concepts of Programming Languages Assignment 1",
+    "description": "First assignment for Concepts of Programming Languages",
+    "fullInstructions": "Complete the following problems for Concepts of Programming Languages. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS317"
+  },
+  {
+    "title": "Human Computer Interaction Assignment 1",
+    "description": "First assignment for Human Computer Interaction",
+    "fullInstructions": "Complete the following problems for Human Computer Interaction. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS356"
+  },
+  {
+    "title": "Software Maintenance & Evolution Assignment 1",
+    "description": "First assignment for Software Maintenance & Evolution",
+    "fullInstructions": "Complete the following problems for Software Maintenance & Evolution. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS358"
+  },
+  {
+    "title": "Software Testing Assignment 1",
+    "description": "First assignment for Software Testing",
+    "fullInstructions": "Complete the following problems for Software Testing. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS357"
+  },
+  {
+    "title": "Advanced Software Engineering Tools Lab Assignment 1",
+    "description": "First assignment for Advanced Software Engineering Tools Lab",
+    "fullInstructions": "Complete the following problems for Advanced Software Engineering Tools Lab. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SLB322"
+  },
+  {
+    "title": "Field Training (Software Engineering) Assignment 1",
+    "description": "First assignment for Field Training (Software Engineering)",
+    "fullInstructions": "Complete the following problems for Field Training (Software Engineering). Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "STR302"
+  },
+  {
+    "title": "Soft Computing Assignment 1",
+    "description": "First assignment for Soft Computing",
+    "fullInstructions": "Complete the following problems for Soft Computing. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS465"
+  },
+  {
+    "title": "Selected Topics in SE-1 Assignment 1",
+    "description": "First assignment for Selected Topics in SE-1",
+    "fullInstructions": "Complete the following problems for Selected Topics in SE-1. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS491"
+  },
+  {
+    "title": "Cloud Computing Assignment 1",
+    "description": "First assignment for Cloud Computing",
+    "fullInstructions": "Complete the following problems for Cloud Computing. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS472"
+  },
+  {
+    "title": "Web Engineering Assignment 1",
+    "description": "First assignment for Web Engineering",
+    "fullInstructions": "Complete the following problems for Web Engineering. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS481"
+  },
+  {
+    "title": "Selected Labs in Software Engineering Assignment 1",
+    "description": "First assignment for Selected Labs in Software Engineering",
+    "fullInstructions": "Complete the following problems for Selected Labs in Software Engineering. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SLB423"
+  },
+  {
+    "title": "Graduation Project Assignment 1",
+    "description": "First assignment for Graduation Project",
+    "fullInstructions": "Complete the following problems for Graduation Project. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SPS498"
+  },
+  {
+    "title": "Theory of Computations Assignment 1",
+    "description": "First assignment for Theory of Computations",
+    "fullInstructions": "Complete the following problems for Theory of Computations. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS432"
+  },
+  {
+    "title": "Software Security Assignment 1",
+    "description": "First assignment for Software Security",
+    "fullInstructions": "Complete the following problems for Software Security. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS359"
+  },
+  {
+    "title": "Distributed Systems Assignment 1",
+    "description": "First assignment for Distributed Systems",
+    "fullInstructions": "Complete the following problems for Distributed Systems. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS471"
+  },
+  {
+    "title": "Selected Topics in SE-2 Assignment 1",
+    "description": "First assignment for Selected Topics in SE-2",
+    "fullInstructions": "Complete the following problems for Selected Topics in SE-2. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SCS492"
+  },
+  {
+    "title": "Data Communication Assignment 1",
+    "description": "First assignment for Data Communication",
+    "fullInstructions": "Complete the following problems for Data Communication. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT221"
+  },
+  {
+    "title": "Cryptography Assignment 1",
+    "description": "First assignment for Cryptography",
+    "fullInstructions": "Complete the following problems for Cryptography. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT271"
+  },
+  {
+    "title": "Computer Networks-1 Assignment 1",
+    "description": "First assignment for Computer Networks-1",
+    "fullInstructions": "Complete the following problems for Computer Networks-1. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT222"
+  },
+  {
+    "title": "Computer Networks-2 Assignment 1",
+    "description": "First assignment for Computer Networks-2",
+    "fullInstructions": "Complete the following problems for Computer Networks-2. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT324"
+  },
+  {
+    "title": "Networks and Web Programming Assignment 1",
+    "description": "First assignment for Networks and Web Programming",
+    "fullInstructions": "Complete the following problems for Networks and Web Programming. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT351"
+  },
+  {
+    "title": "Computer Security and Privacy Assignment 1",
+    "description": "First assignment for Computer Security and Privacy",
+    "fullInstructions": "Complete the following problems for Computer Security and Privacy. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT345"
+  },
+  {
+    "title": "Selected Labs in Networks-1 Assignment 1",
+    "description": "First assignment for Selected Labs in Networks-1",
+    "fullInstructions": "Complete the following problems for Selected Labs in Networks-1. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SLB316"
+  },
+  {
+    "title": "Computer Graphics Assignment 1",
+    "description": "First assignment for Computer Graphics",
+    "fullInstructions": "Complete the following problems for Computer Graphics. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT333"
+  },
+  {
+    "title": "Signals Processing Assignment 1",
+    "description": "First assignment for Signals Processing",
+    "fullInstructions": "Complete the following problems for Signals Processing. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT237"
+  },
+  {
+    "title": "Fundamentals of Cyber Security Assignment 1",
+    "description": "First assignment for Fundamentals of Cyber Security",
+    "fullInstructions": "Complete the following problems for Fundamentals of Cyber Security. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT381"
+  },
+  {
+    "title": "Field Training for Cyber Security Assignment 1",
+    "description": "First assignment for Field Training for Cyber Security",
+    "fullInstructions": "Complete the following problems for Field Training for Cyber Security. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "STR305"
+  },
+  {
+    "title": "Digital Forensics Assignment 1",
+    "description": "First assignment for Digital Forensics",
+    "fullInstructions": "Complete the following problems for Digital Forensics. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT472"
+  },
+  {
+    "title": "Wireless and Mobile Networks Assignment 1",
+    "description": "First assignment for Wireless and Mobile Networks",
+    "fullInstructions": "Complete the following problems for Wireless and Mobile Networks. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT325"
+  },
+  {
+    "title": "Networks and Mobile Security Assignment 1",
+    "description": "First assignment for Networks and Mobile Security",
+    "fullInstructions": "Complete the following problems for Networks and Mobile Security. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT446"
+  },
+  {
+    "title": "Ethical Hacking Assignment 1",
+    "description": "First assignment for Ethical Hacking",
+    "fullInstructions": "Complete the following problems for Ethical Hacking. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SLB451"
+  },
+  {
+    "title": "Graduation Project Assignment 1",
+    "description": "First assignment for Graduation Project",
+    "fullInstructions": "Complete the following problems for Graduation Project. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SPC498"
+  },
+  {
+    "title": "Networking Fundamentals Lab Assignment 1",
+    "description": "First assignment for Networking Fundamentals Lab",
+    "fullInstructions": "Complete the following problems for Networking Fundamentals Lab. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SLB311"
+  },
+  {
+    "title": "Advanced Cryptography Assignment 1",
+    "description": "First assignment for Advanced Cryptography",
+    "fullInstructions": "Complete the following problems for Advanced Cryptography. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT473"
+  },
+  {
+    "title": "Secure Programming Assignment 1",
+    "description": "First assignment for Secure Programming",
+    "fullInstructions": "Complete the following problems for Secure Programming. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT455"
+  },
+  {
+    "title": "Optical Networks Assignment 1",
+    "description": "First assignment for Optical Networks",
+    "fullInstructions": "Complete the following problems for Optical Networks. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT326"
+  },
+  {
+    "title": "Cloud Computing & Network Virtualization Assignment 1",
+    "description": "First assignment for Cloud Computing & Network Virtualization",
+    "fullInstructions": "Complete the following problems for Cloud Computing & Network Virtualization. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SIT452"
+  },
+  {
+    "title": "Selected Labs in Networks-2 Assignment 1",
+    "description": "First assignment for Selected Labs in Networks-2",
+    "fullInstructions": "Complete the following problems for Selected Labs in Networks-2. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SLB417"
+  },
+  {
+    "title": "Computer Networks Defense Assignment 1",
+    "description": "First assignment for Computer Networks Defense",
+    "fullInstructions": "Complete the following problems for Computer Networks Defense. Submit via the portal.",
+    "dueDateOffset": "-5 days",
+    "maxGrade": 20,
+    "courseCode": "SLB452"
+  }
+]

@@ -1,0 +1,1316 @@
+[
+  {
+    "title": "Math-1 Quiz 1",
+    "description": "Quiz for Math-1",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "MA111"
+  },
+  {
+    "title": "Electronics Quiz 1",
+    "description": "Quiz for Electronics",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IT111"
+  },
+  {
+    "title": "Fundamentals of Computer Science Quiz 1",
+    "description": "Quiz for Fundamentals of Computer Science",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "CS111"
+  },
+  {
+    "title": "Math-2 Quiz 1",
+    "description": "Quiz for Math-2",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "MA113"
+  },
+  {
+    "title": "Probability and Statistics-1 Quiz 1",
+    "description": "Quiz for Probability and Statistics-1",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "ST121"
+  },
+  {
+    "title": "Fundamentals of Management Quiz 1",
+    "description": "Quiz for Fundamentals of Management",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "DS251"
+  },
+  {
+    "title": "Structured Programming Quiz 1",
+    "description": "Quiz for Structured Programming",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "CS112"
+  },
+  {
+    "title": "Computer Networks Technology Quiz 1",
+    "description": "Quiz for Computer Networks Technology",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IT221"
+  },
+  {
+    "title": "Object Oriented Programming Quiz 1",
+    "description": "Quiz for Object Oriented Programming",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "CS213"
+  },
+  {
+    "title": "Intro to Operations Research & Decision Support Quiz 1",
+    "description": "Quiz for Intro to Operations Research & Decision Support",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "DS211"
+  },
+  {
+    "title": "Probability and Statistics-2 Quiz 1",
+    "description": "Quiz for Probability and Statistics-2",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "ST222"
+  },
+  {
+    "title": "Discrete Mathematics Quiz 1",
+    "description": "Quiz for Discrete Mathematics",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "MA112"
+  },
+  {
+    "title": "Technical Report Writing Quiz 1",
+    "description": "Quiz for Technical Report Writing",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "HU111"
+  },
+  {
+    "title": "Selected Topics in Humanities Quiz 1",
+    "description": "Quiz for Selected Topics in Humanities",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "HU118"
+  },
+  {
+    "title": "Creative Thinking and Communication Skills Quiz 1",
+    "description": "Quiz for Creative Thinking and Communication Skills",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "HU113"
+  },
+  {
+    "title": "Fundamentals of Economics Quiz 1",
+    "description": "Quiz for Fundamentals of Economics",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "HU121"
+  },
+  {
+    "title": "Social Issues Quiz 1",
+    "description": "Quiz for Social Issues",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "HU117"
+  },
+  {
+    "title": "Critical Thinking Quiz 1",
+    "description": "Quiz for Critical Thinking",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "HU124"
+  },
+  {
+    "title": "Data Structures Quiz 1",
+    "description": "Quiz for Data Structures",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "CS214"
+  },
+  {
+    "title": "Intro to Software Engineering Quiz 1",
+    "description": "Quiz for Intro to Software Engineering",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "CS251"
+  },
+  {
+    "title": "Introduction to Database Systems Quiz 1",
+    "description": "Quiz for Introduction to Database Systems",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS211"
+  },
+  {
+    "title": "Web Technology Quiz 1",
+    "description": "Quiz for Web Technology",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS231"
+  },
+  {
+    "title": "Math-3 Quiz 1",
+    "description": "Quiz for Math-3",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "MA214"
+  },
+  {
+    "title": "Ethics and Professionalism Quiz 1",
+    "description": "Quiz for Ethics and Professionalism",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "HU112"
+  },
+  {
+    "title": "Entrepreneurship Quiz 1",
+    "description": "Quiz for Entrepreneurship",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "HU225"
+  },
+  {
+    "title": "Advanced Software Engineering Quiz 1",
+    "description": "Quiz for Advanced Software Engineering",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "CS352"
+  },
+  {
+    "title": "Analysis and Design of Information Systems Quiz 1",
+    "description": "Quiz for Analysis and Design of Information Systems",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS332"
+  },
+  {
+    "title": "Algorithms Analysis and Design Quiz 1",
+    "description": "Quiz for Algorithms Analysis and Design",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "CS321"
+  },
+  {
+    "title": "Operating Systems Quiz 1",
+    "description": "Quiz for Operating Systems",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "CS341"
+  },
+  {
+    "title": "Database Management Systems Quiz 1",
+    "description": "Quiz for Database Management Systems",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS312"
+  },
+  {
+    "title": "File Management and Processing Quiz 1",
+    "description": "Quiz for File Management and Processing",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS321"
+  },
+  {
+    "title": "Information Retrieval Quiz 1",
+    "description": "Quiz for Information Retrieval",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS322"
+  },
+  {
+    "title": "Artificial Intelligence Quiz 1",
+    "description": "Quiz for Artificial Intelligence",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "CS361"
+  },
+  {
+    "title": "Data Warehousing Quiz 1",
+    "description": "Quiz for Data Warehousing",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS313"
+  },
+  {
+    "title": "Business Process Management Quiz 1",
+    "description": "Quiz for Business Process Management",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS341"
+  },
+  {
+    "title": "Web-based Information Systems Development Quiz 1",
+    "description": "Quiz for Web-based Information Systems Development",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS333"
+  },
+  {
+    "title": "Logic Design Quiz 1",
+    "description": "Quiz for Logic Design",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IT212"
+  },
+  {
+    "title": "Field Training Quiz 1",
+    "description": "Quiz for Field Training",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "TR301"
+  },
+  {
+    "title": "Graduation Project Quiz 1",
+    "description": "Quiz for Graduation Project",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS498"
+  },
+  {
+    "title": "IS Development Methodologies Quiz 1",
+    "description": "Quiz for IS Development Methodologies",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS437"
+  },
+  {
+    "title": "Data Analytics Quiz 1",
+    "description": "Quiz for Data Analytics",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "DS342"
+  },
+  {
+    "title": "Machine Learning Quiz 1",
+    "description": "Quiz for Machine Learning",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "CS462"
+  },
+  {
+    "title": "Service-Oriented Architecture Quiz 1",
+    "description": "Quiz for Service-Oriented Architecture",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS434"
+  },
+  {
+    "title": "Geographical Information Systems Quiz 1",
+    "description": "Quiz for Geographical Information Systems",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS442"
+  },
+  {
+    "title": "Managing and Modeling Big Data Quiz 1",
+    "description": "Quiz for Managing and Modeling Big Data",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS414"
+  },
+  {
+    "title": "Data Mining Quiz 1",
+    "description": "Quiz for Data Mining",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS422"
+  },
+  {
+    "title": "Selected Topics in Data Engineering Quiz 1",
+    "description": "Quiz for Selected Topics in Data Engineering",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS424"
+  },
+  {
+    "title": "E-Business Quiz 1",
+    "description": "Quiz for E-Business",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS448"
+  },
+  {
+    "title": "Selected Topics in Information Systems-1 Quiz 1",
+    "description": "Quiz for Selected Topics in Information Systems-1",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "IS495"
+  },
+  {
+    "title": "Project Management Quiz 1",
+    "description": "Quiz for Project Management",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "DS456"
+  },
+  {
+    "title": "Fundamentals of Computers Quiz 1",
+    "description": "Quiz for Fundamentals of Computers",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS111"
+  },
+  {
+    "title": "Electronics-1 Quiz 1",
+    "description": "Quiz for Electronics-1",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT111"
+  },
+  {
+    "title": "Math-1 Quiz 1",
+    "description": "Quiz for Math-1",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SMA111"
+  },
+  {
+    "title": "Technical Report Writing Quiz 1",
+    "description": "Quiz for Technical Report Writing",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SHU111"
+  },
+  {
+    "title": "Discrete Mathematics Quiz 1",
+    "description": "Quiz for Discrete Mathematics",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SMA112"
+  },
+  {
+    "title": "Human Rights Quiz 1",
+    "description": "Quiz for Human Rights",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SHU121"
+  },
+  {
+    "title": "Fundamentals of Management Quiz 1",
+    "description": "Quiz for Fundamentals of Management",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SHU233"
+  },
+  {
+    "title": "Critical Thinking Quiz 1",
+    "description": "Quiz for Critical Thinking",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SHU124"
+  },
+  {
+    "title": "Structured Programming Quiz 1",
+    "description": "Quiz for Structured Programming",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS112"
+  },
+  {
+    "title": "Logic Design Quiz 1",
+    "description": "Quiz for Logic Design",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT213"
+  },
+  {
+    "title": "Math-2 Quiz 1",
+    "description": "Quiz for Math-2",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SMA113"
+  },
+  {
+    "title": "Probability and Statistics-1 Quiz 1",
+    "description": "Quiz for Probability and Statistics-1",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SST121"
+  },
+  {
+    "title": "Entrepreneurship Quiz 1",
+    "description": "Quiz for Entrepreneurship",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SHU234"
+  },
+  {
+    "title": "Object Oriented Programming Quiz 1",
+    "description": "Quiz for Object Oriented Programming",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS213"
+  },
+  {
+    "title": "Fundamentals of Computer Networks Quiz 1",
+    "description": "Quiz for Fundamentals of Computer Networks",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT223"
+  },
+  {
+    "title": "Probability and Statistics-2 Quiz 1",
+    "description": "Quiz for Probability and Statistics-2",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SST222"
+  },
+  {
+    "title": "Math-3 Quiz 1",
+    "description": "Quiz for Math-3",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SMA214"
+  },
+  {
+    "title": "Fundamentals of Software Engineering Quiz 1",
+    "description": "Quiz for Fundamentals of Software Engineering",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS251"
+  },
+  {
+    "title": "Data Structures Quiz 1",
+    "description": "Quiz for Data Structures",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS214"
+  },
+  {
+    "title": "Database Systems Quiz 1",
+    "description": "Quiz for Database Systems",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS211"
+  },
+  {
+    "title": "Introduction to Data Science Quiz 1",
+    "description": "Quiz for Introduction to Data Science",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS213"
+  },
+  {
+    "title": "Marketing & Sales Quiz 1",
+    "description": "Quiz for Marketing & Sales",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SHU132"
+  },
+  {
+    "title": "Business Process Management Quiz 1",
+    "description": "Quiz for Business Process Management",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS334"
+  },
+  {
+    "title": "Mathematical Optimization Quiz 1",
+    "description": "Quiz for Mathematical Optimization",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SDS212"
+  },
+  {
+    "title": "Operating Systems Quiz 1",
+    "description": "Quiz for Operating Systems",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS241"
+  },
+  {
+    "title": "Advanced Database Quiz 1",
+    "description": "Quiz for Advanced Database",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS314"
+  },
+  {
+    "title": "Database Management Systems Quiz 1",
+    "description": "Quiz for Database Management Systems",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS315"
+  },
+  {
+    "title": "Data Visualization Lab Quiz 1",
+    "description": "Quiz for Data Visualization Lab",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SLB442"
+  },
+  {
+    "title": "Algorithms Analysis & Design Quiz 1",
+    "description": "Quiz for Algorithms Analysis & Design",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS316"
+  },
+  {
+    "title": "Geographical Information Systems Quiz 1",
+    "description": "Quiz for Geographical Information Systems",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS333"
+  },
+  {
+    "title": "Artificial Intelligence Quiz 1",
+    "description": "Quiz for Artificial Intelligence",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS361"
+  },
+  {
+    "title": "Web Technology Quiz 1",
+    "description": "Quiz for Web Technology",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS335"
+  },
+  {
+    "title": "Data Mining Quiz 1",
+    "description": "Quiz for Data Mining",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS317"
+  },
+  {
+    "title": "Machine Learning Quiz 1",
+    "description": "Quiz for Machine Learning",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS462"
+  },
+  {
+    "title": "Forecasting and Predictive Analytics Quiz 1",
+    "description": "Quiz for Forecasting and Predictive Analytics",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SDS344"
+  },
+  {
+    "title": "Field Training for Data Science Quiz 1",
+    "description": "Quiz for Field Training for Data Science",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "STR304"
+  },
+  {
+    "title": "Business Process Mining Quiz 1",
+    "description": "Quiz for Business Process Mining",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS436"
+  },
+  {
+    "title": "Big Data Management and Modeling Quiz 1",
+    "description": "Quiz for Big Data Management and Modeling",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS421"
+  },
+  {
+    "title": "Social Networks Analysis Quiz 1",
+    "description": "Quiz for Social Networks Analysis",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS422"
+  },
+  {
+    "title": "Unstructured Data Quiz 1",
+    "description": "Quiz for Unstructured Data",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS423"
+  },
+  {
+    "title": "Deep Learning Quiz 1",
+    "description": "Quiz for Deep Learning",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS469"
+  },
+  {
+    "title": "Graduation Project Quiz 1",
+    "description": "Quiz for Graduation Project",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SPD498"
+  },
+  {
+    "title": "Selected Topics in Data Engineering Quiz 1",
+    "description": "Quiz for Selected Topics in Data Engineering",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS418"
+  },
+  {
+    "title": "Selected Topics in Information Systems Quiz 1",
+    "description": "Quiz for Selected Topics in Information Systems",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS438"
+  },
+  {
+    "title": "Applied Data Science Quiz 1",
+    "description": "Quiz for Applied Data Science",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS425"
+  },
+  {
+    "title": "Deep Learning Applications Lab Quiz 1",
+    "description": "Quiz for Deep Learning Applications Lab",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SLB441"
+  },
+  {
+    "title": "Big Data and Data Science Lab Quiz 1",
+    "description": "Quiz for Big Data and Data Science Lab",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SLB443"
+  },
+  {
+    "title": "Math-0 Quiz 1",
+    "description": "Quiz for Math-0",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SMA001"
+  },
+  {
+    "title": "Project Management Quiz 1",
+    "description": "Quiz for Project Management",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SDS321"
+  },
+  {
+    "title": "Software Modeling Quiz 1",
+    "description": "Quiz for Software Modeling",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS252"
+  },
+  {
+    "title": "Software Process & Quality Management Quiz 1",
+    "description": "Quiz for Software Process & Quality Management",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS253"
+  },
+  {
+    "title": "Software Requirement Analysis Quiz 1",
+    "description": "Quiz for Software Requirement Analysis",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS254"
+  },
+  {
+    "title": "Computer Architecture Quiz 1",
+    "description": "Quiz for Computer Architecture",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS331"
+  },
+  {
+    "title": "Database Management Engineering Quiz 1",
+    "description": "Quiz for Database Management Engineering",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIS212"
+  },
+  {
+    "title": "Algorithms Analysis & Design Quiz 1",
+    "description": "Quiz for Algorithms Analysis & Design",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS315"
+  },
+  {
+    "title": "Software Design & Architecture Quiz 1",
+    "description": "Quiz for Software Design & Architecture",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS355"
+  },
+  {
+    "title": "Software Engineering Tools Lab Quiz 1",
+    "description": "Quiz for Software Engineering Tools Lab",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SLB321"
+  },
+  {
+    "title": "Concepts of Programming Languages Quiz 1",
+    "description": "Quiz for Concepts of Programming Languages",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS317"
+  },
+  {
+    "title": "Human Computer Interaction Quiz 1",
+    "description": "Quiz for Human Computer Interaction",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS356"
+  },
+  {
+    "title": "Software Maintenance & Evolution Quiz 1",
+    "description": "Quiz for Software Maintenance & Evolution",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS358"
+  },
+  {
+    "title": "Software Testing Quiz 1",
+    "description": "Quiz for Software Testing",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS357"
+  },
+  {
+    "title": "Advanced Software Engineering Tools Lab Quiz 1",
+    "description": "Quiz for Advanced Software Engineering Tools Lab",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SLB322"
+  },
+  {
+    "title": "Field Training (Software Engineering) Quiz 1",
+    "description": "Quiz for Field Training (Software Engineering)",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "STR302"
+  },
+  {
+    "title": "Soft Computing Quiz 1",
+    "description": "Quiz for Soft Computing",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS465"
+  },
+  {
+    "title": "Selected Topics in SE-1 Quiz 1",
+    "description": "Quiz for Selected Topics in SE-1",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS491"
+  },
+  {
+    "title": "Cloud Computing Quiz 1",
+    "description": "Quiz for Cloud Computing",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS472"
+  },
+  {
+    "title": "Web Engineering Quiz 1",
+    "description": "Quiz for Web Engineering",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS481"
+  },
+  {
+    "title": "Selected Labs in Software Engineering Quiz 1",
+    "description": "Quiz for Selected Labs in Software Engineering",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SLB423"
+  },
+  {
+    "title": "Graduation Project Quiz 1",
+    "description": "Quiz for Graduation Project",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SPS498"
+  },
+  {
+    "title": "Theory of Computations Quiz 1",
+    "description": "Quiz for Theory of Computations",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS432"
+  },
+  {
+    "title": "Software Security Quiz 1",
+    "description": "Quiz for Software Security",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS359"
+  },
+  {
+    "title": "Distributed Systems Quiz 1",
+    "description": "Quiz for Distributed Systems",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS471"
+  },
+  {
+    "title": "Selected Topics in SE-2 Quiz 1",
+    "description": "Quiz for Selected Topics in SE-2",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SCS492"
+  },
+  {
+    "title": "Data Communication Quiz 1",
+    "description": "Quiz for Data Communication",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT221"
+  },
+  {
+    "title": "Cryptography Quiz 1",
+    "description": "Quiz for Cryptography",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT271"
+  },
+  {
+    "title": "Computer Networks-1 Quiz 1",
+    "description": "Quiz for Computer Networks-1",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT222"
+  },
+  {
+    "title": "Computer Networks-2 Quiz 1",
+    "description": "Quiz for Computer Networks-2",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT324"
+  },
+  {
+    "title": "Networks and Web Programming Quiz 1",
+    "description": "Quiz for Networks and Web Programming",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT351"
+  },
+  {
+    "title": "Computer Security and Privacy Quiz 1",
+    "description": "Quiz for Computer Security and Privacy",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT345"
+  },
+  {
+    "title": "Selected Labs in Networks-1 Quiz 1",
+    "description": "Quiz for Selected Labs in Networks-1",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SLB316"
+  },
+  {
+    "title": "Computer Graphics Quiz 1",
+    "description": "Quiz for Computer Graphics",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT333"
+  },
+  {
+    "title": "Signals Processing Quiz 1",
+    "description": "Quiz for Signals Processing",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT237"
+  },
+  {
+    "title": "Fundamentals of Cyber Security Quiz 1",
+    "description": "Quiz for Fundamentals of Cyber Security",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT381"
+  },
+  {
+    "title": "Field Training for Cyber Security Quiz 1",
+    "description": "Quiz for Field Training for Cyber Security",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "STR305"
+  },
+  {
+    "title": "Digital Forensics Quiz 1",
+    "description": "Quiz for Digital Forensics",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT472"
+  },
+  {
+    "title": "Wireless and Mobile Networks Quiz 1",
+    "description": "Quiz for Wireless and Mobile Networks",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT325"
+  },
+  {
+    "title": "Networks and Mobile Security Quiz 1",
+    "description": "Quiz for Networks and Mobile Security",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT446"
+  },
+  {
+    "title": "Ethical Hacking Quiz 1",
+    "description": "Quiz for Ethical Hacking",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SLB451"
+  },
+  {
+    "title": "Graduation Project Quiz 1",
+    "description": "Quiz for Graduation Project",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SPC498"
+  },
+  {
+    "title": "Networking Fundamentals Lab Quiz 1",
+    "description": "Quiz for Networking Fundamentals Lab",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SLB311"
+  },
+  {
+    "title": "Advanced Cryptography Quiz 1",
+    "description": "Quiz for Advanced Cryptography",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT473"
+  },
+  {
+    "title": "Secure Programming Quiz 1",
+    "description": "Quiz for Secure Programming",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT455"
+  },
+  {
+    "title": "Optical Networks Quiz 1",
+    "description": "Quiz for Optical Networks",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT326"
+  },
+  {
+    "title": "Cloud Computing & Network Virtualization Quiz 1",
+    "description": "Quiz for Cloud Computing & Network Virtualization",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SIT452"
+  },
+  {
+    "title": "Selected Labs in Networks-2 Quiz 1",
+    "description": "Quiz for Selected Labs in Networks-2",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SLB417"
+  },
+  {
+    "title": "Computer Networks Defense Quiz 1",
+    "description": "Quiz for Computer Networks Defense",
+    "dueDateOffset": "-3 days",
+    "durationMinutes": 15,
+    "maxGrade": 10,
+    "totalMarks": 10,
+    "courseCode": "SLB452"
+  }
+]
