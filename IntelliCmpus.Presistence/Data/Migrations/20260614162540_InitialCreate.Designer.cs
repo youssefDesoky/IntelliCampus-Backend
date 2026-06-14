@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace IntelliCampus.Presistence.Migrations
+namespace IntelliCampus.Presistence.Data.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    [Migration("20260614142745_InitialCreate")]
+    [Migration("20260614162540_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -628,6 +628,31 @@ namespace IntelliCampus.Presistence.Migrations
                     b.ToTable("Exams");
                 });
 
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.ExamHall", b =>
+                {
+                    b.Property<int>("ExamHallId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamHallId"));
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("HallName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("HallNameAr")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("ExamHallId");
+
+                    b.ToTable("ExamHalls");
+                });
+
             modelBuilder.Entity("IntelliCampus.Domain.Entities.ExamSchedule", b =>
                 {
                     b.Property<int>("ExamScheduleId")
@@ -692,6 +717,38 @@ namespace IntelliCampus.Presistence.Migrations
                     b.HasIndex("StudentId", "Date");
 
                     b.ToTable("ExamSchedules", (string)null);
+                });
+
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.ExamSeatAssignment", b =>
+                {
+                    b.Property<int>("ExamSeatAssignmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamSeatAssignmentId"));
+
+                    b.Property<int>("ExamHallId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ExamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeatNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ExamSeatAssignmentId");
+
+                    b.HasIndex("ExamHallId");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("ExamId", "StudentId")
+                        .IsUnique();
+
+                    b.ToTable("ExamSeatAssignments");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Faculty", b =>
@@ -2040,6 +2097,33 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.ExamSeatAssignment", b =>
+                {
+                    b.HasOne("IntelliCampus.Domain.Entities.ExamHall", "ExamHall")
+                        .WithMany()
+                        .HasForeignKey("ExamHallId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("IntelliCampus.Domain.Entities.Exam", "Exam")
+                        .WithMany("ExamSeatAssignments")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IntelliCampus.Domain.Entities.Student", "Student")
+                        .WithMany("ExamSeatAssignments")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exam");
+
+                    b.Navigation("ExamHall");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("IntelliCampus.Domain.Entities.FriendRequest", b =>
                 {
                     b.HasOne("IntelliCampus.Domain.Entities.User", "Recipient")
@@ -2573,6 +2657,8 @@ namespace IntelliCampus.Presistence.Migrations
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Exam", b =>
                 {
                     b.Navigation("ExamSchedules");
+
+                    b.Navigation("ExamSeatAssignments");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Faculty", b =>
@@ -2658,6 +2744,8 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("Attendances");
 
                     b.Navigation("ChatbotQueries");
+
+                    b.Navigation("ExamSeatAssignments");
 
                     b.Navigation("Grades");
 

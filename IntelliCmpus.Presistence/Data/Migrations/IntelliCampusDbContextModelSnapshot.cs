@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace IntelliCampus.Presistence.Migrations
+namespace IntelliCampus.Presistence.Data.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
     partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
@@ -716,31 +716,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.ToTable("ExamSchedules", (string)null);
                 });
 
-            modelBuilder.Entity("IntelliCampus.Domain.Entities.Faculty", b =>
-                {
-                    b.Property<int>("FacultyId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FacultyId"));
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("FacultyName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("FacultyNameAr")
-                        .HasMaxLength(100)
-                        .IsUnicode(true)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("FacultyId");
-
-                    b.ToTable("Faculties", (string)null);
             modelBuilder.Entity("IntelliCampus.Domain.Entities.ExamSeatAssignment", b =>
                 {
                     b.Property<int>("ExamSeatAssignmentId")
@@ -771,6 +746,33 @@ namespace IntelliCampus.Presistence.Migrations
                         .IsUnique();
 
                     b.ToTable("ExamSeatAssignments");
+                });
+
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.Faculty", b =>
+                {
+                    b.Property<int>("FacultyId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FacultyId"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("FacultyName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FacultyNameAr")
+                        .HasMaxLength(100)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("FacultyId");
+
+                    b.ToTable("Faculties", (string)null);
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.FriendRequest", b =>
