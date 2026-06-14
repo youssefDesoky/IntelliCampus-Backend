@@ -220,11 +220,11 @@ public static class AdminSeeder
         // ???????????????????? Students ????????????????????
         var students = new List<Student>
         {
-            new() { NationalId = "55555555555555", StudentCode = "20230001", FullName = "Mohammed Hassan", FullNameAr = "???? ???", Email = "mohammed.hassan@student.com", PhoneNumber = "01100000010", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 2, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
-            new() { NationalId = "66666666666666", StudentCode = "20230002", FullName = "Layla Ahmed", FullNameAr = "???? ????", Email = "layla.ahmed@student.com", PhoneNumber = "01100000011", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 2, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
-            new() { NationalId = "77777777777777", StudentCode = "20220001", FullName = "Karim Mohamed", FullNameAr = "???? ????", Email = "karim.mohamed@student.com", PhoneNumber = "01100000012", Address = "Alexandria, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 3, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-3) },
-            new() { NationalId = "88888888888888", StudentCode = "20230003", FullName = "Noor Ali", FullNameAr = "??? ???", Email = "noor.ali@student.com", PhoneNumber = "01100000013", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 2, DepartmentId = departments[1].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2) },
-            new() { NationalId = "99999999999999", StudentCode = "20240001", FullName = "Youssef Salim", FullNameAr = "???? ????", Email = "youssef.salim@student.com", PhoneNumber = "01100000014", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 1, DepartmentId = departments[1].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-1) },
+            new() { NationalId = "55555555555555", StudentCode = "20230001", FullName = "Mohammed Hassan", FullNameAr = "???? ???", Email = "mohammed.hassan@student.com", PhoneNumber = "01100000010", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 2, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2), Program = StudentProgram.Credit, Gpa = 2.33 },
+            new() { NationalId = "66666666666666", StudentCode = "20230002", FullName = "Layla Ahmed", FullNameAr = "???? ????", Email = "layla.ahmed@student.com", PhoneNumber = "01100000011", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 2, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2), Program = StudentProgram.Credit, Gpa = 3.62 },
+            new() { NationalId = "77777777777777", StudentCode = "20220001", FullName = "Karim Mohamed", FullNameAr = "???? ????", Email = "karim.mohamed@student.com", PhoneNumber = "01100000012", Address = "Alexandria, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 3, DepartmentId = departments[0].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-3), Program = StudentProgram.Credit, Gpa = 2.75 },
+            new() { NationalId = "88888888888888", StudentCode = "20230003", FullName = "Noor Ali", FullNameAr = "??? ???", Email = "noor.ali@student.com", PhoneNumber = "01100000013", Address = "Cairo, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 2, DepartmentId = departments[1].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-2), Program = StudentProgram.General, Gpa = 3.10 },
+            new() { NationalId = "99999999999999", StudentCode = "20240001", FullName = "Youssef Salim", FullNameAr = "???? ????", Email = "youssef.salim@student.com", PhoneNumber = "01100000014", Address = "Giza, Egypt", Nationality = "Egyptian", Password = passwordService.HashPassword("Student@123"), Roles = [UserRole.Student_UnderGrad], FacultyId = faculty.FacultyId, Level = 1, DepartmentId = departments[1].DepartmentId, BylawId = bylaw.BylawId, EnrollmentDate = DateTime.UtcNow.AddYears(-1), Program = StudentProgram.General, Gpa = 2.50 },
         };
         await context.Students.AddRangeAsync(students);
         await context.SaveChangesAsync();
@@ -329,12 +329,36 @@ public static class AdminSeeder
         // ???????????????????? Grades ????????????????????
         var grades = new List<Grade>
         {
+            // students[0] Mohammed Hassan — CS-201
             new() { StudentId = students[0].UserId, CourseId = courses[2].CourseId, GradeType = GradeType.Midterm, Title = "Midterm", Score = 15, MaxScore = 20, Weight = 20, Status = "Graded", GradedAt = DateTime.UtcNow },
             new() { StudentId = students[0].UserId, CourseId = courses[2].CourseId, GradeType = GradeType.Final, Title = "Final", Score = 45, MaxScore = 60, Weight = 60, Status = "Graded", GradedAt = DateTime.UtcNow },
+            // students[0] Mohammed Hassan — CS-301
+            new() { StudentId = students[0].UserId, CourseId = courses[4].CourseId, GradeType = GradeType.Midterm, Title = "Midterm", Score = 80, MaxScore = 100, Weight = 30, Status = "Graded", GradedAt = DateTime.UtcNow },
+            new() { StudentId = students[0].UserId, CourseId = courses[4].CourseId, GradeType = GradeType.Final, Title = "Final", Score = 85, MaxScore = 100, Weight = 40, Status = "Graded", GradedAt = DateTime.UtcNow },
+            // students[0] Mohammed Hassan — CS-302
+            new() { StudentId = students[0].UserId, CourseId = courses[5].CourseId, GradeType = GradeType.Midterm, Title = "Midterm", Score = 88, MaxScore = 100, Weight = 30, Status = "Graded", GradedAt = DateTime.UtcNow },
+            new() { StudentId = students[0].UserId, CourseId = courses[5].CourseId, GradeType = GradeType.Final, Title = "Final", Score = 92, MaxScore = 100, Weight = 40, Status = "Graded", GradedAt = DateTime.UtcNow },
+            // students[1] Layla Ahmed — CS-201
             new() { StudentId = students[1].UserId, CourseId = courses[2].CourseId, GradeType = GradeType.Midterm, Title = "Midterm", Score = 92, MaxScore = 100, Weight = 30, Status = "Graded", GradedAt = DateTime.UtcNow },
             new() { StudentId = students[1].UserId, CourseId = courses[2].CourseId, GradeType = GradeType.Final, Title = "Final", Score = 90, MaxScore = 100, Weight = 40, Status = "Graded", GradedAt = DateTime.UtcNow },
+            // students[1] Layla Ahmed — IS-202
+            new() { StudentId = students[1].UserId, CourseId = courses[10].CourseId, GradeType = GradeType.Midterm, Title = "Midterm", Score = 88, MaxScore = 100, Weight = 30, Status = "Graded", GradedAt = DateTime.UtcNow },
+            new() { StudentId = students[1].UserId, CourseId = courses[10].CourseId, GradeType = GradeType.Final, Title = "Final", Score = 93, MaxScore = 100, Weight = 40, Status = "Graded", GradedAt = DateTime.UtcNow },
+            // students[2] Karim Mohamed — CS-201
+            new() { StudentId = students[2].UserId, CourseId = courses[2].CourseId, GradeType = GradeType.Midterm, Title = "Midterm", Score = 82, MaxScore = 100, Weight = 30, Status = "Graded", GradedAt = DateTime.UtcNow },
+            new() { StudentId = students[2].UserId, CourseId = courses[2].CourseId, GradeType = GradeType.Final, Title = "Final", Score = 78, MaxScore = 100, Weight = 40, Status = "Graded", GradedAt = DateTime.UtcNow },
+            // students[2] Karim Mohamed — CS-301
             new() { StudentId = students[2].UserId, CourseId = courses[4].CourseId, GradeType = GradeType.Midterm, Title = "Midterm", Score = 78, MaxScore = 100, Weight = 30, Status = "Graded", GradedAt = DateTime.UtcNow },
             new() { StudentId = students[2].UserId, CourseId = courses[4].CourseId, GradeType = GradeType.Final, Title = "Final", Score = 82, MaxScore = 100, Weight = 40, Status = "Graded", GradedAt = DateTime.UtcNow },
+            // students[3] Noor Ali — IS-202
+            new() { StudentId = students[3].UserId, CourseId = courses[10].CourseId, GradeType = GradeType.Midterm, Title = "Midterm", Score = 85, MaxScore = 100, Weight = 30, Status = "Graded", GradedAt = DateTime.UtcNow },
+            new() { StudentId = students[3].UserId, CourseId = courses[10].CourseId, GradeType = GradeType.Final, Title = "Final", Score = 90, MaxScore = 100, Weight = 40, Status = "Graded", GradedAt = DateTime.UtcNow },
+            // students[3] Noor Ali — CS-302
+            new() { StudentId = students[3].UserId, CourseId = courses[5].CourseId, GradeType = GradeType.Midterm, Title = "Midterm", Score = 82, MaxScore = 100, Weight = 30, Status = "Graded", GradedAt = DateTime.UtcNow },
+            new() { StudentId = students[3].UserId, CourseId = courses[5].CourseId, GradeType = GradeType.Final, Title = "Final", Score = 88, MaxScore = 100, Weight = 40, Status = "Graded", GradedAt = DateTime.UtcNow },
+            // students[4] Youssef Salim — CS-201
+            new() { StudentId = students[4].UserId, CourseId = courses[2].CourseId, GradeType = GradeType.Midterm, Title = "Midterm", Score = 72, MaxScore = 100, Weight = 30, Status = "Graded", GradedAt = DateTime.UtcNow },
+            new() { StudentId = students[4].UserId, CourseId = courses[2].CourseId, GradeType = GradeType.Final, Title = "Final", Score = 78, MaxScore = 100, Weight = 40, Status = "Graded", GradedAt = DateTime.UtcNow },
         };
         await context.Grades.AddRangeAsync(grades);
         await context.SaveChangesAsync();
