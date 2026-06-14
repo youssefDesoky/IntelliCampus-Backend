@@ -118,6 +118,7 @@ builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<UrlResolver>();
 builder.Services.AddScoped<IBylawService, BylawService>();
 builder.Services.AddScoped<IExamService, ExamService>();
+builder.Services.AddScoped<IAutoExamSchedulingService, AutoExamSchedulingService>();
 builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
 builder.Services.AddScoped<IPdfExportService, PdfExportService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -137,6 +138,7 @@ using (var scope = app.Services.CreateScope())
     await context.Database.MigrateAsync();
     var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
     await AdminSeeder.SeedAdminAsync(context, passwordService);
+    await ExamHallSeeder.SeedExamHallsAsync(context);
     await QuizSeeder.SeedQuizzesAsync(context);
     await AssignmentSeeder.SeedAssignmentsAsync(context);
 }
