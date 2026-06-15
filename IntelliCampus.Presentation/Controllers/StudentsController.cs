@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Shared.Dtos.Student;
 using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
@@ -80,6 +81,22 @@ public class StudentsController : ControllerBase
             return NotFound();
 
         return NoContent();
+    }
+
+    [HttpPatch("{id}/level")]
+    public async Task<ActionResult<StudentDto>> UpdateLevel(int id, [FromBody] UpdateStudentLevelDto dto)
+    {
+        var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+        if (!userRoles.Contains(UserRole.SuperAdmin.ToString()) &&
+            !userRoles.Contains(UserRole.Admin_UnderGrad.ToString()))
+            return Forbid();
+
+        var student = await _studentService.UpdateLevelAsync(id, dto.Level);
+
+        if (student is null)
+            return NotFound();
+
+        return Ok(student);
     }
 
     [HttpPost("{id}/recalculate-gpa")]

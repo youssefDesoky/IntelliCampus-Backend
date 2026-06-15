@@ -25,7 +25,8 @@ public class StudentDto
     public string? EnrollmentDate { get; set; }
     public double Gpa { get; set; }
     public StudentProgram? Program { get; set; }
-    public string? Specialization { get; set; }
+    public int? SpecializationId { get; set; }
+    public string? SpecializationName { get; set; }
     public StudentType StudentType { get; set; }
     public List<string> Roles { get; set; } = [];
 }

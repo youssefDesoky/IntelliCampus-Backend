@@ -14,6 +14,9 @@ public class BylawDto
     public string? UploadedByAdminName { get; set; }
     public int? StudentCount { get; set; }
     public List<GradeScaleItemDto>? GradeScales { get; set; }
+    public List<LevelScaleItemDto>? LevelScales { get; set; }
+    public int? MinHoursToChooseDepartment { get; set; }
+    public int? MinHoursToChooseSpecialization { get; set; }
 }
 
 public class GradeScaleItemDto
@@ -22,4 +25,10 @@ public class GradeScaleItemDto
     public decimal MinPercentage { get; set; }
     public decimal GpaValue { get; set; }
     public int SortOrder { get; set; }
+}
+
+public class LevelScaleItemDto
+{
+    public int Level { get; set; }
+    public int MinHours { get; set; }
 }

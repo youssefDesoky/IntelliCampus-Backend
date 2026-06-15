@@ -6,4 +6,7 @@ public class CreateBylawDto
     public int Version { get; set; }
     public string? Description { get; set; }
     public List<GradeScaleItemDto>? GradeScales { get; set; }
+    public List<LevelScaleItemDto>? LevelScales { get; set; }
+    public int? MinHoursToChooseDepartment { get; set; }
+    public int? MinHoursToChooseSpecialization { get; set; }
 }

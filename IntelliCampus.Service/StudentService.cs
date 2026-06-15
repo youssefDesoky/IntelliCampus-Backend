@@ -92,7 +92,7 @@ public class StudentService : IStudentService
             BylawId = bylawId,
             EnrollmentDate = enrollmentDate,
             Program = studentType == StudentType.UnderGrad ? dto.Program : StudentProgram.General,
-            Specialization = dto.Specialization
+            SpecializationId = dto.SpecializationId
         };
 
         Students.Add(student);
@@ -151,7 +151,7 @@ public class StudentService : IStudentService
 
         if (dto.Program.HasValue && student.StudentType == StudentType.UnderGrad)
             student.Program = dto.Program;
-        if (dto.Specialization is not null) student.Specialization = dto.Specialization;
+        if (dto.SpecializationId.HasValue) student.SpecializationId = dto.SpecializationId.Value;
 
         var enrollmentDate = ParseEnrollmentDate(dto.EnrollmentDate);
         if (enrollmentDate.HasValue) student.EnrollmentDate = enrollmentDate.Value;
@@ -165,6 +165,17 @@ public class StudentService : IStudentService
             var result = await Students.GetByIdAsync(updatedSpec);
             return MapToDto(result!);
         }
+
+        return MapToDto(student);
+    }
+
+    public async Task<StudentDto?> UpdateLevelAsync(int studentId, int level)
+    {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null) return null;
+
+        student.Level = level;
+        await _unitOfWork.SaveChangesAsync();
 
         return MapToDto(student);
     }
@@ -292,7 +303,8 @@ public class StudentService : IStudentService
             EnrollmentDate = student.EnrollmentDate?.ToString("dd MM yyyy"),
             Gpa = student.Gpa,
             Program = student.Program,
-            Specialization = student.Specialization,
+            SpecializationId = student.SpecializationId,
+            SpecializationName = student.Specialization?.Name,
             StudentType = student.StudentType,
             Roles = student.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };

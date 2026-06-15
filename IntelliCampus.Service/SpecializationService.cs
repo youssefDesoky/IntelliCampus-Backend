@@ -1,0 +1,97 @@
+using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Specifications;
+using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Shared.Dtos.Specialization;
+
+namespace IntelliCampus.Service;
+
+public class SpecializationService : ISpecializationService
+{
+    private readonly IUnitOfWork _unitOfWork;
+
+    public SpecializationService(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
+    private IGenericRepository<Specialization, int> Specializations
+        => _unitOfWork.GetRepository<Specialization, int>();
+
+    public async Task<IEnumerable<SpecializationDto>> GetAllAsync()
+    {
+        var spec = new SpecializationSpec();
+        var items = await Specializations.GetAllAsync(spec);
+        return items.Select(MapToDto);
+    }
+
+    public async Task<IEnumerable<SpecializationDto>> GetByDepartmentAsync(int departmentId)
+    {
+        var spec = new SpecializationSpec(departmentId, byDepartment: true);
+        var items = await Specializations.GetAllAsync(spec);
+        return items.Select(MapToDto);
+    }
+
+    public async Task<SpecializationDto?> GetByIdAsync(int id)
+    {
+        var spec = new SpecializationSpec(id);
+        var item = await Specializations.GetByIdAsync(spec);
+        return item is null ? null : MapToDto(item);
+    }
+
+    public async Task<SpecializationDto> CreateAsync(CreateSpecializationDto dto)
+    {
+        var specialization = new Specialization
+        {
+            Name = dto.Name,
+            NameAr = dto.NameAr,
+            DepartmentId = dto.DepartmentId
+        };
+
+        Specializations.Add(specialization);
+        await _unitOfWork.SaveChangesAsync();
+
+        var spec = new SpecializationSpec(specialization.SpecializationId);
+        var created = await Specializations.GetByIdAsync(spec);
+        return MapToDto(created!);
+    }
+
+    public async Task<SpecializationDto?> UpdateAsync(int id, UpdateSpecializationDto dto)
+    {
+        var specialization = await Specializations.GetByIdAsync(id);
+        if (specialization is null) return null;
+
+        if (dto.Name is not null) specialization.Name = dto.Name;
+        if (dto.NameAr is not null) specialization.NameAr = dto.NameAr;
+        if (dto.DepartmentId.HasValue) specialization.DepartmentId = dto.DepartmentId.Value;
+
+        Specializations.Update(specialization);
+        await _unitOfWork.SaveChangesAsync();
+
+        var spec = new SpecializationSpec(specialization.SpecializationId);
+        var updated = await Specializations.GetByIdAsync(spec);
+        return MapToDto(updated!);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var specialization = await Specializations.GetByIdAsync(id);
+        if (specialization is null) return false;
+
+        Specializations.Delete(specialization);
+        await _unitOfWork.SaveChangesAsync();
+        return true;
+    }
+
+    private static SpecializationDto MapToDto(Specialization specialization)
+    {
+        return new SpecializationDto
+        {
+            SpecializationId = specialization.SpecializationId,
+            Name = specialization.Name,
+            NameAr = specialization.NameAr,
+            DepartmentId = specialization.DepartmentId,
+            DepartmentName = specialization.Department?.DepartmentName
+        };
+    }
+}

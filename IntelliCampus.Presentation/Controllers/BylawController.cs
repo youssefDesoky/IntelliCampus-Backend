@@ -106,6 +106,59 @@ public class BylawController : ControllerBase
         return Ok(bylaw);
     }
 
+    [HttpPut("{id}/level-scales")]
+    public async Task<ActionResult<BylawDto>> SetLevelScales(int id, [FromBody] List<LevelScaleItemDto> items)
+    {
+        try
+        {
+            var bylaw = await _bylawService.SetLevelScalesAsync(id, items);
+            return Ok(bylaw);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
+    [HttpPatch("{id}/level-scales/{level}")]
+    public async Task<ActionResult<BylawDto>> UpdateLevelScale(int id, int level, [FromBody] LevelScaleItemDto item)
+    {
+        var bylaw = await _bylawService.UpdateLevelScaleAsync(id, level, item);
+
+        if (bylaw is null)
+            return NotFound();
+
+        return Ok(bylaw);
+    }
+
+    [HttpPut("{id}/min-hours-department")]
+    public async Task<ActionResult<BylawDto>> UpdateMinHoursToChooseDepartment(int id, [FromBody] UpdateBylawMinHoursDto dto)
+    {
+        try
+        {
+            var bylaw = await _bylawService.UpdateMinHoursToChooseDepartmentAsync(id, dto.MinHours);
+            return Ok(bylaw);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
+    [HttpPut("{id}/min-hours-specialization")]
+    public async Task<ActionResult<BylawDto>> UpdateMinHoursToChooseSpecialization(int id, [FromBody] UpdateBylawMinHoursDto dto)
+    {
+        try
+        {
+            var bylaw = await _bylawService.UpdateMinHoursToChooseSpecializationAsync(id, dto.MinHours);
+            return Ok(bylaw);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
     private int GetAdminId()
     {
         var claim = User.FindFirst(ClaimTypes.NameIdentifier);

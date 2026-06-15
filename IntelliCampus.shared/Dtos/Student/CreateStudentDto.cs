@@ -27,5 +27,5 @@ public class CreateStudentDto
     public string? EnrollmentDate { get; set; }
 
     public StudentProgram? Program { get; set; }
-    public string? Specialization { get; set; }
+    public int? SpecializationId { get; set; }
 }

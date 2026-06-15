@@ -33,8 +33,10 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .HasForeignKey(s => s.BylawId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.Property(s => s.Specialization)
-            .HasMaxLength(200);
+        builder.HasOne(s => s.Specialization)
+            .WithMany(sp => sp.Students)
+            .HasForeignKey(s => s.SpecializationId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.Property(s => s.StudentType)
             .HasConversion<int>()
