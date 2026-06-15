@@ -88,6 +88,10 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupMember> GroupMembers { get; set; }
 
+    // Roles
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<UserRoleJunction> UserRoleJunctions { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

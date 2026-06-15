@@ -37,7 +37,7 @@ public class AuthService(
             UserId = user.UserId,
             Email = user.Email,
             FullName = user.FullName,
-            Roles = user.Roles.Select(r => r.ToString()).ToList(),
+            Roles = user.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
             Token = token,
             ExpiresAt = expiresAt
         };
@@ -47,7 +47,8 @@ public class AuthService(
 
     public async Task<MeResponseDto?> GetMeAsync(int userId)
     {
-        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
+        var spec = new UserByIdSpec(userId);
+        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(spec);
 
         if (user is null)
             return null;
@@ -57,7 +58,7 @@ public class AuthService(
             UserId = user.UserId,
             FullName = user.FullName,
             Email = user.Email,
-            Roles = user.Roles.Select(r => r.ToString()).ToList(),
+            Roles = user.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage),
             Notifications = (await _notificationService.GetUnreadAsync(userId)).ToList()
         };
@@ -65,7 +66,8 @@ public class AuthService(
 
     public async Task<UserProfileDto?> GetProfileAsync(int userId)
     {
-        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
+        var spec = new UserByIdSpec(userId);
+        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(spec);
 
         if (user is null)
             return null;
@@ -79,14 +81,15 @@ public class AuthService(
             PhoneNumber = user.PhoneNumber,
             Email = user.Email,
             Address = user.Address,
-            Roles = user.Roles.Select(r => r.ToString()).ToList(),
+            Roles = user.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage)
         };
     }
 
     public async Task<UserProfileDto?> UpdateProfileAsync(int userId, UpdateProfileDto dto)
     {
-        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
+        var spec = new UserByIdSpec(userId);
+        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(spec);
 
         if (user is null)
             return null;
@@ -112,7 +115,7 @@ public class AuthService(
             PhoneNumber = user.PhoneNumber,
             Email = user.Email,
             Address = user.Address,
-            Roles = user.Roles.Select(r => r.ToString()).ToList(),
+            Roles = user.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage)
         };
     }

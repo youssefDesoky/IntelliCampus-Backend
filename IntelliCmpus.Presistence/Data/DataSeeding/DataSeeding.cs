@@ -27,6 +27,7 @@ public class DataSeed : IDataSeed
     private readonly Dictionary<string, int> _assignmentIds = new();
     private readonly Dictionary<string, int> _quizIds = new();
     private readonly Dictionary<string, int> _communityIds = new();
+    private readonly Dictionary<string, Role> _roleCache = new();
     private List<Announcement> _announcements = new();
     private List<Post> _posts = new();
 
@@ -43,6 +44,9 @@ public class DataSeed : IDataSeed
         try
         {
             if (await _dbContext.Users.AnyAsync()) return;
+
+            // ---- 0. Seed roles ----
+            await SeedRolesAsync();
 
             // ---- 1. Standalone entities ----
             await SeedFacultyAsync();
@@ -132,10 +136,45 @@ public class DataSeed : IDataSeed
 
             await SeedStudentQuizzesAsync();
             await _dbContext.SaveChangesAsync();
+
+            await SetInstructorOfficeHoursAsync();
+            await _dbContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Data Seeding Failed: {ex}");
+        }
+    }
+
+    // ---- Roles ----
+
+    private async Task SeedRolesAsync()
+    {
+        if (await _dbContext.Roles.AnyAsync()) return;
+
+        var roleNames = Enum.GetNames<UserRole>();
+        foreach (var roleName in roleNames)
+        {
+            var role = new Role { RoleName = roleName };
+            _dbContext.Roles.Add(role);
+            await _dbContext.SaveChangesAsync();
+            _roleCache[roleName] = role;
+        }
+    }
+
+    private async Task AddUserRolesAsync(User user, IEnumerable<string> roleNames)
+    {
+        foreach (var roleName in roleNames)
+        {
+            if (_roleCache.TryGetValue(roleName, out var role))
+            {
+                user.UserRoles.Add(new UserRoleJunction
+                {
+                    Role = role,
+                    IsActive = true,
+                    AssignedAt = DateTime.UtcNow
+                });
+            }
         }
     }
 
@@ -256,11 +295,12 @@ public class DataSeed : IDataSeed
                 Address = dto.Address,
                 Nationality = dto.Nationality,
                 Password = _passwordService.HashPassword(dto.Password),
-                Roles = dto.Roles.Select(r => Enum.Parse<UserRole>(r)).ToList(),
                 FacultyId = _facultyId,
                 HireDate = DateTime.UtcNow
             };
             _dbContext.Admins.Add(entity);
+            await _dbContext.SaveChangesAsync();
+            await AddUserRolesAsync(entity, dto.Roles);
             await _dbContext.SaveChangesAsync();
             _userIds[dto.Email] = entity.UserId;
         }
@@ -283,14 +323,16 @@ public class DataSeed : IDataSeed
                 Address = dto.Address,
                 Nationality = dto.Nationality,
                 Password = _passwordService.HashPassword(dto.Password),
-                Roles = dto.Roles.Select(r => Enum.Parse<UserRole>(r)).ToList(),
                 FacultyId = _facultyId,
                 InstructorRole = Enum.Parse<InstructorRole>(dto.InstructorRole),
                 Specialization = dto.Specialization,
                 DepartmentId = _departmentIds.GetValueOrDefault(dto.DepartmentName),
-                HireDate = DateTime.UtcNow
+                HireDate = DateTime.UtcNow,
+                Status = !string.IsNullOrEmpty(dto.Status) && Enum.TryParse<InstructorStatus>(dto.Status, true, out var status) ? status : InstructorStatus.Employed
             };
             _dbContext.Instructors.Add(entity);
+            await _dbContext.SaveChangesAsync();
+            await AddUserRolesAsync(entity, dto.Roles);
             await _dbContext.SaveChangesAsync();
             _userIds[dto.Email] = entity.UserId;
         }
@@ -421,7 +463,6 @@ public class DataSeed : IDataSeed
                 Address = dto.Address,
                 Nationality = dto.Nationality,
                 Password = _passwordService.HashPassword(dto.Password),
-                Roles = dto.Roles.Select(r => Enum.Parse<UserRole>(r)).ToList(),
                 FacultyId = _facultyId,
                 Level = dto.Level,
                 DepartmentId = dto.DepartmentName != null ? _departmentIds.GetValueOrDefault(dto.DepartmentName) : null,
@@ -433,6 +474,8 @@ public class DataSeed : IDataSeed
                 Program = dto.StudentType is "Masters" or "PhD" ? StudentProgram.General : Enum.TryParse<StudentProgram>(dto.Program, out var prog) ? prog : null
             };
             _dbContext.Students.Add(entity);
+            await _dbContext.SaveChangesAsync();
+            await AddUserRolesAsync(entity, dto.Roles);
             await _dbContext.SaveChangesAsync();
             _userIds[dto.Email] = entity.UserId;
         }
@@ -562,11 +605,15 @@ public class DataSeed : IDataSeed
     private async Task SeedInstructorMaterialsAsync()
     {
         var items = await ReadJsonAsync<InstructorMaterialDto>("instructor-materials.json");
+        var added = new HashSet<(int, int)>();
         foreach (var dto in items)
         {
             var instructorId = _userIds.GetValueOrDefault(dto.InstructorEmail);
             var materialId = _materialIds.GetValueOrDefault(dto.MaterialTitle);
             if (instructorId == 0 || materialId == 0) continue;
+            var key = (instructorId, materialId);
+            if (added.Contains(key)) continue;
+            added.Add(key);
             _dbContext.Set<InstructorMaterial>().Add(new InstructorMaterial
             {
                 InstructorId = instructorId,
@@ -918,6 +965,19 @@ public class DataSeed : IDataSeed
         }
     }
 
+    // ---- Instructor Office Hours ----
+
+    private async Task SetInstructorOfficeHoursAsync()
+    {
+        var instructors = await _dbContext.Instructors.ToListAsync();
+        var rooms = await _dbContext.Rooms.ToListAsync();
+        if (rooms.Count == 0) return;
+        for (var i = 0; i < instructors.Count; i++)
+        {
+            instructors[i].OfficeHoursRoomId = rooms[i % rooms.Count].RoomId;
+        }
+    }
+
     // ---- DTOs ----
 
     private record FacultyDto
@@ -965,6 +1025,7 @@ public class DataSeed : IDataSeed
         public string? Specialization { get; init; }
         public string? DepartmentName { get; init; }
         public string? FacultyName { get; init; }
+        public string? Status { get; init; }
     }
 
     private record CourseDto

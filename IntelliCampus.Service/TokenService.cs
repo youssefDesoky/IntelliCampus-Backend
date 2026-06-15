@@ -31,8 +31,8 @@ public class TokenService : ITokenService
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        foreach (var role in user.Roles)
-            claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
+        foreach (var userRole in user.UserRoles.Where(ur => ur.IsActive))
+            claims.Add(new Claim(ClaimTypes.Role, userRole.Role.RoleName));
 
         var expiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationInMinutes);
 

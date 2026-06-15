@@ -173,7 +173,7 @@ public class FriendService : IFriendService
                     UserId = friend.UserId,
                     FullName = friend.FullName,
                     ProfileImage = _urlResolver.ResolveProfile(friend.ProfileImage),
-                    Roles = friend.Roles.Select(r => r.ToString()).ToList(),
+                    Roles = friend.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
                     FriendsSince = friendship.CreatedAt
                 });
             }

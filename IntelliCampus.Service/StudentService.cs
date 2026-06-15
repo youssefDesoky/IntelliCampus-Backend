@@ -31,6 +31,9 @@ public class StudentService : IStudentService
     private IGenericRepository<Bylaw, int> Bylaws
         => _unitOfWork.GetRepository<Bylaw, int>();
 
+    private IGenericRepository<Role, int> RolesRepo
+        => _unitOfWork.GetRepository<Role, int>();
+
     public async Task<StudentDto?> GetByIdAsync(int studentId)
     {
         var spec = new StudentSpec(studentId);
@@ -81,7 +84,6 @@ public class StudentService : IStudentService
             Address = dto.Address,
             Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
-            Roles = ResolveStudentRoles(studentType),
             StudentCode = dto.StudentCode,
             FacultyId = facultyId,
             StudentType = studentType,
@@ -94,6 +96,18 @@ public class StudentService : IStudentService
         };
 
         Students.Add(student);
+        await _unitOfWork.SaveChangesAsync();
+
+        var roleName = ResolveStudentRoleName(studentType);
+        var role = (await RolesRepo.GetAllAsync()).First(r => r.RoleName == roleName);
+        var userRole = new UserRoleJunction
+        {
+            UserId = student.UserId,
+            RoleId = role.RoleId,
+            IsActive = true,
+            AssignedAt = DateTime.UtcNow
+        };
+        _unitOfWork.GetRepository<UserRoleJunction, int>().Add(userRole);
         await _unitOfWork.SaveChangesAsync();
 
         if (student.DepartmentId.HasValue)
@@ -183,12 +197,12 @@ public class StudentService : IStudentService
         };
     }
 
-    private static List<UserRole> ResolveStudentRoles(StudentType studentType)
+    private static string ResolveStudentRoleName(StudentType studentType)
     {
         return studentType switch
         {
-            StudentType.Masters or StudentType.PhD => [UserRole.Student_PostGrad],
-            _ => [UserRole.Student_UnderGrad]
+            StudentType.Masters or StudentType.PhD => "Student_PostGrad",
+            _ => "Student_UnderGrad"
         };
     }
 
@@ -280,7 +294,7 @@ public class StudentService : IStudentService
             Program = student.Program,
             Specialization = student.Specialization,
             StudentType = student.StudentType,
-            Roles = student.Roles.Select(r => r.ToString()).ToList()
+            Roles = student.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }
 }

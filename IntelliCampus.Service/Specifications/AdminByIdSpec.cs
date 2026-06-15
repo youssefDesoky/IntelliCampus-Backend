@@ -5,6 +5,9 @@ namespace IntelliCampus.Service.Specifications
     internal class AdminByIdSpec : BaseSpecifications<Admin>
     {
         public AdminByIdSpec(int adminId)
-        : base(a => a.UserId == adminId) { }
+        : base(a => a.UserId == adminId)
+        {
+            AddInclude("UserRoles.Role");
+        }
     }
 }

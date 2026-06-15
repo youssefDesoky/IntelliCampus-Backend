@@ -13,7 +13,8 @@
     ],
     "instructorRole": "Professor",
     "specialization": "Information Systems",
-    "departmentName": "Information Systems"
+    "departmentName": "Information Systems",
+    "status": "Employed"
   },
   {
     "nationalId": "22222222222222",
@@ -157,6 +158,7 @@
     ],
     "instructorRole": "TeachingAssistant",
     "specialization": "Cyber Security",
-    "departmentName": "Networks and Cyber Security"
+    "departmentName": "Networks and Cyber Security",
+    "status": "Loan"
   }
 ]
