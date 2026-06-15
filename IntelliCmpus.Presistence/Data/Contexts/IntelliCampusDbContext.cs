@@ -85,6 +85,9 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<FriendRequest> FriendRequests { get; set; }
     public DbSet<Friendship> Friendships { get; set; }
 
+    // Meetings
+    public DbSet<Meeting> Meetings { get; set; }
+
     // Groups
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupMember> GroupMembers { get; set; }
