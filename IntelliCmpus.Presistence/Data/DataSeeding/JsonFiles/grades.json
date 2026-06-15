@@ -1,0 +1,7582 @@
+[
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "MA111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "MA111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IT111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IT111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "MA113",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "MA113",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "ST121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "ST121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "DS251",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "DS251",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IT221",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IT221",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "DS211",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "DS211",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "ST222",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "ST222",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "MA112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "MA112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU118",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU118",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU113",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU113",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU117",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU117",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU124",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU124",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS251",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS251",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS211",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS211",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS231",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS231",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "MA214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "MA214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU225",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "HU225",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS352",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS352",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS332",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS332",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS321",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS321",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS341",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS341",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS312",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS312",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS321",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS321",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS322",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS322",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS361",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS361",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS313",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS313",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS341",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS341",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS333",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS333",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IT212",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IT212",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "TR301",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "TR301",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS437",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS437",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "DS342",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "DS342",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS462",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "CS462",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS434",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS434",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS442",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mohamed.adel@student.com",
+    "courseCode": "IS442",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "DS211",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "DS211",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IT212",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IT212",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "MA111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "MA111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "MA112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "MA112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "MA113",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "MA113",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "ST121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "ST121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IT111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IT111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU113",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU113",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "ST222",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "ST222",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU118",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU118",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IT221",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IT221",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU117",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU117",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU124",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU124",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS211",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS211",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS251",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS251",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "DS251",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "DS251",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS231",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS231",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "MA214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "MA214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU225",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "HU225",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS341",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS341",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS321",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS321",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS352",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS352",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS332",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS332",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS312",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS312",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS321",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS321",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS361",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS361",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS313",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS313",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS333",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS333",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS322",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS322",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS341",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS341",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "TR301",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "TR301",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS437",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS437",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "DS342",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "DS342",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS462",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "CS462",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS434",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS434",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS442",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "youssef.desoky@student.com",
+    "courseCode": "IS442",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IT111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IT111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "MA111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "MA111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "MA112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "MA112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "ST121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "ST121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "MA113",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "MA113",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU113",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU113",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IT212",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IT212",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IT221",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IT221",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "ST222",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "ST222",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "DS211",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "DS211",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU117",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU117",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU124",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU124",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS251",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS251",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS211",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS211",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS231",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS231",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "DS251",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "DS251",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS352",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS352",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS312",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS312",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS321",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS321",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS332",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS332",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU225",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU225",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS341",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS341",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS321",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS321",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS361",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS361",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS313",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS313",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS333",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS333",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU118",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU118",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "HU121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS341",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS341",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS322",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS322",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "TR301",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "TR301",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS462",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "CS462",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS434",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS434",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS437",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS437",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS442",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "IS442",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "MA214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "MA214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "DS456",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "mazen.abusenna@student.com",
+    "courseCode": "DS456",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIT111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIT111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SMA111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SMA111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SHU111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SHU111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SMA112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SMA112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SHU121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SHU121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SHU233",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SHU233",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SHU124",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SHU124",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIT213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIT213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SMA113",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SMA113",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SST121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SST121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SHU234",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SHU234",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIT223",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIT223",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SST222",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SST222",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SMA214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SMA214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS251",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS251",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS211",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS211",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SHU132",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SHU132",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS334",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS334",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SDS212",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SDS212",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS241",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS241",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS314",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS314",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS315",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS315",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SLB442",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SLB442",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS316",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS316",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS333",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS333",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS316",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS316",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS361",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS361",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS335",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS335",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS317",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS317",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS462",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS462",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SDS344",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SDS344",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "STR304",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "STR304",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS436",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS436",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS421",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS421",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS422",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS422",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS423",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SIS423",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS469",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "salma.abdelhalim@student.com",
+    "courseCode": "SCS469",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIT111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIT111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SHU111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SHU111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SMA001",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SMA001",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SMA112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SMA112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SHU121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SHU121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SHU233",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SHU233",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SHU124",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SHU124",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SMA111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SMA111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIT213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIT213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SST121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SST121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SMA113",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SMA113",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SHU234",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SHU234",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIT223",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIT223",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS251",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS251",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SMA214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SMA214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SST222",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SST222",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SHU132",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SHU132",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS334",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 20,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS334",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 28,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS211",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS211",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SDS212",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SDS212",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS333",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS333",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS316",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS316",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS314",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS314",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS315",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS315",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SLB442",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SLB442",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS241",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS241",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS361",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS361",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS335",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS335",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS462",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS462",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS317",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 21,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS317",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 29,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SDS344",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SDS344",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "STR304",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "STR304",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS436",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS436",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS421",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS421",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS422",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS422",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS423",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SIS423",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS469",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "esraa.ahmed@student.com",
+    "courseCode": "SCS469",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIT111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIT111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SMA111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SMA111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SHU111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SHU111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SMA112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SMA112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SHU121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SHU121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SHU124",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SHU124",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SHU233",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SHU233",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SMA113",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SMA113",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SST121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SST121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIT213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIT213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SHU234",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SHU234",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS251",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS251",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIT223",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIT223",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SMA214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SMA214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SST222",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SST222",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SHU132",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SHU132",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS334",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS334",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS211",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS211",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SDS212",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SDS212",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS241",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS241",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS333",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS333",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS316",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS316",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 32,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS314",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS314",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS315",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 23,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS315",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 31,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SLB442",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SLB442",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS361",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS361",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS335",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS335",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS462",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 22,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS462",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 30,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SDS344",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SDS344",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS317",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS317",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "STR304",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "STR304",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS436",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS436",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS421",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS421",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS422",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS422",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS423",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SIS423",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS469",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "moaz.tarek@student.com",
+    "courseCode": "SCS469",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SHU111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SHU111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SHU121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SHU121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SMA111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SMA111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SMA112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SMA112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SIT111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SIT111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SHU233",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SHU233",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SHU124",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SHU124",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SMA113",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SMA113",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SST121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SST121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SIT213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SIT213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SDS321",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SDS321",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SHU234",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SHU234",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS251",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS251",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SIT223",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SIT223",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SMA214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SMA214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SIS211",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SIS211",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS252",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS252",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS253",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS253",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS254",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS254",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SHU132",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SHU132",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS331",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS331",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SIS212",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SIS212",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS241",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS241",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS315",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS315",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS355",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS355",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SLB321",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SLB321",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS317",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS317",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS361",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS361",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS356",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS356",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS358",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS358",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS357",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS357",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SLB322",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SLB322",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "STR302",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "STR302",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS465",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS465",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS491",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS491",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS472",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS472",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS481",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SCS481",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SLB423",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "maryam.nassar@student.com",
+    "courseCode": "SLB423",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SHU111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SHU111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SHU121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SHU121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SMA111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SMA111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SMA112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SMA112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SIT111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SIT111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SHU233",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SHU233",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SHU124",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SHU124",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SMA113",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SMA113",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SST121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SST121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SIT213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SIT213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SDS321",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SDS321",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SHU234",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SHU234",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SIT223",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SIT223",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SMA214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SMA214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS251",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS251",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SIS211",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SIS211",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SHU132",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SHU132",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS252",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS252",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS253",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS253",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS254",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS254",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS331",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS331",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SIS212",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SIS212",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS241",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS241",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS315",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS315",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS355",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS355",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SLB321",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SLB321",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS317",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS317",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS361",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS361",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS357",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS357",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS358",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS358",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS356",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS356",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SLB322",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SLB322",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "STR302",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "STR302",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS465",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS465",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS472",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS472",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS491",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS491",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS481",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SCS481",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SLB423",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "malak.sherif@student.com",
+    "courseCode": "SLB423",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SMA111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SMA111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SHU111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SHU111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SMA112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SMA112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SHU121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SHU121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS111",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS111",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SHU233",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SHU233",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SHU124",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SHU124",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS112",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS112",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SMA113",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SMA113",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SST121",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SST121",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SDS321",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SDS321",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SHU234",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SHU234",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS213",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS213",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS251",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS251",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SMA214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SMA214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT221",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT221",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIS211",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIS211",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS214",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS214",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT271",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT271",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT222",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT222",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SHU132",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SHU132",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SST222",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SST222",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT324",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT324",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT351",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT351",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT345",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 26,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT345",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 35,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SLB316",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SLB316",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT333",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT333",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS316",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS316",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS331",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS331",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT237",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT237",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS361",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS361",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT381",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 24,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT381",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 33,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "STR305",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "STR305",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT472",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 25,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT472",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 34,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT325",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 30,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT325",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 39,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT446",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 27,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SIT446",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 36,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SLB451",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SLB451",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS241",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 28,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SCS241",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 37,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SLB311",
+    "gradeType": "Midterm",
+    "title": "Midterm",
+    "score": 29,
+    "maxScore": 30,
+    "weight": 30,
+    "status": "Graded"
+  },
+  {
+    "studentEmail": "lourina.emil@student.com",
+    "courseCode": "SLB311",
+    "gradeType": "Final",
+    "title": "Final",
+    "score": 38,
+    "maxScore": 40,
+    "weight": 40,
+    "status": "Graded"
+  }
+]

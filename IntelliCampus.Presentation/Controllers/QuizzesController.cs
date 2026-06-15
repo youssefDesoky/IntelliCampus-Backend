@@ -32,7 +32,7 @@ public class QuizzesController : ControllerBase
     // --- Course-nested endpoints under api/courses/{courseId}/quizzes ---
 
     [HttpGet("/api/courses/{courseId}/quizzes")]
-    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
+    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad,Instructor")]
     public async Task<IActionResult> GetQuizzesOverview(string courseId)
     {
         var result = await _quizService.GetQuizzesOverviewAsync(UserId, courseId);

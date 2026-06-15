@@ -1,0 +1,64 @@
+[
+  {
+    "name": "FCIAI Grading Policy",
+    "version": 2,
+    "description": "Standard grading scale for Faculty of Computers and Artificial Intelligence",
+    "isActive": true,
+    "gradeScales": [
+      {
+        "gradeLetter": "A+",
+        "minPercentage": 95,
+        "gpaValue": 4,
+        "sortOrder": 1
+      },
+      {
+        "gradeLetter": "A",
+        "minPercentage": 90,
+        "gpaValue": 3.7,
+        "sortOrder": 2
+      },
+      {
+        "gradeLetter": "B+",
+        "minPercentage": 85,
+        "gpaValue": 3.3,
+        "sortOrder": 3
+      },
+      {
+        "gradeLetter": "B",
+        "minPercentage": 80,
+        "gpaValue": 3,
+        "sortOrder": 4
+      },
+      {
+        "gradeLetter": "C+",
+        "minPercentage": 75,
+        "gpaValue": 2.7,
+        "sortOrder": 5
+      },
+      {
+        "gradeLetter": "C",
+        "minPercentage": 70,
+        "gpaValue": 2.4,
+        "sortOrder": 6
+      },
+      {
+        "gradeLetter": "D+",
+        "minPercentage": 65,
+        "gpaValue": 2.1,
+        "sortOrder": 7
+      },
+      {
+        "gradeLetter": "D",
+        "minPercentage": 60,
+        "gpaValue": 1.8,
+        "sortOrder": 8
+      },
+      {
+        "gradeLetter": "F",
+        "minPercentage": 0,
+        "gpaValue": 0,
+        "sortOrder": 9
+      }
+    ]
+  }
+]

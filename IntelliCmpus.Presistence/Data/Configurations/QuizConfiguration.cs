@@ -17,6 +17,9 @@ public class QuizConfiguration : IEntityTypeConfiguration<Quiz>
         builder.Property(q => q.Description)
             .HasMaxLength(2000);
 
+        builder.Property(q => q.StartDate)
+            .IsRequired();
+
         builder.Property(q => q.DueDate)
             .IsRequired();
 
