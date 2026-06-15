@@ -128,7 +128,7 @@ builder.Services.AddScoped<IAutoExamSchedulingService, AutoExamSchedulingService
 builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
 builder.Services.AddScoped<IPdfExportService, PdfExportService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-sbuilder.Services.AddScoped<IDataSeed, DataSeed>();
+builder.Services.AddScoped<IDataSeed, DataSeed>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

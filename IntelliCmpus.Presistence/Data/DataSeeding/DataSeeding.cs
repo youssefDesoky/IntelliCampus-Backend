@@ -26,7 +26,9 @@ public class DataSeed : IDataSeed
     private readonly Dictionary<string, int> _materialIds = new();
     private readonly Dictionary<string, int> _assignmentIds = new();
     private readonly Dictionary<string, int> _quizIds = new();
+    private readonly Dictionary<string, int> _communityIds = new();
     private List<Announcement> _announcements = new();
+    private List<Post> _posts = new();
 
     public DataSeed(IntelliCampusDbContext dbContext, IPasswordService passwordService)
     {
@@ -70,6 +72,18 @@ public class DataSeed : IDataSeed
             await _dbContext.SaveChangesAsync();
 
             await SeedStudentsAsync();
+            await _dbContext.SaveChangesAsync();
+
+            await SeedCommunitiesAsync();
+            await _dbContext.SaveChangesAsync();
+
+            await SeedPostsAsync();
+            await _dbContext.SaveChangesAsync();
+
+            await SeedCommentsAsync();
+            await _dbContext.SaveChangesAsync();
+
+            await SeedPostVotesAsync();
             await _dbContext.SaveChangesAsync();
 
             await SeedStudentCoursesAsync();
@@ -824,6 +838,86 @@ public class DataSeed : IDataSeed
         }
     }
 
+    // ---- Communities ----
+
+    private async Task SeedCommunitiesAsync()
+    {
+        var items = await ReadJsonAsync<CommunityDto>("communities.json");
+        foreach (var dto in items)
+        {
+            var courseId = _courseIds.GetValueOrDefault(dto.CourseCode);
+            if (courseId == 0) continue;
+            var entity = new Community { CourseId = courseId };
+            _dbContext.Communities.Add(entity);
+            await _dbContext.SaveChangesAsync();
+            _communityIds[dto.CourseCode] = entity.CommunityId;
+        }
+    }
+
+    // ---- Posts ----
+
+    private async Task SeedPostsAsync()
+    {
+        var items = await ReadJsonAsync<PostDto>("posts.json");
+        _posts.Clear();
+        foreach (var dto in items)
+        {
+            var communityId = _communityIds.GetValueOrDefault(dto.CourseCode);
+            var userId = _userIds.GetValueOrDefault(dto.UserEmail);
+            if (communityId == 0 || userId == 0) continue;
+            var entity = new Post
+            {
+                CommunityId = communityId,
+                UserId = userId,
+                Content = dto.Content,
+                CreatedAt = ParseDateOffset(dto.CreatedAtOffset),
+                IsPinned = dto.IsPinned
+            };
+            _dbContext.Posts.Add(entity);
+            await _dbContext.SaveChangesAsync();
+            _posts.Add(entity);
+        }
+    }
+
+    // ---- Comments ----
+
+    private async Task SeedCommentsAsync()
+    {
+        var items = await ReadJsonAsync<CommentDto>("comments.json");
+        foreach (var dto in items)
+        {
+            if (dto.PostIndex < 0 || dto.PostIndex >= _posts.Count) continue;
+            var userId = _userIds.GetValueOrDefault(dto.UserEmail);
+            if (userId == 0) continue;
+            _dbContext.Comments.Add(new Comment
+            {
+                PostId = _posts[dto.PostIndex].PostId,
+                UserId = userId,
+                Content = dto.Content,
+                CreatedAt = ParseDateOffset(dto.CreatedAtOffset)
+            });
+        }
+    }
+
+    // ---- Post Votes ----
+
+    private async Task SeedPostVotesAsync()
+    {
+        var items = await ReadJsonAsync<PostVoteDto>("post-votes.json");
+        foreach (var dto in items)
+        {
+            if (dto.PostIndex < 0 || dto.PostIndex >= _posts.Count) continue;
+            var userId = _userIds.GetValueOrDefault(dto.UserEmail);
+            if (userId == 0) continue;
+            _dbContext.PostVotes.Add(new PostVote
+            {
+                PostId = _posts[dto.PostIndex].PostId,
+                UserId = userId,
+                CreatedAt = ParseDateOffset(dto.CreatedAtOffset)
+            });
+        }
+    }
+
     // ---- DTOs ----
 
     private record FacultyDto
@@ -1083,5 +1177,34 @@ public class DataSeed : IDataSeed
         public decimal? Score { get; init; }
         public string SubmittedAtOffset { get; init; } = "";
         public bool IsLate { get; init; }
+    }
+
+    private record CommunityDto
+    {
+        public string CourseCode { get; init; } = "";
+    }
+
+    private record PostDto
+    {
+        public string CourseCode { get; init; } = "";
+        public string UserEmail { get; init; } = "";
+        public string Content { get; init; } = "";
+        public string CreatedAtOffset { get; init; } = "";
+        public bool IsPinned { get; init; }
+    }
+
+    private record CommentDto
+    {
+        public int PostIndex { get; init; }
+        public string UserEmail { get; init; } = "";
+        public string Content { get; init; } = "";
+        public string CreatedAtOffset { get; init; } = "";
+    }
+
+    private record PostVoteDto
+    {
+        public int PostIndex { get; init; }
+        public string UserEmail { get; init; } = "";
+        public string CreatedAtOffset { get; init; } = "";
     }
 }

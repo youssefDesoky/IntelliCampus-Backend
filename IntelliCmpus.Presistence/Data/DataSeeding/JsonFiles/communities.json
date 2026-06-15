@@ -1,0 +1,440 @@
+﻿[
+    {
+        "courseCode":  "MA111"
+    },
+    {
+        "courseCode":  "IT111"
+    },
+    {
+        "courseCode":  "CS111"
+    },
+    {
+        "courseCode":  "MA113"
+    },
+    {
+        "courseCode":  "ST121"
+    },
+    {
+        "courseCode":  "DS251"
+    },
+    {
+        "courseCode":  "CS112"
+    },
+    {
+        "courseCode":  "IT221"
+    },
+    {
+        "courseCode":  "CS213"
+    },
+    {
+        "courseCode":  "DS211"
+    },
+    {
+        "courseCode":  "ST222"
+    },
+    {
+        "courseCode":  "MA112"
+    },
+    {
+        "courseCode":  "HU111"
+    },
+    {
+        "courseCode":  "HU118"
+    },
+    {
+        "courseCode":  "HU113"
+    },
+    {
+        "courseCode":  "HU121"
+    },
+    {
+        "courseCode":  "HU117"
+    },
+    {
+        "courseCode":  "HU124"
+    },
+    {
+        "courseCode":  "CS214"
+    },
+    {
+        "courseCode":  "CS251"
+    },
+    {
+        "courseCode":  "IS211"
+    },
+    {
+        "courseCode":  "IS231"
+    },
+    {
+        "courseCode":  "MA214"
+    },
+    {
+        "courseCode":  "HU112"
+    },
+    {
+        "courseCode":  "HU225"
+    },
+    {
+        "courseCode":  "CS352"
+    },
+    {
+        "courseCode":  "IS332"
+    },
+    {
+        "courseCode":  "CS321"
+    },
+    {
+        "courseCode":  "CS341"
+    },
+    {
+        "courseCode":  "IS312"
+    },
+    {
+        "courseCode":  "IS321"
+    },
+    {
+        "courseCode":  "IS322"
+    },
+    {
+        "courseCode":  "CS361"
+    },
+    {
+        "courseCode":  "IS313"
+    },
+    {
+        "courseCode":  "IS341"
+    },
+    {
+        "courseCode":  "IS333"
+    },
+    {
+        "courseCode":  "IT212"
+    },
+    {
+        "courseCode":  "TR301"
+    },
+    {
+        "courseCode":  "IS498"
+    },
+    {
+        "courseCode":  "IS437"
+    },
+    {
+        "courseCode":  "DS342"
+    },
+    {
+        "courseCode":  "CS462"
+    },
+    {
+        "courseCode":  "IS434"
+    },
+    {
+        "courseCode":  "IS442"
+    },
+    {
+        "courseCode":  "IS414"
+    },
+    {
+        "courseCode":  "IS422"
+    },
+    {
+        "courseCode":  "IS424"
+    },
+    {
+        "courseCode":  "IS448"
+    },
+    {
+        "courseCode":  "IS495"
+    },
+    {
+        "courseCode":  "DS456"
+    },
+    {
+        "courseCode":  "SCS111"
+    },
+    {
+        "courseCode":  "SIT111"
+    },
+    {
+        "courseCode":  "SMA111"
+    },
+    {
+        "courseCode":  "SHU111"
+    },
+    {
+        "courseCode":  "SMA112"
+    },
+    {
+        "courseCode":  "SHU121"
+    },
+    {
+        "courseCode":  "SHU233"
+    },
+    {
+        "courseCode":  "SHU124"
+    },
+    {
+        "courseCode":  "SCS112"
+    },
+    {
+        "courseCode":  "SIT213"
+    },
+    {
+        "courseCode":  "SMA113"
+    },
+    {
+        "courseCode":  "SST121"
+    },
+    {
+        "courseCode":  "SHU234"
+    },
+    {
+        "courseCode":  "SCS213"
+    },
+    {
+        "courseCode":  "SIT223"
+    },
+    {
+        "courseCode":  "SST222"
+    },
+    {
+        "courseCode":  "SMA214"
+    },
+    {
+        "courseCode":  "SCS251"
+    },
+    {
+        "courseCode":  "SCS214"
+    },
+    {
+        "courseCode":  "SIS211"
+    },
+    {
+        "courseCode":  "SIS213"
+    },
+    {
+        "courseCode":  "SHU132"
+    },
+    {
+        "courseCode":  "SIS334"
+    },
+    {
+        "courseCode":  "SDS212"
+    },
+    {
+        "courseCode":  "SCS241"
+    },
+    {
+        "courseCode":  "SIS314"
+    },
+    {
+        "courseCode":  "SIS315"
+    },
+    {
+        "courseCode":  "SLB442"
+    },
+    {
+        "courseCode":  "SCS316"
+    },
+    {
+        "courseCode":  "SIS333"
+    },
+    {
+        "courseCode":  "SCS361"
+    },
+    {
+        "courseCode":  "SIS335"
+    },
+    {
+        "courseCode":  "SIS317"
+    },
+    {
+        "courseCode":  "SCS462"
+    },
+    {
+        "courseCode":  "SDS344"
+    },
+    {
+        "courseCode":  "STR304"
+    },
+    {
+        "courseCode":  "SIS436"
+    },
+    {
+        "courseCode":  "SIS421"
+    },
+    {
+        "courseCode":  "SIS422"
+    },
+    {
+        "courseCode":  "SIS423"
+    },
+    {
+        "courseCode":  "SCS469"
+    },
+    {
+        "courseCode":  "SPD498"
+    },
+    {
+        "courseCode":  "SIS418"
+    },
+    {
+        "courseCode":  "SIS438"
+    },
+    {
+        "courseCode":  "SIS425"
+    },
+    {
+        "courseCode":  "SLB441"
+    },
+    {
+        "courseCode":  "SLB443"
+    },
+    {
+        "courseCode":  "SMA001"
+    },
+    {
+        "courseCode":  "SDS321"
+    },
+    {
+        "courseCode":  "SCS252"
+    },
+    {
+        "courseCode":  "SCS253"
+    },
+    {
+        "courseCode":  "SCS254"
+    },
+    {
+        "courseCode":  "SCS331"
+    },
+    {
+        "courseCode":  "SIS212"
+    },
+    {
+        "courseCode":  "SCS315"
+    },
+    {
+        "courseCode":  "SCS355"
+    },
+    {
+        "courseCode":  "SLB321"
+    },
+    {
+        "courseCode":  "SCS317"
+    },
+    {
+        "courseCode":  "SCS356"
+    },
+    {
+        "courseCode":  "SCS358"
+    },
+    {
+        "courseCode":  "SCS357"
+    },
+    {
+        "courseCode":  "SLB322"
+    },
+    {
+        "courseCode":  "STR302"
+    },
+    {
+        "courseCode":  "SCS465"
+    },
+    {
+        "courseCode":  "SCS491"
+    },
+    {
+        "courseCode":  "SCS472"
+    },
+    {
+        "courseCode":  "SCS481"
+    },
+    {
+        "courseCode":  "SLB423"
+    },
+    {
+        "courseCode":  "SPS498"
+    },
+    {
+        "courseCode":  "SCS432"
+    },
+    {
+        "courseCode":  "SCS359"
+    },
+    {
+        "courseCode":  "SCS471"
+    },
+    {
+        "courseCode":  "SCS492"
+    },
+    {
+        "courseCode":  "SIT221"
+    },
+    {
+        "courseCode":  "SIT271"
+    },
+    {
+        "courseCode":  "SIT222"
+    },
+    {
+        "courseCode":  "SIT324"
+    },
+    {
+        "courseCode":  "SIT351"
+    },
+    {
+        "courseCode":  "SIT345"
+    },
+    {
+        "courseCode":  "SLB316"
+    },
+    {
+        "courseCode":  "SIT333"
+    },
+    {
+        "courseCode":  "SIT237"
+    },
+    {
+        "courseCode":  "SIT381"
+    },
+    {
+        "courseCode":  "STR305"
+    },
+    {
+        "courseCode":  "SIT472"
+    },
+    {
+        "courseCode":  "SIT325"
+    },
+    {
+        "courseCode":  "SIT446"
+    },
+    {
+        "courseCode":  "SLB451"
+    },
+    {
+        "courseCode":  "SPC498"
+    },
+    {
+        "courseCode":  "SLB311"
+    },
+    {
+        "courseCode":  "SIT473"
+    },
+    {
+        "courseCode":  "SIT455"
+    },
+    {
+        "courseCode":  "SIT326"
+    },
+    {
+        "courseCode":  "SIT452"
+    },
+    {
+        "courseCode":  "SLB417"
+    },
+    {
+        "courseCode":  "SLB452"
+    }
+]
