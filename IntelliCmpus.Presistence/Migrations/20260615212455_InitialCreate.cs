@@ -76,6 +76,19 @@ namespace IntelliCampus.Presistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Roles",
+                columns: table => new
+                {
+                    RoleId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Roles", x => x.RoleId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Rooms",
                 columns: table => new
                 {
@@ -101,7 +114,6 @@ namespace IntelliCampus.Presistence.Migrations
                     FullNameAr = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Nationality = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Roles = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Address = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     Password = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
@@ -242,6 +254,32 @@ namespace IntelliCampus.Presistence.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserRoleJunctions",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    AssignedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRoleJunctions", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_UserRoleJunctions_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "RoleId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserRoleJunctions_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1591,6 +1629,12 @@ namespace IntelliCampus.Presistence.Migrations
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Roles_RoleName",
+                table: "Roles",
+                column: "RoleName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Schedules_ClassId",
                 table: "Schedules",
                 column: "ClassId");
@@ -1670,6 +1714,11 @@ namespace IntelliCampus.Presistence.Migrations
                 name: "IX_UserNotifications_UserId",
                 table: "UserNotifications",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoleJunctions_RoleId",
+                table: "UserRoleJunctions",
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
@@ -1926,6 +1975,9 @@ namespace IntelliCampus.Presistence.Migrations
                 name: "UserNotifications");
 
             migrationBuilder.DropTable(
+                name: "UserRoleJunctions");
+
+            migrationBuilder.DropTable(
                 name: "Announcements");
 
             migrationBuilder.DropTable(
@@ -1957,6 +2009,9 @@ namespace IntelliCampus.Presistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "MaterialFolders");
