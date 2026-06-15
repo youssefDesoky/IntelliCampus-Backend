@@ -69,7 +69,7 @@ public class ExcelImportService : IExcelImportService
         {
             var creator = await Users.GetByIdAsync(creatorUserId.Value);
             facultyId = creator?.FacultyId;
-            isInstructor = creator?.Roles.Contains(UserRole.Instructor) ?? false;
+            isInstructor = creator?.UserRoles.Any(ur => ur.IsActive && ur.Role.RoleName == nameof(UserRole.Instructor)) ?? false;
         }
 
         using var stream = file.OpenReadStream();

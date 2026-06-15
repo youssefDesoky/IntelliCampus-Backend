@@ -296,7 +296,10 @@ namespace IntelliCampus.Presistence.Migrations
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UploadedByAdminId = table.Column<int>(type: "int", nullable: true),
-                    GradeScales = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    MinHoursToChooseDepartment = table.Column<int>(type: "int", nullable: true),
+                    MinHoursToChooseSpecialization = table.Column<int>(type: "int", nullable: true),
+                    GradeScales = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LevelScales = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -793,43 +796,24 @@ namespace IntelliCampus.Presistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Students",
+                name: "Specializations",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    StudentId = table.Column<int>(type: "int", nullable: false)
+                    SpecializationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StudentCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Level = table.Column<int>(type: "int", nullable: true),
-                    DepartmentId = table.Column<int>(type: "int", nullable: true),
-                    BylawId = table.Column<int>(type: "int", nullable: true),
-                    EnrollmentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Program = table.Column<int>(type: "int", nullable: true),
-                    Gpa = table.Column<double>(type: "float", nullable: false, defaultValue: 0.0),
-                    Specialization = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    StudentType = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    NameAr = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    DepartmentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Students", x => x.UserId);
+                    table.PrimaryKey("PK_Specializations", x => x.SpecializationId);
                     table.ForeignKey(
-                        name: "FK_Students_Bylaws_BylawId",
-                        column: x => x.BylawId,
-                        principalTable: "Bylaws",
-                        principalColumn: "BylawId",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Students_Departments_DepartmentId",
+                        name: "FK_Specializations_Departments_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "DepartmentId",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Students_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -859,6 +843,82 @@ namespace IntelliCampus.Presistence.Migrations
                         column: x => x.CreatedByInstructorId,
                         principalTable: "Instructors",
                         principalColumn: "UserId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Students",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StudentCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Level = table.Column<int>(type: "int", nullable: true),
+                    DepartmentId = table.Column<int>(type: "int", nullable: true),
+                    BylawId = table.Column<int>(type: "int", nullable: true),
+                    EnrollmentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Program = table.Column<int>(type: "int", nullable: true),
+                    Gpa = table.Column<double>(type: "float", nullable: false, defaultValue: 0.0),
+                    SpecializationId = table.Column<int>(type: "int", nullable: true),
+                    StudentType = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Students", x => x.UserId);
+                    table.ForeignKey(
+                        name: "FK_Students_Bylaws_BylawId",
+                        column: x => x.BylawId,
+                        principalTable: "Bylaws",
+                        principalColumn: "BylawId",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Students_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "DepartmentId",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Students_Specializations_SpecializationId",
+                        column: x => x.SpecializationId,
+                        principalTable: "Specializations",
+                        principalColumn: "SpecializationId",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Students_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Materials",
+                columns: table => new
+                {
+                    MaterialId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    UploadDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    FileSize = table.Column<long>(type: "bigint", nullable: true),
+                    FileUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    CourseId = table.Column<int>(type: "int", nullable: true),
+                    FolderId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Materials", x => x.MaterialId);
+                    table.ForeignKey(
+                        name: "FK_Materials_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
+                        principalColumn: "CourseId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Materials_MaterialFolders_FolderId",
+                        column: x => x.FolderId,
+                        principalTable: "MaterialFolders",
+                        principalColumn: "MaterialFolderId");
                 });
 
             migrationBuilder.CreateTable(
@@ -1204,33 +1264,27 @@ namespace IntelliCampus.Presistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Materials",
+                name: "InstructorMaterials",
                 columns: table => new
                 {
+                    InstructorId = table.Column<int>(type: "int", nullable: false),
                     MaterialId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    UploadDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    FileSize = table.Column<long>(type: "bigint", nullable: true),
-                    FileUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    CourseId = table.Column<int>(type: "int", nullable: true),
-                    FolderId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Materials", x => x.MaterialId);
+                    table.PrimaryKey("PK_InstructorMaterials", x => new { x.InstructorId, x.MaterialId });
                     table.ForeignKey(
-                        name: "FK_Materials_Courses_CourseId",
-                        column: x => x.CourseId,
-                        principalTable: "Courses",
-                        principalColumn: "CourseId",
+                        name: "FK_InstructorMaterials_Instructors_InstructorId",
+                        column: x => x.InstructorId,
+                        principalTable: "Instructors",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Materials_MaterialFolders_FolderId",
-                        column: x => x.FolderId,
-                        principalTable: "MaterialFolders",
-                        principalColumn: "MaterialFolderId");
+                        name: "FK_InstructorMaterials_Materials_MaterialId",
+                        column: x => x.MaterialId,
+                        principalTable: "Materials",
+                        principalColumn: "MaterialId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1300,30 +1354,6 @@ namespace IntelliCampus.Presistence.Migrations
                         column: x => x.StudentAssignmentId,
                         principalTable: "StudentAssignments",
                         principalColumn: "StudentAssignmentId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "InstructorMaterials",
-                columns: table => new
-                {
-                    InstructorId = table.Column<int>(type: "int", nullable: false),
-                    MaterialId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InstructorMaterials", x => new { x.InstructorId, x.MaterialId });
-                    table.ForeignKey(
-                        name: "FK_InstructorMaterials_Instructors_InstructorId",
-                        column: x => x.InstructorId,
-                        principalTable: "Instructors",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_InstructorMaterials_Materials_MaterialId",
-                        column: x => x.MaterialId,
-                        principalTable: "Materials",
-                        principalColumn: "MaterialId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -1655,6 +1685,11 @@ namespace IntelliCampus.Presistence.Migrations
                 column: "ClassId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Specializations_DepartmentId",
+                table: "Specializations",
+                column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StudentAssignments_AssignmentId",
                 table: "StudentAssignments",
                 column: "AssignmentId");
@@ -1699,6 +1734,11 @@ namespace IntelliCampus.Presistence.Migrations
                 name: "IX_Students_DepartmentId",
                 table: "Students",
                 column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Students_SpecializationId",
+                table: "Students",
+                column: "SpecializationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubmissionFiles_StudentAssignmentId",
@@ -2033,6 +2073,9 @@ namespace IntelliCampus.Presistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Bylaws");
+
+            migrationBuilder.DropTable(
+                name: "Specializations");
 
             migrationBuilder.DropTable(
                 name: "Courses");
