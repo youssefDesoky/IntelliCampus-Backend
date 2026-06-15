@@ -4,6 +4,7 @@ using IntelliCampus.Presistence.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Data.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260614173824_AddCourseIdToCommunity")]
+    partial class AddCourseIdToCommunity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1206,33 +1209,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("IntelliCampus.Domain.Entities.PostVote", b =>
-                {
-                    b.Property<int>("PostVoteId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PostVoteId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PostVoteId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("PostId", "UserId")
-                        .IsUnique();
-
-                    b.ToTable("PostVotes");
-                });
-
             modelBuilder.Entity("IntelliCampus.Domain.Entities.QrToken", b =>
                 {
                     b.Property<int>("QrTokenId")
@@ -2374,25 +2350,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("IntelliCampus.Domain.Entities.PostVote", b =>
-                {
-                    b.HasOne("IntelliCampus.Domain.Entities.Post", "Post")
-                        .WithMany("Votes")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("IntelliCampus.Domain.Entities.User", "User")
-                        .WithMany("PostVotes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("IntelliCampus.Domain.Entities.QrToken", b =>
                 {
                     b.HasOne("IntelliCampus.Domain.Entities.Student", "Student")
@@ -2756,8 +2713,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Post", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Votes");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Quiz", b =>
@@ -2786,8 +2741,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("GroupMembers");
-
-                    b.Navigation("PostVotes");
 
                     b.Navigation("Posts");
 

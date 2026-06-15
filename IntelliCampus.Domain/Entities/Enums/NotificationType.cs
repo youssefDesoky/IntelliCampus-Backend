@@ -15,5 +15,6 @@ public enum NotificationType
     GradeComplaintReviewed  = 10,
     MaterialUploaded        = 11,
     Announcement            = 12,
-    Reminder                = 13
+    Reminder                = 13,
+    QuestionRouting         = 14
 }

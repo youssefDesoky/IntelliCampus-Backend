@@ -88,6 +88,12 @@ builder.Services.AddAuthorization();
 
 // Register services
 builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<ICommunityService, CommunityService>();
+builder.Services.AddHttpClient<IRoutingClientService, RoutingClientService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["RoutingService:BaseUrl"] ?? "http://localhost:8000");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
@@ -122,6 +128,7 @@ builder.Services.AddScoped<IAutoExamSchedulingService, AutoExamSchedulingService
 builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
 builder.Services.AddScoped<IPdfExportService, PdfExportService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddHostedService<RouterInitializerService>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -141,6 +148,7 @@ using (var scope = app.Services.CreateScope())
     await ExamHallSeeder.SeedExamHallsAsync(context);
     await QuizSeeder.SeedQuizzesAsync(context);
     await AssignmentSeeder.SeedAssignmentsAsync(context);
+    await CommunitySeeder.SeedCommunitiesAsync(context);
 }
 
 
