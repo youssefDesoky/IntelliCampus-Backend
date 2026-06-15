@@ -19,6 +19,19 @@ public interface IGradeService
     /// </summary>
     Task<double?> UpdateStudentGpaIfCompleteAsync(int studentId);
 
+    /// <summary>
+    /// Returns the total completed credit hours for a student
+    /// (sum of CreditHours for courses where overall letter grade is valid and not "-").
+    /// </summary>
+    Task<int> GetCompletedHoursAsync(int studentId);
+
+    /// <summary>
+    /// Checks the student's Bylaw LevelScales and promotes the student to the
+    /// highest level whose MinHours is <= the student's completed hours.
+    /// Returns the new level, or null if unchanged.
+    /// </summary>
+    Task<int?> UpdateStudentLevelIfPromotedAsync(int studentId);
+
     // Instructor (read-only)
     Task<IEnumerable<GradeDto>> GetByStudentAndCourseAsync(int instructorId, int studentId, int courseId);
 

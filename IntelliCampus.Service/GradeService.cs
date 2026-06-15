@@ -421,7 +421,56 @@ public class GradeService : IGradeService
         student.Gpa = gpa;
         await _unitOfWork.SaveChangesAsync();
 
+        await UpdateStudentLevelIfPromotedAsync(studentId);
+
         return gpa;
+    }
+
+    public async Task<int> GetCompletedHoursAsync(int studentId)
+    {
+        var studentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId))).ToList();
+        var student = await Students.GetByIdAsync(new StudentSpec(studentId));
+        if (studentCourses.Count == 0 || student is null) return 0;
+
+        var courseIds = studentCourses.Select(sc => sc.CourseId).ToList();
+        var courses = (await Courses.GetAllAsync(new CourseSpec(courseIds)))
+            .ToDictionary(c => c.CourseId);
+
+        var allGrades = await Grades.GetAllAsync(new GradeSpec(studentId));
+        var completedCourseIds = allGrades
+            .Where(g => g.GradeType == GradeType.Final && g.Status == "Graded")
+            .Select(g => g.CourseId)
+            .Distinct()
+            .ToHashSet();
+
+        return studentCourses
+            .Where(sc => completedCourseIds.Contains(sc.CourseId))
+            .Sum(sc => courses.GetValueOrDefault(sc.CourseId)?.CreditHours ?? 0);
+    }
+
+    public async Task<int?> UpdateStudentLevelIfPromotedAsync(int studentId)
+    {
+        var student = await Students.GetByIdAsync(new StudentSpec(studentId));
+        if (student is null || student.Bylaw is null) return null;
+
+        var scales = student.Bylaw.LevelScales;
+        if (scales?.Count == 0) return null;
+
+        var completedHours = await GetCompletedHoursAsync(studentId);
+
+        var targetLevel = scales!
+            .Where(ls => completedHours >= ls.MinHours)
+            .OrderByDescending(ls => ls.Level)
+            .Select(ls => ls.Level)
+            .FirstOrDefault();
+
+        if (targetLevel == 0) return student.Level;
+        if (student.Level == targetLevel) return student.Level;
+
+        student.Level = targetLevel;
+        await _unitOfWork.SaveChangesAsync();
+
+        return targetLevel;
     }
 
     public async Task<byte[]> ExportTranscriptPdfAsync(int studentId)

@@ -12,10 +12,11 @@ public class Student : User
     public DateTime? EnrollmentDate { get; set; }
     public StudentProgram? Program { get; set; }
     public double Gpa { get; set; }
-    public string? Specialization { get; set; }
+    public int? SpecializationId { get; set; }
     public Enums.StudentType StudentType { get; set; }
 
     // Navigation properties
+    public Specialization? Specialization { get; set; }
     public Department? Department { get; set; }
     public Bylaw? Bylaw { get; set; }
     public ICollection<StudentQuiz> StudentQuizzes { get; set; } = [];

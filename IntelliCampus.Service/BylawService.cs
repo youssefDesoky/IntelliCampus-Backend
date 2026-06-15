@@ -61,7 +61,17 @@ public class BylawService : IBylawService
                     GpaValue = g.GpaValue,
                     SortOrder = g.SortOrder
                 })
-                .ToList() ?? new()
+                .ToList() ?? new(),
+            LevelScales = dto.LevelScales?
+                .OrderBy(l => l.Level)
+                .Select(l => new LevelScaleItem
+                {
+                    Level = l.Level,
+                    MinHours = l.MinHours
+                })
+                .ToList() ?? new(),
+            MinHoursToChooseDepartment = dto.MinHoursToChooseDepartment,
+            MinHoursToChooseSpecialization = dto.MinHoursToChooseSpecialization
         };
 
         Bylaws.Add(bylaw);
@@ -169,6 +179,80 @@ public class BylawService : IBylawService
         return MapToDto(bylaw);
     }
 
+    public async Task<BylawDto> SetLevelScalesAsync(int bylawId, List<LevelScaleItemDto> items)
+    {
+        var spec = new BylawSpec(bylawId);
+        var bylaw = await Bylaws.GetByIdAsync(spec);
+
+        if (bylaw is null)
+            throw new InvalidOperationException("Bylaw not found.");
+
+        bylaw.LevelScales = items
+            .OrderBy(i => i.Level)
+            .Select(i => new LevelScaleItem
+            {
+                Level = i.Level,
+                MinHours = i.MinHours
+            })
+            .ToList();
+
+        Bylaws.Update(bylaw);
+        await _unitOfWork.SaveChangesAsync();
+
+        return MapToDto(bylaw);
+    }
+
+    public async Task<BylawDto?> UpdateLevelScaleAsync(int bylawId, int level, LevelScaleItemDto item)
+    {
+        var bylaw = await Bylaws.GetByIdAsync(bylawId);
+
+        if (bylaw is null)
+            return null;
+
+        var existing = bylaw.LevelScales?.FirstOrDefault(l => l.Level == level);
+
+        if (existing is null)
+            return null;
+
+        existing.Level = item.Level;
+        existing.MinHours = item.MinHours;
+
+        bylaw.LevelScales = bylaw.LevelScales!
+            .OrderBy(l => l.Level)
+            .ToList();
+
+        Bylaws.Update(bylaw);
+        await _unitOfWork.SaveChangesAsync();
+
+        return MapToDto(bylaw);
+    }
+
+    public async Task<BylawDto> UpdateMinHoursToChooseDepartmentAsync(int bylawId, int minHours)
+    {
+        var bylaw = await Bylaws.GetByIdAsync(bylawId);
+        if (bylaw is null)
+            throw new InvalidOperationException("Bylaw not found.");
+
+        bylaw.MinHoursToChooseDepartment = minHours;
+        Bylaws.Update(bylaw);
+        await _unitOfWork.SaveChangesAsync();
+
+        return MapToDto(bylaw);
+    }
+
+    public async Task<BylawDto> UpdateMinHoursToChooseSpecializationAsync(int bylawId, int minHours)
+    {
+        var bylaw = await Bylaws.GetByIdAsync(bylawId);
+        if (bylaw is null)
+            throw new InvalidOperationException("Bylaw not found.");
+
+        bylaw.MinHoursToChooseSpecialization = minHours;
+        Bylaws.Update(bylaw);
+        await _unitOfWork.SaveChangesAsync();
+
+        return MapToDto(bylaw);
+    }
+
     private BylawDto MapToDto(Bylaw bylaw)
     {
         return new BylawDto
@@ -193,7 +277,17 @@ public class BylawService : IBylawService
                     GpaValue = g.GpaValue,
                     SortOrder = g.SortOrder
                 })
-                .ToList()
+                .ToList(),
+            LevelScales = bylaw.LevelScales?
+                .OrderBy(l => l.Level)
+                .Select(l => new LevelScaleItemDto
+                {
+                    Level = l.Level,
+                    MinHours = l.MinHours
+                })
+                .ToList(),
+            MinHoursToChooseDepartment = bylaw.MinHoursToChooseDepartment,
+            MinHoursToChooseSpecialization = bylaw.MinHoursToChooseSpecialization
         };
     }
 }

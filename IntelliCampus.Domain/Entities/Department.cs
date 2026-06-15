@@ -15,4 +15,5 @@ public class Department
     public ICollection<Instructor> Instructors { get; set; } = new List<Instructor>();
     public ICollection<StudentDepartment> StudentDepartments { get; set; } = new List<StudentDepartment>();
     public ICollection<Course> Courses { get; set; } = new List<Course>();
+    public ICollection<Specialization> Specializations { get; set; } = new List<Specialization>();
 }

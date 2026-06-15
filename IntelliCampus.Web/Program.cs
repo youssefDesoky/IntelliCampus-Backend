@@ -122,6 +122,7 @@ builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IFriendService, FriendService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<UrlResolver>();
+builder.Services.AddScoped<ISpecializationService, SpecializationService>();
 builder.Services.AddScoped<IBylawService, BylawService>();
 builder.Services.AddScoped<IExamService, ExamService>();
 builder.Services.AddScoped<IAutoExamSchedulingService, AutoExamSchedulingService>();

@@ -428,7 +428,7 @@ public class DataSeed : IDataSeed
                 BylawId = _bylawId,
                 EnrollmentDate = ParseDateOffset(dto.EnrollmentDateOffset),
                 Gpa = dto.Gpa,
-                Specialization = dto.Specialization,
+                SpecializationId = dto.SpecializationId,
                 StudentType = Enum.TryParse<StudentType>(dto.StudentType, out var st) ? st : StudentType.UnderGrad,
                 Program = dto.StudentType is "Masters" or "PhD" ? StudentProgram.General : Enum.TryParse<StudentProgram>(dto.Program, out var prog) ? prog : null
             };
@@ -1030,7 +1030,7 @@ public class DataSeed : IDataSeed
         public string Program { get; init; } = "";
         public double Gpa { get; init; }
         public string EnrollmentDateOffset { get; init; } = "";
-        public string? Specialization { get; init; }
+        public int? SpecializationId { get; init; }
         public string? StudentType { get; init; }
     }
 

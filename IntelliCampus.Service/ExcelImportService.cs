@@ -64,10 +64,12 @@ public class ExcelImportService : IExcelImportService
         }
 
         int? facultyId = null;
+        bool isInstructor = false;
         if (creatorUserId.HasValue)
         {
             var creator = await Users.GetByIdAsync(creatorUserId.Value);
             facultyId = creator?.FacultyId;
+            isInstructor = creator?.Roles.Contains(UserRole.Instructor) ?? false;
         }
 
         using var stream = file.OpenReadStream();
@@ -87,7 +89,7 @@ public class ExcelImportService : IExcelImportService
         {
             try
             {
-                await ImportRowAsync(entityType, row, bylawId, facultyId);
+                await ImportRowAsync(entityType, row, bylawId, facultyId, isInstructor);
                 result.SuccessCount++;
             }
             catch (Exception ex)
@@ -100,7 +102,7 @@ public class ExcelImportService : IExcelImportService
         return result;
     }
 
-    private async Task ImportRowAsync(ImportEntityType entityType, IXLRangeRow row, int? bylawId, int? facultyId)
+    private async Task ImportRowAsync(ImportEntityType entityType, IXLRangeRow row, int? bylawId, int? facultyId, bool isInstructor = false)
     {
         switch (entityType)
         {
@@ -123,7 +125,7 @@ public class ExcelImportService : IExcelImportService
                 await ImportSectionRowAsync(row);
                 break;
             case ImportEntityType.Grades:
-                await ImportGradeRowAsync(row);
+                await ImportGradeRowAsync(row, isInstructor);
                 break;
             case ImportEntityType.Exams:
                 await ImportExamRowAsync(row);
@@ -238,8 +240,13 @@ public class ExcelImportService : IExcelImportService
         await _classService.CreateAsync(dto);
     }
 
-    private async Task ImportGradeRowAsync(IXLRangeRow row)
+    private async Task ImportGradeRowAsync(IXLRangeRow row, bool isInstructor = false)
     {
+        var gradeType = ParseGradeType(row.Cell(7).GetString().Trim());
+
+        if (isInstructor && gradeType == GradeType.Final)
+            throw new InvalidOperationException("Instructors cannot upload final grades.");
+
         var gradesRepo = _unitOfWork.GetRepository<Grade, int>();
 
         var grade = new Grade
@@ -250,7 +257,7 @@ public class ExcelImportService : IExcelImportService
             Score = ParseDecimal(row.Cell(4).GetString()),
             MaxScore = ParseDecimal(row.Cell(5).GetString()),
             Weight = ParseDecimal(row.Cell(6).GetString()),
-            GradeType = ParseGradeType(row.Cell(7).GetString().Trim()),
+            GradeType = gradeType,
             Status = "Graded",
             GradedAt = DateTime.UtcNow,
             Notes = GetOptionalString(row, 8)

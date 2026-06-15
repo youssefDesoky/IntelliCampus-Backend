@@ -35,5 +35,13 @@ public class BylawConfiguration : IEntityTypeConfiguration<Bylaw>
             gbs.Property(g => g.MinPercentage).HasPrecision(5, 2);
             gbs.Property(g => g.GpaValue).HasPrecision(4, 2);
         });
+
+        builder.OwnsMany(b => b.LevelScales, lbs =>
+        {
+            lbs.ToJson();
+        });
+
+        builder.Property(b => b.MinHoursToChooseDepartment);
+        builder.Property(b => b.MinHoursToChooseSpecialization);
     }
 }

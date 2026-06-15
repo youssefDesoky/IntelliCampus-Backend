@@ -59,6 +59,8 @@
         "gpaValue": 0,
         "sortOrder": 9
       }
-    ]
+    ],
+    "minHoursToChooseDepartment": 30,
+    "minHoursToChooseSpecialization": 60
   }
 ]
