@@ -630,6 +630,7 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DurationMinutes = table.Column<int>(type: "int", nullable: false),
                     MaxGrade = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
@@ -705,7 +706,9 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     InstructorRole = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Specialization = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: true),
-                    HireDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    HireDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    OfficeHoursRoomId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -715,6 +718,12 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "DepartmentId",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Instructors_Rooms_OfficeHoursRoomId",
+                        column: x => x.OfficeHoursRoomId,
+                        principalTable: "Rooms",
+                        principalColumn: "RoomId",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Instructors_Users_UserId",
@@ -735,7 +744,11 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     Level = table.Column<int>(type: "int", nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: true),
                     BylawId = table.Column<int>(type: "int", nullable: true),
-                    EnrollmentDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    EnrollmentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Program = table.Column<int>(type: "int", nullable: true),
+                    Gpa = table.Column<double>(type: "float", nullable: false, defaultValue: 0.0),
+                    Specialization = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    StudentType = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -1464,6 +1477,11 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Instructors_OfficeHoursRoomId",
+                table: "Instructors",
+                column: "OfficeHoursRoomId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MaterialFolders_CourseId",
                 table: "MaterialFolders",
                 column: "CourseId");
@@ -1887,9 +1905,6 @@ namespace IntelliCampus.Presistence.Data.Migrations
                 name: "Communities");
 
             migrationBuilder.DropTable(
-                name: "Rooms");
-
-            migrationBuilder.DropTable(
                 name: "MaterialFolders");
 
             migrationBuilder.DropTable(
@@ -1921,6 +1936,9 @@ namespace IntelliCampus.Presistence.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Departments");
+
+            migrationBuilder.DropTable(
+                name: "Rooms");
 
             migrationBuilder.DropTable(
                 name: "Faculties");

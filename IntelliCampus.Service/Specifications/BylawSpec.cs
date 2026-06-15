@@ -6,15 +6,15 @@ namespace IntelliCampus.Service.Specifications
     {
         public BylawSpec()
         {
-            AddInclude(b => b.UploadedBy);
-            AddInclude(b => b.Students);
+            AddInclude(b => b.UploadedBy!);
+            AddInclude(b => b.Students!);
         }
 
         public BylawSpec(int bylawId)
             : base(b => b.BylawId == bylawId)
         {
-            AddInclude(b => b.UploadedBy);
-            AddInclude(b => b.Students);
+            AddInclude(b => b.UploadedBy!);
+            AddInclude(b => b.Students!);
         }
     }
 }

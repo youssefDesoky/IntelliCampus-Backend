@@ -32,5 +32,12 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .WithMany(b => b.Students)
             .HasForeignKey(s => s.BylawId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Property(s => s.Specialization)
+            .HasMaxLength(200);
+
+        builder.Property(s => s.StudentType)
+            .HasConversion<int>()
+            .HasDefaultValue(IntelliCampus.Domain.Entities.Enums.StudentType.UnderGrad);
     }
 }

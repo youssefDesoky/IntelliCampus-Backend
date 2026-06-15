@@ -7,7 +7,7 @@ namespace IntelliCampus.Service.Specifications
         public CourseForClassSpec(int courseId)
             : base(c => c.CourseId == courseId)
         {
-            AddInclude(c => c.Department);
+            AddInclude(c => c.Department!);
         }
     }
 }

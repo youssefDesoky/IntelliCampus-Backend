@@ -21,6 +21,9 @@ namespace IntelliCampus.Service.Specifications
 
         private void AddFullIncludes()
         {
+            AddInclude(c => c.Department!);
+            AddInclude(c => c.StudentCourses!);
+            AddInclude(c => c.Grades!);
             AddInclude(c => c.Department);
             AddInclude(c => c.StudentCourses);
             AddInclude("StudentCourses.Student");

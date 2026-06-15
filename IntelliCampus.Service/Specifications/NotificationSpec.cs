@@ -7,21 +7,21 @@ internal sealed class NotificationSpec : BaseSpecifications<UserNotification>
     public NotificationSpec(int userId)
         : base(n => n.UserId == userId)
     {
-        AddInclude(n => n.Notification);
+        AddInclude(n => n.Notification!);
         AddOrderByDescending(n => n.Notification.CreatedAt);
     }
 
     public NotificationSpec(int userId, bool unreadOnly)
         : base(n => n.UserId == userId && !n.IsRead)
     {
-        AddInclude(n => n.Notification);
+        AddInclude(n => n.Notification!);
         AddOrderByDescending(n => n.Notification.CreatedAt);
     }
 
     public NotificationSpec(int userId, int notificationId)
         : base(n => n.UserId == userId && n.NotificationId == notificationId) 
     {
-        AddInclude(n => n.Notification);
+        AddInclude(n => n.Notification!);
     }
 
     public NotificationSpec(int userId, bool unreadOnly, bool forUpdate)

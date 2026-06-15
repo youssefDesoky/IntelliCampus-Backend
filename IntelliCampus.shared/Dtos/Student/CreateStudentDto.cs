@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+using IntelliCampus.Domain.Entities.Enums;
 
 namespace IntelliCampus.Shared.Dtos.Student;
 
@@ -25,4 +25,7 @@ public class CreateStudentDto
     public string? StudentCode { get; set; }
 
     public string? EnrollmentDate { get; set; }
+
+    public StudentProgram? Program { get; set; }
+    public string? Specialization { get; set; }
 }

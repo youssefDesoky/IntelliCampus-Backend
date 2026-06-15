@@ -1,3 +1,4 @@
+using IntelliCampus.Domain.Entities.Enums;
 using System.Text.Json.Serialization;
 
 namespace IntelliCampus.Shared.Dtos.Student;
@@ -21,4 +22,7 @@ public class UpdateStudentDto
     public string? StudentCode { get; set; }
 
     public string? EnrollmentDate { get; set; }
+
+    public StudentProgram? Program { get; set; }
+    public string? Specialization { get; set; }
 }

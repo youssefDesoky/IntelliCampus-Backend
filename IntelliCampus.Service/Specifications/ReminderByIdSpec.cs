@@ -7,6 +7,6 @@ internal sealed class ReminderByIdSpec : BaseSpecifications<Reminder>
     public ReminderByIdSpec(int reminderId)
         : base(r => r.ReminderId == reminderId)
     {
-        AddInclude(r => r.Student);
+        AddInclude(r => r.Student!);
     }
 }

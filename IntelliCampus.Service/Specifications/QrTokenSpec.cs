@@ -8,7 +8,7 @@ public class QrTokenSpec : BaseSpecifications<QrToken>
         : base(q => q.Token == token
                  && q.ExpiresAt > DateTime.UtcNow)
     {
-        AddInclude(q => q.Student);
+        AddInclude(q => q.Student!);
     }
 
     public QrTokenSpec(int studentId, bool countIterations)

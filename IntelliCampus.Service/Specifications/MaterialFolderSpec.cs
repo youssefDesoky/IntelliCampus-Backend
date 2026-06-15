@@ -9,7 +9,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(f => f.Course!);
             AddInclude(f => f.CreatedByInstructor!);
-            AddInclude(f => f.Materials);
+            AddInclude(f => f.Materials!);
         }
 
         public MaterialFolderSpec(int courseId, bool byCourse)
@@ -17,7 +17,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(f => f.Course!);
             AddInclude(f => f.CreatedByInstructor!);
-            AddInclude(f => f.Materials);
+            AddInclude(f => f.Materials!);
             AddOrderBy(f => f.DisplayOrder);
         }
 
@@ -27,7 +27,7 @@ namespace IntelliCampus.Service.Specifications
         public MaterialFolderSpec(int folderId, string materialsOnly)
             : base(f => f.MaterialFolderId == folderId)
         {
-            AddInclude(f => f.Materials);
+            AddInclude(f => f.Materials!);
         }
     }
 }
