@@ -20,4 +20,10 @@
     <ProjectReference Include="..\IntelliCampus.Service\IntelliCampus.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Data\DataSeeding\JsonFiles\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

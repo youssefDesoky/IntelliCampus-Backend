@@ -385,6 +385,45 @@ public class GradeService : IGradeService
         return result;
     }
 
+    public async Task<double> GetCumulativeGpaAsync(int studentId)
+    {
+        var courseDtos = await GetTranscriptAsync(studentId);
+
+        var courseItemList = courseDtos.Select(c => new TranscriptCourseItem
+        {
+            CourseCode = c.CourseCode,
+            CourseName = c.CourseName,
+            CreditHours = c.CreditHours,
+            Coursework = c.Coursework,
+            TotalGrade = c.TotalGrade,
+            Letter = c.Letter
+        }).ToList();
+
+        var spec = new StudentSpec(studentId);
+        var studentEntity = await Students.GetByIdAsync(spec);
+        return CalculateGpa(courseItemList, studentEntity?.Bylaw?.GradeScales);
+    }
+
+    public async Task<double?> UpdateStudentGpaIfCompleteAsync(int studentId)
+    {
+        var studentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId))).ToList();
+        var student = await Students.GetByIdAsync(new StudentSpec(studentId));
+        if (studentCourses.Count == 0 || student is null) return student?.Gpa;
+
+        foreach (var sc in studentCourses)
+        {
+            var courseGrade = await GetCourseGradeAsync(studentId, sc.CourseId);
+            if (courseGrade?.OverallGrade is null) return student.Gpa;
+            if (courseGrade.OverallGrade.Letter is "-" or null) return student.Gpa;
+        }
+
+        var gpa = await GetCumulativeGpaAsync(studentId);
+        student.Gpa = gpa;
+        await _unitOfWork.SaveChangesAsync();
+
+        return gpa;
+    }
+
     public async Task<byte[]> ExportTranscriptPdfAsync(int studentId)
     {
         var student = await _studentService.GetByIdAsync(studentId);
@@ -705,6 +744,6 @@ public class GradeService : IGradeService
             total += gp * c.CreditHours;
             credits += c.CreditHours;
         }
-        return credits > 0 ? total / credits : 0.0;
+        return credits > 0 ? Math.Round(total / credits, 2) : 0.0;
     }
 }

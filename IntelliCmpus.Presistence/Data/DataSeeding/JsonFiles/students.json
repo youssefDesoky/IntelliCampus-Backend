@@ -1,0 +1,173 @@
+[
+  {
+    "nationalId": "30412022101731",
+    "studentCode": "20230643",
+    "fullName": "Mohamed Adel Elsayed Hassan",
+    "fullNameAr": "محمد عادل السيد حسن",
+    "email": "mohamed.adel@student.com",
+    "phoneNumber": "01115138796",
+    "address": "2512 Taha Hussein St., District 2, 6th of October, Giza",
+    "nationality": "Egyptian",
+    "password": "Student@123",
+    "roles": [
+      "Student_UnderGrad"
+    ],
+    "level": 4,
+    "departmentName": "Information Systems",
+    "program": "General",
+    "gpa": 3.19,
+    "enrollmentDateOffset": "-3 years"
+  },
+  {
+    "nationalId": "30404011300039",
+    "studentCode": "20230625",
+    "fullName": "Youssef Ahmed Mohamed Desoky",
+    "fullNameAr": "يوسف احمد محمد دسوقي",
+    "email": "youssef.desoky@student.com",
+    "phoneNumber": "01096132270",
+    "address": "64 Ali Fayed St., Boulaq El Dakrour, Giza",
+    "nationality": "Egyptian",
+    "password": "Student@123",
+    "roles": [
+      "Student_UnderGrad"
+    ],
+    "level": 4,
+    "departmentName": "Information Systems",
+    "program": "General",
+    "gpa": 3.27,
+    "enrollmentDateOffset": "-3 years"
+  },
+  {
+    "nationalId": "30210122101273",
+    "studentCode": "20230624",
+    "fullName": "Mazen Khaled Taha Abusenna",
+    "fullNameAr": "مازن خالد طه ابو سنة",
+    "email": "mazen.abusenna@student.com",
+    "phoneNumber": "01098510400",
+    "address": "139 El Haram St., El Haram, Giza",
+    "nationality": "Egyptian",
+    "password": "Student@123",
+    "roles": [
+      "Student_UnderGrad"
+    ],
+    "level": 4,
+    "departmentName": "Information Systems",
+    "program": "General",
+    "gpa": 3.4,
+    "enrollmentDateOffset": "-3 years"
+  },
+  {
+    "nationalId": "30312192100441",
+    "studentCode": "20227014",
+    "fullName": "Salma Abdelhalim",
+    "fullNameAr": "سلمي عبدالحليم",
+    "email": "salma.abdelhalim@student.com",
+    "phoneNumber": "01154602603",
+    "address": "Villa 4, Tamr Henna 3, Fifth Settlement, New Cairo",
+    "nationality": "Egyptian",
+    "password": "Student@123",
+    "roles": [
+      "Student_UnderGrad"
+    ],
+    "level": 4,
+    "departmentName": "Data Science",
+    "program": "Credit",
+    "gpa": 3.11,
+    "enrollmentDateOffset": "-3 years"
+  },
+  {
+    "nationalId": "30410151400084",
+    "studentCode": "20227004",
+    "fullName": "Esraa Ahmed",
+    "fullNameAr": "اسراء أحمد",
+    "email": "esraa.ahmed@student.com",
+    "phoneNumber": "01012007580",
+    "address": "Qalyubia, Egypt",
+    "nationality": "Egyptian",
+    "password": "Student@123",
+    "roles": [
+      "Student_UnderGrad"
+    ],
+    "level": 4,
+    "departmentName": "Data Science",
+    "program": "Credit",
+    "gpa": 3.19,
+    "enrollmentDateOffset": "-3 years"
+  },
+  {
+    "nationalId": "30410250101595",
+    "studentCode": "20227025",
+    "fullName": "Moaz Tarek Ahmed Ibrahim Khater",
+    "fullNameAr": "معاذ طارق احمد ابراهيم خاطر",
+    "email": "moaz.tarek@student.com",
+    "phoneNumber": "01010401719",
+    "address": "Building 4S, Block 1258, Sheraton, Cairo",
+    "nationality": "Egyptian",
+    "password": "Student@123",
+    "roles": [
+      "Student_UnderGrad"
+    ],
+    "level": 4,
+    "departmentName": "Data Science",
+    "program": "Credit",
+    "gpa": 3.37,
+    "enrollmentDateOffset": "-3 years"
+  },
+  {
+    "nationalId": "30409298800128",
+    "studentCode": "20226128",
+    "fullName": "Maryam Ahmed Fayez Nassar",
+    "fullNameAr": "مريم احمد فايز ناصر",
+    "email": "maryam.nassar@student.com",
+    "phoneNumber": "01104215861",
+    "address": "Block 8047, El Beya St., Behind El Moqattam Club, Cairo",
+    "nationality": "Egyptian",
+    "password": "Student@123",
+    "roles": [
+      "Student_UnderGrad"
+    ],
+    "level": 4,
+    "departmentName": "Software Engineering",
+    "program": "Credit",
+    "gpa": 3.82,
+    "enrollmentDateOffset": "-3 years"
+  },
+  {
+    "nationalId": "30409090101625",
+    "studentCode": "20226105",
+    "fullName": "Malak Sherif Mohamed",
+    "fullNameAr": "ملك شريف محمد",
+    "email": "malak.sherif@student.com",
+    "phoneNumber": "01154118003",
+    "address": "80D, Hadayek El Ahram, Gate 1, El Haram, Giza",
+    "nationality": "Egyptian",
+    "password": "Student@123",
+    "roles": [
+      "Student_UnderGrad"
+    ],
+    "level": 4,
+    "departmentName": "Software Engineering",
+    "program": "Credit",
+    "gpa": 3.71,
+    "enrollmentDateOffset": "-3 years"
+  },
+  {
+    "nationalId": "30402260101604",
+    "studentCode": "20225080",
+    "fullName": "Lourina Emil Fawaz Sadek",
+    "fullNameAr": "لورينا ايميل فواز صادق",
+    "email": "lourina.emil@student.com",
+    "phoneNumber": "01222679143",
+    "address": "Block 14B, 51 St. 9, Nasr City, Cairo",
+    "nationality": "Egyptian",
+    "password": "Student@123",
+    "roles": [
+      "Student_UnderGrad"
+    ],
+    "level": 4,
+    "departmentName": "Networks and Cyber Security",
+    "program": "Credit",
+    "gpa": 3.83,
+    "enrollmentDateOffset": "-3 years"
+  }
+]

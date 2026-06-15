@@ -1,0 +1,1462 @@
+[
+  {
+    "groupCode": "MA111-LEC",
+    "classType": "Lecture",
+    "courseCode": "MA111",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-1",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "IT111-LEC",
+    "classType": "Lecture",
+    "courseCode": "IT111",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-1",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "CS111-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS111",
+    "day": "Tuesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-1",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "MA113-LEC",
+    "classType": "Lecture",
+    "courseCode": "MA113",
+    "day": "Wednesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-1",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "ST121-LEC",
+    "classType": "Lecture",
+    "courseCode": "ST121",
+    "day": "Thursday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-1",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "DS251-LEC",
+    "classType": "Lecture",
+    "courseCode": "DS251",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-2",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  },
+  {
+    "groupCode": "CS112-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS112",
+    "day": "Monday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-2",
+    "instructorEmail": "hany.farouk@instructor.com"
+  },
+  {
+    "groupCode": "IT221-LEC",
+    "classType": "Lecture",
+    "courseCode": "IT221",
+    "day": "Tuesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-2",
+    "instructorEmail": "nada.samir@instructor.com"
+  },
+  {
+    "groupCode": "CS213-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS213",
+    "day": "Wednesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-2",
+    "instructorEmail": "tarek.nabil@instructor.com"
+  },
+  {
+    "groupCode": "DS211-LEC",
+    "classType": "Lecture",
+    "courseCode": "DS211",
+    "day": "Thursday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-2",
+    "instructorEmail": "amr.galal@instructor.com"
+  },
+  {
+    "groupCode": "ST222-LEC",
+    "classType": "Lecture",
+    "courseCode": "ST222",
+    "day": "Sunday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-3",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "MA112-LEC",
+    "classType": "Lecture",
+    "courseCode": "MA112",
+    "day": "Monday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-3",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "HU111-LEC",
+    "classType": "Lecture",
+    "courseCode": "HU111",
+    "day": "Tuesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-3",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "HU118-LEC",
+    "classType": "Lecture",
+    "courseCode": "HU118",
+    "day": "Wednesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-3",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "HU113-LEC",
+    "classType": "Lecture",
+    "courseCode": "HU113",
+    "day": "Thursday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-3",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "HU121-LEC",
+    "classType": "Lecture",
+    "courseCode": "HU121",
+    "day": "Sunday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-4",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  },
+  {
+    "groupCode": "HU117-LEC",
+    "classType": "Lecture",
+    "courseCode": "HU117",
+    "day": "Monday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-4",
+    "instructorEmail": "hany.farouk@instructor.com"
+  },
+  {
+    "groupCode": "HU124-LEC",
+    "classType": "Lecture",
+    "courseCode": "HU124",
+    "day": "Tuesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-4",
+    "instructorEmail": "nada.samir@instructor.com"
+  },
+  {
+    "groupCode": "CS214-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS214",
+    "day": "Wednesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-4",
+    "instructorEmail": "tarek.nabil@instructor.com"
+  },
+  {
+    "groupCode": "CS251-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS251",
+    "day": "Thursday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-4",
+    "instructorEmail": "amr.galal@instructor.com"
+  },
+  {
+    "groupCode": "IS211-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS211",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-5",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "IS231-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS231",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-5",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "MA214-LEC",
+    "classType": "Lecture",
+    "courseCode": "MA214",
+    "day": "Tuesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-5",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "HU112-LEC",
+    "classType": "Lecture",
+    "courseCode": "HU112",
+    "day": "Wednesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-5",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "HU225-LEC",
+    "classType": "Lecture",
+    "courseCode": "HU225",
+    "day": "Thursday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-5",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "CS352-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS352",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-6",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  },
+  {
+    "groupCode": "IS332-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS332",
+    "day": "Monday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-6",
+    "instructorEmail": "hany.farouk@instructor.com"
+  },
+  {
+    "groupCode": "CS321-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS321",
+    "day": "Tuesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-6",
+    "instructorEmail": "nada.samir@instructor.com"
+  },
+  {
+    "groupCode": "CS341-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS341",
+    "day": "Wednesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-6",
+    "instructorEmail": "tarek.nabil@instructor.com"
+  },
+  {
+    "groupCode": "IS312-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS312",
+    "day": "Thursday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-6",
+    "instructorEmail": "amr.galal@instructor.com"
+  },
+  {
+    "groupCode": "IS321-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS321",
+    "day": "Sunday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-7",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "IS322-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS322",
+    "day": "Monday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-7",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "CS361-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS361",
+    "day": "Tuesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-7",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "IS313-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS313",
+    "day": "Wednesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-7",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "IS341-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS341",
+    "day": "Thursday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-7",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "IS333-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS333",
+    "day": "Sunday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-8",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  },
+  {
+    "groupCode": "IT212-LEC",
+    "classType": "Lecture",
+    "courseCode": "IT212",
+    "day": "Monday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-8",
+    "instructorEmail": "hany.farouk@instructor.com"
+  },
+  {
+    "groupCode": "TR301-LEC",
+    "classType": "Lecture",
+    "courseCode": "TR301",
+    "day": "Tuesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-8",
+    "instructorEmail": "nada.samir@instructor.com"
+  },
+  {
+    "groupCode": "IS498-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS498",
+    "day": "Wednesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-8",
+    "instructorEmail": "tarek.nabil@instructor.com"
+  },
+  {
+    "groupCode": "IS437-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS437",
+    "day": "Thursday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-8",
+    "instructorEmail": "amr.galal@instructor.com"
+  },
+  {
+    "groupCode": "DS342-LEC",
+    "classType": "Lecture",
+    "courseCode": "DS342",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-9",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "CS462-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS462",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-9",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "IS434-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS434",
+    "day": "Tuesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-9",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "IS442-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS442",
+    "day": "Wednesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-9",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "IS414-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS414",
+    "day": "Thursday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-9",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "IS422-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS422",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-10",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  },
+  {
+    "groupCode": "IS424-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS424",
+    "day": "Monday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-10",
+    "instructorEmail": "hany.farouk@instructor.com"
+  },
+  {
+    "groupCode": "IS448-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS448",
+    "day": "Tuesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-10",
+    "instructorEmail": "nada.samir@instructor.com"
+  },
+  {
+    "groupCode": "IS495-LEC",
+    "classType": "Lecture",
+    "courseCode": "IS495",
+    "day": "Wednesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-10",
+    "instructorEmail": "tarek.nabil@instructor.com"
+  },
+  {
+    "groupCode": "DS456-LEC",
+    "classType": "Lecture",
+    "courseCode": "DS456",
+    "day": "Thursday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-10",
+    "instructorEmail": "amr.galal@instructor.com"
+  },
+  {
+    "groupCode": "SCS111-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS111",
+    "day": "Sunday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-11",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "SIT111-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT111",
+    "day": "Monday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-11",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "SMA111-LEC",
+    "classType": "Lecture",
+    "courseCode": "SMA111",
+    "day": "Tuesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-11",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "SHU111-LEC",
+    "classType": "Lecture",
+    "courseCode": "SHU111",
+    "day": "Wednesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-11",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "SMA112-LEC",
+    "classType": "Lecture",
+    "courseCode": "SMA112",
+    "day": "Thursday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-11",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "SHU121-LEC",
+    "classType": "Lecture",
+    "courseCode": "SHU121",
+    "day": "Sunday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-12",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  },
+  {
+    "groupCode": "SHU233-LEC",
+    "classType": "Lecture",
+    "courseCode": "SHU233",
+    "day": "Monday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-12",
+    "instructorEmail": "hany.farouk@instructor.com"
+  },
+  {
+    "groupCode": "SHU124-LEC",
+    "classType": "Lecture",
+    "courseCode": "SHU124",
+    "day": "Tuesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-12",
+    "instructorEmail": "nada.samir@instructor.com"
+  },
+  {
+    "groupCode": "SCS112-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS112",
+    "day": "Wednesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-12",
+    "instructorEmail": "tarek.nabil@instructor.com"
+  },
+  {
+    "groupCode": "SIT213-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT213",
+    "day": "Thursday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-12",
+    "instructorEmail": "amr.galal@instructor.com"
+  },
+  {
+    "groupCode": "SMA113-LEC",
+    "classType": "Lecture",
+    "courseCode": "SMA113",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-13",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "SST121-LEC",
+    "classType": "Lecture",
+    "courseCode": "SST121",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-13",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "SHU234-LEC",
+    "classType": "Lecture",
+    "courseCode": "SHU234",
+    "day": "Tuesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-13",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "SCS213-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS213",
+    "day": "Wednesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-13",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "SIT223-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT223",
+    "day": "Thursday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-13",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "SST222-LEC",
+    "classType": "Lecture",
+    "courseCode": "SST222",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-14",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  },
+  {
+    "groupCode": "SMA214-LEC",
+    "classType": "Lecture",
+    "courseCode": "SMA214",
+    "day": "Monday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-14",
+    "instructorEmail": "hany.farouk@instructor.com"
+  },
+  {
+    "groupCode": "SCS251-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS251",
+    "day": "Tuesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-14",
+    "instructorEmail": "nada.samir@instructor.com"
+  },
+  {
+    "groupCode": "SCS214-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS214",
+    "day": "Wednesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-14",
+    "instructorEmail": "tarek.nabil@instructor.com"
+  },
+  {
+    "groupCode": "SIS211-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS211",
+    "day": "Thursday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-14",
+    "instructorEmail": "amr.galal@instructor.com"
+  },
+  {
+    "groupCode": "SIS213-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS213",
+    "day": "Sunday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-15",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "SHU132-LEC",
+    "classType": "Lecture",
+    "courseCode": "SHU132",
+    "day": "Monday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-15",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "SIS334-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS334",
+    "day": "Tuesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-15",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "SDS212-LEC",
+    "classType": "Lecture",
+    "courseCode": "SDS212",
+    "day": "Wednesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-15",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "SCS241-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS241",
+    "day": "Thursday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-15",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "SIS314-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS314",
+    "day": "Sunday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-16",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  },
+  {
+    "groupCode": "SIS315-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS315",
+    "day": "Monday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-16",
+    "instructorEmail": "hany.farouk@instructor.com"
+  },
+  {
+    "groupCode": "SLB442-LEC",
+    "classType": "Lecture",
+    "courseCode": "SLB442",
+    "day": "Tuesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-16",
+    "instructorEmail": "nada.samir@instructor.com"
+  },
+  {
+    "groupCode": "SCS316-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS316",
+    "day": "Wednesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-16",
+    "instructorEmail": "tarek.nabil@instructor.com"
+  },
+  {
+    "groupCode": "SIS333-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS333",
+    "day": "Thursday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-16",
+    "instructorEmail": "amr.galal@instructor.com"
+  },
+  {
+    "groupCode": "SCS361-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS361",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-17",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "SIS335-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS335",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-17",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "SIS317-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS317",
+    "day": "Tuesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-17",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "SCS462-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS462",
+    "day": "Wednesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-17",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "SDS344-LEC",
+    "classType": "Lecture",
+    "courseCode": "SDS344",
+    "day": "Thursday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-17",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "STR304-LEC",
+    "classType": "Lecture",
+    "courseCode": "STR304",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-18",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  },
+  {
+    "groupCode": "SIS436-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS436",
+    "day": "Monday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-18",
+    "instructorEmail": "hany.farouk@instructor.com"
+  },
+  {
+    "groupCode": "SIS421-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS421",
+    "day": "Tuesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-18",
+    "instructorEmail": "nada.samir@instructor.com"
+  },
+  {
+    "groupCode": "SIS422-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS422",
+    "day": "Wednesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-18",
+    "instructorEmail": "tarek.nabil@instructor.com"
+  },
+  {
+    "groupCode": "SIS423-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS423",
+    "day": "Thursday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-18",
+    "instructorEmail": "amr.galal@instructor.com"
+  },
+  {
+    "groupCode": "SCS469-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS469",
+    "day": "Sunday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-19",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "SPD498-LEC",
+    "classType": "Lecture",
+    "courseCode": "SPD498",
+    "day": "Monday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-19",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "SIS418-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS418",
+    "day": "Tuesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-19",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "SIS438-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS438",
+    "day": "Wednesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-19",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "SIS425-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS425",
+    "day": "Thursday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-19",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "SLB441-LEC",
+    "classType": "Lecture",
+    "courseCode": "SLB441",
+    "day": "Sunday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-20",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  },
+  {
+    "groupCode": "SLB443-LEC",
+    "classType": "Lecture",
+    "courseCode": "SLB443",
+    "day": "Monday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-20",
+    "instructorEmail": "hany.farouk@instructor.com"
+  },
+  {
+    "groupCode": "SMA001-LEC",
+    "classType": "Lecture",
+    "courseCode": "SMA001",
+    "day": "Tuesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-20",
+    "instructorEmail": "nada.samir@instructor.com"
+  },
+  {
+    "groupCode": "SDS321-LEC",
+    "classType": "Lecture",
+    "courseCode": "SDS321",
+    "day": "Wednesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-20",
+    "instructorEmail": "tarek.nabil@instructor.com"
+  },
+  {
+    "groupCode": "SCS252-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS252",
+    "day": "Thursday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-20",
+    "instructorEmail": "amr.galal@instructor.com"
+  },
+  {
+    "groupCode": "SCS253-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS253",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-21",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "SCS254-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS254",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-21",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "SCS331-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS331",
+    "day": "Tuesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-21",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "SIS212-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIS212",
+    "day": "Wednesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-21",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "SCS315-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS315",
+    "day": "Thursday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-21",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "SCS355-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS355",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-22",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  },
+  {
+    "groupCode": "SLB321-LEC",
+    "classType": "Lecture",
+    "courseCode": "SLB321",
+    "day": "Monday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-22",
+    "instructorEmail": "hany.farouk@instructor.com"
+  },
+  {
+    "groupCode": "SCS317-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS317",
+    "day": "Tuesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-22",
+    "instructorEmail": "nada.samir@instructor.com"
+  },
+  {
+    "groupCode": "SCS356-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS356",
+    "day": "Wednesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-22",
+    "instructorEmail": "tarek.nabil@instructor.com"
+  },
+  {
+    "groupCode": "SCS358-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS358",
+    "day": "Thursday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-22",
+    "instructorEmail": "amr.galal@instructor.com"
+  },
+  {
+    "groupCode": "SCS357-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS357",
+    "day": "Sunday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-23",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "SLB322-LEC",
+    "classType": "Lecture",
+    "courseCode": "SLB322",
+    "day": "Monday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-23",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "STR302-LEC",
+    "classType": "Lecture",
+    "courseCode": "STR302",
+    "day": "Tuesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-23",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "SCS465-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS465",
+    "day": "Wednesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-23",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "SCS491-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS491",
+    "day": "Thursday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-23",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "SCS472-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS472",
+    "day": "Sunday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-24",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  },
+  {
+    "groupCode": "SCS481-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS481",
+    "day": "Monday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-24",
+    "instructorEmail": "hany.farouk@instructor.com"
+  },
+  {
+    "groupCode": "SLB423-LEC",
+    "classType": "Lecture",
+    "courseCode": "SLB423",
+    "day": "Tuesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-24",
+    "instructorEmail": "nada.samir@instructor.com"
+  },
+  {
+    "groupCode": "SPS498-LEC",
+    "classType": "Lecture",
+    "courseCode": "SPS498",
+    "day": "Wednesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-24",
+    "instructorEmail": "tarek.nabil@instructor.com"
+  },
+  {
+    "groupCode": "SCS432-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS432",
+    "day": "Thursday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-24",
+    "instructorEmail": "amr.galal@instructor.com"
+  },
+  {
+    "groupCode": "SCS359-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS359",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-25",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "SCS471-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS471",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-25",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "SCS492-LEC",
+    "classType": "Lecture",
+    "courseCode": "SCS492",
+    "day": "Tuesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-25",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "SIT221-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT221",
+    "day": "Wednesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-25",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "SIT271-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT271",
+    "day": "Thursday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-25",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "SIT222-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT222",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-26",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  },
+  {
+    "groupCode": "SIT324-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT324",
+    "day": "Monday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-26",
+    "instructorEmail": "hany.farouk@instructor.com"
+  },
+  {
+    "groupCode": "SIT351-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT351",
+    "day": "Tuesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-26",
+    "instructorEmail": "nada.samir@instructor.com"
+  },
+  {
+    "groupCode": "SIT345-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT345",
+    "day": "Wednesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-26",
+    "instructorEmail": "tarek.nabil@instructor.com"
+  },
+  {
+    "groupCode": "SLB316-LEC",
+    "classType": "Lecture",
+    "courseCode": "SLB316",
+    "day": "Thursday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-26",
+    "instructorEmail": "amr.galal@instructor.com"
+  },
+  {
+    "groupCode": "SIT333-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT333",
+    "day": "Sunday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-27",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "SIT237-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT237",
+    "day": "Monday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-27",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "SIT381-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT381",
+    "day": "Tuesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-27",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "STR305-LEC",
+    "classType": "Lecture",
+    "courseCode": "STR305",
+    "day": "Wednesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-27",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "SIT472-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT472",
+    "day": "Thursday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-27",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "SIT325-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT325",
+    "day": "Sunday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-28",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  },
+  {
+    "groupCode": "SIT446-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT446",
+    "day": "Monday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-28",
+    "instructorEmail": "hany.farouk@instructor.com"
+  },
+  {
+    "groupCode": "SLB451-LEC",
+    "classType": "Lecture",
+    "courseCode": "SLB451",
+    "day": "Tuesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-28",
+    "instructorEmail": "nada.samir@instructor.com"
+  },
+  {
+    "groupCode": "SPC498-LEC",
+    "classType": "Lecture",
+    "courseCode": "SPC498",
+    "day": "Wednesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-28",
+    "instructorEmail": "tarek.nabil@instructor.com"
+  },
+  {
+    "groupCode": "SLB311-LEC",
+    "classType": "Lecture",
+    "courseCode": "SLB311",
+    "day": "Thursday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-28",
+    "instructorEmail": "amr.galal@instructor.com"
+  },
+  {
+    "groupCode": "SIT473-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT473",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-29",
+    "instructorEmail": "ahmed.hassan@instructor.com"
+  },
+  {
+    "groupCode": "SIT455-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT455",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-29",
+    "instructorEmail": "fatima.mohamed@instructor.com"
+  },
+  {
+    "groupCode": "SIT326-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT326",
+    "day": "Tuesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-29",
+    "instructorEmail": "omar.khaled@instructor.com"
+  },
+  {
+    "groupCode": "SIT452-LEC",
+    "classType": "Lecture",
+    "courseCode": "SIT452",
+    "day": "Wednesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-29",
+    "instructorEmail": "sara.ali@instructor.com"
+  },
+  {
+    "groupCode": "SLB417-LEC",
+    "classType": "Lecture",
+    "courseCode": "SLB417",
+    "day": "Thursday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-29",
+    "instructorEmail": "mona.ibrahim@instructor.com"
+  },
+  {
+    "groupCode": "SLB452-LEC",
+    "classType": "Lecture",
+    "courseCode": "SLB452",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-30",
+    "instructorEmail": "khaled.youssef@instructor.com"
+  }
+]

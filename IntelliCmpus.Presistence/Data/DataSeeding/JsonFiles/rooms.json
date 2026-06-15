@@ -1,0 +1,52 @@
+[
+  {
+    "roomName": "Hall-1",
+    "roomNameAr": "قاعة 1",
+    "capacity": 100
+  },
+  {
+    "roomName": "Hall-2",
+    "roomNameAr": "قاعة 2",
+    "capacity": 80
+  },
+  {
+    "roomName": "Hall-3",
+    "roomNameAr": "قاعة 3",
+    "capacity": 60
+  },
+  {
+    "roomName": "Lab-1",
+    "roomNameAr": "معمل 1",
+    "capacity": 30
+  },
+  {
+    "roomName": "Lab-2",
+    "roomNameAr": "معمل 2",
+    "capacity": 30
+  },
+  {
+    "roomName": "Lab-3",
+    "roomNameAr": "معمل 3",
+    "capacity": 25
+  },
+  {
+    "roomName": "Room-101",
+    "roomNameAr": "غرفة 101",
+    "capacity": 50
+  },
+  {
+    "roomName": "Room-102",
+    "roomNameAr": "غرفة 102",
+    "capacity": 45
+  },
+  {
+    "roomName": "Room-103",
+    "roomNameAr": "غرفة 103",
+    "capacity": 40
+  },
+  {
+    "roomName": "Auditorium-A",
+    "roomNameAr": "مدرج أ",
+    "capacity": 200
+  }
+]

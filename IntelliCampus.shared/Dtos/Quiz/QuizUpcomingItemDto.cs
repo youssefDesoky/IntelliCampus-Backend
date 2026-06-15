@@ -12,7 +12,9 @@ public class QuizUpcomingItemDto
 
     public decimal MaxScore { get; set; }
 
-    public DateTime Deadline { get; set; }
+    public DateTime StartDate { get; set; }
+
+    public DateTime DueDate { get; set; }
 
     public string Status { get; set; } = string.Empty;
 }

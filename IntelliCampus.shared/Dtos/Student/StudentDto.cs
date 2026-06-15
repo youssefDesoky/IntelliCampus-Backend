@@ -1,3 +1,5 @@
+using IntelliCampus.Domain.Entities.Enums;
+
 namespace IntelliCampus.Shared.Dtos.Student;
 
 public class StudentDto
@@ -20,6 +22,8 @@ public class StudentDto
     public int? BylawId { get; set; }
     public string? BylawName { get; set; }
     public int? BylawVersion { get; set; }
-    public DateTime? EnrollmentDate { get; set; }
+    public string? EnrollmentDate { get; set; }
+    public double Gpa { get; set; }
+    public StudentProgram? Program { get; set; }
     public List<string> Roles { get; set; } = [];
 }

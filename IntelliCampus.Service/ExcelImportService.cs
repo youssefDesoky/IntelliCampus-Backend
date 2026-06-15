@@ -26,6 +26,7 @@ public class ExcelImportService : IExcelImportService
     private readonly IClassService _classService;
     private readonly IExamService _examService;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IGradeService _gradeService;
 
     public ExcelImportService(
         IStudentService studentService,
@@ -35,7 +36,8 @@ public class ExcelImportService : IExcelImportService
         IDepartmentService departmentService,
         IClassService classService,
         IExamService examService,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IGradeService gradeService)
     {
         _studentService = studentService;
         _instructorService = instructorService;
@@ -45,6 +47,7 @@ public class ExcelImportService : IExcelImportService
         _classService = classService;
         _examService = examService;
         _unitOfWork = unitOfWork;
+        _gradeService = gradeService;
     }
 
     private IGenericRepository<User, int> Users
@@ -255,6 +258,9 @@ public class ExcelImportService : IExcelImportService
 
         gradesRepo.Add(grade);
         await _unitOfWork.SaveChangesAsync();
+
+        if (grade.GradeType == GradeType.Final)
+            await _gradeService.UpdateStudentGpaIfCompleteAsync(grade.StudentId);
     }
 
     private async Task ImportExamRowAsync(IXLRangeRow row)
