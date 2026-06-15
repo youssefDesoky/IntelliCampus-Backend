@@ -7,6 +7,6 @@ internal class QuizzesByCourseSpec : BaseSpecifications<Quiz>
     public QuizzesByCourseSpec(int courseId)
         : base(q => q.CourseId == courseId)
     {
-        AddInclude(q => q.Course);
+        AddInclude(q => q.Course!);
     }
 }

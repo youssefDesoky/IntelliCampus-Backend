@@ -1811,6 +1811,10 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     b.Property<int?>("Program")
                         .HasColumnType("int");
 
+                    b.Property<string>("Specialization")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<string>("StudentCode")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -1820,6 +1824,11 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
+
+                    b.Property<int>("StudentType")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.HasIndex("BylawId");
 

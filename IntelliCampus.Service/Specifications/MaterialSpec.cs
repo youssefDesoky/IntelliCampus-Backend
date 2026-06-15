@@ -29,7 +29,7 @@ namespace IntelliCampus.Service.Specifications
         public MaterialSpec(int materialId, string forDelete)
             : base(m => m.MaterialId == materialId)
         {
-            AddInclude(m => m.InstructorMaterials);
+            AddInclude(m => m.InstructorMaterials!);
         }
     }
 }

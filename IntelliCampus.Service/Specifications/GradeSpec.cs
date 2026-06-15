@@ -8,7 +8,7 @@ public class GradeSpec : BaseSpecifications<Grade>
     public GradeSpec(int studentId)
         : base(g => g.StudentId == studentId)
     {
-        AddInclude(g => g.Course);
+        AddInclude(g => g.Course!);
         AddOrderBy(g => g.GradedAt);
     }
 
@@ -16,7 +16,7 @@ public class GradeSpec : BaseSpecifications<Grade>
     public GradeSpec(int studentId, int courseId)
         : base(g => g.StudentId == studentId && g.CourseId == courseId)
     {
-        AddInclude(g => g.Course);
+        AddInclude(g => g.Course!);
         AddOrderBy(g => g.GradedAt);
     }
 }

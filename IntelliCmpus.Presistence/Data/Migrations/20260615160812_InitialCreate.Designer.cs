@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Data.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    [Migration("20260614204812_AddInstructorStatusAndOfficeHours")]
-    partial class AddInstructorStatusAndOfficeHours
+    [Migration("20260615160812_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1295,6 +1295,9 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
 
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -1811,6 +1814,10 @@ namespace IntelliCampus.Presistence.Data.Migrations
                     b.Property<int?>("Program")
                         .HasColumnType("int");
 
+                    b.Property<string>("Specialization")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<string>("StudentCode")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -1820,6 +1827,11 @@ namespace IntelliCampus.Presistence.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
+
+                    b.Property<int>("StudentType")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.HasIndex("BylawId");
 

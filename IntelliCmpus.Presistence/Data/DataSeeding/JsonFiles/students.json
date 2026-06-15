@@ -169,5 +169,41 @@
     "program": "Credit",
     "gpa": 3.83,
     "enrollmentDateOffset": "-3 years"
+  },
+  {
+    "nationalId": "30501012200101",
+    "studentCode": "20241001",
+    "fullName": "Ahmed Mohamed Ali",
+    "fullNameAr": "أحمد محمد علي",
+    "email": "ahmed.postgrad@student.com",
+    "phoneNumber": "01001112233",
+    "address": "15 Nile St., Giza",
+    "nationality": "Egyptian",
+    "password": "Student@123",
+    "roles": [
+      "Student_PostGrad"
+    ],
+    "gpa": 3.75,
+    "studentType": "Masters",
+    "specialization": "Cloud Computing",
+    "enrollmentDateOffset": "-1 years"
+  },
+  {
+    "nationalId": "30502012200202",
+    "studentCode": "20241002",
+    "fullName": "Sara Hassan Youssef",
+    "fullNameAr": "سارة حسن يوسف",
+    "email": "sara.postgrad@student.com",
+    "phoneNumber": "01204445566",
+    "address": "42 Abbas El Akkad St., Nasr City, Cairo",
+    "nationality": "Egyptian",
+    "password": "Student@123",
+    "roles": [
+      "Student_PostGrad"
+    ],
+    "gpa": 3.92,
+    "studentType": "PhD",
+    "specialization": "Artificial Intelligence",
+    "enrollmentDateOffset": "-2 years"
   }
 ]

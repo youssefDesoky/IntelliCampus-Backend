@@ -410,11 +410,13 @@ public class DataSeed : IDataSeed
                 Roles = dto.Roles.Select(r => Enum.Parse<UserRole>(r)).ToList(),
                 FacultyId = _facultyId,
                 Level = dto.Level,
-                DepartmentId = _departmentIds.GetValueOrDefault(dto.DepartmentName),
+                DepartmentId = dto.DepartmentName != null ? _departmentIds.GetValueOrDefault(dto.DepartmentName) : null,
                 BylawId = _bylawId,
                 EnrollmentDate = ParseDateOffset(dto.EnrollmentDateOffset),
-                Program = Enum.Parse<StudentProgram>(dto.Program),
-                Gpa = dto.Gpa
+                Gpa = dto.Gpa,
+                Specialization = dto.Specialization,
+                StudentType = Enum.TryParse<StudentType>(dto.StudentType, out var st) ? st : StudentType.UnderGrad,
+                Program = dto.StudentType is "Masters" or "PhD" ? StudentProgram.General : Enum.TryParse<StudentProgram>(dto.Program, out var prog) ? prog : null
             };
             _dbContext.Students.Add(entity);
             await _dbContext.SaveChangesAsync();
@@ -934,6 +936,8 @@ public class DataSeed : IDataSeed
         public string Program { get; init; } = "";
         public double Gpa { get; init; }
         public string EnrollmentDateOffset { get; init; } = "";
+        public string? Specialization { get; init; }
+        public string? StudentType { get; init; }
     }
 
     private record StudentCourseDto

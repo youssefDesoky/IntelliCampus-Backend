@@ -8,7 +8,7 @@ public class GradeComplaintSpec : BaseSpecifications<GradeComplaint>
     public GradeComplaintSpec(int studentId)
         : base(c => c.StudentId == studentId)
     {
-        AddInclude(c => c.Grade);
+        AddInclude(c => c.Grade!);
         AddOrderByDescending(c => c.SubmittedAt);
     }
 
@@ -16,7 +16,7 @@ public class GradeComplaintSpec : BaseSpecifications<GradeComplaint>
     public GradeComplaintSpec(int gradeId, bool byGrade)
         : base(c => c.GradeId == gradeId)
     {
-        AddInclude(c => c.Student);
-        AddInclude(c => c.Grade);
+        AddInclude(c => c.Student!);
+        AddInclude(c => c.Grade!);
     }
 }

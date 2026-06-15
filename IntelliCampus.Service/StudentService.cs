@@ -70,6 +70,7 @@ public class StudentService : IStudentService
             facultyId = creator?.FacultyId;
         }
 
+        var studentType = ResolveStudentType(dto.StudentType);
         var student = new Student
         {
             NationalId = dto.NationalId,
@@ -80,13 +81,16 @@ public class StudentService : IStudentService
             Address = dto.Address,
             Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
-            Roles = ResolveStudentRoles(dto.StudentType),
+            Roles = ResolveStudentRoles(studentType),
             StudentCode = dto.StudentCode,
             FacultyId = facultyId,
+            StudentType = studentType,
             Level = dto.Level,
             DepartmentId = departmentId,
             BylawId = bylawId,
-            EnrollmentDate = enrollmentDate
+            EnrollmentDate = enrollmentDate,
+            Program = studentType == StudentType.UnderGrad ? dto.Program : StudentProgram.General,
+            Specialization = dto.Specialization
         };
 
         Students.Add(student);
@@ -131,6 +135,10 @@ public class StudentService : IStudentService
 
         if (dto.BylawId.HasValue) student.BylawId = dto.BylawId;
 
+        if (dto.Program.HasValue && student.StudentType == StudentType.UnderGrad)
+            student.Program = dto.Program;
+        if (dto.Specialization is not null) student.Specialization = dto.Specialization;
+
         var enrollmentDate = ParseEnrollmentDate(dto.EnrollmentDate);
         if (enrollmentDate.HasValue) student.EnrollmentDate = enrollmentDate.Value;
 
@@ -161,15 +169,25 @@ public class StudentService : IStudentService
         return true;
     }
 
-    private static List<UserRole> ResolveStudentRoles(string? studentType)
+    private static StudentType ResolveStudentType(string? studentType)
     {
         if (string.IsNullOrWhiteSpace(studentType))
-            return [UserRole.Student_UnderGrad];
+            return StudentType.UnderGrad;
 
         return studentType.ToLowerInvariant() switch
         {
-            "undergrad" or "under_grad" => [UserRole.Student_UnderGrad],
-            "postgrad" or "post_grad" => [UserRole.Student_PostGrad],
+            "undergrad" or "under_grad" => StudentType.UnderGrad,
+            "masters" or "master" => StudentType.Masters,
+            "phd" => StudentType.PhD,
+            _ => StudentType.UnderGrad
+        };
+    }
+
+    private static List<UserRole> ResolveStudentRoles(StudentType studentType)
+    {
+        return studentType switch
+        {
+            StudentType.Masters or StudentType.PhD => [UserRole.Student_PostGrad],
             _ => [UserRole.Student_UnderGrad]
         };
     }
@@ -260,6 +278,8 @@ public class StudentService : IStudentService
             EnrollmentDate = student.EnrollmentDate?.ToString("dd MM yyyy"),
             Gpa = student.Gpa,
             Program = student.Program,
+            Specialization = student.Specialization,
+            StudentType = student.StudentType,
             Roles = student.Roles.Select(r => r.ToString()).ToList()
         };
     }

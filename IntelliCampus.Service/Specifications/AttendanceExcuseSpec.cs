@@ -8,7 +8,7 @@ public class AttendanceExcuseSpec : BaseSpecifications<AttendanceExcuse>
     public AttendanceExcuseSpec(int studentId) 
         : base(e => e.StudentId == studentId)
     {
-        AddInclude(e => e.Session);
+        AddInclude(e => e.Session!);
         AddOrderByDescending(e => e.CreatedAt);
     }
 
@@ -16,7 +16,7 @@ public class AttendanceExcuseSpec : BaseSpecifications<AttendanceExcuse>
     public AttendanceExcuseSpec(int sessionId, bool bySession)
         : base(e => e.SessionId == sessionId)
     {
-        AddInclude(e => e.Student);
+        AddInclude(e => e.Student!);
         AddOrderByDescending(e => e.CreatedAt);
     }
 }
