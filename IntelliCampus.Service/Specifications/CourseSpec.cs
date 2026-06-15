@@ -24,6 +24,11 @@ namespace IntelliCampus.Service.Specifications
             AddInclude(c => c.Department!);
             AddInclude(c => c.StudentCourses!);
             AddInclude(c => c.Grades!);
+            AddInclude(c => c.Department);
+            AddInclude(c => c.StudentCourses);
+            AddInclude("StudentCourses.Student");
+            AddInclude("StudentCourses.Class");
+            AddInclude(c => c.Grades);
             AddInclude("Classes.Instructor");
             AddInclude("Classes.Sessions.Attendances");
             AddInclude("Prerequisites.PrerequisiteCourse");

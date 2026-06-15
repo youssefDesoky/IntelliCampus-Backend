@@ -191,6 +191,7 @@ public class NotificationService : INotificationService
         NotificationType.MaterialUploaded => "Material Uploaded",
         NotificationType.Announcement => "Announcement",
         NotificationType.Reminder => "Reminder",
+        NotificationType.QuestionRouting => "Question Routing",
         _ => "Notification"
     };
 
