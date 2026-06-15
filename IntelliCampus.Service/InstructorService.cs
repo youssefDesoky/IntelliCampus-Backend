@@ -22,6 +22,9 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
     private IGenericRepository<Department, int> Departments
         => _unitOfWork.GetRepository<Department, int>();
 
+    private IGenericRepository<Role, int> RolesRepo
+        => _unitOfWork.GetRepository<Role, int>();
+
     public async Task<InstructorDto?> GetByIdAsync(int instructorId)
     {
         var spec = new InstructorSpec(instructorId);
@@ -70,7 +73,6 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             Address = dto.Address,
             Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
-            Roles = [UserRole.Instructor],
             InstructorCode = dto.InstructorCode,
             InstructorRole = ParseInstructorRole(dto.InstructorRole),
             Specialization = dto.Specialization,
@@ -82,6 +84,17 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         };
 
         Instructors.Add(instructor);
+        await _unitOfWork.SaveChangesAsync();
+
+        var role = (await RolesRepo.GetAllAsync()).First(r => r.RoleName == "Instructor");
+        var userRole = new UserRoleJunction
+        {
+            UserId = instructor.UserId,
+            RoleId = role.RoleId,
+            IsActive = true,
+            AssignedAt = DateTime.UtcNow
+        };
+        _unitOfWork.GetRepository<UserRoleJunction, int>().Add(userRole);
         await _unitOfWork.SaveChangesAsync();
 
         if (instructor.DepartmentId.HasValue)
@@ -256,7 +269,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             Status = instructor.Status?.ToString(),
             OfficeHoursRoomId = instructor.OfficeHoursRoomId,
             OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName,
-            Roles = instructor.Roles.Select(r => r.ToString()).ToList()
+            Roles = instructor.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }
 }

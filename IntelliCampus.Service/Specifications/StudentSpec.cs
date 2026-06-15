@@ -8,6 +8,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(s => s.Department!);
             AddInclude(s => s.Bylaw!);
+            AddInclude("UserRoles.Role");
         }
 
         public StudentSpec(int studentId)
@@ -15,6 +16,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(s => s.Department!);
             AddInclude(s => s.Bylaw!);
+            AddInclude("UserRoles.Role");
         }
     }
 }

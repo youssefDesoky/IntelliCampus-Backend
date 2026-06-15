@@ -8,6 +8,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(i => i.Department!);
             AddInclude(i => i.OfficeHoursRoom!);
+            AddInclude("UserRoles.Role");
         }
 
         public InstructorSpec(int instructorId)
@@ -15,6 +16,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(i => i.Department!);
             AddInclude(i => i.OfficeHoursRoom!);
+            AddInclude("UserRoles.Role");
         }
     }
 }

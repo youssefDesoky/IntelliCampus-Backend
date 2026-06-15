@@ -18,6 +18,9 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
     private IGenericRepository<User, int> Users
         => _unitOfWork.GetRepository<User, int>();
 
+    private IGenericRepository<Role, int> RolesRepo
+        => _unitOfWork.GetRepository<Role, int>();
+
     public async Task<AdminDto?> GetByIdAsync(int adminId)
     {
         var spec = new AdminByIdSpec(adminId);
@@ -53,6 +56,9 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             facultyId = creator?.FacultyId;
         }
 
+        var roleName = ResolveAdminRoleName(dto.AdminRole);
+        var role = (await RolesRepo.GetAllAsync()).First(r => r.RoleName == roleName);
+
         var admin = new Admin
         {
             NationalId = dto.NationalId,
@@ -63,11 +69,20 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             Address = dto.Address,
             Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
-            Roles = ResolveAdminRoles(dto.AdminRole),
             AdminCode = dto.AdminCode,
             HireDate = hireDate,
             FacultyId = facultyId
         };
+
+        admin.UserRoles =
+        [
+            new UserRoleJunction
+            {
+                Role = role,
+                IsActive = true,
+                AssignedAt = DateTime.UtcNow
+            }
+        ];
 
         Admins.Add(admin);
         await _unitOfWork.SaveChangesAsync();
@@ -83,7 +98,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         if (admin is null)
             return false;
 
-        if (admin.Roles.Contains(UserRole.SuperAdmin))
+        if (admin.UserRoles.Any(ur => ur.IsActive && ur.Role.RoleName == nameof(UserRole.SuperAdmin)))
             throw new InvalidOperationException("Cannot delete the SuperAdmin account.");
 
         Admins.Delete(admin);
@@ -92,18 +107,15 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         return true;
     }
 
-    private static List<UserRole> ResolveAdminRoles(string? adminRole)
+    private static string ResolveAdminRoleName(string? adminRole)
     {
-        if (string.IsNullOrWhiteSpace(adminRole))
-            return [UserRole.Admin_UnderGrad];
-
-        return adminRole.ToLowerInvariant() switch
+        return (adminRole?.ToLowerInvariant()) switch
         {
-            "undergrad" or "under_grad" => [UserRole.Admin_UnderGrad],
-            "postgrad" or "post_grad" => [UserRole.Admin_PostGrad],
-            "academicstaff" or "academic_staff" => [UserRole.Admin_AcademicStaff],
-            "superadmin" => [UserRole.SuperAdmin],
-            _ => [UserRole.Admin_UnderGrad]
+            "undergrad" or "under_grad" => "Admin_UnderGrad",
+            "postgrad" or "post_grad" => "Admin_PostGrad",
+            "academicstaff" or "academic_staff" => "Admin_AcademicStaff",
+            "superadmin" => "SuperAdmin",
+            _ => "Admin_UnderGrad"
         };
     }
 
@@ -140,7 +152,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             HireDate = admin.HireDate,
             FacultyId = admin.FacultyId,
             FacultyName = admin.Faculty?.FacultyName,
-            Roles = admin.Roles.Select(r => r.ToString()).ToList()
+            Roles = admin.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }
 }
