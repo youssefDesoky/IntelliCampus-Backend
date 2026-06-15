@@ -23,4 +23,5 @@ public abstract class User
     public ICollection<Comment> Comments { get; set; } = [];
     public ICollection<UserNotification> UserNotifications { get; set; } = [];
     public ICollection<GroupMember> GroupMembers { get; set; } = [];
+    public ICollection<PostVote> PostVotes { get; set; } = [];
 }
