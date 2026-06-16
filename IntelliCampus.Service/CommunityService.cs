@@ -58,8 +58,8 @@ public class CommunityService : ICommunityService
             "Question post {PostId} created in community for course {CourseId}",
             post.PostId, courseId);
 
-        // Route the question and notify top candidates in the background
-        _ = NotifyTopCandidatesAsync(courseId, post);
+        // Route the question and notify top candidates
+        await NotifyTopCandidatesAsync(courseId, post);
 
         return post;
     }
@@ -127,7 +127,9 @@ public class CommunityService : ICommunityService
                 return;
             }
 
-            var topCandidates = routingResponse.Ranked.Take(NotificationTopN).ToList();
+            var topCandidates = routingResponse.Ranked
+                .Where(c => int.TryParse(c.StudentId, out var uid) && uid != post.UserId)
+                .Take(NotificationTopN).ToList();
             if (topCandidates.Count == 0) return;
 
             var userIds = new List<int>();
