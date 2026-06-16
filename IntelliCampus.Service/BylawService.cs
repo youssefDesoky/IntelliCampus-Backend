@@ -221,25 +221,17 @@ public class BylawService : IBylawService
         return MapToDto(bylaw);
     }
 
-    public async Task<BylawDto> UpdateMinHoursToChooseDepartmentAsync(int bylawId, int minHours)
+    public async Task<BylawDto> UpdateMinHoursAsync(int bylawId, UpdateBylawMinHoursDto dto)
     {
         var bylaw = await Bylaws.GetByIdAsync(bylawId);
         if (bylaw is null)
             throw new InvalidOperationException("Bylaw not found.");
 
-        bylaw.MinHoursToChooseDepartment = minHours;
-        await _unitOfWork.SaveChangesAsync();
+        if (dto.MinHoursToChooseDepartment.HasValue)
+            bylaw.MinHoursToChooseDepartment = dto.MinHoursToChooseDepartment.Value;
+        if (dto.MinHoursToChooseSpecialization.HasValue)
+            bylaw.MinHoursToChooseSpecialization = dto.MinHoursToChooseSpecialization.Value;
 
-        return MapToDto(bylaw);
-    }
-
-    public async Task<BylawDto> UpdateMinHoursToChooseSpecializationAsync(int bylawId, int minHours)
-    {
-        var bylaw = await Bylaws.GetByIdAsync(bylawId);
-        if (bylaw is null)
-            throw new InvalidOperationException("Bylaw not found.");
-
-        bylaw.MinHoursToChooseSpecialization = minHours;
         await _unitOfWork.SaveChangesAsync();
 
         return MapToDto(bylaw);

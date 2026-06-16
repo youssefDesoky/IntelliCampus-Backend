@@ -16,6 +16,5 @@ public interface IBylawService
     Task<BylawDto?> UpdateGradeScaleAsync(int bylawId, int sortOrder, GradeScaleItemDto item);
     Task<BylawDto> SetLevelScalesAsync(int bylawId, List<LevelScaleItemDto> items);
     Task<BylawDto?> UpdateLevelScaleAsync(int bylawId, int level, LevelScaleItemDto item);
-    Task<BylawDto> UpdateMinHoursToChooseDepartmentAsync(int bylawId, int minHours);
-    Task<BylawDto> UpdateMinHoursToChooseSpecializationAsync(int bylawId, int minHours);
+    Task<BylawDto> UpdateMinHoursAsync(int bylawId, UpdateBylawMinHoursDto dto);
 }
