@@ -35,6 +35,8 @@ public class RouterInitializerService : IHostedService
             var courses = await uow.GetRepository<Course, int>().GetAllAsync(
                 new CourseSpec());
 
+            var requests = new List<(string CourseCode, int CourseId, InitializeRequest Request)>();
+
             foreach (var course in courses)
             {
                 if (cancellationToken.IsCancellationRequested) break;
@@ -109,6 +111,13 @@ public class RouterInitializerService : IHostedService
                     }
                 }
 
+                // Skip courses with no community posts — nothing for the router to index
+                if (archivedQuestions.Count == 0)
+                {
+                    _logger.LogDebug("Skipping router init for course {Code} — no community posts", courseCode);
+                    continue;
+                }
+
                 var request = new InitializeRequest(
                     CourseId: courseCode,
                     PrereqEdges: prereqEdges.Count > 0 ? prereqEdges : null,
@@ -118,21 +127,31 @@ public class RouterInitializerService : IHostedService
                     Students: students
                 );
 
-                try
-                {
-                    await routingClient.InitializeAsync(request, cancellationToken);
-                    _logger.LogInformation("Router initialized for course {Code} (id={Id})",
-                        course.CourseCode, course.CourseId);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex,
-                        "Router initialization skipped for course {Code} (service unavailable)",
-                        course.CourseCode);
-                }
+                requests.Add((courseCode, course.CourseId, request));
             }
 
-            _logger.LogInformation("Router initializer completed");
+            _logger.LogInformation("Initializing {Count} course routers in parallel...", requests.Count);
+
+            await Parallel.ForEachAsync(
+                requests,
+                new ParallelOptions { MaxDegreeOfParallelism = 5, CancellationToken = cancellationToken },
+                async (item, ct) =>
+                {
+                    try
+                    {
+                        await routingClient.InitializeAsync(item.Request, ct);
+                        _logger.LogInformation("Router initialized for course {Code} (id={Id})",
+                            item.CourseCode, item.CourseId);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex,
+                            "Router initialization skipped for course {Code} (service unavailable)",
+                            item.CourseCode);
+                    }
+                });
+
+            _logger.LogInformation("Router initializer completed — {Count} courses initialized", requests.Count);
         }
         catch (Exception ex)
         {
