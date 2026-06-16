@@ -16,7 +16,7 @@ public class GradesController(IGradeService gradeService) : ControllerBase
     // Student endpoints
 
     [HttpGet("course/{courseId}")]
-    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
     public async Task<IActionResult> GetCourseGrade(int courseId)
     {
         var result = await gradeService.GetCourseGradeAsync(UserId, courseId);
@@ -24,22 +24,22 @@ public class GradesController(IGradeService gradeService) : ControllerBase
     }
 
     [HttpGet("coursework/{courseId}")]
-    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
     public async Task<IActionResult> GetCourseWork(int courseId)
         => Ok(await gradeService.GetCourseWorkAsync(UserId, courseId));
 
     [HttpGet("my-grades")]
-    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
     public async Task<IActionResult> GetAllMyGrades()
         => Ok(await gradeService.GetAllGradesAsync(UserId));
 
     [HttpGet("transcript")]
-    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
     public async Task<IActionResult> GetTranscript()
         => Ok(await gradeService.GetTranscriptAsync(UserId));
 
     [HttpGet("transcript/export")]
-    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
     public async Task<IActionResult> ExportTranscript()
     {
         var pdf = await gradeService.ExportTranscriptPdfAsync(UserId);
@@ -47,12 +47,12 @@ public class GradesController(IGradeService gradeService) : ControllerBase
     }
 
     [HttpPost("complaint")]
-    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
     public async Task<IActionResult> FileComplaint([FromBody] GradeComplaintDto dto)
         => Ok(await gradeService.FileComplaintAsync(UserId, dto));
 
     [HttpGet("complaints")]
-    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
     public async Task<IActionResult> GetComplaints()
         => Ok(await gradeService.GetComplaintsAsync(UserId));
 

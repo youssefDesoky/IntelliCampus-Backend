@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    [Migration("20260615224935_AddMeetingEntity")]
-    partial class AddMeetingEntity
+    [Migration("20260616210641_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

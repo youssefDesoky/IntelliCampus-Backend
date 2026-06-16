@@ -37,7 +37,7 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<ActionResult<DepartmentDto>> Create([FromBody] CreateDepartmentDto dto)
     {
         try
@@ -53,7 +53,7 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<ActionResult<DepartmentDto>> Update(int id, [FromBody] UpdateDepartmentDto dto)
     {
         try
@@ -72,7 +72,7 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _departmentService.DeleteAsync(id);

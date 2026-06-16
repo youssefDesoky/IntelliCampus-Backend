@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace IntelliCampus.Shared.Dtos.Class;
 
 public class CreateClassDto
@@ -10,6 +8,22 @@ public class CreateClassDto
 
     public string? Schedule { get; set; }
 
+    public string? Room { get; set; }
+    public int CourseId { get; set; }
+}
+
+public class CreateLectureDto
+{
+    public string? InstructorName { get; set; }
+    public string? Schedule { get; set; }
+    public string? Room { get; set; }
+    public int CourseId { get; set; }
+}
+
+public class CreateSectionDto
+{
+    public string? InstructorName { get; set; }
+    public string? Schedule { get; set; }
     public string? Room { get; set; }
     public int CourseId { get; set; }
 }

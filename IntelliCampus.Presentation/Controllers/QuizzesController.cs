@@ -32,7 +32,7 @@ public class QuizzesController : ControllerBase
     // --- Course-nested endpoints under api/courses/{courseId}/quizzes ---
 
     [HttpGet("/api/courses/{courseId}/quizzes")]
-    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad,Instructor")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Instructor")]
     public async Task<IActionResult> GetQuizzesOverview(string courseId)
     {
         var result = await _quizService.GetQuizzesOverviewAsync(UserId, courseId);
@@ -47,7 +47,7 @@ public class QuizzesController : ControllerBase
     }
 
     [HttpGet("/api/courses/{courseId}/quizzes/practice")]
-    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
     public async Task<IActionResult> GetPracticeQuiz(string courseId ,[FromQuery] int? quizId)
     {
         var result = await _quizService.GetPracticeQuizAsync(UserId, courseId , quizId);
@@ -55,7 +55,7 @@ public class QuizzesController : ControllerBase
     }
 
     [HttpPost("/api/courses/{courseId}/quizzes/practice/submit")]
-    [Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
     public async Task<IActionResult> SubmitPracticeQuiz(string courseId, [FromBody] SubmitQuizDto dto)
     {
         try

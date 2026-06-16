@@ -1,6 +1,7 @@
 ﻿using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Presistence.Data.Contexts;
 using IntelliCmpus.Presistence.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace IntelliCampus.Presistence.Repositories
 {
@@ -21,5 +22,8 @@ namespace IntelliCampus.Presistence.Repositories
         }
 
         public async Task<int> SaveChangesAsync() => await _dbContext.SaveChangesAsync();
+
+        public async Task ExecuteSqlAsync(string sql, params object[] parameters)
+            => await _dbContext.Database.ExecuteSqlRawAsync(sql, parameters);
     }
 }

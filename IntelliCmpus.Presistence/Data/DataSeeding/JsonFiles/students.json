@@ -181,7 +181,7 @@
     "nationality": "Egyptian",
     "password": "Student@123",
     "roles": [
-      "Student_PostGrad"
+      "Student_Masters"
     ],
     "gpa": 3.75,
     "studentType": "Masters",
@@ -199,7 +199,7 @@
     "nationality": "Egyptian",
     "password": "Student@123",
     "roles": [
-      "Student_PostGrad"
+      "Student_PhD"
     ],
     "gpa": 3.92,
     "studentType": "PhD",

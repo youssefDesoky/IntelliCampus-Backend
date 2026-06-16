@@ -41,13 +41,13 @@ public class ClassesController : ControllerBase
         return Ok(classes);
     }
 
-    [Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,SuperAdmin")]
-    [HttpPost]
-    public async Task<ActionResult<ClassDto>> Create([FromBody] CreateClassDto dto)
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [HttpPost("lecture")]
+    public async Task<ActionResult<ClassDto>> CreateLecture([FromBody] CreateLectureDto dto)
     {
         try
         {
-            var classDto = await _classService.CreateAsync(dto);
+            var classDto = await _classService.CreateLectureAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = classDto.ClassId }, classDto);
         }
         catch (InvalidOperationException ex)
@@ -56,7 +56,22 @@ public class ClassesController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [HttpPost("section")]
+    public async Task<ActionResult<ClassDto>> CreateSection([FromBody] CreateSectionDto dto)
+    {
+        try
+        {
+            var classDto = await _classService.CreateSectionAsync(dto);
+            return CreatedAtAction(nameof(GetById), new { id = classDto.ClassId }, classDto);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     [HttpPut("{id}/instructor/{instructorId}")]
     public async Task<ActionResult<ClassDto>> AssignInstructor(int id, int instructorId)
     {
@@ -75,7 +90,7 @@ public class ClassesController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

@@ -92,7 +92,6 @@ public class BylawService : IBylawService
         bylaw.FileUrl = fileUrl;
         bylaw.FileName = file.FileName;
 
-        Bylaws.Update(bylaw);
         await _unitOfWork.SaveChangesAsync();
 
         return MapToDto(bylaw);
@@ -121,7 +120,6 @@ public class BylawService : IBylawService
             return false;
 
         bylaw.IsActive = !bylaw.IsActive;
-        Bylaws.Update(bylaw);
         await _unitOfWork.SaveChangesAsync();
 
         return true;
@@ -148,7 +146,6 @@ public class BylawService : IBylawService
             .OrderBy(g => g.SortOrder)
             .ToList();
 
-        Bylaws.Update(bylaw);
         await _unitOfWork.SaveChangesAsync();
 
         return MapToDto(bylaw);
@@ -173,7 +170,6 @@ public class BylawService : IBylawService
             })
             .ToList();
 
-        Bylaws.Update(bylaw);
         await _unitOfWork.SaveChangesAsync();
 
         return MapToDto(bylaw);
@@ -196,7 +192,6 @@ public class BylawService : IBylawService
             })
             .ToList();
 
-        Bylaws.Update(bylaw);
         await _unitOfWork.SaveChangesAsync();
 
         return MapToDto(bylaw);
@@ -221,7 +216,6 @@ public class BylawService : IBylawService
             .OrderBy(l => l.Level)
             .ToList();
 
-        Bylaws.Update(bylaw);
         await _unitOfWork.SaveChangesAsync();
 
         return MapToDto(bylaw);
@@ -234,7 +228,6 @@ public class BylawService : IBylawService
             throw new InvalidOperationException("Bylaw not found.");
 
         bylaw.MinHoursToChooseDepartment = minHours;
-        Bylaws.Update(bylaw);
         await _unitOfWork.SaveChangesAsync();
 
         return MapToDto(bylaw);
@@ -247,7 +240,6 @@ public class BylawService : IBylawService
             throw new InvalidOperationException("Bylaw not found.");
 
         bylaw.MinHoursToChooseSpecialization = minHours;
-        Bylaws.Update(bylaw);
         await _unitOfWork.SaveChangesAsync();
 
         return MapToDto(bylaw);
