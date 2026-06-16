@@ -2,5 +2,6 @@ namespace IntelliCampus.Shared.Dtos.Bylaw;
 
 public class UpdateBylawMinHoursDto
 {
-    public int MinHours { get; set; }
+    public int? MinHoursToChooseDepartment { get; set; }
+    public int? MinHoursToChooseSpecialization { get; set; }
 }

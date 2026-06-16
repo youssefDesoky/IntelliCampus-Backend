@@ -131,26 +131,12 @@ public class BylawController : ControllerBase
         return Ok(bylaw);
     }
 
-    [HttpPut("{id}/min-hours-department")]
-    public async Task<ActionResult<BylawDto>> UpdateMinHoursToChooseDepartment(int id, [FromBody] UpdateBylawMinHoursDto dto)
+    [HttpPut("{id}/minhours-departmentAndSpecialization")]
+    public async Task<ActionResult<BylawDto>> UpdateMinHours(int id, [FromBody] UpdateBylawMinHoursDto dto)
     {
         try
         {
-            var bylaw = await _bylawService.UpdateMinHoursToChooseDepartmentAsync(id, dto.MinHours);
-            return Ok(bylaw);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
-    }
-
-    [HttpPut("{id}/min-hours-specialization")]
-    public async Task<ActionResult<BylawDto>> UpdateMinHoursToChooseSpecialization(int id, [FromBody] UpdateBylawMinHoursDto dto)
-    {
-        try
-        {
-            var bylaw = await _bylawService.UpdateMinHoursToChooseSpecializationAsync(id, dto.MinHours);
+            var bylaw = await _bylawService.UpdateMinHoursAsync(id, dto);
             return Ok(bylaw);
         }
         catch (InvalidOperationException ex)

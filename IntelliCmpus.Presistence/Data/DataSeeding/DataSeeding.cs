@@ -43,18 +43,26 @@ public class DataSeed : IDataSeed
     {
         try
         {
-            if (await _dbContext.Users.AnyAsync()) return;
+            await LoadExistingIdsAsync();
 
-            // ---- 0. Seed roles ----
+            // Each seed method guards itself — if data exists it skips.
+            // SaveChanges between layers to satisfy FK dependencies.
+
             await SeedRolesAsync();
 
-            // ---- 1. Standalone entities ----
             await SeedFacultyAsync();
+
+            await SeedRoomsAsync();
+
+            await SeedExamHallsAsync();
+
             await _dbContext.SaveChangesAsync();
 
+            // Depends on Faculty
             await SeedDepartmentsAsync();
             await _dbContext.SaveChangesAsync();
 
+            // Depends on Faculty, Departments
             await SeedAdminAsync();
             await _dbContext.SaveChangesAsync();
 
@@ -63,9 +71,14 @@ public class DataSeed : IDataSeed
             await SetDepartmentHeadsAsync();
             await _dbContext.SaveChangesAsync();
 
+            await SeedStudentsAsync();
+            await _dbContext.SaveChangesAsync();
+
+            // Depends on Departments
             await SeedCoursesAsync();
             await _dbContext.SaveChangesAsync();
 
+            // Depends on Courses
             await SeedPrerequisitesAsync();
             await _dbContext.SaveChangesAsync();
 
@@ -75,9 +88,55 @@ public class DataSeed : IDataSeed
             await SeedBylawAsync();
             await _dbContext.SaveChangesAsync();
 
-            await SeedStudentsAsync();
+            // Depends on Courses, Students
+            await SeedStudentCoursesAsync();
             await _dbContext.SaveChangesAsync();
 
+            await SeedSchedulesAsync();
+
+            // Depends on Courses, Instructors
+            await SeedMaterialFoldersAsync();
+            await _dbContext.SaveChangesAsync();
+
+            await SeedMaterialsAsync();
+            await _dbContext.SaveChangesAsync();
+
+            await SeedInstructorMaterialsAsync();
+            await _dbContext.SaveChangesAsync();
+
+            // Depends on Students, Courses
+            await SeedGradesAsync();
+            await _dbContext.SaveChangesAsync();
+
+            // Depends on Courses, Users
+            await SeedAnnouncementsAsync();
+            await _dbContext.SaveChangesAsync();
+
+            await SeedAnnouncementCommentsAsync();
+            await _dbContext.SaveChangesAsync();
+
+            // Depends on Courses, Rooms
+            await SeedExamsAsync();
+            await _dbContext.SaveChangesAsync();
+
+            // Depends on Courses
+            await SeedAssignmentsAsync();
+            await _dbContext.SaveChangesAsync();
+
+            await SeedStudentAssignmentsAsync();
+            await _dbContext.SaveChangesAsync();
+
+            // Depends on Courses
+            await SeedQuizzesAsync();
+            await _dbContext.SaveChangesAsync();
+
+            await SeedQuestionsAsync();
+            await _dbContext.SaveChangesAsync();
+
+            await SeedStudentQuizzesAsync();
+            await _dbContext.SaveChangesAsync();
+
+            // Depends on Courses, Users
             await SeedCommunitiesAsync();
             await _dbContext.SaveChangesAsync();
 
@@ -90,53 +149,7 @@ public class DataSeed : IDataSeed
             await SeedPostVotesAsync();
             await _dbContext.SaveChangesAsync();
 
-            await SeedStudentCoursesAsync();
-            await _dbContext.SaveChangesAsync();
-
-            await SeedSchedulesAsync();
-
-            await SeedMaterialFoldersAsync();
-            await _dbContext.SaveChangesAsync();
-
-            await SeedMaterialsAsync();
-            await _dbContext.SaveChangesAsync();
-
-            await SeedInstructorMaterialsAsync();
-            await _dbContext.SaveChangesAsync();
-
-            await SeedGradesAsync();
-            await _dbContext.SaveChangesAsync();
-
-            await SeedRoomsAsync();
-            await _dbContext.SaveChangesAsync();
-
-            await SeedAnnouncementsAsync();
-            await _dbContext.SaveChangesAsync();
-
-            await SeedAnnouncementCommentsAsync();
-            await _dbContext.SaveChangesAsync();
-
-            await SeedExamsAsync();
-            await _dbContext.SaveChangesAsync();
-
-            await SeedExamHallsAsync();
-            await _dbContext.SaveChangesAsync();
-
-            await SeedAssignmentsAsync();
-            await _dbContext.SaveChangesAsync();
-
-            await SeedStudentAssignmentsAsync();
-            await _dbContext.SaveChangesAsync();
-
-            await SeedQuizzesAsync();
-            await _dbContext.SaveChangesAsync();
-
-            await SeedQuestionsAsync();
-            await _dbContext.SaveChangesAsync();
-
-            await SeedStudentQuizzesAsync();
-            await _dbContext.SaveChangesAsync();
-
+            // Depends on Instructors, Rooms
             await SetInstructorOfficeHoursAsync();
             await _dbContext.SaveChangesAsync();
         }
@@ -144,6 +157,53 @@ public class DataSeed : IDataSeed
         {
             Console.WriteLine($"Data Seeding Failed: {ex}");
         }
+    }
+
+    private async Task LoadExistingIdsAsync()
+    {
+        _facultyId = await _dbContext.Faculties.Select(f => f.FacultyId).FirstOrDefaultAsync();
+        _bylawId = await _dbContext.Bylaws.Select(b => b.BylawId).FirstOrDefaultAsync();
+
+        foreach (var d in await _dbContext.Departments.ToListAsync())
+            if (d.DepartmentName != null) _departmentIds[d.DepartmentName] = d.DepartmentId;
+
+        foreach (var u in await _dbContext.Users.ToListAsync())
+            if (u.Email != null) _userIds[u.Email] = u.UserId;
+
+        foreach (var c in await _dbContext.Courses.ToListAsync())
+            if (c.CourseCode != null) _courseIds[c.CourseCode] = c.CourseId;
+
+        foreach (var r in await _dbContext.Rooms.ToListAsync())
+            if (r.RoomName != null) _roomIds[r.RoomName] = r.RoomId;
+
+        var coursesDict = await _dbContext.Courses.ToDictionaryAsync(c => c.CourseId, c => c.CourseCode ?? "");
+        foreach (var c in await _dbContext.Classes.ToListAsync())
+        {
+            var courseCode = c.CourseId > 0 ? coursesDict.GetValueOrDefault(c.CourseId, "") : "";
+            var key = $"{c.GroupCode}_{courseCode}";
+            if (!string.IsNullOrEmpty(c.GroupCode)) _classKeys[key] = c.ClassId;
+        }
+
+        foreach (var f in await _dbContext.MaterialFolders.ToListAsync())
+            if (f.Name != null) _folderIds[f.Name] = f.MaterialFolderId;
+
+        foreach (var m in await _dbContext.Materials.ToListAsync())
+            if (m.Title != null) _materialIds[m.Title] = m.MaterialId;
+
+        foreach (var a in await _dbContext.Assignments.ToListAsync())
+            if (a.Title != null) _assignmentIds[a.Title] = a.AssignmentId;
+
+        foreach (var q in await _dbContext.Quizzes.ToListAsync())
+            if (q.Title != null) _quizIds[q.Title] = q.QuizId;
+
+        foreach (var c in await _dbContext.Communities.Include(c => c.Course).ToListAsync())
+        {
+            var courseCode = c.Course?.CourseCode ?? "";
+            if (!string.IsNullOrEmpty(courseCode)) _communityIds[courseCode] = c.CommunityId;
+        }
+
+        foreach (var r in await _dbContext.Roles.ToListAsync())
+            if (r.RoleName != null) _roleCache[r.RoleName] = r;
     }
 
     // ---- Roles ----
@@ -233,6 +293,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedFacultyAsync()
     {
+        if (await _dbContext.Faculties.AnyAsync()) return;
         var items = await ReadJsonAsync<FacultyDto>("faculty.json");
         if (items.Count == 0) return;
         var dto = items[0];
@@ -251,6 +312,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedDepartmentsAsync()
     {
+        if (await _dbContext.Departments.AnyAsync()) return;
         var items = await ReadJsonAsync<DepartmentDto>("departments.json");
         foreach (var dto in items)
         {
@@ -282,6 +344,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedAdminAsync()
     {
+        if (await _dbContext.Admins.AnyAsync()) return;
         var items = await ReadJsonAsync<AdminDto>("admin.json");
         foreach (var dto in items)
         {
@@ -310,6 +373,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedInstructorsAsync()
     {
+        if (await _dbContext.Instructors.AnyAsync()) return;
         var items = await ReadJsonAsync<InstructorDto>("instructors.json");
         foreach (var dto in items)
         {
@@ -356,6 +420,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedCoursesAsync()
     {
+        if (await _dbContext.Courses.AnyAsync()) return;
         var items = await ReadJsonAsync<CourseDto>("courses.json");
         foreach (var dto in items)
         {
@@ -378,6 +443,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedPrerequisitesAsync()
     {
+        if (await _dbContext.Set<CoursePrerequisite>().AnyAsync()) return;
         var items = await ReadJsonAsync<PrerequisiteDto>("prerequisites.json");
         foreach (var dto in items)
         {
@@ -396,6 +462,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedClassesAsync()
     {
+        if (await _dbContext.Classes.AnyAsync()) return;
         var items = await ReadJsonAsync<ClassDto>("classes.json");
         foreach (var dto in items)
         {
@@ -422,6 +489,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedBylawAsync()
     {
+        if (await _dbContext.Bylaws.AnyAsync()) return;
         var items = await ReadJsonAsync<BylawDto>("bylaw.json");
         if (items.Count == 0) return;
         var dto = items[0];
@@ -449,6 +517,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedStudentsAsync()
     {
+        if (await _dbContext.Students.AnyAsync()) return;
         var items = await ReadJsonAsync<StudentDto>("students.json");
         foreach (var dto in items)
         {
@@ -485,6 +554,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedStudentCoursesAsync()
     {
+        if (await _dbContext.Set<StudentCourse>().AnyAsync()) return;
         var items = await ReadJsonAsync<StudentCourseDto>("student-courses.json");
         var currentSemester = SemesterHelper.GetCurrentSemester();
         foreach (var dto in items)
@@ -509,6 +579,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedSchedulesAsync()
     {
+        if (await _dbContext.Schedules.AnyAsync()) return;
         var studentCourses = await _dbContext.Set<StudentCourse>().Include(sc => sc.Course).ToListAsync();
         var allClasses = await _dbContext.Classes.Include(c => c.Instructor).ToListAsync();
         var schedules = new List<Schedule>();
@@ -554,6 +625,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedMaterialFoldersAsync()
     {
+        if (await _dbContext.MaterialFolders.AnyAsync()) return;
         var items = await ReadJsonAsync<MaterialFolderDto>("material-folders.json");
         foreach (var dto in items)
         {
@@ -579,6 +651,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedMaterialsAsync()
     {
+        if (await _dbContext.Materials.AnyAsync()) return;
         var items = await ReadJsonAsync<MaterialDto>("materials.json");
         foreach (var dto in items)
         {
@@ -604,6 +677,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedInstructorMaterialsAsync()
     {
+        if (await _dbContext.InstructorMaterials.AnyAsync()) return;
         var items = await ReadJsonAsync<InstructorMaterialDto>("instructor-materials.json");
         var added = new HashSet<(int, int)>();
         foreach (var dto in items)
@@ -626,6 +700,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedGradesAsync()
     {
+        if (await _dbContext.Grades.AnyAsync()) return;
         var items = await ReadJsonAsync<GradeDto>("grades.json");
         foreach (var dto in items)
         {
@@ -651,6 +726,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedRoomsAsync()
     {
+        if (await _dbContext.Rooms.AnyAsync()) return;
         var items = await ReadJsonAsync<RoomDto>("rooms.json");
         foreach (var dto in items)
         {
@@ -680,6 +756,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedAnnouncementsAsync()
     {
+        if (await _dbContext.Announcements.AnyAsync()) return;
         var items = await ReadJsonAsync<AnnouncementDto>("announcements.json");
         _announcements.Clear();
         foreach (var dto in items)
@@ -705,6 +782,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedAnnouncementCommentsAsync()
     {
+        if (await _dbContext.AnnouncementComments.AnyAsync()) return;
         var items = await ReadJsonAsync<AnnouncementCommentDto>("announcement-comments.json");
         foreach (var dto in items)
         {
@@ -726,6 +804,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedExamsAsync()
     {
+        if (await _dbContext.Exams.AnyAsync()) return;
         var items = await ReadJsonAsync<ExamDto>("exams.json");
         foreach (var dto in items)
         {
@@ -754,6 +833,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedExamHallsAsync()
     {
+        if (await _dbContext.ExamHalls.AnyAsync()) return;
         var items = await ReadJsonAsync<ExamHallDto>("exam-halls.json");
         foreach (var dto in items)
         {
@@ -770,6 +850,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedAssignmentsAsync()
     {
+        if (await _dbContext.Assignments.AnyAsync()) return;
         var items = await ReadJsonAsync<AssignmentDto>("assignments.json");
         foreach (var dto in items)
         {
@@ -794,6 +875,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedStudentAssignmentsAsync()
     {
+        if (await _dbContext.StudentAssignments.AnyAsync()) return;
         var items = await ReadJsonAsync<StudentAssignmentDto>("student-assignments.json");
         foreach (var dto in items)
         {
@@ -821,6 +903,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedQuizzesAsync()
     {
+        if (await _dbContext.Quizzes.AnyAsync()) return;
         var items = await ReadJsonAsync<QuizDto>("quizzes.json");
         foreach (var dto in items)
         {
@@ -847,6 +930,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedQuestionsAsync()
     {
+        if (await _dbContext.Questions.AnyAsync()) return;
         var items = await ReadJsonAsync<QuestionDto>("questions.json");
         foreach (var dto in items)
         {
@@ -868,6 +952,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedStudentQuizzesAsync()
     {
+        if (await _dbContext.StudentQuizzes.AnyAsync()) return;
         var items = await ReadJsonAsync<StudentQuizDto>("student-quizzes.json");
         foreach (var dto in items)
         {
@@ -889,6 +974,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedCommunitiesAsync()
     {
+        if (await _dbContext.Communities.AnyAsync()) return;
         var items = await ReadJsonAsync<CommunityDto>("communities.json");
         foreach (var dto in items)
         {
@@ -905,6 +991,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedPostsAsync()
     {
+        if (await _dbContext.Posts.AnyAsync()) return;
         var items = await ReadJsonAsync<PostDto>("posts.json");
         _posts.Clear();
         foreach (var dto in items)
@@ -930,6 +1017,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedCommentsAsync()
     {
+        if (await _dbContext.Comments.AnyAsync()) return;
         var items = await ReadJsonAsync<CommentDto>("comments.json");
         foreach (var dto in items)
         {
@@ -950,6 +1038,7 @@ public class DataSeed : IDataSeed
 
     private async Task SeedPostVotesAsync()
     {
+        if (await _dbContext.PostVotes.AnyAsync()) return;
         var items = await ReadJsonAsync<PostVoteDto>("post-votes.json");
         foreach (var dto in items)
         {
