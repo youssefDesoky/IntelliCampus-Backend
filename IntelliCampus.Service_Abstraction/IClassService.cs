@@ -8,6 +8,8 @@ public interface IClassService
     Task<IEnumerable<ClassDto>> GetAllAsync();
     Task<IEnumerable<ClassDto>> GetByCourseIdAsync(int courseId);
     Task<ClassDto> CreateAsync(CreateClassDto dto);
+    Task<ClassDto> CreateLectureAsync(CreateLectureDto dto);
+    Task<ClassDto> CreateSectionAsync(CreateSectionDto dto);
     Task<ClassDto?> AssignInstructorAsync(int classId, int instructorId);
     Task<bool> DeleteAsync(int classId);
 }

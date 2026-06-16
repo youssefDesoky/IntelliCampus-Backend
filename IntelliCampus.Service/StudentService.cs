@@ -212,7 +212,8 @@ public class StudentService : IStudentService
     {
         return studentType switch
         {
-            StudentType.Masters or StudentType.PhD => "Student_PostGrad",
+            StudentType.Masters => "Student_Masters",
+            StudentType.PhD => "Student_PhD",
             _ => "Student_UnderGrad"
         };
     }

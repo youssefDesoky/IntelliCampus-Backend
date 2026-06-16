@@ -846,6 +846,35 @@ namespace IntelliCampus.Presistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Meetings",
+                columns: table => new
+                {
+                    MeetingId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RoomName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CourseId = table.Column<int>(type: "int", nullable: false),
+                    InstructorId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Meetings", x => x.MeetingId);
+                    table.ForeignKey(
+                        name: "FK_Meetings_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
+                        principalColumn: "CourseId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Meetings_Instructors_InstructorId",
+                        column: x => x.InstructorId,
+                        principalTable: "Instructors",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Students",
                 columns: table => new
                 {
@@ -1597,6 +1626,16 @@ namespace IntelliCampus.Presistence.Migrations
                 column: "FolderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Meetings_CourseId",
+                table: "Meetings",
+                column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Meetings_InstructorId",
+                table: "Meetings",
+                column: "InstructorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Notes_SessionId",
                 table: "Notes",
                 column: "SessionId");
@@ -1980,6 +2019,9 @@ namespace IntelliCampus.Presistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "InstructorMaterials");
+
+            migrationBuilder.DropTable(
+                name: "Meetings");
 
             migrationBuilder.DropTable(
                 name: "NoteSummaries");

@@ -8,7 +8,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,Admin_AcademicStaff,SuperAdmin")]
+[Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_AcademicStaff,SuperAdmin")]
 public class InstructorsController : ControllerBase
 {
     private readonly IInstructorService _instructorService;

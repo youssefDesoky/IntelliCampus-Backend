@@ -8,7 +8,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Student_UnderGrad,Student_PostGrad")]
+[Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
 public class RemindersController : ControllerBase
 {
     private readonly IReminderService _reminderService;

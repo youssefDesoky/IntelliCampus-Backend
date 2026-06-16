@@ -117,6 +117,71 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         return MapToDto(reloadedClass!);
     }
 
+    public async Task<ClassDto> CreateLectureAsync(CreateLectureDto dto)
+    {
+        return await CreateInternalAsync(dto.CourseId, dto.InstructorName, dto.Schedule, dto.Room, ClassType.Lecture);
+    }
+
+    public async Task<ClassDto> CreateSectionAsync(CreateSectionDto dto)
+    {
+        return await CreateInternalAsync(dto.CourseId, dto.InstructorName, dto.Schedule, dto.Room, ClassType.Section);
+    }
+
+    private async Task<ClassDto> CreateInternalAsync(int courseId, string? instructorName, string? schedule, string? room, ClassType classType)
+    {
+        var courseSpec = new CourseForClassSpec(courseId);
+        var course = await Courses.GetByIdAsync(courseSpec);
+
+        if (course is null)
+            throw new InvalidOperationException("Course not found.");
+
+        if (classType == ClassType.Lecture)
+        {
+            var count = await Classes.CountAsync(c => c.CourseId == courseId && c.ClassType == ClassType.Lecture);
+            if (count > 0)
+                throw new InvalidOperationException("A lecture class already exists for this course.");
+        }
+
+        int? instructorId = null;
+        if (!string.IsNullOrWhiteSpace(instructorName))
+        {
+            var spec = new InstructorByNameSpec(instructorName);
+            var instructor = await Instructors.GetByIdAsync(spec);
+
+            if (instructor is null)
+                throw new InvalidOperationException($"Instructor '{instructorName}' not found.");
+
+            ValidateInstructorRoleForClassType(instructor, classType);
+            instructorId = instructor.UserId;
+        }
+
+        DayOfWeekEnum? day = null;
+        TimeSpan? startTime = null;
+        if (!string.IsNullOrWhiteSpace(schedule))
+            ParseSchedule(schedule, out day, out startTime);
+
+        var groupCode = await GenerateGroupCodeAsync(course, classType);
+
+        var classEntity = new Class
+        {
+            GroupCode = groupCode,
+            ClassType = classType,
+            Day = day,
+            StartTime = startTime,
+            EndTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : null,
+            Room = room,
+            CourseId = courseId,
+            InstructorId = instructorId
+        };
+
+        Classes.Add(classEntity);
+        await _unitOfWork.SaveChangesAsync();
+
+        var reloadSpec = new ClassSpec(classEntity.ClassId);
+        var reloadedClass = await Classes.GetByIdAsync(reloadSpec);
+        return MapToDto(reloadedClass!);
+    }
+
     public async Task<ClassDto?> AssignInstructorAsync(int classId, int instructorId)
     {
         var spec = new ClassSpec(classId);

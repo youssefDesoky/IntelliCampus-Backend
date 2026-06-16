@@ -10,5 +10,6 @@ namespace IntelliCampus.Domain.Interfaces
     {
         Task<int> SaveChangesAsync();
         IGenericRepository<TEntity, TKey> GetRepository<TEntity, TKey>() where TEntity : class;
+        Task ExecuteSqlAsync(string sql, params object[] parameters);
     }
 }

@@ -43,7 +43,7 @@ public class SpecializationController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<ActionResult<SpecializationDto>> Create([FromBody] CreateSpecializationDto dto)
     {
         try
@@ -58,7 +58,7 @@ public class SpecializationController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<ActionResult<SpecializationDto>> Update(int id, [FromBody] UpdateSpecializationDto dto)
     {
         try
@@ -77,7 +77,7 @@ public class SpecializationController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_PostGrad,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _specializationService.DeleteAsync(id);

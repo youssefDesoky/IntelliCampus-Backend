@@ -61,6 +61,7 @@ public class RoleService : IRoleService
         {
             existing.IsActive = true;
             userRoleRepo.Update(existing);
+            await EnsureRelatedEntityAsync(dto.UserId, dto.RoleName);
             await _unitOfWork.SaveChangesAsync();
             return new UserRoleDto
             {
@@ -81,6 +82,7 @@ public class RoleService : IRoleService
         };
 
         userRoleRepo.Add(userRole);
+        await EnsureRelatedEntityAsync(dto.UserId, dto.RoleName);
         await _unitOfWork.SaveChangesAsync();
 
         return new UserRoleDto
@@ -91,6 +93,34 @@ public class RoleService : IRoleService
             IsActive = userRole.IsActive,
             AssignedAt = userRole.AssignedAt
         };
+    }
+
+    private async Task EnsureRelatedEntityAsync(int userId, string roleName)
+    {
+        if (roleName.StartsWith("Student_"))
+        {
+            var studentRepo = _unitOfWork.GetRepository<Student, int>();
+            var exists = await studentRepo.AnyAsync(s => s.UserId == userId);
+            if (!exists)
+                await _unitOfWork.ExecuteSqlAsync(
+                    "INSERT INTO [Students] ([UserId]) VALUES ({0})", userId);
+        }
+        else if (roleName == "Instructor")
+        {
+            var instructorRepo = _unitOfWork.GetRepository<Instructor, int>();
+            var exists = await instructorRepo.AnyAsync(i => i.UserId == userId);
+            if (!exists)
+                await _unitOfWork.ExecuteSqlAsync(
+                    "INSERT INTO [Instructors] ([UserId]) VALUES ({0})", userId);
+        }
+        else if (roleName.StartsWith("Admin_"))
+        {
+            var adminRepo = _unitOfWork.GetRepository<Admin, int>();
+            var exists = await adminRepo.AnyAsync(a => a.UserId == userId);
+            if (!exists)
+                await _unitOfWork.ExecuteSqlAsync(
+                    "INSERT INTO [Admins] ([UserId]) VALUES ({0})", userId);
+        }
     }
 
     public async Task<UserRoleDto> UpdateUserRoleAsync(int userId, int roleId, UpdateUserRoleDto dto)
