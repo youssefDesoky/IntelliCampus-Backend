@@ -85,7 +85,16 @@ public class CommunityService : ICommunityService
             CourseId: courseCode
         );
 
-        return await _routingClient.RouteAsync(question);
+        try
+        {
+            return await _routingClient.RouteAsync(question);
+        }
+        catch (RouterNotInitializedException)
+        {
+            _logger.LogInformation("Router not initialized for course {CourseId}, initializing on demand...", courseId);
+            await EnsureRouterInitializedAsync(courseId);
+            return await _routingClient.RouteAsync(question);
+        }
     }
 
     private async Task<Community> GetOrCreateCommunityAsync(int courseId)
@@ -137,7 +146,7 @@ public class CommunityService : ICommunityService
                 "Top candidates for post {PostId} (branch={Branch}): {Candidates}",
                 post.PostId, routingResponse.Branch, string.Join("; ", candidateDetails));
 
-            var message = $"You are a top candidate to answer: \"{post.Content}\"";
+            var message = "You are qualified to answer this question";
             await _notificationService.SendToManyAsync(userIds, NotificationType.QuestionRouting, message);
 
             _logger.LogInformation(
@@ -148,6 +157,85 @@ public class CommunityService : ICommunityService
         {
             _logger.LogError(ex, "Failed to notify candidates for post {PostId}", post.PostId);
         }
+    }
+
+    private async Task EnsureRouterInitializedAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
+        if (course is null || course.StudentCourses.Count == 0) return;
+
+        var courseCode = course.CourseCode ?? course.CourseId.ToString();
+
+        var prereqEdges = course.Prerequisites
+            .Select(p => new List<string>
+            {
+                p.PrerequisiteCourse.CourseCode ?? p.PrerequisiteCourseId.ToString(),
+                courseCode,
+            })
+            .ToList();
+
+        var students = course.StudentCourses
+            .Select(sc => new StudentData(
+                StudentId: sc.Student.UserId.ToString(),
+                Name: sc.Student.FullName,
+                Performance: CalculatePerformance(sc.Student, course, course.Grades),
+                CompletedTopics: new List<string> { courseCode }
+            ))
+            .DistinctBy(s => s.StudentId)
+            .ToList();
+
+        var community = await Communities.GetByIdAsync(new CommunityByCourseSpec(courseId));
+
+        var archivedQuestions = new List<QuestionRequest>();
+        var interactions = new List<InteractionData>();
+        var answers = new List<AnswerData>();
+
+        if (community is not null)
+        {
+            var posts = await Posts.GetAllAsync(new CommunityPostSpec(community.CommunityId));
+
+            foreach (var post in posts)
+            {
+                archivedQuestions.Add(new QuestionRequest(post.PostId.ToString(), post.Content, courseCode));
+
+                interactions.Add(new InteractionData(post.UserId.ToString(), courseCode, "comment"));
+
+                foreach (var comment in post.Comments)
+                {
+                    answers.Add(new AnswerData(
+                        comment.CommentId.ToString(), post.PostId.ToString(),
+                        comment.UserId.ToString()));
+
+                    interactions.Add(new InteractionData(comment.UserId.ToString(), courseCode, "comment"));
+                }
+            }
+        }
+
+        var request = new InitializeRequest(
+            CourseId: courseCode,
+            PrereqEdges: prereqEdges.Count > 0 ? prereqEdges : null,
+            ArchivedQuestions: archivedQuestions,
+            Interactions: interactions,
+            Answers: answers,
+            Students: students
+        );
+
+        await _routingClient.InitializeAsync(request);
+    }
+
+    private static double CalculatePerformance(Student student, Course course,
+        ICollection<Grade> allGrades)
+    {
+        var studentGrades = allGrades
+            .Where(g => g.StudentId == student.UserId && g.CourseId == course.CourseId
+                        && g.Status == "Graded")
+            .ToList();
+
+        if (studentGrades.Count == 0)
+            return 0.5;
+
+        var weightedSum = studentGrades.Sum(g => (double)(g.Score * g.Weight / 100));
+        return Math.Clamp(weightedSum / 100.0, 0.0, 1.0);
     }
 
     public async Task<string> ExportCourseGraphAsync(int courseId, string graphType = "interaction")

@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -45,6 +46,8 @@ public class RoutingClientService : IRoutingClientService
             question.QuestionId, question.CourseId);
 
         var response = await _httpClient.PostAsJsonAsync("/route", question, JsonOptions, ct);
+        if (response.StatusCode == HttpStatusCode.ServiceUnavailable)
+            throw new RouterNotInitializedException(question.CourseId);
         if (!response.IsSuccessStatusCode)
         {
             var body = await response.Content.ReadAsStringAsync(ct);
