@@ -27,6 +27,7 @@ public class DataSeed : IDataSeed
     private readonly Dictionary<string, int> _assignmentIds = new();
     private readonly Dictionary<string, int> _quizIds = new();
     private readonly Dictionary<string, int> _communityIds = new();
+    private readonly Dictionary<string, int> _specializationIds = new();
     private readonly Dictionary<string, Role> _roleCache = new();
     private List<Announcement> _announcements = new();
     private List<Post> _posts = new();
@@ -60,6 +61,10 @@ public class DataSeed : IDataSeed
 
             // Depends on Faculty
             await SeedDepartmentsAsync();
+            await _dbContext.SaveChangesAsync();
+
+            // Depends on Departments
+            await SeedSpecializationsAsync();
             await _dbContext.SaveChangesAsync();
 
             // Depends on Faculty, Departments
@@ -204,6 +209,9 @@ public class DataSeed : IDataSeed
 
         foreach (var r in await _dbContext.Roles.ToListAsync())
             if (r.RoleName != null) _roleCache[r.RoleName] = r;
+
+        foreach (var s in await _dbContext.Set<Specialization>().ToListAsync())
+            if (s.Name != null) _specializationIds[s.Name] = s.SpecializationId;
     }
 
     // ---- Roles ----
@@ -341,6 +349,25 @@ public class DataSeed : IDataSeed
     }
 
     // ---- Admin ----
+
+    private async Task SeedSpecializationsAsync()
+    {
+        if (await _dbContext.Set<Specialization>().AnyAsync()) return;
+        var items = await ReadJsonAsync<SpecializationDto>("specializations.json");
+        foreach (var dto in items)
+        {
+            var deptId = _departmentIds.GetValueOrDefault(dto.DepartmentName);
+            if (deptId == 0) continue;
+            var entity = new Specialization
+            {
+                Name = dto.Name,
+                NameAr = dto.NameAr,
+                DepartmentId = deptId
+            };
+            _dbContext.Add(entity);
+            _specializationIds[dto.Name] = entity.SpecializationId;
+        }
+    }
 
     private async Task SeedAdminAsync()
     {
@@ -1083,6 +1110,13 @@ public class DataSeed : IDataSeed
         public string? Description { get; init; }
         public string? FacultyName { get; init; }
         public string? HeadEmail { get; init; }
+    }
+
+    private record SpecializationDto
+    {
+        public string Name { get; init; } = "";
+        public string? NameAr { get; init; }
+        public string DepartmentName { get; init; } = "";
     }
 
     private record AdminDto
