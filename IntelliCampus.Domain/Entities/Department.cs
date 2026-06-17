@@ -16,4 +16,5 @@ public class Department
     public ICollection<StudentDepartment> StudentDepartments { get; set; } = new List<StudentDepartment>();
     public ICollection<Course> Courses { get; set; } = new List<Course>();
     public ICollection<Specialization> Specializations { get; set; } = new List<Specialization>();
+    public ICollection<ElectiveBucket> ElectiveBuckets { get; set; } = new List<ElectiveBucket>();
 }

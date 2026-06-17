@@ -350,29 +350,6 @@ namespace IntelliCampus.Presistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ElectiveBuckets",
-                columns: table => new
-                {
-                    ElectiveBucketId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    BylawId = table.Column<int>(type: "int", nullable: false),
-                    RequiredCreditHours = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    RequiredCourseCount = table.Column<int>(type: "int", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ElectiveBuckets", x => x.ElectiveBucketId);
-                    table.ForeignKey(
-                        name: "FK_ElectiveBuckets_Bylaws_BylawId",
-                        column: x => x.BylawId,
-                        principalTable: "Bylaws",
-                        principalColumn: "BylawId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AnnouncementAttachments",
                 columns: table => new
                 {
@@ -715,30 +692,6 @@ namespace IntelliCampus.Presistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ElectiveBucketCourses",
-                columns: table => new
-                {
-                    ElectiveBucketId = table.Column<int>(type: "int", nullable: false),
-                    CourseId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ElectiveBucketCourses", x => new { x.ElectiveBucketId, x.CourseId });
-                    table.ForeignKey(
-                        name: "FK_ElectiveBucketCourses_Courses_CourseId",
-                        column: x => x.CourseId,
-                        principalTable: "Courses",
-                        principalColumn: "CourseId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ElectiveBucketCourses_ElectiveBuckets_ElectiveBucketId",
-                        column: x => x.ElectiveBucketId,
-                        principalTable: "ElectiveBuckets",
-                        principalColumn: "ElectiveBucketId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Exams",
                 columns: table => new
                 {
@@ -848,6 +801,35 @@ namespace IntelliCampus.Presistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ElectiveBuckets",
+                columns: table => new
+                {
+                    ElectiveBucketId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    BylawId = table.Column<int>(type: "int", nullable: false),
+                    DepartmentId = table.Column<int>(type: "int", nullable: false),
+                    RequiredCreditHours = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
+                    RequiredCourseCount = table.Column<int>(type: "int", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ElectiveBuckets", x => x.ElectiveBucketId);
+                    table.ForeignKey(
+                        name: "FK_ElectiveBuckets_Bylaws_BylawId",
+                        column: x => x.BylawId,
+                        principalTable: "Bylaws",
+                        principalColumn: "BylawId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ElectiveBuckets_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "DepartmentId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Instructors",
                 columns: table => new
                 {
@@ -904,6 +886,30 @@ namespace IntelliCampus.Presistence.Migrations
                         principalTable: "Departments",
                         principalColumn: "DepartmentId",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ElectiveBucketCourses",
+                columns: table => new
+                {
+                    ElectiveBucketId = table.Column<int>(type: "int", nullable: false),
+                    CourseId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ElectiveBucketCourses", x => new { x.ElectiveBucketId, x.CourseId });
+                    table.ForeignKey(
+                        name: "FK_ElectiveBucketCourses_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
+                        principalColumn: "CourseId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ElectiveBucketCourses_ElectiveBuckets_ElectiveBucketId",
+                        column: x => x.ElectiveBucketId,
+                        principalTable: "ElectiveBuckets",
+                        principalColumn: "ElectiveBucketId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1639,6 +1645,11 @@ namespace IntelliCampus.Presistence.Migrations
                 name: "IX_ElectiveBuckets_BylawId",
                 table: "ElectiveBuckets",
                 column: "BylawId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ElectiveBuckets_DepartmentId",
+                table: "ElectiveBuckets",
+                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Exams_CourseId",

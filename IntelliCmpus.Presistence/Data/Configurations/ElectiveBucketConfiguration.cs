@@ -25,5 +25,10 @@ public class ElectiveBucketConfiguration : IEntityTypeConfiguration<ElectiveBuck
             .WithMany(b => b.ElectiveBuckets)
             .HasForeignKey(eb => eb.BylawId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(eb => eb.Department)
+            .WithMany(d => d.ElectiveBuckets)
+            .HasForeignKey(eb => eb.DepartmentId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
