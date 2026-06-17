@@ -67,6 +67,8 @@ public class IntelliCampusDbContext : DbContext
 
     // Bylaw
     public DbSet<Bylaw> Bylaws { get; set; }
+    public DbSet<BylawCourse> BylawCourses { get; set; }
+    public DbSet<BylawCoursePrerequisite> BylawCoursePrerequisites { get; set; }
 
     // Junction tables
     public DbSet<StudentCourse> StudentCourses { get; set; }

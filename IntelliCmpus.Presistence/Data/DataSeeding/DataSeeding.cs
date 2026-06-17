@@ -28,6 +28,7 @@ public class DataSeed : IDataSeed
     private readonly Dictionary<string, int> _quizIds = new();
     private readonly Dictionary<string, int> _communityIds = new();
     private readonly Dictionary<string, int> _specializationIds = new();
+    private readonly Dictionary<string, int> _bylawCourseIds = new();
     private readonly Dictionary<string, Role> _roleCache = new();
     private List<Announcement> _announcements = new();
     private List<Post> _posts = new();
@@ -91,6 +92,13 @@ public class DataSeed : IDataSeed
             await _dbContext.SaveChangesAsync();
 
             await SeedBylawAsync();
+            await _dbContext.SaveChangesAsync();
+
+            // Depends on Courses, Bylaw
+            await SeedBylawCoursesAsync();
+            await _dbContext.SaveChangesAsync();
+
+            await SeedBylawCoursePrerequisitesAsync();
             await _dbContext.SaveChangesAsync();
 
             // Depends on Courses, Students
@@ -180,6 +188,9 @@ public class DataSeed : IDataSeed
 
         foreach (var r in await _dbContext.Rooms.ToListAsync())
             if (r.RoomName != null) _roomIds[r.RoomName] = r.RoomId;
+
+        foreach (var bc in await _dbContext.Set<BylawCourse>().Include(bc => bc.Course).ToListAsync())
+            if (bc.Course?.CourseCode != null) _bylawCourseIds[bc.Course.CourseCode] = bc.BylawCourseId;
 
         var coursesDict = await _dbContext.Courses.ToDictionaryAsync(c => c.CourseId, c => c.CourseCode ?? "");
         foreach (var c in await _dbContext.Classes.ToListAsync())
@@ -533,11 +544,61 @@ public class DataSeed : IDataSeed
                 MinPercentage = gs.MinPercentage,
                 GpaValue = gs.GpaValue,
                 SortOrder = gs.SortOrder
-            }).ToList()
+            }).ToList(),
+            TotalHoursToCompleteDegree = dto.TotalHoursToCompleteDegree,
+            MinCreditHoursPerSemester = dto.MinCreditHoursPerSemester,
+            MaxCreditHoursPerSemester = dto.MaxCreditHoursPerSemester,
+            SummerMaxCreditHours = dto.SummerMaxCreditHours,
+            MinPassingGpa = dto.MinPassingGpa,
+            MinPassingGradeLetter = dto.MinPassingGradeLetter,
+            MinPassingGradeSortOrder = dto.MinPassingGradeSortOrder,
+            ProbationThreshold = dto.ProbationThreshold,
+            ProbationRegistrationLimit = dto.ProbationRegistrationLimit
         };
         _dbContext.Bylaws.Add(entity);
         await _dbContext.SaveChangesAsync();
         _bylawId = entity.BylawId;
+    }
+
+    // ---- Bylaw Courses ----
+
+    private async Task SeedBylawCoursesAsync()
+    {
+        if (await _dbContext.Set<BylawCourse>().AnyAsync()) return;
+        var items = await ReadJsonAsync<BylawCourseSeedDto>("bylaw-courses.json");
+        foreach (var dto in items)
+        {
+            var courseId = _courseIds.GetValueOrDefault(dto.CourseCode);
+            if (courseId == 0) continue;
+            var entity = new BylawCourse
+            {
+                BylawId = _bylawId,
+                CourseId = courseId,
+                CourseType = Enum.Parse<CourseType>(dto.CourseType)
+            };
+            _dbContext.Set<BylawCourse>().Add(entity);
+            await _dbContext.SaveChangesAsync();
+            _bylawCourseIds[dto.CourseCode] = entity.BylawCourseId;
+        }
+    }
+
+    // ---- Bylaw Course Prerequisites ----
+
+    private async Task SeedBylawCoursePrerequisitesAsync()
+    {
+        if (await _dbContext.Set<BylawCoursePrerequisite>().AnyAsync()) return;
+        var items = await ReadJsonAsync<BylawCoursePrerequisiteSeedDto>("bylaw-course-prerequisites.json");
+        foreach (var dto in items)
+        {
+            var bylawCourseId = _bylawCourseIds.GetValueOrDefault(dto.CourseCode);
+            var prereqBylawCourseId = _bylawCourseIds.GetValueOrDefault(dto.PrerequisiteCourseCode);
+            if (bylawCourseId == 0 || prereqBylawCourseId == 0) continue;
+            _dbContext.Set<BylawCoursePrerequisite>().Add(new BylawCoursePrerequisite
+            {
+                BylawCourseId = bylawCourseId,
+                PrerequisiteBylawCourseId = prereqBylawCourseId
+            });
+        }
     }
 
     // ---- Students ----
@@ -1186,6 +1247,27 @@ public class DataSeed : IDataSeed
         public string? Description { get; init; }
         public bool IsActive { get; init; }
         public List<GradeScaleDto> GradeScales { get; init; } = new();
+        public int? TotalHoursToCompleteDegree { get; init; }
+        public int? MinCreditHoursPerSemester { get; init; }
+        public int? MaxCreditHoursPerSemester { get; init; }
+        public int? SummerMaxCreditHours { get; init; }
+        public decimal? MinPassingGpa { get; init; }
+        public string? MinPassingGradeLetter { get; init; }
+        public int? MinPassingGradeSortOrder { get; init; }
+        public decimal? ProbationThreshold { get; init; }
+        public int? ProbationRegistrationLimit { get; init; }
+    }
+
+    private record BylawCourseSeedDto
+    {
+        public string CourseCode { get; init; } = "";
+        public string CourseType { get; init; } = "";
+    }
+
+    private record BylawCoursePrerequisiteSeedDto
+    {
+        public string CourseCode { get; init; } = "";
+        public string PrerequisiteCourseCode { get; init; } = "";
     }
 
     private record GradeScaleDto

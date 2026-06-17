@@ -294,16 +294,46 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("MaxCreditHoursPerSemester")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MinCreditHoursPerSemester")
+                        .HasColumnType("int");
+
                     b.Property<int?>("MinHoursToChooseDepartment")
                         .HasColumnType("int");
 
                     b.Property<int?>("MinHoursToChooseSpecialization")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("MinPassingGpa")
+                        .HasPrecision(4, 2)
+                        .HasColumnType("decimal(4,2)");
+
+                    b.Property<string>("MinPassingGradeLetter")
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<int?>("MinPassingGradeSortOrder")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("ProbationRegistrationLimit")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("ProbationThreshold")
+                        .HasPrecision(4, 2)
+                        .HasColumnType("decimal(4,2)");
+
+                    b.Property<int?>("SummerMaxCreditHours")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TotalHoursToCompleteDegree")
+                        .HasColumnType("int");
 
                     b.Property<int?>("UploadedByAdminId")
                         .HasColumnType("int");
@@ -316,6 +346,49 @@ namespace IntelliCampus.Presistence.Migrations
                     b.HasIndex("UploadedByAdminId");
 
                     b.ToTable("Bylaws");
+                });
+
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.BylawCourse", b =>
+                {
+                    b.Property<int>("BylawCourseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BylawCourseId"));
+
+                    b.Property<int>("BylawId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CourseType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("BylawCourseId");
+
+                    b.HasIndex("BylawId");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("BylawCourses");
+                });
+
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.BylawCoursePrerequisite", b =>
+                {
+                    b.Property<int>("BylawCourseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrerequisiteBylawCourseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BylawCourseId", "PrerequisiteBylawCourseId");
+
+                    b.HasIndex("PrerequisiteBylawCourseId");
+
+                    b.ToTable("BylawCoursePrerequisites");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.ChatMessage", b =>
@@ -2163,6 +2236,44 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("UploadedBy");
                 });
 
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.BylawCourse", b =>
+                {
+                    b.HasOne("IntelliCampus.Domain.Entities.Bylaw", "Bylaw")
+                        .WithMany("BylawCourses")
+                        .HasForeignKey("BylawId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IntelliCampus.Domain.Entities.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bylaw");
+
+                    b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.BylawCoursePrerequisite", b =>
+                {
+                    b.HasOne("IntelliCampus.Domain.Entities.BylawCourse", "BylawCourse")
+                        .WithMany("Prerequisites")
+                        .HasForeignKey("BylawCourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("IntelliCampus.Domain.Entities.BylawCourse", "PrerequisiteCourse")
+                        .WithMany("PrerequisiteFor")
+                        .HasForeignKey("PrerequisiteBylawCourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("BylawCourse");
+
+                    b.Navigation("PrerequisiteCourse");
+                });
+
             modelBuilder.Entity("IntelliCampus.Domain.Entities.ChatbotQuery", b =>
                 {
                     b.HasOne("IntelliCampus.Domain.Entities.Student", "Student")
@@ -2895,7 +3006,16 @@ namespace IntelliCampus.Presistence.Migrations
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Bylaw", b =>
                 {
+                    b.Navigation("BylawCourses");
+
                     b.Navigation("Students");
+                });
+
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.BylawCourse", b =>
+                {
+                    b.Navigation("PrerequisiteFor");
+
+                    b.Navigation("Prerequisites");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Class", b =>

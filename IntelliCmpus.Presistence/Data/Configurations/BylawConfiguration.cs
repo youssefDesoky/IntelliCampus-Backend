@@ -43,5 +43,14 @@ public class BylawConfiguration : IEntityTypeConfiguration<Bylaw>
 
         builder.Property(b => b.MinHoursToChooseDepartment);
         builder.Property(b => b.MinHoursToChooseSpecialization);
+        builder.Property(b => b.TotalHoursToCompleteDegree);
+        builder.Property(b => b.MinCreditHoursPerSemester);
+        builder.Property(b => b.MaxCreditHoursPerSemester);
+        builder.Property(b => b.SummerMaxCreditHours);
+        builder.Property(b => b.MinPassingGpa).HasPrecision(4, 2);
+        builder.Property(b => b.MinPassingGradeLetter).HasMaxLength(5);
+        builder.Property(b => b.MinPassingGradeSortOrder);
+        builder.Property(b => b.ProbationThreshold).HasPrecision(4, 2);
+        builder.Property(b => b.ProbationRegistrationLimit);
     }
 }

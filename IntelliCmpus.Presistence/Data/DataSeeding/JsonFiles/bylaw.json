@@ -61,6 +61,15 @@
       }
     ],
     "minHoursToChooseDepartment": 30,
-    "minHoursToChooseSpecialization": 60
+    "minHoursToChooseSpecialization": 60,
+    "totalHoursToCompleteDegree": 140,
+    "minCreditHoursPerSemester": 12,
+    "maxCreditHoursPerSemester": 24,
+    "summerMaxCreditHours": 12,
+    "minPassingGpa": 2.0,
+    "minPassingGradeLetter": "D",
+    "minPassingGradeSortOrder": 8,
+    "probationThreshold": 2.0,
+    "probationRegistrationLimit": 15
   }
 ]
