@@ -1,0 +1,28 @@
+using IntelliCampus.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace IntelliCampus.Presistence.Data.Configurations;
+
+public class BylawCourseConfiguration : IEntityTypeConfiguration<BylawCourse>
+{
+    public void Configure(EntityTypeBuilder<BylawCourse> builder)
+    {
+        builder.HasKey(bc => bc.BylawCourseId);
+
+        builder.Property(bc => bc.CourseType)
+            .IsRequired()
+            .HasConversion<string>()
+            .HasMaxLength(50);
+
+        builder.HasOne(bc => bc.Bylaw)
+            .WithMany(b => b.BylawCourses)
+            .HasForeignKey(bc => bc.BylawId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(bc => bc.Course)
+            .WithMany()
+            .HasForeignKey(bc => bc.CourseId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+}

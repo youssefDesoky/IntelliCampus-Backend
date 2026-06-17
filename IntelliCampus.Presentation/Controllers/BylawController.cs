@@ -145,6 +145,94 @@ public class BylawController : ControllerBase
         }
     }
 
+    [HttpPut("{id}")]
+    public async Task<ActionResult<BylawDto>> UpdateDetails(int id, [FromBody] UpdateBylawDetailsDto dto)
+    {
+        var bylaw = await _bylawService.UpdateDetailsAsync(id, dto);
+        if (bylaw is null)
+            return NotFound();
+        return Ok(bylaw);
+    }
+
+    [HttpPut("{id}/requirements")]
+    public async Task<ActionResult<BylawDto>> UpdateRequirements(int id, [FromBody] UpdateBylawRequirementsDto dto)
+    {
+        try
+        {
+            var bylaw = await _bylawService.UpdateRequirementsAsync(id, dto);
+            return Ok(bylaw);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
+    [HttpPut("{id}/passing-grade")]
+    public async Task<ActionResult<BylawDto>> UpdatePassingGrade(int id, [FromBody] UpdateBylawPassingGradeDto dto)
+    {
+        try
+        {
+            var bylaw = await _bylawService.UpdatePassingGradeAsync(id, dto);
+            return Ok(bylaw);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
+    [HttpPut("{id}/probation")]
+    public async Task<ActionResult<BylawDto>> UpdateProbation(int id, [FromBody] UpdateBylawProbationDto dto)
+    {
+        try
+        {
+            var bylaw = await _bylawService.UpdateProbationAsync(id, dto);
+            return Ok(bylaw);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("{id}/courses")]
+    public async Task<ActionResult<BylawCourseDto>> MapCourse(int id, [FromBody] MapBylawCourseDto dto)
+    {
+        try
+        {
+            var bylawCourse = await _bylawService.MapCourseAsync(id, dto);
+            return CreatedAtAction(nameof(GetById), new { id }, bylawCourse);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpDelete("courses/{bylawCourseId}")]
+    public async Task<IActionResult> UnmapCourse(int bylawCourseId)
+    {
+        var result = await _bylawService.UnmapCourseAsync(bylawCourseId);
+        if (!result)
+            return NotFound();
+        return NoContent();
+    }
+
+    [HttpPut("courses/{bylawCourseId}/prerequisites")]
+    public async Task<ActionResult<BylawCourseDto>> SetCoursePrerequisites(int bylawCourseId, [FromBody] SetBylawCoursePrerequisitesDto dto)
+    {
+        try
+        {
+            var result = await _bylawService.SetCoursePrerequisitesAsync(bylawCourseId, dto);
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
     private int GetAdminId()
     {
         var claim = User.FindFirst(ClaimTypes.NameIdentifier);

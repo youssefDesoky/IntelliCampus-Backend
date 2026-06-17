@@ -1,3 +1,5 @@
+using IntelliCampus.Domain.Entities.Enums;
+
 namespace IntelliCampus.Shared.Dtos.Bylaw;
 
 public class BylawDto
@@ -17,6 +19,16 @@ public class BylawDto
     public List<LevelScaleItemDto>? LevelScales { get; set; }
     public int? MinHoursToChooseDepartment { get; set; }
     public int? MinHoursToChooseSpecialization { get; set; }
+    public int? TotalHoursToCompleteDegree { get; set; }
+    public int? MinCreditHoursPerSemester { get; set; }
+    public int? MaxCreditHoursPerSemester { get; set; }
+    public int? SummerMaxCreditHours { get; set; }
+    public decimal? MinPassingGpa { get; set; }
+    public string? MinPassingGradeLetter { get; set; }
+    public int? MinPassingGradeSortOrder { get; set; }
+    public decimal? ProbationThreshold { get; set; }
+    public int? ProbationRegistrationLimit { get; set; }
+    public List<BylawCourseDto>? BylawCourses { get; set; }
 }
 
 public class GradeScaleItemDto
@@ -31,4 +43,23 @@ public class LevelScaleItemDto
 {
     public int Level { get; set; }
     public int MinHours { get; set; }
+}
+
+public class BylawCourseDto
+{
+    public int BylawCourseId { get; set; }
+    public int BylawId { get; set; }
+    public int CourseId { get; set; }
+    public string? CourseCode { get; set; }
+    public string? CourseName { get; set; }
+    public string CourseType { get; set; } = null!;
+    public List<BylawCoursePrerequisiteDto>? Prerequisites { get; set; }
+}
+
+public class BylawCoursePrerequisiteDto
+{
+    public int BylawCourseId { get; set; }
+    public int PrerequisiteBylawCourseId { get; set; }
+    public string? PrerequisiteCourseCode { get; set; }
+    public string? PrerequisiteCourseName { get; set; }
 }

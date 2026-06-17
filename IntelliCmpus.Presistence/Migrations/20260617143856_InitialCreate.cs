@@ -298,6 +298,15 @@ namespace IntelliCampus.Presistence.Migrations
                     UploadedByAdminId = table.Column<int>(type: "int", nullable: true),
                     MinHoursToChooseDepartment = table.Column<int>(type: "int", nullable: true),
                     MinHoursToChooseSpecialization = table.Column<int>(type: "int", nullable: true),
+                    TotalHoursToCompleteDegree = table.Column<int>(type: "int", nullable: true),
+                    MinCreditHoursPerSemester = table.Column<int>(type: "int", nullable: true),
+                    MaxCreditHoursPerSemester = table.Column<int>(type: "int", nullable: true),
+                    SummerMaxCreditHours = table.Column<int>(type: "int", nullable: true),
+                    MinPassingGpa = table.Column<decimal>(type: "decimal(4,2)", precision: 4, scale: 2, nullable: true),
+                    MinPassingGradeLetter = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
+                    MinPassingGradeSortOrder = table.Column<int>(type: "int", nullable: true),
+                    ProbationThreshold = table.Column<decimal>(type: "decimal(4,2)", precision: 4, scale: 2, nullable: true),
+                    ProbationRegistrationLimit = table.Column<int>(type: "int", nullable: true),
                     GradeScales = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LevelScales = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -467,6 +476,39 @@ namespace IntelliCampus.Presistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Attendances", x => x.AttendanceId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BylawCoursePrerequisites",
+                columns: table => new
+                {
+                    BylawCourseId = table.Column<int>(type: "int", nullable: false),
+                    PrerequisiteBylawCourseId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BylawCoursePrerequisites", x => new { x.BylawCourseId, x.PrerequisiteBylawCourseId });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BylawCourses",
+                columns: table => new
+                {
+                    BylawCourseId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BylawId = table.Column<int>(type: "int", nullable: false),
+                    CourseId = table.Column<int>(type: "int", nullable: false),
+                    CourseType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BylawCourses", x => x.BylawCourseId);
+                    table.ForeignKey(
+                        name: "FK_BylawCourses_Bylaws_BylawId",
+                        column: x => x.BylawId,
+                        principalTable: "Bylaws",
+                        principalColumn: "BylawId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1442,6 +1484,21 @@ namespace IntelliCampus.Presistence.Migrations
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BylawCoursePrerequisites_PrerequisiteBylawCourseId",
+                table: "BylawCoursePrerequisites",
+                column: "PrerequisiteBylawCourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BylawCourses_BylawId",
+                table: "BylawCourses",
+                column: "BylawId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BylawCourses_CourseId",
+                table: "BylawCourses",
+                column: "CourseId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Bylaws_UploadedByAdminId",
                 table: "Bylaws",
                 column: "UploadedByAdminId");
@@ -1889,6 +1946,30 @@ namespace IntelliCampus.Presistence.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
+                name: "FK_BylawCoursePrerequisites_BylawCourses_BylawCourseId",
+                table: "BylawCoursePrerequisites",
+                column: "BylawCourseId",
+                principalTable: "BylawCourses",
+                principalColumn: "BylawCourseId",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_BylawCoursePrerequisites_BylawCourses_PrerequisiteBylawCourseId",
+                table: "BylawCoursePrerequisites",
+                column: "PrerequisiteBylawCourseId",
+                principalTable: "BylawCourses",
+                principalColumn: "BylawCourseId",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_BylawCourses_Courses_CourseId",
+                table: "BylawCourses",
+                column: "CourseId",
+                principalTable: "Courses",
+                principalColumn: "CourseId",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_ChatbotQueries_Students_StudentId",
                 table: "ChatbotQueries",
                 column: "StudentId",
@@ -1988,6 +2069,9 @@ namespace IntelliCampus.Presistence.Migrations
                 name: "Attendances");
 
             migrationBuilder.DropTable(
+                name: "BylawCoursePrerequisites");
+
+            migrationBuilder.DropTable(
                 name: "ChatbotQueries");
 
             migrationBuilder.DropTable(
@@ -2061,6 +2145,9 @@ namespace IntelliCampus.Presistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Announcements");
+
+            migrationBuilder.DropTable(
+                name: "BylawCourses");
 
             migrationBuilder.DropTable(
                 name: "ExamHalls");

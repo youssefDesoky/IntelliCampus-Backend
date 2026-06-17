@@ -32,4 +32,14 @@ public class Bylaw
     public List<LevelScaleItem> LevelScales { get; set; } = new();
     public int? MinHoursToChooseDepartment { get; set; }
     public int? MinHoursToChooseSpecialization { get; set; }
+    public int? TotalHoursToCompleteDegree { get; set; }
+    public int? MinCreditHoursPerSemester { get; set; }
+    public int? MaxCreditHoursPerSemester { get; set; }
+    public int? SummerMaxCreditHours { get; set; }
+    public decimal? MinPassingGpa { get; set; }
+    public string? MinPassingGradeLetter { get; set; }
+    public int? MinPassingGradeSortOrder { get; set; }
+    public decimal? ProbationThreshold { get; set; }
+    public int? ProbationRegistrationLimit { get; set; }
+    public ICollection<BylawCourse> BylawCourses { get; set; } = new List<BylawCourse>();
 }
