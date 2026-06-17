@@ -70,6 +70,14 @@ public class ElectiveBucketsController : ControllerBase
         return Ok(buckets);
     }
 
+    [HttpGet("department/{departmentId}")]
+    [Authorize]
+    public async Task<ActionResult<IEnumerable<ElectiveBucketDto>>> GetByDepartment(int departmentId)
+    {
+        var buckets = await _electiveBucketService.GetByDepartmentAsync(departmentId);
+        return Ok(buckets);
+    }
+
     [HttpGet("my-progress")]
     [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
     public async Task<ActionResult<IEnumerable<ElectiveBucketProgressDto>>> GetMyProgress()

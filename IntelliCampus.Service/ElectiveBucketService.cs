@@ -32,6 +32,7 @@ public class ElectiveBucketService : IElectiveBucketService
         {
             Name = dto.Name,
             BylawId = dto.BylawId,
+            DepartmentId = dto.DepartmentId,
             RequiredCreditHours = dto.RequiredCreditHours,
             RequiredCourseCount = dto.RequiredCourseCount,
             IsActive = true
@@ -53,7 +54,7 @@ public class ElectiveBucketService : IElectiveBucketService
             await _unitOfWork.SaveChangesAsync();
         }
 
-        var students = await Students.GetAllAsync(new StudentsByBylawSpec(dto.BylawId));
+        var students = await Students.GetAllAsync(new StudentsByBylawAndDepartmentSpec(dto.BylawId, dto.DepartmentId));
         foreach (var student in students)
         {
             Progress.Add(new StudentElectiveBucketProgress
@@ -122,6 +123,13 @@ public class ElectiveBucketService : IElectiveBucketService
     public async Task<IEnumerable<ElectiveBucketDto>> GetByBylawAsync(int bylawId)
     {
         var spec = new ElectiveBucketsByBylawSpec(bylawId);
+        var buckets = await Buckets.GetAllAsync(spec);
+        return buckets.Select(MapToDto);
+    }
+
+    public async Task<IEnumerable<ElectiveBucketDto>> GetByDepartmentAsync(int departmentId)
+    {
+        var spec = new ElectiveBucketsByDepartmentSpec(departmentId);
         var buckets = await Buckets.GetAllAsync(spec);
         return buckets.Select(MapToDto);
     }
@@ -214,9 +222,9 @@ public class ElectiveBucketService : IElectiveBucketService
     public async Task RecalculateAllProgressAsync(int studentId)
     {
         var student = await Students.GetByIdAsync(studentId);
-        if (student?.BylawId is null) return;
+        if (student?.BylawId is null || student?.DepartmentId is null) return;
 
-        var buckets = await Buckets.GetAllAsync(new ElectiveBucketsByBylawSpec(student.BylawId.Value));
+        var buckets = await Buckets.GetAllAsync(new ElectiveBucketsByBylawAndDepartmentSpec(student.BylawId.Value, student.DepartmentId.Value));
         foreach (var bucket in buckets)
         {
             await RecalculateProgressAsync(studentId, bucket.ElectiveBucketId);
@@ -230,6 +238,9 @@ public class ElectiveBucketService : IElectiveBucketService
             ElectiveBucketId = bucket.ElectiveBucketId,
             Name = bucket.Name,
             BylawId = bucket.BylawId,
+            BylawName = bucket.Bylaw?.Name,
+            DepartmentId = bucket.DepartmentId,
+            DepartmentName = bucket.Department?.DepartmentName,
             RequiredCreditHours = bucket.RequiredCreditHours,
             RequiredCourseCount = bucket.RequiredCourseCount,
             IsActive = bucket.IsActive,
@@ -251,6 +262,8 @@ internal class ElectiveBucketWithCoursesSpec : BaseSpecifications<ElectiveBucket
     {
         AddInclude(eb => eb.ElectiveBucketCourses);
         AddInclude("ElectiveBucketCourses.Course");
+        AddInclude(eb => eb.Bylaw);
+        AddInclude(eb => eb.Department);
     }
 }
 
@@ -261,6 +274,32 @@ internal class ElectiveBucketsByBylawSpec : BaseSpecifications<ElectiveBucket>
     {
         AddInclude(eb => eb.ElectiveBucketCourses);
         AddInclude("ElectiveBucketCourses.Course");
+        AddInclude(eb => eb.Bylaw);
+        AddInclude(eb => eb.Department);
+    }
+}
+
+internal class ElectiveBucketsByDepartmentSpec : BaseSpecifications<ElectiveBucket>
+{
+    public ElectiveBucketsByDepartmentSpec(int departmentId)
+        : base(eb => eb.DepartmentId == departmentId)
+    {
+        AddInclude(eb => eb.ElectiveBucketCourses);
+        AddInclude("ElectiveBucketCourses.Course");
+        AddInclude(eb => eb.Bylaw);
+        AddInclude(eb => eb.Department);
+    }
+}
+
+internal class ElectiveBucketsByBylawAndDepartmentSpec : BaseSpecifications<ElectiveBucket>
+{
+    public ElectiveBucketsByBylawAndDepartmentSpec(int bylawId, int departmentId)
+        : base(eb => eb.BylawId == bylawId && eb.DepartmentId == departmentId)
+    {
+        AddInclude(eb => eb.ElectiveBucketCourses);
+        AddInclude("ElectiveBucketCourses.Course");
+        AddInclude(eb => eb.Bylaw);
+        AddInclude(eb => eb.Department);
     }
 }
 
@@ -270,10 +309,10 @@ internal class ElectiveBucketCourseSpec : BaseSpecifications<ElectiveBucketCours
         : base(ebc => ebc.ElectiveBucketId == bucketId) { }
 }
 
-internal class StudentsByBylawSpec : BaseSpecifications<Student>
+internal class StudentsByBylawAndDepartmentSpec : BaseSpecifications<Student>
 {
-    public StudentsByBylawSpec(int bylawId)
-        : base(s => s.BylawId == bylawId) { }
+    public StudentsByBylawAndDepartmentSpec(int bylawId, int departmentId)
+        : base(s => s.BylawId == bylawId && s.DepartmentId == departmentId) { }
 }
 
 internal class StudentBucketProgressSpec : BaseSpecifications<StudentElectiveBucketProgress>

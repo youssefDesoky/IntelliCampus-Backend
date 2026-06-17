@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    [Migration("20260617182851_InitialCreate")]
+    [Migration("20260617204137_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -666,6 +666,9 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Property<int>("BylawId")
                         .HasColumnType("int");
 
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -683,6 +686,8 @@ namespace IntelliCampus.Presistence.Migrations
                     b.HasKey("ElectiveBucketId");
 
                     b.HasIndex("BylawId");
+
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("ElectiveBuckets");
                 });
@@ -2467,7 +2472,15 @@ namespace IntelliCampus.Presistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("IntelliCampus.Domain.Entities.Department", "Department")
+                        .WithMany("ElectiveBuckets")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("Bylaw");
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.ElectiveBucketCourse", b =>
@@ -3189,6 +3202,8 @@ namespace IntelliCampus.Presistence.Migrations
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Department", b =>
                 {
                     b.Navigation("Courses");
+
+                    b.Navigation("ElectiveBuckets");
 
                     b.Navigation("Instructors");
 
