@@ -297,6 +297,9 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Property<int?>("MaxCreditHoursPerSemester")
                         .HasColumnType("int");
 
+                    b.Property<int?>("MinCreditHoursForGraduationProject")
+                        .HasColumnType("int");
+
                     b.Property<int?>("MinCreditHoursPerSemester")
                         .HasColumnType("int");
 
@@ -647,6 +650,53 @@ namespace IntelliCampus.Presistence.Migrations
                     b.HasIndex("InstructorId");
 
                     b.ToTable("Departments");
+                });
+
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.ElectiveBucket", b =>
+                {
+                    b.Property<int>("ElectiveBucketId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ElectiveBucketId"));
+
+                    b.Property<int>("BylawId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("RequiredCourseCount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("RequiredCreditHours")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.HasKey("ElectiveBucketId");
+
+                    b.HasIndex("BylawId");
+
+                    b.ToTable("ElectiveBuckets");
+                });
+
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.ElectiveBucketCourse", b =>
+                {
+                    b.Property<int>("ElectiveBucketId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ElectiveBucketId", "CourseId");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("ElectiveBucketCourses");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Exam", b =>
@@ -1738,6 +1788,9 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.HasKey("StudentId", "CourseId");
 
                     b.HasIndex("ClassId");
@@ -1760,6 +1813,30 @@ namespace IntelliCampus.Presistence.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("StudentDepartments");
+                });
+
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.StudentElectiveBucketProgress", b =>
+                {
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ElectiveBucketId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompletedCourseCount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("CompletedCreditHours")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("bit");
+
+                    b.HasKey("StudentId", "ElectiveBucketId");
+
+                    b.HasIndex("ElectiveBucketId");
+
+                    b.ToTable("StudentElectiveBucketProgresses");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.StudentQuiz", b =>
@@ -2379,6 +2456,36 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("HeadInstructor");
                 });
 
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.ElectiveBucket", b =>
+                {
+                    b.HasOne("IntelliCampus.Domain.Entities.Bylaw", "Bylaw")
+                        .WithMany("ElectiveBuckets")
+                        .HasForeignKey("BylawId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bylaw");
+                });
+
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.ElectiveBucketCourse", b =>
+                {
+                    b.HasOne("IntelliCampus.Domain.Entities.Course", "Course")
+                        .WithMany("ElectiveBucketCourses")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IntelliCampus.Domain.Entities.ElectiveBucket", "ElectiveBucket")
+                        .WithMany("ElectiveBucketCourses")
+                        .HasForeignKey("ElectiveBucketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("ElectiveBucket");
+                });
+
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Exam", b =>
                 {
                     b.HasOne("IntelliCampus.Domain.Entities.Course", "Course")
@@ -2850,6 +2957,25 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.StudentElectiveBucketProgress", b =>
+                {
+                    b.HasOne("IntelliCampus.Domain.Entities.ElectiveBucket", "ElectiveBucket")
+                        .WithMany("StudentProgresses")
+                        .HasForeignKey("ElectiveBucketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IntelliCampus.Domain.Entities.Student", "Student")
+                        .WithMany("ElectiveBucketProgresses")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ElectiveBucket");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("IntelliCampus.Domain.Entities.StudentQuiz", b =>
                 {
                     b.HasOne("IntelliCampus.Domain.Entities.Quiz", "Quiz")
@@ -3008,6 +3134,8 @@ namespace IntelliCampus.Presistence.Migrations
                 {
                     b.Navigation("BylawCourses");
 
+                    b.Navigation("ElectiveBuckets");
+
                     b.Navigation("Students");
                 });
 
@@ -3036,6 +3164,8 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.Navigation("Classes");
 
+                    b.Navigation("ElectiveBucketCourses");
+
                     b.Navigation("Exams");
 
                     b.Navigation("Grades");
@@ -3062,6 +3192,13 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("Specializations");
 
                     b.Navigation("StudentDepartments");
+                });
+
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.ElectiveBucket", b =>
+                {
+                    b.Navigation("ElectiveBucketCourses");
+
+                    b.Navigation("StudentProgresses");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Exam", b =>
@@ -3170,6 +3307,8 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("Attendances");
 
                     b.Navigation("ChatbotQueries");
+
+                    b.Navigation("ElectiveBucketProgresses");
 
                     b.Navigation("ExamSeatAssignments");
 

@@ -24,4 +24,5 @@ public class Course
     public ICollection<MaterialFolder> MaterialFolders { get; set; } = new List<MaterialFolder>();
     public ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
     public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
+    public ICollection<ElectiveBucketCourse> ElectiveBucketCourses { get; set; } = new List<ElectiveBucketCourse>();
 }

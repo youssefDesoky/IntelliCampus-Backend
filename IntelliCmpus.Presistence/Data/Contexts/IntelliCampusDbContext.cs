@@ -98,6 +98,11 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRoleJunction> UserRoleJunctions { get; set; }
 
+    // Elective Buckets
+    public DbSet<ElectiveBucket> ElectiveBuckets { get; set; }
+    public DbSet<ElectiveBucketCourse> ElectiveBucketCourses { get; set; }
+    public DbSet<StudentElectiveBucketProgress> StudentElectiveBucketProgresses { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

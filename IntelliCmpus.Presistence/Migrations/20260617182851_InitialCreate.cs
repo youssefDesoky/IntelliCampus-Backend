@@ -307,6 +307,7 @@ namespace IntelliCampus.Presistence.Migrations
                     MinPassingGradeSortOrder = table.Column<int>(type: "int", nullable: true),
                     ProbationThreshold = table.Column<decimal>(type: "decimal(4,2)", precision: 4, scale: 2, nullable: true),
                     ProbationRegistrationLimit = table.Column<int>(type: "int", nullable: true),
+                    MinCreditHoursForGraduationProject = table.Column<int>(type: "int", nullable: true),
                     GradeScales = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LevelScales = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -346,6 +347,29 @@ namespace IntelliCampus.Presistence.Migrations
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ElectiveBuckets",
+                columns: table => new
+                {
+                    ElectiveBucketId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    BylawId = table.Column<int>(type: "int", nullable: false),
+                    RequiredCreditHours = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
+                    RequiredCourseCount = table.Column<int>(type: "int", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ElectiveBuckets", x => x.ElectiveBucketId);
+                    table.ForeignKey(
+                        name: "FK_ElectiveBuckets_Bylaws_BylawId",
+                        column: x => x.BylawId,
+                        principalTable: "Bylaws",
+                        principalColumn: "BylawId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -688,6 +712,30 @@ namespace IntelliCampus.Presistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Courses", x => x.CourseId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ElectiveBucketCourses",
+                columns: table => new
+                {
+                    ElectiveBucketId = table.Column<int>(type: "int", nullable: false),
+                    CourseId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ElectiveBucketCourses", x => new { x.ElectiveBucketId, x.CourseId });
+                    table.ForeignKey(
+                        name: "FK_ElectiveBucketCourses_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
+                        principalColumn: "CourseId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ElectiveBucketCourses_ElectiveBuckets_ElectiveBucketId",
+                        column: x => x.ElectiveBucketId,
+                        principalTable: "ElectiveBuckets",
+                        principalColumn: "ElectiveBucketId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1257,7 +1305,8 @@ namespace IntelliCampus.Presistence.Migrations
                     CourseId = table.Column<int>(type: "int", nullable: false),
                     ClassId = table.Column<int>(type: "int", nullable: true),
                     Semester = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    RegisteredAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    RegisteredAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1299,6 +1348,33 @@ namespace IntelliCampus.Presistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_StudentDepartments_Students_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Students",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StudentElectiveBucketProgresses",
+                columns: table => new
+                {
+                    StudentId = table.Column<int>(type: "int", nullable: false),
+                    ElectiveBucketId = table.Column<int>(type: "int", nullable: false),
+                    CompletedCreditHours = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
+                    CompletedCourseCount = table.Column<int>(type: "int", nullable: false),
+                    IsLocked = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StudentElectiveBucketProgresses", x => new { x.StudentId, x.ElectiveBucketId });
+                    table.ForeignKey(
+                        name: "FK_StudentElectiveBucketProgresses_ElectiveBuckets_ElectiveBucketId",
+                        column: x => x.ElectiveBucketId,
+                        principalTable: "ElectiveBuckets",
+                        principalColumn: "ElectiveBucketId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StudentElectiveBucketProgresses_Students_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Students",
                         principalColumn: "UserId",
@@ -1553,6 +1629,16 @@ namespace IntelliCampus.Presistence.Migrations
                 name: "IX_Departments_InstructorId",
                 table: "Departments",
                 column: "InstructorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ElectiveBucketCourses_CourseId",
+                table: "ElectiveBucketCourses",
+                column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ElectiveBuckets_BylawId",
+                table: "ElectiveBuckets",
+                column: "BylawId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Exams_CourseId",
@@ -1815,6 +1901,11 @@ namespace IntelliCampus.Presistence.Migrations
                 name: "IX_StudentDepartments_StudentId",
                 table: "StudentDepartments",
                 column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudentElectiveBucketProgresses_ElectiveBucketId",
+                table: "StudentElectiveBucketProgresses",
+                column: "ElectiveBucketId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StudentQuizzes_QuizId",
@@ -2084,6 +2175,9 @@ namespace IntelliCampus.Presistence.Migrations
                 name: "CoursePrerequisites");
 
             migrationBuilder.DropTable(
+                name: "ElectiveBucketCourses");
+
+            migrationBuilder.DropTable(
                 name: "ExamSchedules");
 
             migrationBuilder.DropTable(
@@ -2132,6 +2226,9 @@ namespace IntelliCampus.Presistence.Migrations
                 name: "StudentDepartments");
 
             migrationBuilder.DropTable(
+                name: "StudentElectiveBucketProgresses");
+
+            migrationBuilder.DropTable(
                 name: "StudentQuizzes");
 
             migrationBuilder.DropTable(
@@ -2169,6 +2266,9 @@ namespace IntelliCampus.Presistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Posts");
+
+            migrationBuilder.DropTable(
+                name: "ElectiveBuckets");
 
             migrationBuilder.DropTable(
                 name: "Quizzes");

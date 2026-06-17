@@ -36,11 +36,14 @@ public class RegistrationService : IRegistrationService
     private IGenericRepository<Class, int> Classes
         => _unitOfWork.GetRepository<Class, int>();
 
+    private IGenericRepository<Bylaw, int> Bylaws
+        => _unitOfWork.GetRepository<Bylaw, int>();
+
     public async Task<StudentRegistrationDto?> RegisterStudentInCourseAsync(int studentId, CourseRegistrationDto dto)
     {
-        // Verify student exists (UserId is the PK in TPT inheritance)
-        var studentExists = await Students.GetByIdAsync(studentId) != null;
-        if (!studentExists)
+        // Verify student exists and get bylaw for rules
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
             throw new InvalidOperationException("Student not found.");
 
         // Verify course exists
@@ -61,13 +64,40 @@ public class RegistrationService : IRegistrationService
         // Auto-generate semester based on current date
         var semester = SemesterHelper.GetCurrentSemester();
 
+        // Semester credit hours validation from bylaw
+        if (student.BylawId is not null)
+        {
+            var bylaw = await Bylaws.GetByIdAsync(student.BylawId.Value);
+            if (bylaw is not null)
+            {
+                var existingSemesterCourses = await StudentCourses.GetAllAsync(
+                    new StudentCourseSemesterSpec(studentId, semester));
+                var existingHours = existingSemesterCourses.Sum(sc => sc.Course.CreditHours);
+                var totalAfterRegistration = existingHours + course.CreditHours;
+
+                var isSummer = semester.StartsWith("Summer", StringComparison.OrdinalIgnoreCase);
+                var maxHours = isSummer && bylaw.SummerMaxCreditHours.HasValue
+                    ? bylaw.SummerMaxCreditHours.Value
+                    : bylaw.MaxCreditHoursPerSemester;
+
+                if (maxHours.HasValue && totalAfterRegistration > maxHours.Value)
+                    throw new InvalidOperationException(
+                        $"Cannot register for \"{course.CourseName}\". Adding {course.CreditHours} credit hours would bring your semester total to {totalAfterRegistration}, exceeding the maximum of {maxHours.Value} credit hours{(isSummer ? " for summer" : "")}.");
+
+                if (bylaw.MinCreditHoursPerSemester.HasValue && totalAfterRegistration < bylaw.MinCreditHoursPerSemester.Value)
+                    throw new InvalidOperationException(
+                        $"Cannot register for \"{course.CourseName}\". The total of {totalAfterRegistration} credit hours is below the minimum of {bylaw.MinCreditHoursPerSemester.Value} credit hours per semester.");
+            }
+        }
+
         var studentCourse = new StudentCourse
         {
             StudentId = studentId,
             CourseId = dto.CourseId,
             ClassId = dto.ClassId,
             Semester = semester,
-            RegisteredAt = DateTime.UtcNow
+            RegisteredAt = DateTime.UtcNow,
+            Status = StudentCourseStatus.InProgress
         };
 
         StudentCourses.Add(studentCourse);
@@ -137,4 +167,12 @@ public class RegistrationService : IRegistrationService
 
         return true;
     }
+
+    private async Task<int> GetTotalEarnedCreditHoursAsync(int studentId)
+    {
+        var spec = new StudentCompletedCoursesSpec(studentId);
+        var courses = await StudentCourses.GetAllAsync(spec);
+        return courses.Sum(sc => sc.Course.CreditHours);
+    }
+
 }

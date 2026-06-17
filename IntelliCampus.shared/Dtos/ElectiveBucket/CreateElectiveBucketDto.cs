@@ -1,0 +1,10 @@
+namespace IntelliCampus.Shared.Dtos.ElectiveBucket;
+
+public class CreateElectiveBucketDto
+{
+    public string Name { get; set; } = null!;
+    public int BylawId { get; set; }
+    public decimal RequiredCreditHours { get; set; }
+    public int? RequiredCourseCount { get; set; }
+    public List<int> CourseIds { get; set; } = new();
+}

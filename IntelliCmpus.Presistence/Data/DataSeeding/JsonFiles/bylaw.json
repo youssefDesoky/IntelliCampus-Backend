@@ -70,6 +70,7 @@
     "minPassingGradeLetter": "D",
     "minPassingGradeSortOrder": 8,
     "probationThreshold": 2.0,
-    "probationRegistrationLimit": 15
+    "probationRegistrationLimit": 15,
+    "minCreditHoursForGraduationProject": 90
   }
 ]
