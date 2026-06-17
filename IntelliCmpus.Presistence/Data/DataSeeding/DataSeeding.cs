@@ -77,9 +77,6 @@ public class DataSeed : IDataSeed
             await SetDepartmentHeadsAsync();
             await _dbContext.SaveChangesAsync();
 
-            await SeedStudentsAsync();
-            await _dbContext.SaveChangesAsync();
-
             // Depends on Departments
             await SeedCoursesAsync();
             await _dbContext.SaveChangesAsync();
@@ -99,6 +96,10 @@ public class DataSeed : IDataSeed
             await _dbContext.SaveChangesAsync();
 
             await SeedBylawCoursePrerequisitesAsync();
+            await _dbContext.SaveChangesAsync();
+
+            // Depends on Bylaw
+            await SeedStudentsAsync();
             await _dbContext.SaveChangesAsync();
 
             // Depends on Courses, Students
@@ -553,7 +554,8 @@ public class DataSeed : IDataSeed
             MinPassingGradeLetter = dto.MinPassingGradeLetter,
             MinPassingGradeSortOrder = dto.MinPassingGradeSortOrder,
             ProbationThreshold = dto.ProbationThreshold,
-            ProbationRegistrationLimit = dto.ProbationRegistrationLimit
+            ProbationRegistrationLimit = dto.ProbationRegistrationLimit,
+            MinCreditHoursForGraduationProject = dto.MinCreditHoursForGraduationProject
         };
         _dbContext.Bylaws.Add(entity);
         await _dbContext.SaveChangesAsync();
@@ -644,23 +646,72 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Set<StudentCourse>().AnyAsync()) return;
         var items = await ReadJsonAsync<StudentCourseDto>("student-courses.json");
+        var allStudents = await _dbContext.Students.ToListAsync();
+        var studentEnrollment = allStudents.ToDictionary(s => s.StudentId, s => s.EnrollmentDate ?? DateTime.UtcNow.AddYears(-4));
+        var allCourses = await _dbContext.Courses.ToDictionaryAsync(c => c.CourseId);
+
         var currentSemester = SemesterHelper.GetCurrentSemester();
-        foreach (var dto in items)
+
+        // Group courses by student
+        var grouped = items.GroupBy(i => i.StudentEmail).ToList();
+
+        foreach (var group in grouped)
         {
-            var studentId = _userIds.GetValueOrDefault(dto.StudentEmail);
-            var courseId = _courseIds.GetValueOrDefault(dto.CourseCode);
-            var classKey = $"{dto.ClassCode}_{dto.CourseCode}";
-            var classId = _classKeys.GetValueOrDefault(classKey);
-            if (studentId == 0 || courseId == 0) continue;
-            _dbContext.Set<StudentCourse>().Add(new StudentCourse
+            var studentId = _userIds.GetValueOrDefault(group.Key);
+            if (studentId == 0) continue;
+
+            var enrollmentDate = studentEnrollment.GetValueOrDefault(studentId, DateTime.UtcNow.AddYears(-4));
+            var studentSemesters = GenerateSemesterList(enrollmentDate, DateTime.UtcNow);
+            if (studentSemesters.Count == 0) studentSemesters.Add(currentSemester);
+
+            var courseList = group.ToList();
+            for (int i = 0; i < courseList.Count; i++)
             {
-                StudentId = studentId,
-                CourseId = courseId,
-                ClassId = classId != 0 ? classId : null,
-                Semester = currentSemester,
-                RegisteredAt = DateTime.UtcNow
-            });
+                var dto = courseList[i];
+                var courseId = _courseIds.GetValueOrDefault(dto.CourseCode);
+                if (courseId == 0) continue;
+
+                var classKey = $"{dto.ClassCode}_{dto.CourseCode}";
+                var classId = _classKeys.GetValueOrDefault(classKey);
+                var sem = studentSemesters[i % studentSemesters.Count];
+
+                var status = sem == currentSemester
+                    ? StudentCourseStatus.InProgress
+                    : StudentCourseStatus.Completed;
+
+                _dbContext.Set<StudentCourse>().Add(new StudentCourse
+                {
+                    StudentId = studentId,
+                    CourseId = courseId,
+                    ClassId = classId != 0 ? classId : null,
+                    Semester = sem,
+                    RegisteredAt = DateTime.UtcNow,
+                    Status = status
+                });
+            }
         }
+    }
+
+    private static List<string> GenerateSemesterList(DateTime from, DateTime to)
+    {
+        var semesters = new List<string>();
+        var current = new DateTime(from.Year, from.Month, 1);
+        var end = new DateTime(to.Year, to.Month, 1);
+
+        while (current <= end)
+        {
+            var month = current.Month;
+            var year = current.Year;
+            if (month >= 9)
+                semesters.Add($"Fall {year}");
+            else if (month >= 5)
+                semesters.Add($"Summer {year}");
+            else
+                semesters.Add($"Spring {year}");
+            current = current.AddMonths(4);
+        }
+
+        return semesters.Distinct().ToList();
     }
 
     // ---- Schedules ----
@@ -1256,6 +1307,7 @@ public class DataSeed : IDataSeed
         public int? MinPassingGradeSortOrder { get; init; }
         public decimal? ProbationThreshold { get; init; }
         public int? ProbationRegistrationLimit { get; init; }
+        public int? MinCreditHoursForGraduationProject { get; init; }
     }
 
     private record BylawCourseSeedDto

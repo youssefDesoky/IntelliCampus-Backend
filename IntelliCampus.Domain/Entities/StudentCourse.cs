@@ -7,6 +7,7 @@ public class StudentCourse
     public int? ClassId { get; set; }
     public string? Semester { get; set; }
     public DateTime RegisteredAt { get; set; }
+    public Enums.StudentCourseStatus Status { get; set; } = Enums.StudentCourseStatus.InProgress;
 
     // Navigation properties
     public Student Student { get; set; } = null!;
