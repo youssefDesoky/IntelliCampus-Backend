@@ -395,7 +395,7 @@ public class GradeService : IGradeService
             {
                 CourseId = course.CourseId,
                 CourseName = course.CourseName,
-                CourseCode = course.CourseCode,
+                CourseCode = course.CourseCode!,
                 CreditHours = course.CreditHours,
                 Coursework = courseworkStr,
                 TotalGrade = totalGradeStr,
