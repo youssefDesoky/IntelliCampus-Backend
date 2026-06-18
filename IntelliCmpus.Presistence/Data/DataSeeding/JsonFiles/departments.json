@@ -3,24 +3,24 @@
     "departmentName": "Information Systems",
     "departmentNameAr": "نظم المعلومات",
     "description": "Information Systems Department — General Program",
-    "headEmail": "ahmed.hassan@instructor.com"
+    "headEmail": "202601001@intellicampus.online"
   },
   {
     "departmentName": "Data Science",
     "departmentNameAr": "علوم البيانات",
     "description": "Data Science Department — Credit Hours Program",
-    "headEmail": "mona.ibrahim@instructor.com"
+    "headEmail": "202601005@intellicampus.online"
   },
   {
     "departmentName": "Software Engineering",
     "departmentNameAr": "هندسة البرمجيات",
     "description": "Software Engineering Department — Credit Hours Program",
-    "headEmail": "hany.farouk@instructor.com"
+    "headEmail": "202601007@intellicampus.online"
   },
   {
     "departmentName": "Networks and Cyber Security",
     "departmentNameAr": "الشبكات وأمن السيبراني",
     "description": "Networks and Cyber Security Department — Credit Hours Program",
-    "headEmail": "tarek.nabil@instructor.com"
+    "headEmail": "202601009@intellicampus.online"
   }
 ]

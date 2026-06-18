@@ -90,6 +90,7 @@ builder.Services.AddAuthorization();
 
 // Register services
 builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<ICodeGenerationService, CodeGenerationService>();
 builder.Services.AddScoped<ICommunityService, CommunityService>();
 builder.Services.AddHttpClient<IRoutingClientService, RoutingClientService>(client =>
 {

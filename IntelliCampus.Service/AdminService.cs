@@ -9,10 +9,11 @@ using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
 
-public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordService) : IAdminService
+public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration) : IAdminService
 {
     private readonly IPasswordService _passwordService = passwordService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICodeGenerationService _codeGeneration = codeGeneration;
     private IGenericRepository<Admin, int> Admins
         => _unitOfWork.GetRepository<Admin, int>();
 
@@ -44,14 +45,11 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
 
     public async Task<AdminDto> CreateAsync(CreateAdminDto dto, int? creatorUserId = null)
     {
-        if (await Users.AnyAsync(u => u.Email == dto.Email))
-            throw new InvalidOperationException("Email already exists.");
-
         if (await Users.AnyAsync(u => u.NationalId == dto.NationalId))
             throw new InvalidOperationException("National ID already exists.");
 
         var hireDate = ParseDate(dto.HireDate) ?? DateTime.UtcNow;
-        var password = string.IsNullOrWhiteSpace(dto.Password) ? "Admin@123" : dto.Password;
+        var password = string.IsNullOrWhiteSpace(dto.Password) ? dto.NationalId : dto.Password;
 
         var facultyId = dto.FacultyId;
         if (facultyId is null && creatorUserId.HasValue)
@@ -67,6 +65,21 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
                 throw new InvalidOperationException($"Faculty with ID {facultyId.Value} not found.");
         }
 
+        var code = dto.AdminCode;
+        var email = dto.Email;
+
+        if (string.IsNullOrWhiteSpace(code) && facultyId.HasValue)
+            code = await _codeGeneration.GenerateAdminCodeAsync(facultyId.Value, hireDate);
+
+        if (string.IsNullOrWhiteSpace(email))
+            email = !string.IsNullOrWhiteSpace(code) ? code + "@intellicampus.online" : dto.Email;
+
+        if (string.IsNullOrWhiteSpace(email))
+            throw new InvalidOperationException("Email is required. Provide an email or ensure a faculty is assigned for auto-generation.");
+
+        if (await Users.AnyAsync(u => u.Email == email))
+            throw new InvalidOperationException("Email already exists.");
+
         var roleName = ResolveAdminRoleName(dto.AdminRole);
         var role = (await RolesRepo.GetAllAsync()).First(r => r.RoleName == roleName);
 
@@ -76,11 +89,11 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             FullName = dto.FullName,
             FullNameAr = dto.FullNameAr,
             PhoneNumber = dto.PhoneNumber,
-            Email = dto.Email,
+            Email = email,
             Address = dto.Address,
             Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
-            AdminCode = dto.AdminCode,
+            AdminCode = code,
             HireDate = hireDate,
             FacultyId = facultyId
         };
