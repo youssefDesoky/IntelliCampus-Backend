@@ -5,6 +5,7 @@ using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.shared.Dtos.Quiz;
 using IntelliCampus.Service.Specifications;
+using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
 
@@ -36,9 +37,11 @@ public class QuizService : IQuizService
 
     public async Task<QuizHistoryItemDto?> GetByIdAsync(int quizId, int studentId)
     {
+    
         var spec = new QuizSpec(quizId);
         var quiz = await Quizzes.GetByIdAsync(spec);
-        if (quiz is null) return null;
+        if (quiz is null) 
+            throw new QuizNotFoundException(quizId);
 
         var submission = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quizId));
         var hasSubmission = submission is not null;
@@ -60,17 +63,19 @@ public class QuizService : IQuizService
     public async Task<QuizHistoryItemDto?> GetByIdInCourseAsync(int quizId, int studentId, string courseId)
     {
         if (!int.TryParse(courseId, out var parsedCourseId))
-            return null;
+            throw new CourseNotFoundException(courseId);
 
         var course = await Courses.GetByIdAsync(parsedCourseId);
-        if (course is null) return null;
+        if (course is null)
+            throw new CourseNotFoundException(parsedCourseId);
 
         var spec = new QuizSpec(quizId);
         var quiz = await Quizzes.GetByIdAsync(spec);
-        if (quiz is null) return null;
+        if (quiz is null) 
+            throw new QuizNotFoundException(quizId);
 
         if (quiz.CourseId != parsedCourseId)
-            return null;
+            throw new QuizNotFoundException(quizId);
 
         var submission = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quizId));
         var hasSubmission = submission is not null;
@@ -100,7 +105,7 @@ public class QuizService : IQuizService
     {
         var course = await Courses.GetByIdAsync(dto.CourseId);
         if (course is null)
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException(dto.CourseId);
 
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
@@ -129,7 +134,8 @@ public class QuizService : IQuizService
     public async Task<bool> DeleteAsync(int quizId, int instructorId)
     {
         var quiz = await Quizzes.GetByIdAsync(quizId);
-        if (quiz is null) return false;
+        if (quiz is null)
+            throw new QuizNotFoundException(quizId);
 
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
@@ -143,11 +149,11 @@ public class QuizService : IQuizService
     public async Task<QuizDto> CreateInCourseAsync(int instructorId, string courseId, CreateQuizDto dto)
     {
         if (!int.TryParse(courseId, out var parsedCourseId))
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException(courseId);
 
         var course = await Courses.GetByIdAsync(parsedCourseId);
         if (course is null)
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException(parsedCourseId);
 
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == parsedCourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
@@ -176,17 +182,19 @@ public class QuizService : IQuizService
     public async Task<bool> DeleteInCourseAsync(int quizId, int instructorId, string courseId)
     {
         if (!int.TryParse(courseId, out var parsedCourseId))
-            return false;
+            throw new CourseNotFoundException(courseId);
 
         var course = await Courses.GetByIdAsync(parsedCourseId);
-        if (course is null) return false;
+        if (course is null)
+            throw new CourseNotFoundException(parsedCourseId);
 
         var spec = new QuizSpec(quizId);
         var quiz = await Quizzes.GetByIdAsync(spec);
-        if (quiz is null) return false;
+        if (quiz is null)
+            throw new QuizNotFoundException(quizId);
 
         if (quiz.CourseId != parsedCourseId)
-            return false;
+            throw new QuizNotFoundException(quizId);
 
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
@@ -200,19 +208,19 @@ public class QuizService : IQuizService
     public async Task AddQuestionsAsync(int quizId, int instructorId, string courseId, List<CreateQuestionDto> questions)
     {
         if (!int.TryParse(courseId, out var parsedCourseId))
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException(courseId);
 
         var course = await Courses.GetByIdAsync(parsedCourseId);
         if (course is null)
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException(parsedCourseId);
 
         var spec = new QuizSpec(quizId);
         var quiz = await Quizzes.GetByIdAsync(spec);
         if (quiz is null)
-            throw new InvalidOperationException("Quiz not found.");
+            throw new QuizNotFoundException(quizId);
 
         if (quiz.CourseId != parsedCourseId)
-            throw new InvalidOperationException("Quiz does not belong to this course.");
+            throw new QuizNotFoundException(quizId);
 
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
@@ -238,20 +246,20 @@ public class QuizService : IQuizService
     public async Task DeleteQuestionAsync(int questionId, int instructorId, string courseId)
     {
         if (!int.TryParse(courseId, out var parsedCourseId))
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException(courseId);
 
         var course = await Courses.GetByIdAsync(parsedCourseId);
         if (course is null)
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException(parsedCourseId);
 
         var question = await QuestionsRepo.GetByIdAsync(questionId);
         if (question is null)
-            throw new InvalidOperationException("Question not found.");
+            throw new QuestionNotFoundException(questionId);
 
         var spec = new QuizSpec(question.QuizId);
         var quiz = await Quizzes.GetByIdAsync(spec);
         if (quiz is null || quiz.CourseId != parsedCourseId)
-            throw new InvalidOperationException("Question does not belong to this course.");
+            throw new QuizNotFoundException(question.QuizId);
 
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
@@ -264,19 +272,20 @@ public class QuizService : IQuizService
     public async Task<List<StudentSubmissionDto>> GetSubmissionsAsync(int quizId, int instructorId, string courseId)
     {
         if (!int.TryParse(courseId, out var parsedCourseId))
-            return [];
+            throw new CourseNotFoundException(courseId);
 
         var course = await Courses.GetByIdAsync(parsedCourseId);
-        if (course is null) return [];
+        if (course is null)
+            throw new CourseNotFoundException(parsedCourseId);
 
         var spec = new QuizSpec(quizId);
         var quiz = await Quizzes.GetByIdAsync(spec);
         if (quiz is null || quiz.CourseId != parsedCourseId)
-            return [];
+            throw new QuizNotFoundException(quizId);
 
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
-            return [];
+            throw new InvalidOperationException("Not authorized.");
 
         var allQuestions = (await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quizId))).ToList();
         var maxScore = allQuestions.Sum(q => q.Points);
@@ -299,16 +308,16 @@ public class QuizService : IQuizService
     public async Task GradeWrittenAsync(int quizId, int studentId, int instructorId, string courseId, GradeWrittenDto dto)
     {
         if (!int.TryParse(courseId, out var parsedCourseId))
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException(courseId);
 
         var course = await Courses.GetByIdAsync(parsedCourseId);
         if (course is null)
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException(parsedCourseId);
 
         var spec = new QuizSpec(quizId);
         var quiz = await Quizzes.GetByIdAsync(spec);
         if (quiz is null || quiz.CourseId != parsedCourseId)
-            throw new InvalidOperationException("Quiz not found.");
+            throw new QuizNotFoundException(quizId);
 
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
@@ -316,7 +325,7 @@ public class QuizService : IQuizService
 
         var existing = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quizId));
         if (existing is null)
-            throw new InvalidOperationException("Submission not found.");
+            throw new SubmissionNotFoundException(studentId, quizId);
 
         var allQuestions = (await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quizId))).ToList();
         var existingResults = existing.QuestionResultsJson is not null
@@ -352,14 +361,16 @@ public class QuizService : IQuizService
     {
         var spec = new StudentQuizSpec(studentId, quizId);
         var result = await StudentQuizzes.GetByIdAsync(spec);
-        return result is null ? null : MapResultToDto(result);
+        if (result is null)
+            throw new SubmissionNotFoundException(studentId, quizId);
+        return MapResultToDto(result);
     }
 
     public async Task<IEnumerable<StudentQuizDto>> GetAllResultsAsync(int quizId, int instructorId)
     {
         var quiz = await Quizzes.GetByIdAsync(quizId);
         if (quiz is null)
-            throw new InvalidOperationException("Quiz not found.");
+            throw new QuizNotFoundException(quizId);
 
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
@@ -407,19 +418,19 @@ public class QuizService : IQuizService
     public async Task<QuizSubmitResponseDto?> SubmitPracticeQuizAsync(int studentId, string courseId, SubmitQuizDto dto)
     {
         if (!int.TryParse(courseId, out var parsedCourseId))
-            return null;
+            throw new CourseNotFoundException(courseId);
 
         var course = await Courses.GetByIdAsync(parsedCourseId);
         if (course is null)
-            return null;
+            throw new CourseNotFoundException(parsedCourseId);
 
         var quiz = await Quizzes.GetByIdAsync(dto.QuizId);
         if (quiz is null)
-            return null;
+            throw new QuizNotFoundException(dto.QuizId);
 
         var now = DateTime.UtcNow;
         if (now < quiz.StartDate || now > quiz.DueDate)
-            return null;
+            throw new InvalidOperationException("Quiz is not available for submission at this time.");
 
         var existing = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quiz.QuizId));
         var allQ = (await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quiz.QuizId))).ToList();
@@ -492,11 +503,11 @@ public class QuizService : IQuizService
     public async Task<PracticeQuizDto?> GetPracticeQuizAsync(int studentId, string courseId, int? quizId = null)
     {
         if (!int.TryParse(courseId, out var parsedCourseId))
-            return null;
+            throw new CourseNotFoundException(courseId);
 
         var course = await Courses.GetByIdAsync(parsedCourseId);
         if (course is null)
-            return null;
+            throw new CourseNotFoundException(parsedCourseId);
 
         var quizSpec = new QuizzesByCourseSpec(parsedCourseId);
         var quizzes = (await Quizzes.GetAllAsync(quizSpec)).ToList();
@@ -521,14 +532,14 @@ public class QuizService : IQuizService
         }
 
         if (quiz is null)
-            return null;
+            throw new QuizNotFoundException(quizId!.Value);
 
         var now = DateTime.UtcNow;
         var submission = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quiz.QuizId));
         var isWithinWindow = now >= quiz.StartDate && now <= quiz.DueDate;
 
         if (submission is null && !isWithinWindow)
-            return null;
+            throw new InvalidOperationException("Quiz is not available at this time.");
 
         var questions = (await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quiz.QuizId))).ToList();
 
@@ -620,11 +631,11 @@ public class QuizService : IQuizService
     public async Task<CourseQuizzesDto?> GetQuizzesOverviewAsync(int studentId, string courseId)
     {
         if (!int.TryParse(courseId, out var parsedCourseId))
-            return null;
+            throw new CourseNotFoundException(courseId);
 
         var course = await Courses.GetByIdAsync(parsedCourseId);
         if (course is null)
-            return null;
+            throw new CourseNotFoundException(parsedCourseId);
 
         var spec = new QuizzesByCourseSpec(parsedCourseId);
         var quizzes = (await Quizzes.GetAllAsync(spec)).ToList();
