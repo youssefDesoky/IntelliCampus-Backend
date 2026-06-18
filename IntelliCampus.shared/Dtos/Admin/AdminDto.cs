@@ -12,7 +12,7 @@ public class AdminDto
     public string? Address { get; set; }
     public string? Nationality { get; set; }
     public string? AdminCode { get; set; }
-    public DateTime? HireDate { get; set; }
+    public string? HireDate { get; set; }
     public int? FacultyId { get; set; }
     public string? FacultyName { get; set; }
     public List<string> Roles { get; set; } = [];

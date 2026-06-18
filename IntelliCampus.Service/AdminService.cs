@@ -173,7 +173,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             Address = admin.Address,
             Nationality = admin.Nationality,
             AdminCode = admin.AdminCode,
-            HireDate = admin.HireDate,
+            HireDate = admin.HireDate?.ToString("dd MM yyyy"),
             FacultyId = admin.FacultyId,
             FacultyName = admin.Faculty?.FacultyName,
             Roles = admin.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()

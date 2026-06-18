@@ -87,7 +87,7 @@ public class ExcelImportController : ControllerBase
                 columns = new[]
                 {
                     "NationalId", "FullName", "FullNameAr", "PhoneNumber", "Email",
-                    "Address", "Nationality", "StudentCode", "StudentType (undergrad/postgrad)", "Level",
+                    "Address", "Nationality", "StudentCode", "StudentType (undergrad/masters/phd/diploma)", "Level",
                     "DepartmentName", "EnrollmentDate"
                 },
                 bylawId
@@ -99,7 +99,7 @@ public class ExcelImportController : ControllerBase
             columns = new[]
             {
                 "NationalId", "FullName", "FullNameAr", "PhoneNumber", "Email",
-                "Address", "Nationality", "StudentCode", "StudentType (undergrad/postgrad)", "Level",
+                "Address", "Nationality", "StudentCode", "StudentType (undergrad/masters/phd/diploma)", "Level",
                 "DepartmentName", "EnrollmentDate"
             },
             message = "Pass ?bylawId= to pre-assign students to a bylaw"
