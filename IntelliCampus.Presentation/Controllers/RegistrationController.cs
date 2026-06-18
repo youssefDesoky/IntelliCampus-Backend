@@ -8,7 +8,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
+[Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Student_Diploma")]
 public class RegistrationController : ControllerBase
 {
     private readonly IRegistrationService _registrationService;

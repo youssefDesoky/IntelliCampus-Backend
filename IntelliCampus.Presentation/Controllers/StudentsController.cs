@@ -9,7 +9,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+[Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
 public class StudentsController : ControllerBase
 {
     private readonly IStudentService _studentService;
@@ -62,7 +62,8 @@ public class StudentsController : ControllerBase
     {
         var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
         if (!userRoles.Contains(UserRole.SuperAdmin.ToString()) &&
-            !userRoles.Contains(UserRole.Admin_UnderGrad.ToString()))
+            !userRoles.Contains(UserRole.Admin_UnderGrad.ToString()) &&
+            !userRoles.Contains(UserRole.Admin_Diploma.ToString()))
             return Forbid();
 
         var student = await _studentService.UpdateLevelAsync(id, dto.Level);

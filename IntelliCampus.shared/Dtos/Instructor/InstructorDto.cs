@@ -16,7 +16,7 @@ public class InstructorDto
     public string? Specialization { get; set; }
     public int? DepartmentId { get; set; }
     public string? DepartmentName { get; set; }
-    public DateTime? HireDate { get; set; }
+    public string? HireDate { get; set; }
     public int? FacultyId { get; set; }
     public string? FacultyName { get; set; }
     public string? Status { get; set; }

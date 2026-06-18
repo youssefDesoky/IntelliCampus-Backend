@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Shared.Dtos.Instructor;
 using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +9,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_AcademicStaff,SuperAdmin")]
+[Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,Admin_AcademicStaff,SuperAdmin")]
 public class InstructorsController : ControllerBase
 {
     private readonly IInstructorService _instructorService;
@@ -45,6 +46,13 @@ public class InstructorsController : ControllerBase
     {
         var instructor = await _instructorService.UpdateAsync(id, dto);
         return Ok(instructor);
+    }
+
+    [HttpGet("roles")]
+    public ActionResult<IEnumerable<string>> GetRoles()
+    {
+        var roles = Enum.GetNames<InstructorRole>();
+        return Ok(roles);
     }
 
     [HttpDelete("{id}")]

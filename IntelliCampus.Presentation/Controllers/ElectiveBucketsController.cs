@@ -18,7 +18,7 @@ public class ElectiveBucketsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_AcademicStaff,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,Admin_AcademicStaff,SuperAdmin")]
     public async Task<ActionResult<ElectiveBucketDto>> Create(CreateElectiveBucketDto dto)
     {
         var bucket = await _electiveBucketService.CreateAsync(dto);
@@ -26,7 +26,7 @@ public class ElectiveBucketsController : ControllerBase
     }
 
     [HttpPut("{bucketId}")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_AcademicStaff,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,Admin_AcademicStaff,SuperAdmin")]
     public async Task<ActionResult<ElectiveBucketDto>> Update(int bucketId, UpdateElectiveBucketDto dto)
     {
         var bucket = await _electiveBucketService.UpdateAsync(bucketId, dto);
@@ -34,7 +34,7 @@ public class ElectiveBucketsController : ControllerBase
     }
 
     [HttpDelete("{bucketId}")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_AcademicStaff,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,Admin_AcademicStaff,SuperAdmin")]
     public async Task<IActionResult> Delete(int bucketId)
     {
         await _electiveBucketService.DeleteAsync(bucketId);
@@ -66,7 +66,7 @@ public class ElectiveBucketsController : ControllerBase
     }
 
     [HttpGet("my-progress")]
-    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<ActionResult<IEnumerable<ElectiveBucketProgressDto>>> GetMyProgress()
     {
         var studentId = GetCurrentStudentId();

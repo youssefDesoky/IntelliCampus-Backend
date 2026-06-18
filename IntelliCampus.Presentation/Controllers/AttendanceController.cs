@@ -47,7 +47,7 @@ public class AttendanceController(
     // ─── QR — Student dashboard ────────────────────────────────────────────────
 
     [HttpGet("qr")]
-    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<IActionResult> GetQrCode()
     {
         var result = await attendanceService.GenerateQrAsync(UserId);
@@ -87,7 +87,7 @@ public class AttendanceController(
     // ─── Student read ──────────────────────────────────────────────────────────
 
     [HttpGet("my-attendance/course/{courseId}")]
-    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<IActionResult> GetMyAttendance(int courseId)
         => Ok(await attendanceService.GetByStudentAndCourseAsync(UserId, courseId));
 
@@ -106,7 +106,7 @@ public class AttendanceController(
     // ─── Excuses ───────────────────────────────────────────────────────────────
 
     [HttpPost("/api/courses/{courseId}/attendance/excuse")]
-    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Student_Diploma")]
     [RequestSizeLimit(11 * 1024 * 1024)]
     public async Task<IActionResult> SubmitExcuse(
         int courseId, [FromForm] SubmitExcuseFormDto dto)
@@ -116,7 +116,7 @@ public class AttendanceController(
     }
 
     [HttpGet("excuses/my")]
-    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<IActionResult> GetMyExcuses()
         => Ok(await excuseService.GetByStudentAsync(UserId));
 
