@@ -321,6 +321,7 @@ public class DataSeed : IDataSeed
         {
             FacultyName = dto.FacultyName,
             FacultyNameAr = dto.FacultyNameAr,
+            FacultyCode = dto.FacultyCode,
             Description = dto.Description
         };
         _dbContext.Faculties.Add(entity);
@@ -398,6 +399,7 @@ public class DataSeed : IDataSeed
                 Nationality = dto.Nationality,
                 Password = _passwordService.HashPassword(dto.Password),
                 FacultyId = _facultyId,
+                AdminCode = dto.AdminCode,
                 HireDate = DateTime.UtcNow
             };
             _dbContext.Admins.Add(entity);
@@ -427,6 +429,7 @@ public class DataSeed : IDataSeed
                 Nationality = dto.Nationality,
                 Password = _passwordService.HashPassword(dto.Password),
                 FacultyId = _facultyId,
+                InstructorCode = dto.InstructorCode,
                 InstructorRole = Enum.Parse<InstructorRole>(dto.InstructorRole),
                 Specialization = dto.Specialization,
                 DepartmentId = _departmentIds.GetValueOrDefault(dto.DepartmentName),
@@ -1218,6 +1221,7 @@ public class DataSeed : IDataSeed
     {
         public string FacultyName { get; init; } = "";
         public string? FacultyNameAr { get; init; }
+        public string FacultyCode { get; init; } = "";
         public string? Description { get; init; }
     }
 
@@ -1249,6 +1253,7 @@ public class DataSeed : IDataSeed
         public string Password { get; init; } = "";
         public List<string> Roles { get; init; } = new();
         public string? FacultyName { get; init; }
+        public string? AdminCode { get; init; }
     }
 
     private record InstructorDto
@@ -1267,6 +1272,7 @@ public class DataSeed : IDataSeed
         public string? DepartmentName { get; init; }
         public string? FacultyName { get; init; }
         public string? Status { get; init; }
+        public string? InstructorCode { get; init; }
     }
 
     private record CourseDto

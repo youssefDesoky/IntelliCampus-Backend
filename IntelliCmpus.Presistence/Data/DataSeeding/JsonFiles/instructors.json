@@ -1,161 +1,171 @@
 [
   {
-    "nationalId": "11111111111111",
+    "nationalId": "2750315012341",
     "fullName": "Dr. Ahmed Hassan",
     "fullNameAr": "د. أحمد حسن",
-    "email": "ahmed.hassan@instructor.com",
+    "email": "202601001@intellicampus.online",
     "phoneNumber": "01100000001",
     "address": "Cairo, Egypt",
     "nationality": "Egyptian",
-    "password": "Instructor@123",
+    "password": "2750315012341",
     "roles": [
       "Instructor"
     ],
+    "instructorCode": "202601001",
     "instructorRole": "Professor",
     "specialization": "Information Systems",
     "departmentName": "Information Systems",
     "status": "Employed"
   },
   {
-    "nationalId": "22222222222222",
+    "nationalId": "2800620115672",
     "fullName": "Dr. Fatima Mohamed",
     "fullNameAr": "د. فاطمة محمد",
-    "email": "fatima.mohamed@instructor.com",
+    "email": "202601002@intellicampus.online",
     "phoneNumber": "01100000002",
     "address": "Giza, Egypt",
     "nationality": "Egyptian",
-    "password": "Instructor@123",
+    "password": "2800620115672",
     "roles": [
       "Instructor"
     ],
+    "instructorCode": "202601002",
     "instructorRole": "Professor",
     "specialization": "Database Systems",
     "departmentName": "Information Systems"
   },
   {
-    "nationalId": "33333333333333",
+    "nationalId": "2950910023453",
     "fullName": "Eng. Omar Khaled",
     "fullNameAr": "م. عمر خالد",
-    "email": "omar.khaled@instructor.com",
+    "email": "202601003@intellicampus.online",
     "phoneNumber": "01100000003",
     "address": "Alexandria, Egypt",
     "nationality": "Egyptian",
-    "password": "Instructor@123",
+    "password": "2950910023453",
     "roles": [
       "Instructor"
     ],
+    "instructorCode": "202601003",
     "instructorRole": "TeachingAssistant",
     "specialization": "Web Development",
     "departmentName": "Information Systems"
   },
   {
-    "nationalId": "44444444444444",
+    "nationalId": "2981205017894",
     "fullName": "Eng. Sara Ali",
     "fullNameAr": "م. سارة علي",
-    "email": "sara.ali@instructor.com",
+    "email": "202601004@intellicampus.online",
     "phoneNumber": "01100000004",
     "address": "Cairo, Egypt",
     "nationality": "Egyptian",
-    "password": "Instructor@123",
+    "password": "2981205017894",
     "roles": [
       "Instructor"
     ],
+    "instructorCode": "202601004",
     "instructorRole": "TeachingAssistant",
     "specialization": "Data Structures",
     "departmentName": "Software Engineering"
   },
   {
-    "nationalId": "10101010101010",
+    "nationalId": "2820418112345",
     "fullName": "Dr. Mona Ibrahim",
     "fullNameAr": "د. منى إبراهيم",
-    "email": "mona.ibrahim@instructor.com",
+    "email": "202601005@intellicampus.online",
     "phoneNumber": "01100000005",
     "address": "Cairo, Egypt",
     "nationality": "Egyptian",
-    "password": "Instructor@123",
+    "password": "2820418112345",
     "roles": [
       "Instructor"
     ],
+    "instructorCode": "202601005",
     "instructorRole": "Professor",
     "specialization": "Data Science",
     "departmentName": "Data Science"
   },
   {
-    "nationalId": "20202020202020",
+    "nationalId": "2960125016786",
     "fullName": "Eng. Khaled Youssef",
     "fullNameAr": "م. خالد يوسف",
-    "email": "khaled.youssef@instructor.com",
+    "email": "202601006@intellicampus.online",
     "phoneNumber": "01100000006",
     "address": "Giza, Egypt",
     "nationality": "Egyptian",
-    "password": "Instructor@123",
+    "password": "2960125016786",
     "roles": [
       "Instructor"
     ],
+    "instructorCode": "202601006",
     "instructorRole": "TeachingAssistant",
     "specialization": "Systems Analysis",
     "departmentName": "Information Systems"
   },
   {
-    "nationalId": "30303030303030",
+    "nationalId": "2780830013457",
     "fullName": "Dr. Hany Farouk",
     "fullNameAr": "د. هاني فاروق",
-    "email": "hany.farouk@instructor.com",
+    "email": "202601007@intellicampus.online",
     "phoneNumber": "01100000007",
     "address": "Cairo, Egypt",
     "nationality": "Egyptian",
-    "password": "Instructor@123",
+    "password": "2780830013457",
     "roles": [
       "Instructor"
     ],
+    "instructorCode": "202601007",
     "instructorRole": "Professor",
     "specialization": "Software Engineering",
     "departmentName": "Software Engineering"
   },
   {
-    "nationalId": "40404040404040",
+    "nationalId": "2970714017898",
     "fullName": "Eng. Nada Samir",
     "fullNameAr": "م. ندى سمير",
-    "email": "nada.samir@instructor.com",
+    "email": "202601008@intellicampus.online",
     "phoneNumber": "01100000008",
     "address": "Cairo, Egypt",
     "nationality": "Egyptian",
-    "password": "Instructor@123",
+    "password": "2970714017898",
     "roles": [
       "Instructor"
     ],
+    "instructorCode": "202601008",
     "instructorRole": "TeachingAssistant",
     "specialization": "Machine Learning",
     "departmentName": "Data Science"
   },
   {
-    "nationalId": "50505050505050",
+    "nationalId": "2701102012349",
     "fullName": "Dr. Tarek Nabil",
     "fullNameAr": "د. طارق نبيل",
-    "email": "tarek.nabil@instructor.com",
+    "email": "202601009@intellicampus.online",
     "phoneNumber": "01100000009",
     "address": "Alexandria, Egypt",
     "nationality": "Egyptian",
-    "password": "Instructor@123",
+    "password": "2701102012349",
     "roles": [
       "Instructor"
     ],
+    "instructorCode": "202601009",
     "instructorRole": "Professor",
     "specialization": "Network Security",
     "departmentName": "Networks and Cyber Security"
   },
   {
-    "nationalId": "60606060606060",
+    "nationalId": "2940522115670",
     "fullName": "Eng. Amr Galal",
     "fullNameAr": "م. عمرو جلال",
-    "email": "amr.galal@instructor.com",
+    "email": "202601010@intellicampus.online",
     "phoneNumber": "01100000010",
     "address": "Cairo, Egypt",
     "nationality": "Egyptian",
-    "password": "Instructor@123",
+    "password": "2940522115670",
     "roles": [
       "Instructor"
     ],
+    "instructorCode": "202601010",
     "instructorRole": "TeachingAssistant",
     "specialization": "Cyber Security",
     "departmentName": "Networks and Cyber Security",

@@ -1,14 +1,14 @@
 [
   {
     "nationalId": "30412022101731",
-    "studentCode": "20230643",
+    "studentCode": "2023010001",
     "fullName": "Mohamed Adel Elsayed Hassan",
     "fullNameAr": "محمد عادل السيد حسن",
-    "email": "mohamed.adel@student.com",
+    "email": "2023010001@intellicampus.online",
     "phoneNumber": "01115138796",
     "address": "2512 Taha Hussein St., District 2, 6th of October, Giza",
     "nationality": "Egyptian",
-    "password": "Student@123",
+    "password": "30412022101731",
     "roles": [
       "Student_UnderGrad"
     ],
@@ -20,14 +20,14 @@
   },
   {
     "nationalId": "30404011300039",
-    "studentCode": "20230625",
+    "studentCode": "2023010002",
     "fullName": "Youssef Ahmed Mohamed Desoky",
     "fullNameAr": "يوسف احمد محمد دسوقي",
-    "email": "youssef.desoky@student.com",
+    "email": "2023010002@intellicampus.online",
     "phoneNumber": "01096132270",
     "address": "64 Ali Fayed St., Boulaq El Dakrour, Giza",
     "nationality": "Egyptian",
-    "password": "Student@123",
+    "password": "30404011300039",
     "roles": [
       "Student_UnderGrad"
     ],
@@ -39,14 +39,14 @@
   },
   {
     "nationalId": "30210122101273",
-    "studentCode": "20230624",
+    "studentCode": "2023010003",
     "fullName": "Mazen Khaled Taha Abusenna",
     "fullNameAr": "مازن خالد طه ابو سنة",
-    "email": "mazen.abusenna@student.com",
+    "email": "2023010003@intellicampus.online",
     "phoneNumber": "01098510400",
     "address": "139 El Haram St., El Haram, Giza",
     "nationality": "Egyptian",
-    "password": "Student@123",
+    "password": "30210122101273",
     "roles": [
       "Student_UnderGrad"
     ],
@@ -58,14 +58,14 @@
   },
   {
     "nationalId": "30312192100441",
-    "studentCode": "20227014",
+    "studentCode": "2022010001",
     "fullName": "Salma Abdelhalim",
     "fullNameAr": "سلمي عبدالحليم",
-    "email": "salma.abdelhalim@student.com",
+    "email": "2022010001@intellicampus.online",
     "phoneNumber": "01154602603",
     "address": "Villa 4, Tamr Henna 3, Fifth Settlement, New Cairo",
     "nationality": "Egyptian",
-    "password": "Student@123",
+    "password": "30312192100441",
     "roles": [
       "Student_UnderGrad"
     ],
@@ -77,14 +77,14 @@
   },
   {
     "nationalId": "30410151400084",
-    "studentCode": "20227004",
+    "studentCode": "2022010002",
     "fullName": "Esraa Ahmed",
     "fullNameAr": "اسراء أحمد",
-    "email": "esraa.ahmed@student.com",
+    "email": "2022010002@intellicampus.online",
     "phoneNumber": "01012007580",
     "address": "Qalyubia, Egypt",
     "nationality": "Egyptian",
-    "password": "Student@123",
+    "password": "30410151400084",
     "roles": [
       "Student_UnderGrad"
     ],
@@ -96,14 +96,14 @@
   },
   {
     "nationalId": "30410250101595",
-    "studentCode": "20227025",
+    "studentCode": "2022010003",
     "fullName": "Moaz Tarek Ahmed Ibrahim Khater",
     "fullNameAr": "معاذ طارق احمد ابراهيم خاطر",
-    "email": "moaz.tarek@student.com",
+    "email": "2022010003@intellicampus.online",
     "phoneNumber": "01010401719",
     "address": "Building 4S, Block 1258, Sheraton, Cairo",
     "nationality": "Egyptian",
-    "password": "Student@123",
+    "password": "30410250101595",
     "roles": [
       "Student_UnderGrad"
     ],
@@ -115,14 +115,14 @@
   },
   {
     "nationalId": "30409298800128",
-    "studentCode": "20226128",
+    "studentCode": "2022010004",
     "fullName": "Maryam Ahmed Fayez Nassar",
     "fullNameAr": "مريم احمد فايز ناصر",
-    "email": "maryam.nassar@student.com",
+    "email": "2022010004@intellicampus.online",
     "phoneNumber": "01104215861",
     "address": "Block 8047, El Beya St., Behind El Moqattam Club, Cairo",
     "nationality": "Egyptian",
-    "password": "Student@123",
+    "password": "30409298800128",
     "roles": [
       "Student_UnderGrad"
     ],
@@ -134,14 +134,14 @@
   },
   {
     "nationalId": "30409090101625",
-    "studentCode": "20226105",
+    "studentCode": "2022010005",
     "fullName": "Malak Sherif Mohamed",
     "fullNameAr": "ملك شريف محمد",
-    "email": "malak.sherif@student.com",
+    "email": "2022010005@intellicampus.online",
     "phoneNumber": "01154118003",
     "address": "80D, Hadayek El Ahram, Gate 1, El Haram, Giza",
     "nationality": "Egyptian",
-    "password": "Student@123",
+    "password": "30409090101625",
     "roles": [
       "Student_UnderGrad"
     ],
@@ -153,14 +153,14 @@
   },
   {
     "nationalId": "30402260101604",
-    "studentCode": "20225080",
+    "studentCode": "2022010006",
     "fullName": "Lourina Emil Fawaz Sadek",
     "fullNameAr": "لورينا ايميل فواز صادق",
-    "email": "lourina.emil@student.com",
+    "email": "2022010006@intellicampus.online",
     "phoneNumber": "01222679143",
     "address": "Block 14B, 51 St. 9, Nasr City, Cairo",
     "nationality": "Egyptian",
-    "password": "Student@123",
+    "password": "30402260101604",
     "roles": [
       "Student_UnderGrad"
     ],
@@ -172,14 +172,14 @@
   },
   {
     "nationalId": "30501012200101",
-    "studentCode": "20241001",
+    "studentCode": "2024010001",
     "fullName": "Ahmed Mohamed Ali",
     "fullNameAr": "أحمد محمد علي",
-    "email": "ahmed.postgrad@student.com",
+    "email": "2024010001@intellicampus.online",
     "phoneNumber": "01001112233",
     "address": "15 Nile St., Giza",
     "nationality": "Egyptian",
-    "password": "Student@123",
+    "password": "30501012200101",
     "roles": [
       "Student_Masters"
     ],
@@ -190,14 +190,14 @@
   },
   {
     "nationalId": "30502012200202",
-    "studentCode": "20241002",
+    "studentCode": "2024010002",
     "fullName": "Sara Hassan Youssef",
     "fullNameAr": "سارة حسن يوسف",
-    "email": "sara.postgrad@student.com",
+    "email": "2024010002@intellicampus.online",
     "phoneNumber": "01204445566",
     "address": "42 Abbas El Akkad St., Nasr City, Cairo",
     "nationality": "Egyptian",
-    "password": "Student@123",
+    "password": "30502012200202",
     "roles": [
       "Student_PhD"
     ],

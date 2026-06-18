@@ -9,10 +9,11 @@ using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
 
-public class InstructorService(IUnitOfWork unitOfWork, IPasswordService passwordService) : IInstructorService
+public class InstructorService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration) : IInstructorService
 {
     private readonly IPasswordService _passwordService = passwordService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICodeGenerationService _codeGeneration = codeGeneration;
 
     private IGenericRepository<Instructor, int> Instructors
         => _unitOfWork.GetRepository<Instructor, int>();
@@ -47,15 +48,12 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
 
     public async Task<InstructorDto> CreateAsync(CreateInstructorDto dto, int? creatorUserId = null)
     {
-        if (await Users.AnyAsync(u => u.Email == dto.Email))
-            throw new InvalidOperationException("Email already exists.");
-
         if (await Users.AnyAsync(u => u.NationalId == dto.NationalId))
             throw new InvalidOperationException("National ID already exists.");
 
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentName);
         var hireDate = ParseDate(dto.HireDate) ?? DateTime.UtcNow;
-        var password = string.IsNullOrWhiteSpace(dto.Password) ? "Instructor@123" : dto.Password;
+        var password = string.IsNullOrWhiteSpace(dto.Password) ? dto.NationalId : dto.Password;
 
         var facultyId = dto.FacultyId;
         if (facultyId is null && creatorUserId.HasValue)
@@ -64,17 +62,32 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             facultyId = creator?.FacultyId;
         }
 
+        var code = dto.InstructorCode;
+        var email = dto.Email;
+
+        if (string.IsNullOrWhiteSpace(code) && facultyId.HasValue)
+            code = await _codeGeneration.GenerateInstructorCodeAsync(facultyId.Value, hireDate);
+
+        if (string.IsNullOrWhiteSpace(email))
+            email = !string.IsNullOrWhiteSpace(code) ? code + "@intellicampus.online" : dto.Email;
+
+        if (string.IsNullOrWhiteSpace(email))
+            throw new InvalidOperationException("Email is required. Provide an email or ensure a faculty is assigned for auto-generation.");
+
+        if (await Users.AnyAsync(u => u.Email == email))
+            throw new InvalidOperationException("Email already exists.");
+
         var instructor = new Instructor
         {
             NationalId = dto.NationalId,
             FullName = dto.FullName,
             FullNameAr = dto.FullNameAr,
             PhoneNumber = dto.PhoneNumber,
-            Email = dto.Email,
+            Email = email,
             Address = dto.Address,
             Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
-            InstructorCode = dto.InstructorCode,
+            InstructorCode = code,
             InstructorRole = ParseInstructorRole(dto.InstructorRole),
             Specialization = dto.Specialization,
             DepartmentId = departmentId,

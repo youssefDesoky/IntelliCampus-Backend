@@ -1,13 +1,14 @@
 [
   {
-    "nationalId": "00000000000000",
+    "nationalId": "2900101123456",
     "fullName": "Super Administrator",
     "fullNameAr": "المشرف العام",
-    "email": "superadmin@intellicampus.com",
+    "email": "20260101@intellicampus.online",
     "phoneNumber": "01000000000",
     "address": "Cairo, Egypt",
     "nationality": "Egyptian",
-    "password": "SuperAdmin@123",
+    "password": "2900101123456",
+    "adminCode": "20260101",
     "roles": [
       "SuperAdmin"
     ]

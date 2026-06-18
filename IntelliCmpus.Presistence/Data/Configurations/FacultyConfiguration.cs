@@ -19,6 +19,12 @@ public class FacultyConfiguration : IEntityTypeConfiguration<Faculty>
             .HasMaxLength(100)
             .IsUnicode();
 
+        builder.Property(f => f.FacultyCode)
+            .IsRequired()
+            .HasMaxLength(2);
+
+        builder.HasIndex(f => f.FacultyCode).IsUnique();
+
         builder.Property(f => f.Description)
             .HasMaxLength(500);
     }

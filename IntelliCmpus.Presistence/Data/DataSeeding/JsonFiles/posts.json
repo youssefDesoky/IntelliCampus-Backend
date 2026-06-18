@@ -1,3068 +1,3068 @@
-﻿[
+[
     {
         "courseCode":  "MA111",
         "isPinned":  true,
         "createdAtOffset":  "-7 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "ahmed.hassan@instructor.com"
+        "userEmail":  "202601001@intellicampus.online"
     },
     {
         "courseCode":  "MA111",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "I\u0027m having trouble understanding how normalization works. Does anyone have good resources?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "MA111",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "What\u0027s the best approach to debug a recursive function? I keep getting stack overflow errors.",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "IT111",
         "isPinned":  true,
         "createdAtOffset":  "-7 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "khaled.youssef@instructor.com"
+        "userEmail":  "202601006@intellicampus.online"
     },
     {
         "courseCode":  "IT111",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "Does anyone have tips for writing efficient SQL queries with multiple JOINs?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "IT111",
         "isPinned":  false,
         "createdAtOffset":  "-3 days",
         "content":  "How does exception handling work in C#? I\u0027m confused about try-catch-finally blocks.",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "CS111",
         "isPinned":  true,
         "createdAtOffset":  "-10 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "omar.khaled@instructor.com"
+        "userEmail":  "202601003@intellicampus.online"
     },
     {
         "courseCode":  "CS111",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "Can someone explain the concept of polymorphism with a real-world example?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "CS111",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "What tools do you recommend for creating UML diagrams?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "MA113",
         "isPinned":  true,
         "createdAtOffset":  "-5 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "fatima.mohamed@instructor.com"
+        "userEmail":  "202601002@intellicampus.online"
     },
     {
         "courseCode":  "MA113",
         "isPinned":  false,
         "createdAtOffset":  "-16 days",
         "content":  "I\u0027m struggling with understanding how hash tables work internally.",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "MA113",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "Can someone explain the difference between a primary key and a foreign key with examples?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "ST121",
         "isPinned":  true,
         "createdAtOffset":  "-10 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "ahmed.hassan@instructor.com"
+        "userEmail":  "202601001@intellicampus.online"
     },
     {
         "courseCode":  "ST121",
         "isPinned":  false,
         "createdAtOffset":  "-3 days",
         "content":  "I\u0027m having trouble understanding how normalization works. Does anyone have good resources?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "ST121",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "What\u0027s the best approach to debug a recursive function? I keep getting stack overflow errors.",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "DS251",
         "isPinned":  true,
         "createdAtOffset":  "-8 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "khaled.youssef@instructor.com"
+        "userEmail":  "202601006@intellicampus.online"
     },
     {
         "courseCode":  "DS251",
         "isPinned":  false,
         "createdAtOffset":  "-4 days",
         "content":  "Does anyone have tips for writing efficient SQL queries with multiple JOINs?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "DS251",
         "isPinned":  false,
         "createdAtOffset":  "-1 days",
         "content":  "How does exception handling work in C#? I\u0027m confused about try-catch-finally blocks.",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "CS112",
         "isPinned":  true,
         "createdAtOffset":  "-10 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "omar.khaled@instructor.com"
+        "userEmail":  "202601003@intellicampus.online"
     },
     {
         "courseCode":  "CS112",
         "isPinned":  false,
         "createdAtOffset":  "-11 days",
         "content":  "Can someone explain the concept of polymorphism with a real-world example?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "CS112",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "What tools do you recommend for creating UML diagrams?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "IT221",
         "isPinned":  true,
         "createdAtOffset":  "-9 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "fatima.mohamed@instructor.com"
+        "userEmail":  "202601002@intellicampus.online"
     },
     {
         "courseCode":  "IT221",
         "isPinned":  false,
         "createdAtOffset":  "-1 days",
         "content":  "I\u0027m struggling with understanding how hash tables work internally.",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "IT221",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "Can someone explain the difference between a primary key and a foreign key with examples?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "CS213",
         "isPinned":  true,
         "createdAtOffset":  "-5 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "ahmed.hassan@instructor.com"
+        "userEmail":  "202601001@intellicampus.online"
     },
     {
         "courseCode":  "CS213",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "I\u0027m having trouble understanding how normalization works. Does anyone have good resources?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "CS213",
         "isPinned":  false,
         "createdAtOffset":  "-6 days",
         "content":  "What\u0027s the best approach to debug a recursive function? I keep getting stack overflow errors.",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "DS211",
         "isPinned":  true,
         "createdAtOffset":  "-9 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "khaled.youssef@instructor.com"
+        "userEmail":  "202601006@intellicampus.online"
     },
     {
         "courseCode":  "DS211",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "Does anyone have tips for writing efficient SQL queries with multiple JOINs?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "DS211",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "How does exception handling work in C#? I\u0027m confused about try-catch-finally blocks.",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "ST222",
         "isPinned":  true,
         "createdAtOffset":  "-1 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "omar.khaled@instructor.com"
+        "userEmail":  "202601003@intellicampus.online"
     },
     {
         "courseCode":  "ST222",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "Can someone explain the concept of polymorphism with a real-world example?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "ST222",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "What tools do you recommend for creating UML diagrams?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "MA112",
         "isPinned":  true,
         "createdAtOffset":  "-6 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "fatima.mohamed@instructor.com"
+        "userEmail":  "202601002@intellicampus.online"
     },
     {
         "courseCode":  "MA112",
         "isPinned":  false,
         "createdAtOffset":  "-10 days",
         "content":  "I\u0027m struggling with understanding how hash tables work internally.",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "MA112",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "Can someone explain the difference between a primary key and a foreign key with examples?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "HU111",
         "isPinned":  true,
         "createdAtOffset":  "-12 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "ahmed.hassan@instructor.com"
+        "userEmail":  "202601001@intellicampus.online"
     },
     {
         "courseCode":  "HU111",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "I\u0027m having trouble understanding how normalization works. Does anyone have good resources?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "HU111",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "What\u0027s the best approach to debug a recursive function? I keep getting stack overflow errors.",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "HU118",
         "isPinned":  true,
         "createdAtOffset":  "-6 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "khaled.youssef@instructor.com"
+        "userEmail":  "202601006@intellicampus.online"
     },
     {
         "courseCode":  "HU118",
         "isPinned":  false,
         "createdAtOffset":  "-1 days",
         "content":  "Does anyone have tips for writing efficient SQL queries with multiple JOINs?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "HU118",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "How does exception handling work in C#? I\u0027m confused about try-catch-finally blocks.",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "HU113",
         "isPinned":  true,
         "createdAtOffset":  "-5 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "omar.khaled@instructor.com"
+        "userEmail":  "202601003@intellicampus.online"
     },
     {
         "courseCode":  "HU113",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "Can someone explain the concept of polymorphism with a real-world example?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "HU113",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "What tools do you recommend for creating UML diagrams?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "HU121",
         "isPinned":  true,
         "createdAtOffset":  "-11 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "fatima.mohamed@instructor.com"
+        "userEmail":  "202601002@intellicampus.online"
     },
     {
         "courseCode":  "HU121",
         "isPinned":  false,
         "createdAtOffset":  "-3 days",
         "content":  "I\u0027m struggling with understanding how hash tables work internally.",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "HU121",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "Can someone explain the difference between a primary key and a foreign key with examples?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "HU117",
         "isPinned":  true,
         "createdAtOffset":  "-10 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "ahmed.hassan@instructor.com"
+        "userEmail":  "202601001@intellicampus.online"
     },
     {
         "courseCode":  "HU117",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "I\u0027m having trouble understanding how normalization works. Does anyone have good resources?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "HU117",
         "isPinned":  false,
         "createdAtOffset":  "-7 days",
         "content":  "What\u0027s the best approach to debug a recursive function? I keep getting stack overflow errors.",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "HU124",
         "isPinned":  true,
         "createdAtOffset":  "-10 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "khaled.youssef@instructor.com"
+        "userEmail":  "202601006@intellicampus.online"
     },
     {
         "courseCode":  "HU124",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "Does anyone have tips for writing efficient SQL queries with multiple JOINs?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "HU124",
         "isPinned":  false,
         "createdAtOffset":  "-1 days",
         "content":  "How does exception handling work in C#? I\u0027m confused about try-catch-finally blocks.",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "CS214",
         "isPinned":  true,
         "createdAtOffset":  "-7 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "omar.khaled@instructor.com"
+        "userEmail":  "202601003@intellicampus.online"
     },
     {
         "courseCode":  "CS214",
         "isPinned":  false,
         "createdAtOffset":  "-1 days",
         "content":  "Can someone explain the concept of polymorphism with a real-world example?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "CS214",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "What tools do you recommend for creating UML diagrams?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "CS251",
         "isPinned":  true,
         "createdAtOffset":  "-12 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "fatima.mohamed@instructor.com"
+        "userEmail":  "202601002@intellicampus.online"
     },
     {
         "courseCode":  "CS251",
         "isPinned":  false,
         "createdAtOffset":  "-7 days",
         "content":  "I\u0027m struggling with understanding how hash tables work internally.",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "CS251",
         "isPinned":  false,
         "createdAtOffset":  "-3 days",
         "content":  "Can someone explain the difference between a primary key and a foreign key with examples?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IS211",
         "isPinned":  true,
         "createdAtOffset":  "-11 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "ahmed.hassan@instructor.com"
+        "userEmail":  "202601001@intellicampus.online"
     },
     {
         "courseCode":  "IS211",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "I\u0027m having trouble understanding how normalization works. Does anyone have good resources?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "IS211",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "What\u0027s the best approach to debug a recursive function? I keep getting stack overflow errors.",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "IS231",
         "isPinned":  true,
         "createdAtOffset":  "-10 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "khaled.youssef@instructor.com"
+        "userEmail":  "202601006@intellicampus.online"
     },
     {
         "courseCode":  "IS231",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "Does anyone have tips for writing efficient SQL queries with multiple JOINs?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IS231",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "How does exception handling work in C#? I\u0027m confused about try-catch-finally blocks.",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "MA214",
         "isPinned":  true,
         "createdAtOffset":  "-12 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "omar.khaled@instructor.com"
+        "userEmail":  "202601003@intellicampus.online"
     },
     {
         "courseCode":  "MA214",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "Can someone explain the concept of polymorphism with a real-world example?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "MA214",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "What tools do you recommend for creating UML diagrams?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "HU112",
         "isPinned":  true,
         "createdAtOffset":  "-11 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "fatima.mohamed@instructor.com"
+        "userEmail":  "202601002@intellicampus.online"
     },
     {
         "courseCode":  "HU112",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "I\u0027m struggling with understanding how hash tables work internally.",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "HU112",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "Can someone explain the difference between a primary key and a foreign key with examples?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "HU225",
         "isPinned":  true,
         "createdAtOffset":  "-3 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "ahmed.hassan@instructor.com"
+        "userEmail":  "202601001@intellicampus.online"
     },
     {
         "courseCode":  "HU225",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "I\u0027m having trouble understanding how normalization works. Does anyone have good resources?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "HU225",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "What\u0027s the best approach to debug a recursive function? I keep getting stack overflow errors.",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "CS352",
         "isPinned":  true,
         "createdAtOffset":  "-8 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "khaled.youssef@instructor.com"
+        "userEmail":  "202601006@intellicampus.online"
     },
     {
         "courseCode":  "CS352",
         "isPinned":  false,
         "createdAtOffset":  "-10 days",
         "content":  "Does anyone have tips for writing efficient SQL queries with multiple JOINs?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "CS352",
         "isPinned":  false,
         "createdAtOffset":  "-11 days",
         "content":  "How does exception handling work in C#? I\u0027m confused about try-catch-finally blocks.",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IS332",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "omar.khaled@instructor.com"
+        "userEmail":  "202601003@intellicampus.online"
     },
     {
         "courseCode":  "IS332",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "Can someone explain the concept of polymorphism with a real-world example?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "IS332",
         "isPinned":  false,
         "createdAtOffset":  "-6 days",
         "content":  "What tools do you recommend for creating UML diagrams?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "CS321",
         "isPinned":  true,
         "createdAtOffset":  "-13 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "fatima.mohamed@instructor.com"
+        "userEmail":  "202601002@intellicampus.online"
     },
     {
         "courseCode":  "CS321",
         "isPinned":  false,
         "createdAtOffset":  "-4 days",
         "content":  "I\u0027m struggling with understanding how hash tables work internally.",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "CS321",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "Can someone explain the difference between a primary key and a foreign key with examples?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "CS341",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "ahmed.hassan@instructor.com"
+        "userEmail":  "202601001@intellicampus.online"
     },
     {
         "courseCode":  "CS341",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "I\u0027m having trouble understanding how normalization works. Does anyone have good resources?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "CS341",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "What\u0027s the best approach to debug a recursive function? I keep getting stack overflow errors.",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IS312",
         "isPinned":  true,
         "createdAtOffset":  "-8 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "khaled.youssef@instructor.com"
+        "userEmail":  "202601006@intellicampus.online"
     },
     {
         "courseCode":  "IS312",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "Does anyone have tips for writing efficient SQL queries with multiple JOINs?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "IS312",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "How does exception handling work in C#? I\u0027m confused about try-catch-finally blocks.",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "IS321",
         "isPinned":  true,
         "createdAtOffset":  "-7 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "omar.khaled@instructor.com"
+        "userEmail":  "202601003@intellicampus.online"
     },
     {
         "courseCode":  "IS321",
         "isPinned":  false,
         "createdAtOffset":  "-6 days",
         "content":  "Can someone explain the concept of polymorphism with a real-world example?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IS321",
         "isPinned":  false,
         "createdAtOffset":  "-3 days",
         "content":  "What tools do you recommend for creating UML diagrams?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "IS322",
         "isPinned":  true,
         "createdAtOffset":  "-13 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "fatima.mohamed@instructor.com"
+        "userEmail":  "202601002@intellicampus.online"
     },
     {
         "courseCode":  "IS322",
         "isPinned":  false,
         "createdAtOffset":  "-16 days",
         "content":  "I\u0027m struggling with understanding how hash tables work internally.",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "IS322",
         "isPinned":  false,
         "createdAtOffset":  "-4 days",
         "content":  "Can someone explain the difference between a primary key and a foreign key with examples?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "CS361",
         "isPinned":  true,
         "createdAtOffset":  "-11 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "ahmed.hassan@instructor.com"
+        "userEmail":  "202601001@intellicampus.online"
     },
     {
         "courseCode":  "CS361",
         "isPinned":  false,
         "createdAtOffset":  "-11 days",
         "content":  "I\u0027m having trouble understanding how normalization works. Does anyone have good resources?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "CS361",
         "isPinned":  false,
         "createdAtOffset":  "-11 days",
         "content":  "What\u0027s the best approach to debug a recursive function? I keep getting stack overflow errors.",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "IS313",
         "isPinned":  true,
         "createdAtOffset":  "-11 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "khaled.youssef@instructor.com"
+        "userEmail":  "202601006@intellicampus.online"
     },
     {
         "courseCode":  "IS313",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "Does anyone have tips for writing efficient SQL queries with multiple JOINs?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IS313",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "How does exception handling work in C#? I\u0027m confused about try-catch-finally blocks.",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "IS341",
         "isPinned":  true,
         "createdAtOffset":  "-8 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "omar.khaled@instructor.com"
+        "userEmail":  "202601003@intellicampus.online"
     },
     {
         "courseCode":  "IS341",
         "isPinned":  false,
         "createdAtOffset":  "-3 days",
         "content":  "Can someone explain the concept of polymorphism with a real-world example?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "IS341",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "What tools do you recommend for creating UML diagrams?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IS333",
         "isPinned":  true,
         "createdAtOffset":  "-1 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "fatima.mohamed@instructor.com"
+        "userEmail":  "202601002@intellicampus.online"
     },
     {
         "courseCode":  "IS333",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "I\u0027m struggling with understanding how hash tables work internally.",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "IS333",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "Can someone explain the difference between a primary key and a foreign key with examples?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "IT212",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "ahmed.hassan@instructor.com"
+        "userEmail":  "202601001@intellicampus.online"
     },
     {
         "courseCode":  "IT212",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "I\u0027m having trouble understanding how normalization works. Does anyone have good resources?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IT212",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "What\u0027s the best approach to debug a recursive function? I keep getting stack overflow errors.",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "TR301",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "khaled.youssef@instructor.com"
+        "userEmail":  "202601006@intellicampus.online"
     },
     {
         "courseCode":  "TR301",
         "isPinned":  false,
         "createdAtOffset":  "-1 days",
         "content":  "Does anyone have tips for writing efficient SQL queries with multiple JOINs?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "TR301",
         "isPinned":  false,
         "createdAtOffset":  "-3 days",
         "content":  "How does exception handling work in C#? I\u0027m confused about try-catch-finally blocks.",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IS498",
         "isPinned":  true,
         "createdAtOffset":  "-5 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "omar.khaled@instructor.com"
+        "userEmail":  "202601003@intellicampus.online"
     },
     {
         "courseCode":  "IS498",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "Can someone explain the concept of polymorphism with a real-world example?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "IS498",
         "isPinned":  false,
         "createdAtOffset":  "-7 days",
         "content":  "What tools do you recommend for creating UML diagrams?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "IS437",
         "isPinned":  true,
         "createdAtOffset":  "-9 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "fatima.mohamed@instructor.com"
+        "userEmail":  "202601002@intellicampus.online"
     },
     {
         "courseCode":  "IS437",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "I\u0027m struggling with understanding how hash tables work internally.",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IS437",
         "isPinned":  false,
         "createdAtOffset":  "-11 days",
         "content":  "Can someone explain the difference between a primary key and a foreign key with examples?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "DS342",
         "isPinned":  true,
         "createdAtOffset":  "-6 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "ahmed.hassan@instructor.com"
+        "userEmail":  "202601001@intellicampus.online"
     },
     {
         "courseCode":  "DS342",
         "isPinned":  false,
         "createdAtOffset":  "-11 days",
         "content":  "I\u0027m having trouble understanding how normalization works. Does anyone have good resources?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "DS342",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "What\u0027s the best approach to debug a recursive function? I keep getting stack overflow errors.",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "CS462",
         "isPinned":  true,
         "createdAtOffset":  "-13 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "khaled.youssef@instructor.com"
+        "userEmail":  "202601006@intellicampus.online"
     },
     {
         "courseCode":  "CS462",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "Does anyone have tips for writing efficient SQL queries with multiple JOINs?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "CS462",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "How does exception handling work in C#? I\u0027m confused about try-catch-finally blocks.",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "IS434",
         "isPinned":  true,
         "createdAtOffset":  "-10 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "omar.khaled@instructor.com"
+        "userEmail":  "202601003@intellicampus.online"
     },
     {
         "courseCode":  "IS434",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "Can someone explain the concept of polymorphism with a real-world example?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IS434",
         "isPinned":  false,
         "createdAtOffset":  "-1 days",
         "content":  "What tools do you recommend for creating UML diagrams?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "IS442",
         "isPinned":  true,
         "createdAtOffset":  "-5 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "fatima.mohamed@instructor.com"
+        "userEmail":  "202601002@intellicampus.online"
     },
     {
         "courseCode":  "IS442",
         "isPinned":  false,
         "createdAtOffset":  "-16 days",
         "content":  "I\u0027m struggling with understanding how hash tables work internally.",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "IS442",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "Can someone explain the difference between a primary key and a foreign key with examples?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IS414",
         "isPinned":  true,
         "createdAtOffset":  "-1 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "ahmed.hassan@instructor.com"
+        "userEmail":  "202601001@intellicampus.online"
     },
     {
         "courseCode":  "IS414",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "I\u0027m having trouble understanding how normalization works. Does anyone have good resources?",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "IS414",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "What\u0027s the best approach to debug a recursive function? I keep getting stack overflow errors.",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "IS422",
         "isPinned":  true,
         "createdAtOffset":  "-10 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "khaled.youssef@instructor.com"
+        "userEmail":  "202601006@intellicampus.online"
     },
     {
         "courseCode":  "IS422",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "Does anyone have tips for writing efficient SQL queries with multiple JOINs?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IS422",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "How does exception handling work in C#? I\u0027m confused about try-catch-finally blocks.",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "IS424",
         "isPinned":  true,
         "createdAtOffset":  "-12 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "omar.khaled@instructor.com"
+        "userEmail":  "202601003@intellicampus.online"
     },
     {
         "courseCode":  "IS424",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "Can someone explain the concept of polymorphism with a real-world example?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "IS424",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "What tools do you recommend for creating UML diagrams?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IS448",
         "isPinned":  true,
         "createdAtOffset":  "-12 days",
         "content":  "Important reminder: The first quiz will be held next week. Please review chapters 1-3.",
-        "userEmail":  "fatima.mohamed@instructor.com"
+        "userEmail":  "202601002@intellicampus.online"
     },
     {
         "courseCode":  "IS448",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "I\u0027m struggling with understanding how hash tables work internally.",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "IS448",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "Can someone explain the difference between a primary key and a foreign key with examples?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "IS495",
         "isPinned":  true,
         "createdAtOffset":  "-11 days",
         "content":  "Welcome to the course! Please review the syllabus and let me know if you have any questions about the topics we\u0027ll cover this semester.",
-        "userEmail":  "ahmed.hassan@instructor.com"
+        "userEmail":  "202601001@intellicampus.online"
     },
     {
         "courseCode":  "IS495",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "I\u0027m having trouble understanding how normalization works. Does anyone have good resources?",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "IS495",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "What\u0027s the best approach to debug a recursive function? I keep getting stack overflow errors.",
-        "userEmail":  "youssef.desoky@student.com"
+        "userEmail":  "2023010002@intellicampus.online"
     },
     {
         "courseCode":  "DS456",
         "isPinned":  true,
         "createdAtOffset":  "-3 days",
         "content":  "I\u0027ve uploaded the lecture slides for this week. Make sure to review them before our next class.",
-        "userEmail":  "khaled.youssef@instructor.com"
+        "userEmail":  "202601006@intellicampus.online"
     },
     {
         "courseCode":  "DS456",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "Does anyone have tips for writing efficient SQL queries with multiple JOINs?",
-        "userEmail":  "mazen.abusenna@student.com"
+        "userEmail":  "2023010003@intellicampus.online"
     },
     {
         "courseCode":  "DS456",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "How does exception handling work in C#? I\u0027m confused about try-catch-finally blocks.",
-        "userEmail":  "mohamed.adel@student.com"
+        "userEmail":  "2023010001@intellicampus.online"
     },
     {
         "courseCode":  "SCS111",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SCS111",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "What\u0027s the best Python library for data visualization? I\u0027ve tried matplotlib but it\u0027s complex.",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SCS111",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "How do you handle missing values in a dataset? Should I drop or impute them?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SIT111",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SIT111",
         "isPinned":  false,
         "createdAtOffset":  "-1 days",
         "content":  "What\u0027s the difference between supervised and unsupervised learning? When to use each?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SIT111",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "Does anyone have tips for feature selection when dealing with high-dimensional data?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SMA111",
         "isPinned":  true,
         "createdAtOffset":  "-7 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SMA111",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "Can someone explain how gradient descent works intuitively?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SMA111",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "I\u0027m confused about the Central Limit Theorem. How does it apply to our data analysis?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SHU111",
         "isPinned":  true,
         "createdAtOffset":  "-11 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SHU111",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "What evaluation metrics should I use for a classification problem?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SHU111",
         "isPinned":  false,
         "createdAtOffset":  "-6 days",
         "content":  "Can someone explain the bias-variance tradeoff in simple terms?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SMA112",
         "isPinned":  true,
         "createdAtOffset":  "-1 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SMA112",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "What\u0027s the best Python library for data visualization? I\u0027ve tried matplotlib but it\u0027s complex.",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SMA112",
         "isPinned":  false,
         "createdAtOffset":  "-10 days",
         "content":  "How do you handle missing values in a dataset? Should I drop or impute them?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SHU121",
         "isPinned":  true,
         "createdAtOffset":  "-4 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SHU121",
         "isPinned":  false,
         "createdAtOffset":  "-11 days",
         "content":  "What\u0027s the difference between supervised and unsupervised learning? When to use each?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SHU121",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "Does anyone have tips for feature selection when dealing with high-dimensional data?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SHU233",
         "isPinned":  true,
         "createdAtOffset":  "-9 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SHU233",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "Can someone explain how gradient descent works intuitively?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SHU233",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "I\u0027m confused about the Central Limit Theorem. How does it apply to our data analysis?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SHU124",
         "isPinned":  true,
         "createdAtOffset":  "-11 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SHU124",
         "isPinned":  false,
         "createdAtOffset":  "-11 days",
         "content":  "What evaluation metrics should I use for a classification problem?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SHU124",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "Can someone explain the bias-variance tradeoff in simple terms?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SCS112",
         "isPinned":  true,
         "createdAtOffset":  "-9 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SCS112",
         "isPinned":  false,
         "createdAtOffset":  "-16 days",
         "content":  "What\u0027s the best Python library for data visualization? I\u0027ve tried matplotlib but it\u0027s complex.",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SCS112",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "How do you handle missing values in a dataset? Should I drop or impute them?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SIT213",
         "isPinned":  true,
         "createdAtOffset":  "-6 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SIT213",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "What\u0027s the difference between supervised and unsupervised learning? When to use each?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SIT213",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "Does anyone have tips for feature selection when dealing with high-dimensional data?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SMA113",
         "isPinned":  true,
         "createdAtOffset":  "-14 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SMA113",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "Can someone explain how gradient descent works intuitively?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SMA113",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "I\u0027m confused about the Central Limit Theorem. How does it apply to our data analysis?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SST121",
         "isPinned":  true,
         "createdAtOffset":  "-13 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SST121",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "What evaluation metrics should I use for a classification problem?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SST121",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "Can someone explain the bias-variance tradeoff in simple terms?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SHU234",
         "isPinned":  true,
         "createdAtOffset":  "-13 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SHU234",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "What\u0027s the best Python library for data visualization? I\u0027ve tried matplotlib but it\u0027s complex.",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SHU234",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "How do you handle missing values in a dataset? Should I drop or impute them?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SCS213",
         "isPinned":  true,
         "createdAtOffset":  "-5 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SCS213",
         "isPinned":  false,
         "createdAtOffset":  "-4 days",
         "content":  "What\u0027s the difference between supervised and unsupervised learning? When to use each?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SCS213",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "Does anyone have tips for feature selection when dealing with high-dimensional data?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SIT223",
         "isPinned":  true,
         "createdAtOffset":  "-11 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SIT223",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "Can someone explain how gradient descent works intuitively?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SIT223",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "I\u0027m confused about the Central Limit Theorem. How does it apply to our data analysis?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SST222",
         "isPinned":  true,
         "createdAtOffset":  "-14 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SST222",
         "isPinned":  false,
         "createdAtOffset":  "-6 days",
         "content":  "What evaluation metrics should I use for a classification problem?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SST222",
         "isPinned":  false,
         "createdAtOffset":  "-6 days",
         "content":  "Can someone explain the bias-variance tradeoff in simple terms?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SMA214",
         "isPinned":  true,
         "createdAtOffset":  "-4 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SMA214",
         "isPinned":  false,
         "createdAtOffset":  "-4 days",
         "content":  "What\u0027s the best Python library for data visualization? I\u0027ve tried matplotlib but it\u0027s complex.",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SMA214",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "How do you handle missing values in a dataset? Should I drop or impute them?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SCS251",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SCS251",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "What\u0027s the difference between supervised and unsupervised learning? When to use each?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SCS251",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "Does anyone have tips for feature selection when dealing with high-dimensional data?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SCS214",
         "isPinned":  true,
         "createdAtOffset":  "-10 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SCS214",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "Can someone explain how gradient descent works intuitively?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SCS214",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "I\u0027m confused about the Central Limit Theorem. How does it apply to our data analysis?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SIS211",
         "isPinned":  true,
         "createdAtOffset":  "-3 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SIS211",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "What evaluation metrics should I use for a classification problem?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SIS211",
         "isPinned":  false,
         "createdAtOffset":  "-7 days",
         "content":  "Can someone explain the bias-variance tradeoff in simple terms?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SIS213",
         "isPinned":  true,
         "createdAtOffset":  "-4 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SIS213",
         "isPinned":  false,
         "createdAtOffset":  "-16 days",
         "content":  "What\u0027s the best Python library for data visualization? I\u0027ve tried matplotlib but it\u0027s complex.",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SIS213",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "How do you handle missing values in a dataset? Should I drop or impute them?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SHU132",
         "isPinned":  true,
         "createdAtOffset":  "-7 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SHU132",
         "isPinned":  false,
         "createdAtOffset":  "-10 days",
         "content":  "What\u0027s the difference between supervised and unsupervised learning? When to use each?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SHU132",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "Does anyone have tips for feature selection when dealing with high-dimensional data?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SIS334",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SIS334",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "Can someone explain how gradient descent works intuitively?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SIS334",
         "isPinned":  false,
         "createdAtOffset":  "-1 days",
         "content":  "I\u0027m confused about the Central Limit Theorem. How does it apply to our data analysis?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SDS212",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SDS212",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "What evaluation metrics should I use for a classification problem?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SDS212",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "Can someone explain the bias-variance tradeoff in simple terms?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SCS241",
         "isPinned":  true,
         "createdAtOffset":  "-7 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SCS241",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "What\u0027s the best Python library for data visualization? I\u0027ve tried matplotlib but it\u0027s complex.",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SCS241",
         "isPinned":  false,
         "createdAtOffset":  "-11 days",
         "content":  "How do you handle missing values in a dataset? Should I drop or impute them?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SIS314",
         "isPinned":  true,
         "createdAtOffset":  "-4 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SIS314",
         "isPinned":  false,
         "createdAtOffset":  "-10 days",
         "content":  "What\u0027s the difference between supervised and unsupervised learning? When to use each?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SIS314",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "Does anyone have tips for feature selection when dealing with high-dimensional data?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SIS315",
         "isPinned":  true,
         "createdAtOffset":  "-7 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SIS315",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "Can someone explain how gradient descent works intuitively?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SIS315",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "I\u0027m confused about the Central Limit Theorem. How does it apply to our data analysis?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SLB442",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SLB442",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "What evaluation metrics should I use for a classification problem?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SLB442",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "Can someone explain the bias-variance tradeoff in simple terms?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SCS316",
         "isPinned":  true,
         "createdAtOffset":  "-11 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SCS316",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "What\u0027s the best Python library for data visualization? I\u0027ve tried matplotlib but it\u0027s complex.",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SCS316",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "How do you handle missing values in a dataset? Should I drop or impute them?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SIS333",
         "isPinned":  true,
         "createdAtOffset":  "-7 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SIS333",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "What\u0027s the difference between supervised and unsupervised learning? When to use each?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SIS333",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "Does anyone have tips for feature selection when dealing with high-dimensional data?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SCS361",
         "isPinned":  true,
         "createdAtOffset":  "-14 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SCS361",
         "isPinned":  false,
         "createdAtOffset":  "-7 days",
         "content":  "Can someone explain how gradient descent works intuitively?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SCS361",
         "isPinned":  false,
         "createdAtOffset":  "-7 days",
         "content":  "I\u0027m confused about the Central Limit Theorem. How does it apply to our data analysis?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SIS335",
         "isPinned":  true,
         "createdAtOffset":  "-12 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SIS335",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "What evaluation metrics should I use for a classification problem?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SIS335",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "Can someone explain the bias-variance tradeoff in simple terms?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SIS317",
         "isPinned":  true,
         "createdAtOffset":  "-13 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SIS317",
         "isPinned":  false,
         "createdAtOffset":  "-1 days",
         "content":  "What\u0027s the best Python library for data visualization? I\u0027ve tried matplotlib but it\u0027s complex.",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SIS317",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "How do you handle missing values in a dataset? Should I drop or impute them?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SCS462",
         "isPinned":  true,
         "createdAtOffset":  "-6 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SCS462",
         "isPinned":  false,
         "createdAtOffset":  "-10 days",
         "content":  "What\u0027s the difference between supervised and unsupervised learning? When to use each?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SCS462",
         "isPinned":  false,
         "createdAtOffset":  "-11 days",
         "content":  "Does anyone have tips for feature selection when dealing with high-dimensional data?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SDS344",
         "isPinned":  true,
         "createdAtOffset":  "-10 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SDS344",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "Can someone explain how gradient descent works intuitively?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SDS344",
         "isPinned":  false,
         "createdAtOffset":  "-6 days",
         "content":  "I\u0027m confused about the Central Limit Theorem. How does it apply to our data analysis?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "STR304",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "STR304",
         "isPinned":  false,
         "createdAtOffset":  "-16 days",
         "content":  "What evaluation metrics should I use for a classification problem?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "STR304",
         "isPinned":  false,
         "createdAtOffset":  "-4 days",
         "content":  "Can someone explain the bias-variance tradeoff in simple terms?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SIS436",
         "isPinned":  true,
         "createdAtOffset":  "-11 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SIS436",
         "isPinned":  false,
         "createdAtOffset":  "-10 days",
         "content":  "What\u0027s the best Python library for data visualization? I\u0027ve tried matplotlib but it\u0027s complex.",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SIS436",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "How do you handle missing values in a dataset? Should I drop or impute them?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SIS421",
         "isPinned":  true,
         "createdAtOffset":  "-4 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SIS421",
         "isPinned":  false,
         "createdAtOffset":  "-4 days",
         "content":  "What\u0027s the difference between supervised and unsupervised learning? When to use each?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SIS421",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "Does anyone have tips for feature selection when dealing with high-dimensional data?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SIS422",
         "isPinned":  true,
         "createdAtOffset":  "-12 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SIS422",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "Can someone explain how gradient descent works intuitively?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SIS422",
         "isPinned":  false,
         "createdAtOffset":  "-16 days",
         "content":  "I\u0027m confused about the Central Limit Theorem. How does it apply to our data analysis?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SIS423",
         "isPinned":  true,
         "createdAtOffset":  "-9 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SIS423",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "What evaluation metrics should I use for a classification problem?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SIS423",
         "isPinned":  false,
         "createdAtOffset":  "-7 days",
         "content":  "Can someone explain the bias-variance tradeoff in simple terms?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SCS469",
         "isPinned":  true,
         "createdAtOffset":  "-3 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SCS469",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "What\u0027s the best Python library for data visualization? I\u0027ve tried matplotlib but it\u0027s complex.",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SCS469",
         "isPinned":  false,
         "createdAtOffset":  "-4 days",
         "content":  "How do you handle missing values in a dataset? Should I drop or impute them?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SPD498",
         "isPinned":  true,
         "createdAtOffset":  "-1 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SPD498",
         "isPinned":  false,
         "createdAtOffset":  "-4 days",
         "content":  "What\u0027s the difference between supervised and unsupervised learning? When to use each?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SPD498",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "Does anyone have tips for feature selection when dealing with high-dimensional data?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SIS418",
         "isPinned":  true,
         "createdAtOffset":  "-11 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SIS418",
         "isPinned":  false,
         "createdAtOffset":  "-11 days",
         "content":  "Can someone explain how gradient descent works intuitively?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SIS418",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "I\u0027m confused about the Central Limit Theorem. How does it apply to our data analysis?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SIS438",
         "isPinned":  true,
         "createdAtOffset":  "-11 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SIS438",
         "isPinned":  false,
         "createdAtOffset":  "-6 days",
         "content":  "What evaluation metrics should I use for a classification problem?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SIS438",
         "isPinned":  false,
         "createdAtOffset":  "-10 days",
         "content":  "Can someone explain the bias-variance tradeoff in simple terms?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SIS425",
         "isPinned":  true,
         "createdAtOffset":  "-3 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SIS425",
         "isPinned":  false,
         "createdAtOffset":  "-3 days",
         "content":  "What\u0027s the best Python library for data visualization? I\u0027ve tried matplotlib but it\u0027s complex.",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SIS425",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "How do you handle missing values in a dataset? Should I drop or impute them?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SLB441",
         "isPinned":  true,
         "createdAtOffset":  "-4 days",
         "content":  "Welcome to the course! I\u0027m excited to explore data science concepts with you this semester.",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SLB441",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "What\u0027s the difference between supervised and unsupervised learning? When to use each?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SLB441",
         "isPinned":  false,
         "createdAtOffset":  "-10 days",
         "content":  "Does anyone have tips for feature selection when dealing with high-dimensional data?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SLB443",
         "isPinned":  true,
         "createdAtOffset":  "-1 days",
         "content":  "Please install Python and Jupyter Notebook before our next lab session. Setup instructions are in the materials folder.",
-        "userEmail":  "mona.ibrahim@instructor.com"
+        "userEmail":  "202601005@intellicampus.online"
     },
     {
         "courseCode":  "SLB443",
         "isPinned":  false,
         "createdAtOffset":  "-1 days",
         "content":  "Can someone explain how gradient descent works intuitively?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SLB443",
         "isPinned":  false,
         "createdAtOffset":  "-4 days",
         "content":  "I\u0027m confused about the Central Limit Theorem. How does it apply to our data analysis?",
-        "userEmail":  "salma.abdelhalim@student.com"
+        "userEmail":  "2022010001@intellicampus.online"
     },
     {
         "courseCode":  "SMA001",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "Reminder: The dataset for your first assignment has been uploaded. Start exploring it early!",
-        "userEmail":  "nada.samir@instructor.com"
+        "userEmail":  "202601008@intellicampus.online"
     },
     {
         "courseCode":  "SMA001",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "What evaluation metrics should I use for a classification problem?",
-        "userEmail":  "esraa.ahmed@student.com"
+        "userEmail":  "2022010002@intellicampus.online"
     },
     {
         "courseCode":  "SMA001",
         "isPinned":  false,
         "createdAtOffset":  "-10 days",
         "content":  "Can someone explain the bias-variance tradeoff in simple terms?",
-        "userEmail":  "moaz.tarek@student.com"
+        "userEmail":  "2022010003@intellicampus.online"
     },
     {
         "courseCode":  "SDS321",
         "isPinned":  true,
         "createdAtOffset":  "-7 days",
         "content":  "Welcome to Software Engineering! Team project details will be announced next week.",
-        "userEmail":  "sara.ali@instructor.com"
+        "userEmail":  "202601004@intellicampus.online"
     },
     {
         "courseCode":  "SDS321",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "How detailed should our software design documents be for the project?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SDS321",
         "isPinned":  false,
         "createdAtOffset":  "-7 days",
         "content":  "Can we use any framework for our project or are there restrictions?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS252",
         "isPinned":  true,
         "createdAtOffset":  "-12 days",
         "content":  "Please read chapter 2 on software development life cycles before our next lecture.",
-        "userEmail":  "hany.farouk@instructor.com"
+        "userEmail":  "202601007@intellicampus.online"
     },
     {
         "courseCode":  "SCS252",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "What\u0027s the difference between unit testing and integration testing?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS252",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "How do you effectively manage version control in a team of 5 members?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS253",
         "isPinned":  true,
         "createdAtOffset":  "-10 days",
         "content":  "Git repository setup guide is now available. Please create your accounts and practice basic commands.",
-        "userEmail":  "sara.ali@instructor.com"
+        "userEmail":  "202601004@intellicampus.online"
     },
     {
         "courseCode":  "SCS253",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "What\u0027s the difference between agile and waterfall methodologies? Which is better?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS253",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "How do you handle changing requirements during development?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS254",
         "isPinned":  true,
         "createdAtOffset":  "-6 days",
         "content":  "Welcome to Software Engineering! Team project details will be announced next week.",
-        "userEmail":  "hany.farouk@instructor.com"
+        "userEmail":  "202601007@intellicampus.online"
     },
     {
         "courseCode":  "SCS254",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "Can someone explain the concept of design patterns with examples?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS254",
         "isPinned":  false,
         "createdAtOffset":  "-16 days",
         "content":  "What\u0027s the best approach for gathering and documenting requirements?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS331",
         "isPinned":  true,
         "createdAtOffset":  "-12 days",
         "content":  "Please read chapter 2 on software development life cycles before our next lecture.",
-        "userEmail":  "sara.ali@instructor.com"
+        "userEmail":  "202601004@intellicampus.online"
     },
     {
         "courseCode":  "SCS331",
         "isPinned":  false,
         "createdAtOffset":  "-6 days",
         "content":  "How detailed should our software design documents be for the project?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS331",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "Can we use any framework for our project or are there restrictions?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SIS212",
         "isPinned":  true,
         "createdAtOffset":  "-6 days",
         "content":  "Git repository setup guide is now available. Please create your accounts and practice basic commands.",
-        "userEmail":  "hany.farouk@instructor.com"
+        "userEmail":  "202601007@intellicampus.online"
     },
     {
         "courseCode":  "SIS212",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "What\u0027s the difference between unit testing and integration testing?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SIS212",
         "isPinned":  false,
         "createdAtOffset":  "-16 days",
         "content":  "How do you effectively manage version control in a team of 5 members?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS315",
         "isPinned":  true,
         "createdAtOffset":  "-13 days",
         "content":  "Welcome to Software Engineering! Team project details will be announced next week.",
-        "userEmail":  "sara.ali@instructor.com"
+        "userEmail":  "202601004@intellicampus.online"
     },
     {
         "courseCode":  "SCS315",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "What\u0027s the difference between agile and waterfall methodologies? Which is better?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS315",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "How do you handle changing requirements during development?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS355",
         "isPinned":  true,
         "createdAtOffset":  "-13 days",
         "content":  "Please read chapter 2 on software development life cycles before our next lecture.",
-        "userEmail":  "hany.farouk@instructor.com"
+        "userEmail":  "202601007@intellicampus.online"
     },
     {
         "courseCode":  "SCS355",
         "isPinned":  false,
         "createdAtOffset":  "-7 days",
         "content":  "Can someone explain the concept of design patterns with examples?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS355",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "What\u0027s the best approach for gathering and documenting requirements?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SLB321",
         "isPinned":  true,
         "createdAtOffset":  "-8 days",
         "content":  "Git repository setup guide is now available. Please create your accounts and practice basic commands.",
-        "userEmail":  "sara.ali@instructor.com"
+        "userEmail":  "202601004@intellicampus.online"
     },
     {
         "courseCode":  "SLB321",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "How detailed should our software design documents be for the project?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SLB321",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "Can we use any framework for our project or are there restrictions?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS317",
         "isPinned":  true,
         "createdAtOffset":  "-9 days",
         "content":  "Welcome to Software Engineering! Team project details will be announced next week.",
-        "userEmail":  "hany.farouk@instructor.com"
+        "userEmail":  "202601007@intellicampus.online"
     },
     {
         "courseCode":  "SCS317",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "What\u0027s the difference between unit testing and integration testing?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS317",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "How do you effectively manage version control in a team of 5 members?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS356",
         "isPinned":  true,
         "createdAtOffset":  "-5 days",
         "content":  "Please read chapter 2 on software development life cycles before our next lecture.",
-        "userEmail":  "sara.ali@instructor.com"
+        "userEmail":  "202601004@intellicampus.online"
     },
     {
         "courseCode":  "SCS356",
         "isPinned":  false,
         "createdAtOffset":  "-4 days",
         "content":  "What\u0027s the difference between agile and waterfall methodologies? Which is better?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS356",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "How do you handle changing requirements during development?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS358",
         "isPinned":  true,
         "createdAtOffset":  "-1 days",
         "content":  "Git repository setup guide is now available. Please create your accounts and practice basic commands.",
-        "userEmail":  "hany.farouk@instructor.com"
+        "userEmail":  "202601007@intellicampus.online"
     },
     {
         "courseCode":  "SCS358",
         "isPinned":  false,
         "createdAtOffset":  "-10 days",
         "content":  "Can someone explain the concept of design patterns with examples?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS358",
         "isPinned":  false,
         "createdAtOffset":  "-3 days",
         "content":  "What\u0027s the best approach for gathering and documenting requirements?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS357",
         "isPinned":  true,
         "createdAtOffset":  "-1 days",
         "content":  "Welcome to Software Engineering! Team project details will be announced next week.",
-        "userEmail":  "sara.ali@instructor.com"
+        "userEmail":  "202601004@intellicampus.online"
     },
     {
         "courseCode":  "SCS357",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "How detailed should our software design documents be for the project?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS357",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "Can we use any framework for our project or are there restrictions?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SLB322",
         "isPinned":  true,
         "createdAtOffset":  "-4 days",
         "content":  "Please read chapter 2 on software development life cycles before our next lecture.",
-        "userEmail":  "hany.farouk@instructor.com"
+        "userEmail":  "202601007@intellicampus.online"
     },
     {
         "courseCode":  "SLB322",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "What\u0027s the difference between unit testing and integration testing?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SLB322",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "How do you effectively manage version control in a team of 5 members?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "STR302",
         "isPinned":  true,
         "createdAtOffset":  "-5 days",
         "content":  "Git repository setup guide is now available. Please create your accounts and practice basic commands.",
-        "userEmail":  "sara.ali@instructor.com"
+        "userEmail":  "202601004@intellicampus.online"
     },
     {
         "courseCode":  "STR302",
         "isPinned":  false,
         "createdAtOffset":  "-3 days",
         "content":  "What\u0027s the difference between agile and waterfall methodologies? Which is better?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "STR302",
         "isPinned":  false,
         "createdAtOffset":  "-4 days",
         "content":  "How do you handle changing requirements during development?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS465",
         "isPinned":  true,
         "createdAtOffset":  "-8 days",
         "content":  "Welcome to Software Engineering! Team project details will be announced next week.",
-        "userEmail":  "hany.farouk@instructor.com"
+        "userEmail":  "202601007@intellicampus.online"
     },
     {
         "courseCode":  "SCS465",
         "isPinned":  false,
         "createdAtOffset":  "-7 days",
         "content":  "Can someone explain the concept of design patterns with examples?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS465",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "What\u0027s the best approach for gathering and documenting requirements?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS491",
         "isPinned":  true,
         "createdAtOffset":  "-9 days",
         "content":  "Please read chapter 2 on software development life cycles before our next lecture.",
-        "userEmail":  "sara.ali@instructor.com"
+        "userEmail":  "202601004@intellicampus.online"
     },
     {
         "courseCode":  "SCS491",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "How detailed should our software design documents be for the project?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS491",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "Can we use any framework for our project or are there restrictions?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS472",
         "isPinned":  true,
         "createdAtOffset":  "-3 days",
         "content":  "Git repository setup guide is now available. Please create your accounts and practice basic commands.",
-        "userEmail":  "hany.farouk@instructor.com"
+        "userEmail":  "202601007@intellicampus.online"
     },
     {
         "courseCode":  "SCS472",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "What\u0027s the difference between unit testing and integration testing?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS472",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "How do you effectively manage version control in a team of 5 members?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS481",
         "isPinned":  true,
         "createdAtOffset":  "-10 days",
         "content":  "Welcome to Software Engineering! Team project details will be announced next week.",
-        "userEmail":  "sara.ali@instructor.com"
+        "userEmail":  "202601004@intellicampus.online"
     },
     {
         "courseCode":  "SCS481",
         "isPinned":  false,
         "createdAtOffset":  "-16 days",
         "content":  "What\u0027s the difference between agile and waterfall methodologies? Which is better?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS481",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "How do you handle changing requirements during development?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SLB423",
         "isPinned":  true,
         "createdAtOffset":  "-7 days",
         "content":  "Please read chapter 2 on software development life cycles before our next lecture.",
-        "userEmail":  "hany.farouk@instructor.com"
+        "userEmail":  "202601007@intellicampus.online"
     },
     {
         "courseCode":  "SLB423",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "Can someone explain the concept of design patterns with examples?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SLB423",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "What\u0027s the best approach for gathering and documenting requirements?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SPS498",
         "isPinned":  true,
         "createdAtOffset":  "-13 days",
         "content":  "Git repository setup guide is now available. Please create your accounts and practice basic commands.",
-        "userEmail":  "sara.ali@instructor.com"
+        "userEmail":  "202601004@intellicampus.online"
     },
     {
         "courseCode":  "SPS498",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "How detailed should our software design documents be for the project?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SPS498",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "Can we use any framework for our project or are there restrictions?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS432",
         "isPinned":  true,
         "createdAtOffset":  "-3 days",
         "content":  "Welcome to Software Engineering! Team project details will be announced next week.",
-        "userEmail":  "hany.farouk@instructor.com"
+        "userEmail":  "202601007@intellicampus.online"
     },
     {
         "courseCode":  "SCS432",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "What\u0027s the difference between unit testing and integration testing?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS432",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "How do you effectively manage version control in a team of 5 members?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS359",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "Please read chapter 2 on software development life cycles before our next lecture.",
-        "userEmail":  "sara.ali@instructor.com"
+        "userEmail":  "202601004@intellicampus.online"
     },
     {
         "courseCode":  "SCS359",
         "isPinned":  false,
         "createdAtOffset":  "-1 days",
         "content":  "What\u0027s the difference between agile and waterfall methodologies? Which is better?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS359",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "How do you handle changing requirements during development?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS471",
         "isPinned":  true,
         "createdAtOffset":  "-8 days",
         "content":  "Git repository setup guide is now available. Please create your accounts and practice basic commands.",
-        "userEmail":  "hany.farouk@instructor.com"
+        "userEmail":  "202601007@intellicampus.online"
     },
     {
         "courseCode":  "SCS471",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "Can someone explain the concept of design patterns with examples?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS471",
         "isPinned":  false,
         "createdAtOffset":  "-16 days",
         "content":  "What\u0027s the best approach for gathering and documenting requirements?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SCS492",
         "isPinned":  true,
         "createdAtOffset":  "-10 days",
         "content":  "Welcome to Software Engineering! Team project details will be announced next week.",
-        "userEmail":  "sara.ali@instructor.com"
+        "userEmail":  "202601004@intellicampus.online"
     },
     {
         "courseCode":  "SCS492",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "How detailed should our software design documents be for the project?",
-        "userEmail":  "maryam.nassar@student.com"
+        "userEmail":  "2022010004@intellicampus.online"
     },
     {
         "courseCode":  "SCS492",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "Can we use any framework for our project or are there restrictions?",
-        "userEmail":  "malak.sherif@student.com"
+        "userEmail":  "2022010005@intellicampus.online"
     },
     {
         "courseCode":  "SIT221",
         "isPinned":  true,
         "createdAtOffset":  "-13 days",
         "content":  "Welcome to the course! Ensure you have Wireshark installed for our lab sessions.",
-        "userEmail":  "amr.galal@instructor.com"
+        "userEmail":  "202601010@intellicampus.online"
     },
     {
         "courseCode":  "SIT221",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "Can someone explain how subnetting works with a simple example?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT221",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "How do firewalls protect a network from external threats?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT271",
         "isPinned":  true,
         "createdAtOffset":  "-5 days",
         "content":  "Lab safety and network simulation tools overview will be covered in the first lab.",
-        "userEmail":  "tarek.nabil@instructor.com"
+        "userEmail":  "202601009@intellicampus.online"
     },
     {
         "courseCode":  "SIT271",
         "isPinned":  false,
         "createdAtOffset":  "-11 days",
         "content":  "What are the most common types of cyber attacks? How can we prevent them?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT271",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "How does encryption work in network communication?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT222",
         "isPinned":  true,
         "createdAtOffset":  "-12 days",
         "content":  "Important: Please review the network topology basics before our next class.",
-        "userEmail":  "amr.galal@instructor.com"
+        "userEmail":  "202601010@intellicampus.online"
     },
     {
         "courseCode":  "SIT222",
         "isPinned":  false,
         "createdAtOffset":  "-10 days",
         "content":  "What\u0027s the difference between IDS and IPS?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT222",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "Can someone explain how SSL/TLS handshake works?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT324",
         "isPinned":  true,
         "createdAtOffset":  "-9 days",
         "content":  "Welcome to the course! Ensure you have Wireshark installed for our lab sessions.",
-        "userEmail":  "tarek.nabil@instructor.com"
+        "userEmail":  "202601009@intellicampus.online"
     },
     {
         "courseCode":  "SIT324",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "What are the best practices for securing a wireless network?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT324",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "What\u0027s the difference between TCP and UDP protocols? When should I use each?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT351",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "Lab safety and network simulation tools overview will be covered in the first lab.",
-        "userEmail":  "amr.galal@instructor.com"
+        "userEmail":  "202601010@intellicampus.online"
     },
     {
         "courseCode":  "SIT351",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "Can someone explain how subnetting works with a simple example?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT351",
         "isPinned":  false,
         "createdAtOffset":  "-5 days",
         "content":  "How do firewalls protect a network from external threats?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT345",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "Important: Please review the network topology basics before our next class.",
-        "userEmail":  "tarek.nabil@instructor.com"
+        "userEmail":  "202601009@intellicampus.online"
     },
     {
         "courseCode":  "SIT345",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "What are the most common types of cyber attacks? How can we prevent them?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT345",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "How does encryption work in network communication?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SLB316",
         "isPinned":  true,
         "createdAtOffset":  "-8 days",
         "content":  "Welcome to the course! Ensure you have Wireshark installed for our lab sessions.",
-        "userEmail":  "amr.galal@instructor.com"
+        "userEmail":  "202601010@intellicampus.online"
     },
     {
         "courseCode":  "SLB316",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "What\u0027s the difference between IDS and IPS?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SLB316",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "Can someone explain how SSL/TLS handshake works?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT333",
         "isPinned":  true,
         "createdAtOffset":  "-9 days",
         "content":  "Lab safety and network simulation tools overview will be covered in the first lab.",
-        "userEmail":  "tarek.nabil@instructor.com"
+        "userEmail":  "202601009@intellicampus.online"
     },
     {
         "courseCode":  "SIT333",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "What are the best practices for securing a wireless network?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT333",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "What\u0027s the difference between TCP and UDP protocols? When should I use each?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT237",
         "isPinned":  true,
         "createdAtOffset":  "-12 days",
         "content":  "Important: Please review the network topology basics before our next class.",
-        "userEmail":  "amr.galal@instructor.com"
+        "userEmail":  "202601010@intellicampus.online"
     },
     {
         "courseCode":  "SIT237",
         "isPinned":  false,
         "createdAtOffset":  "-2 days",
         "content":  "Can someone explain how subnetting works with a simple example?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT237",
         "isPinned":  false,
         "createdAtOffset":  "-4 days",
         "content":  "How do firewalls protect a network from external threats?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT381",
         "isPinned":  true,
         "createdAtOffset":  "-6 days",
         "content":  "Welcome to the course! Ensure you have Wireshark installed for our lab sessions.",
-        "userEmail":  "tarek.nabil@instructor.com"
+        "userEmail":  "202601009@intellicampus.online"
     },
     {
         "courseCode":  "SIT381",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "What are the most common types of cyber attacks? How can we prevent them?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT381",
         "isPinned":  false,
         "createdAtOffset":  "-16 days",
         "content":  "How does encryption work in network communication?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "STR305",
         "isPinned":  true,
         "createdAtOffset":  "-13 days",
         "content":  "Lab safety and network simulation tools overview will be covered in the first lab.",
-        "userEmail":  "amr.galal@instructor.com"
+        "userEmail":  "202601010@intellicampus.online"
     },
     {
         "courseCode":  "STR305",
         "isPinned":  false,
         "createdAtOffset":  "-6 days",
         "content":  "What\u0027s the difference between IDS and IPS?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "STR305",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "Can someone explain how SSL/TLS handshake works?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT472",
         "isPinned":  true,
         "createdAtOffset":  "-1 days",
         "content":  "Important: Please review the network topology basics before our next class.",
-        "userEmail":  "tarek.nabil@instructor.com"
+        "userEmail":  "202601009@intellicampus.online"
     },
     {
         "courseCode":  "SIT472",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "What are the best practices for securing a wireless network?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT472",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "What\u0027s the difference between TCP and UDP protocols? When should I use each?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT325",
         "isPinned":  true,
         "createdAtOffset":  "-3 days",
         "content":  "Welcome to the course! Ensure you have Wireshark installed for our lab sessions.",
-        "userEmail":  "amr.galal@instructor.com"
+        "userEmail":  "202601010@intellicampus.online"
     },
     {
         "courseCode":  "SIT325",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "Can someone explain how subnetting works with a simple example?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT325",
         "isPinned":  false,
         "createdAtOffset":  "-12 days",
         "content":  "How do firewalls protect a network from external threats?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT446",
         "isPinned":  true,
         "createdAtOffset":  "-9 days",
         "content":  "Lab safety and network simulation tools overview will be covered in the first lab.",
-        "userEmail":  "tarek.nabil@instructor.com"
+        "userEmail":  "202601009@intellicampus.online"
     },
     {
         "courseCode":  "SIT446",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "What are the most common types of cyber attacks? How can we prevent them?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT446",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "How does encryption work in network communication?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SLB451",
         "isPinned":  true,
         "createdAtOffset":  "-1 days",
         "content":  "Important: Please review the network topology basics before our next class.",
-        "userEmail":  "amr.galal@instructor.com"
+        "userEmail":  "202601010@intellicampus.online"
     },
     {
         "courseCode":  "SLB451",
         "isPinned":  false,
         "createdAtOffset":  "-19 days",
         "content":  "What\u0027s the difference between IDS and IPS?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SLB451",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "Can someone explain how SSL/TLS handshake works?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SPC498",
         "isPinned":  true,
         "createdAtOffset":  "-6 days",
         "content":  "Welcome to the course! Ensure you have Wireshark installed for our lab sessions.",
-        "userEmail":  "tarek.nabil@instructor.com"
+        "userEmail":  "202601009@intellicampus.online"
     },
     {
         "courseCode":  "SPC498",
         "isPinned":  false,
         "createdAtOffset":  "-17 days",
         "content":  "What are the best practices for securing a wireless network?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SPC498",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "What\u0027s the difference between TCP and UDP protocols? When should I use each?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SLB311",
         "isPinned":  true,
         "createdAtOffset":  "-2 days",
         "content":  "Lab safety and network simulation tools overview will be covered in the first lab.",
-        "userEmail":  "amr.galal@instructor.com"
+        "userEmail":  "202601010@intellicampus.online"
     },
     {
         "courseCode":  "SLB311",
         "isPinned":  false,
         "createdAtOffset":  "-10 days",
         "content":  "Can someone explain how subnetting works with a simple example?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SLB311",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "How do firewalls protect a network from external threats?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT473",
         "isPinned":  true,
         "createdAtOffset":  "-3 days",
         "content":  "Important: Please review the network topology basics before our next class.",
-        "userEmail":  "tarek.nabil@instructor.com"
+        "userEmail":  "202601009@intellicampus.online"
     },
     {
         "courseCode":  "SIT473",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "What are the most common types of cyber attacks? How can we prevent them?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT473",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "How does encryption work in network communication?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT455",
         "isPinned":  true,
         "createdAtOffset":  "-1 days",
         "content":  "Welcome to the course! Ensure you have Wireshark installed for our lab sessions.",
-        "userEmail":  "amr.galal@instructor.com"
+        "userEmail":  "202601010@intellicampus.online"
     },
     {
         "courseCode":  "SIT455",
         "isPinned":  false,
         "createdAtOffset":  "-3 days",
         "content":  "What\u0027s the difference between IDS and IPS?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT455",
         "isPinned":  false,
         "createdAtOffset":  "-13 days",
         "content":  "Can someone explain how SSL/TLS handshake works?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT326",
         "isPinned":  true,
         "createdAtOffset":  "-4 days",
         "content":  "Lab safety and network simulation tools overview will be covered in the first lab.",
-        "userEmail":  "tarek.nabil@instructor.com"
+        "userEmail":  "202601009@intellicampus.online"
     },
     {
         "courseCode":  "SIT326",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "What are the best practices for securing a wireless network?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT326",
         "isPinned":  false,
         "createdAtOffset":  "-18 days",
         "content":  "What\u0027s the difference between TCP and UDP protocols? When should I use each?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT452",
         "isPinned":  true,
         "createdAtOffset":  "-12 days",
         "content":  "Important: Please review the network topology basics before our next class.",
-        "userEmail":  "amr.galal@instructor.com"
+        "userEmail":  "202601010@intellicampus.online"
     },
     {
         "courseCode":  "SIT452",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "Can someone explain how subnetting works with a simple example?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SIT452",
         "isPinned":  false,
         "createdAtOffset":  "-9 days",
         "content":  "How do firewalls protect a network from external threats?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SLB417",
         "isPinned":  true,
         "createdAtOffset":  "-9 days",
         "content":  "Welcome to the course! Ensure you have Wireshark installed for our lab sessions.",
-        "userEmail":  "tarek.nabil@instructor.com"
+        "userEmail":  "202601009@intellicampus.online"
     },
     {
         "courseCode":  "SLB417",
         "isPinned":  false,
         "createdAtOffset":  "-15 days",
         "content":  "What are the most common types of cyber attacks? How can we prevent them?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SLB417",
         "isPinned":  false,
         "createdAtOffset":  "-8 days",
         "content":  "How does encryption work in network communication?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SLB452",
         "isPinned":  true,
         "createdAtOffset":  "-5 days",
         "content":  "Lab safety and network simulation tools overview will be covered in the first lab.",
-        "userEmail":  "amr.galal@instructor.com"
+        "userEmail":  "202601010@intellicampus.online"
     },
     {
         "courseCode":  "SLB452",
         "isPinned":  false,
         "createdAtOffset":  "-3 days",
         "content":  "What\u0027s the difference between IDS and IPS?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     },
     {
         "courseCode":  "SLB452",
         "isPinned":  false,
         "createdAtOffset":  "-14 days",
         "content":  "Can someone explain how SSL/TLS handshake works?",
-        "userEmail":  "lourina.emil@student.com"
+        "userEmail":  "2022010006@intellicampus.online"
     }
 ]
