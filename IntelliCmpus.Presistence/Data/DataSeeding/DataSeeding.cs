@@ -647,7 +647,7 @@ public class DataSeed : IDataSeed
         if (await _dbContext.Set<StudentCourse>().AnyAsync()) return;
         var items = await ReadJsonAsync<StudentCourseDto>("student-courses.json");
         var allStudents = await _dbContext.Students.ToListAsync();
-        var studentEnrollment = allStudents.ToDictionary(s => s.StudentId, s => s.EnrollmentDate ?? DateTime.UtcNow.AddYears(-4));
+        var studentEnrollment = allStudents.ToDictionary(s => s.UserId, s => s.EnrollmentDate ?? DateTime.UtcNow.AddYears(-4));
         var allCourses = await _dbContext.Courses.ToDictionaryAsync(c => c.CourseId);
 
         var currentSemester = SemesterHelper.GetCurrentSemester();
