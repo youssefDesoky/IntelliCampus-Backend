@@ -876,7 +876,10 @@ public class DataSeed : IDataSeed
                 {
                     RoomName = dto.RoomName,
                     RoomNameAr = dto.RoomNameAr,
-                    Capacity = dto.Capacity
+                    Capacity = dto.Capacity,
+                    Type = dto.Type,
+                    Location = dto.Location,
+                    LocationAr = dto.LocationAr
                 };
                 _dbContext.Rooms.Add(entity);
                 await _dbContext.SaveChangesAsync();
@@ -886,6 +889,9 @@ public class DataSeed : IDataSeed
             {
                 existing.RoomNameAr = dto.RoomNameAr;
                 existing.Capacity = dto.Capacity;
+                if (dto.Type is not null) existing.Type = dto.Type;
+                if (dto.Location is not null) existing.Location = dto.Location;
+                if (dto.LocationAr is not null) existing.LocationAr = dto.LocationAr;
                 _roomIds[dto.RoomName] = existing.RoomId;
             }
         }
@@ -1401,6 +1407,9 @@ public class DataSeed : IDataSeed
         public string RoomName { get; init; } = "";
         public string? RoomNameAr { get; init; }
         public int Capacity { get; init; }
+        public string? Type { get; init; }
+        public string? Location { get; init; }
+        public string? LocationAr { get; init; }
     }
 
     private record AnnouncementDto
