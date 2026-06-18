@@ -28,10 +28,6 @@ public class RoomsController : ControllerBase
     public async Task<ActionResult<RoomDto>> GetById(int id)
     {
         var room = await _roomService.GetByIdAsync(id);
-
-        if (room is null)
-            return NotFound();
-
         return Ok(room);
     }
 
@@ -39,45 +35,23 @@ public class RoomsController : ControllerBase
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<ActionResult<RoomDto>> Create([FromBody] CreateRoomDto dto)
     {
-        try
-        {
-            var room = await _roomService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = room.RoomId }, room);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var room = await _roomService.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = room.RoomId }, room);
     }
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<ActionResult<RoomDto>> Update(int id, [FromBody] UpdateRoomDto dto)
     {
-        try
-        {
-            var room = await _roomService.UpdateAsync(id, dto);
-
-            if (room is null)
-                return NotFound();
-
-            return Ok(room);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var room = await _roomService.UpdateAsync(id, dto);
+        return Ok(room);
     }
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _roomService.DeleteAsync(id);
-
-        if (!result)
-            return NotFound();
-
+        await _roomService.DeleteAsync(id);
         return NoContent();
     }
 }

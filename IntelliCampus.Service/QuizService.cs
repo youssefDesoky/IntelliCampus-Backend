@@ -35,6 +35,9 @@ public class QuizService : IQuizService
     private IGenericRepository<Question, int> QuestionsRepo
         => _unitOfWork.GetRepository<Question, int>();
 
+    private IGenericRepository<Student, int> Students
+        => _unitOfWork.GetRepository<Student, int>();
+
     public async Task<QuizHistoryItemDto?> GetByIdAsync(int quizId, int studentId)
     {
     
@@ -96,6 +99,10 @@ public class QuizService : IQuizService
 
     public async Task<IEnumerable<QuizDto>> GetByCourseIdAsync(int courseId)
     {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
         var spec = new QuizSpec(courseId, byCourse: true);
         var quizzes = await Quizzes.GetAllAsync(spec);
         return quizzes.Select(MapToDto);
@@ -383,6 +390,10 @@ public class QuizService : IQuizService
 
     public async Task<IEnumerable<StudentQuizDto>> GetByStudentIdAsync(int studentId)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
         var spec = new StudentQuizSpec(studentId, byStudent: true, dummy: true);
         var results = await StudentQuizzes.GetAllAsync(spec);
         return results.Select(MapResultToDto);

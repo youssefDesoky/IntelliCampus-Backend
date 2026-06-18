@@ -3,6 +3,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Shared.Dtos.Notification;
 
 namespace IntelliCampus.Service;
@@ -24,8 +25,15 @@ public class NotificationService : INotificationService
     private IGenericRepository<UserNotification, int> UserNotifications
         => _unitOfWork.GetRepository<UserNotification, int>();
 
+    private IGenericRepository<User, int> Users
+        => _unitOfWork.GetRepository<User, int>();
+
     public async Task<IEnumerable<NotificationDto>> GetByUserIdAsync(int userId)
     {
+        var user = await Users.GetByIdAsync(userId);
+        if (user is null)
+            throw new UserNotFoundException(userId);
+
         var spec = new NotificationSpec(userId);
         var userNotifications = await UserNotifications.GetAllAsync(spec);
         return userNotifications.Select(MapToDto);
@@ -33,6 +41,10 @@ public class NotificationService : INotificationService
 
     public async Task<IEnumerable<NotificationDto>> GetUnreadAsync(int userId)
     {
+        var user = await Users.GetByIdAsync(userId);
+        if (user is null)
+            throw new UserNotFoundException(userId);
+
         var spec = new NotificationSpec(userId, unreadOnly: true);
         var userNotifications = await UserNotifications.GetAllAsync(spec);
         return userNotifications.Select(MapToDto);
@@ -40,6 +52,10 @@ public class NotificationService : INotificationService
 
     public async Task<NotificationSummaryDto> GetSummaryAsync(int userId)
     {
+        var user = await Users.GetByIdAsync(userId);
+        if (user is null)
+            throw new UserNotFoundException(userId);
+
         var spec = new NotificationSpec(userId);
         var all = (await UserNotifications.GetAllAsync(spec)).ToList();
 
@@ -52,15 +68,25 @@ public class NotificationService : INotificationService
     }
 
     public async Task<int> GetUnreadCountAsync(int userId)
-        => await UserNotifications.CountAsync(
+    {
+        var user = await Users.GetByIdAsync(userId);
+        if (user is null)
+            throw new UserNotFoundException(userId);
+
+        return await UserNotifications.CountAsync(
             n => n.UserId == userId && !n.IsRead);
+    }
 
     public async Task<bool> MarkAsReadAsync(int notificationId, int userId)
     {
+        var user = await Users.GetByIdAsync(userId);
+        if (user is null)
+            throw new UserNotFoundException(userId);
+
         var spec = new NotificationSpec(userId, notificationId);
         var userNotification = await UserNotifications.GetByIdAsync(spec);
 
-        if (userNotification is null) return false;
+        if (userNotification is null) throw new NotificationNotFoundException($"Notification with ID {notificationId} not found for user {userId}.");
 
         userNotification.IsRead = true;
         UserNotifications.Update(userNotification);
@@ -70,6 +96,10 @@ public class NotificationService : INotificationService
 
     public async Task MarkAllAsReadAsync(int userId)
     {
+        var user = await Users.GetByIdAsync(userId);
+        if (user is null)
+            throw new UserNotFoundException(userId);
+
         var spec = new NotificationSpec(userId, unreadOnly: true, forUpdate: true);
         var unread = await UserNotifications.GetAllAsync(spec);
 
@@ -84,10 +114,14 @@ public class NotificationService : INotificationService
 
     public async Task<bool> DeleteAsync(int notificationId, int userId)
     {
+        var user = await Users.GetByIdAsync(userId);
+        if (user is null)
+            throw new UserNotFoundException(userId);
+
         var spec = new NotificationSpec(userId, notificationId);
         var userNotification = await UserNotifications.GetByIdAsync(spec);
 
-        if (userNotification is null) return false;
+        if (userNotification is null) throw new NotificationNotFoundException($"Notification with ID {notificationId} not found for user {userId}.");
 
         UserNotifications.Delete(userNotification);
         await _unitOfWork.SaveChangesAsync();

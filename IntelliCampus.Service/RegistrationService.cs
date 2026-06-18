@@ -5,6 +5,7 @@ using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
+using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
 
@@ -44,17 +45,17 @@ public class RegistrationService : IRegistrationService
         // Verify student exists and get bylaw for rules
         var student = await Students.GetByIdAsync(studentId);
         if (student is null)
-            throw new InvalidOperationException("Student not found.");
+            throw new UserNotFoundException($"Student with ID {studentId} not found.");
 
         // Verify course exists
         var course = await Courses.GetByIdAsync(dto.CourseId);
         if (course is null)
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException($"Course with ID {dto.CourseId} not found.");
 
         // Verify class exists and belongs to the course
         var classEntity = await Classes.GetByIdAsync(new ClassByCourseSpec(dto.ClassId, dto.CourseId));
         if (classEntity is null)
-            throw new InvalidOperationException("Class not found or does not belong to the specified course.");
+            throw new ClassNotFoundException($"Class with ID {dto.ClassId} not found or does not belong to the specified course.");
 
         // Check if already registered
         var existingRegistration = await StudentCourses.GetByIdAsync(new StudentCourseSpec(studentId, dto.CourseId));
@@ -157,7 +158,7 @@ public class RegistrationService : IRegistrationService
         var registration = await StudentCourses.GetByIdAsync(spec);
 
         if (registration is null)
-            return false;
+            throw new InvalidOperationException($"Registration not found for student {studentId} in course {courseId}.");
 
         StudentCourses.Delete(registration);
         await _unitOfWork.SaveChangesAsync();

@@ -28,10 +28,6 @@ public class ExamsController : ControllerBase
     public async Task<ActionResult<ExamDto>> GetById(int id)
     {
         var exam = await _examService.GetByIdAsync(id);
-
-        if (exam is null)
-            return NotFound();
-
         return Ok(exam);
     }
 
@@ -46,45 +42,23 @@ public class ExamsController : ControllerBase
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<ActionResult<ExamDto>> Create([FromBody] CreateExamDto dto)
     {
-        try
-        {
-            var exam = await _examService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = exam.ExamId }, exam);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var exam = await _examService.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = exam.ExamId }, exam);
     }
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<ActionResult<ExamDto>> Update(int id, [FromBody] UpdateExamDto dto)
     {
-        try
-        {
-            var exam = await _examService.UpdateAsync(id, dto);
-
-            if (exam is null)
-                return NotFound();
-
-            return Ok(exam);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var exam = await _examService.UpdateAsync(id, dto);
+        return Ok(exam);
     }
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _examService.DeleteAsync(id);
-
-        if (!result)
-            return NotFound();
-
+        await _examService.DeleteAsync(id);
         return NoContent();
     }
 }

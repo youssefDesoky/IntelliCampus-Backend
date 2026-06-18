@@ -3,6 +3,7 @@ using System.Text.Json;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.shared.Dtos.Attendance;
@@ -39,6 +40,9 @@ public class AttendanceService : IAttendanceService
     private IGenericRepository<Student, int> Students
         => _unitOfWork.GetRepository<Student, int>();
 
+    private IGenericRepository<Course, int> Courses
+        => _unitOfWork.GetRepository<Course, int>();
+
     private IGenericRepository<QrToken, int> QrTokens
         => _unitOfWork.GetRepository<QrToken, int>();
 
@@ -46,7 +50,7 @@ public class AttendanceService : IAttendanceService
     {
         var student = await Students.GetByIdAsync(studentId);
         if (student is null)
-            throw new InvalidOperationException("Student not found.");
+            throw new StudentNotFoundException(studentId);
 
         var iterationSpec = new QrTokenSpec(studentId, countIterations: true);
         var recentTokens = await QrTokens.GetAllAsync(iterationSpec);
@@ -101,7 +105,7 @@ public class AttendanceService : IAttendanceService
     {
         var session = await Sessions.GetByIdAsync(dto.SessionId);
         if (session is null)
-            throw new InvalidOperationException("Session not found.");
+            throw new SessionNotFoundException("Session not found.");
 
         var classEntity = await Classes.GetByIdAsync(session.ClassId);
         if (classEntity?.InstructorId != instructorId)
@@ -171,7 +175,7 @@ public class AttendanceService : IAttendanceService
     {
         var session = await Sessions.GetByIdAsync(dto.SessionId);
         if (session is null)
-            throw new InvalidOperationException("Session not found.");
+            throw new SessionNotFoundException("Session not found.");
 
         var classEntity = await Classes.GetByIdAsync(session.ClassId);
         if (classEntity?.InstructorId != instructorId)
@@ -220,7 +224,7 @@ public class AttendanceService : IAttendanceService
     {
         var session = await Sessions.GetByIdAsync(dto.SessionId);
         if (session is null)
-            throw new InvalidOperationException("Session not found.");
+            throw new SessionNotFoundException("Session not found.");
 
         var classEntity = await Classes.GetByIdAsync(session.ClassId);
         if (classEntity?.InstructorId != instructorId)
@@ -265,6 +269,14 @@ public class AttendanceService : IAttendanceService
     public async Task<IEnumerable<SessionDto>> GetByStudentAndCourseAsync(
         int studentId, int courseId)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
         var classes = await Classes.GetAllAsync();
         var classIds = classes
             .Where(c => c.CourseId == courseId)
@@ -299,7 +311,7 @@ public class AttendanceService : IAttendanceService
     {
         var classEntity = await Classes.GetByIdAsync(classId);
         if (classEntity is null)
-            throw new InvalidOperationException("Class not found.");
+            throw new ClassNotFoundException("Class not found.");
 
         if (classEntity.InstructorId != instructorId)
             throw new InvalidOperationException("Not authorized.");
@@ -369,6 +381,14 @@ public class AttendanceService : IAttendanceService
     public async Task<decimal> GetAttendancePercentageAsync(
         int studentId, int courseId)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
         var classes = await Classes.GetAllAsync();
         var classIds = classes
             .Where(c => c.CourseId == courseId)

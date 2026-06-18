@@ -30,9 +30,6 @@ public class DepartmentsController : ControllerBase
     {
         var department = await _departmentService.GetByIdAsync(id);
 
-        if (department is null)
-            return NotFound();
-
         return Ok(department);
     }
 
@@ -40,45 +37,25 @@ public class DepartmentsController : ControllerBase
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<ActionResult<DepartmentDto>> Create([FromBody] CreateDepartmentDto dto)
     {
-        try
-        {
-            var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var department = await _departmentService.CreateAsync(dto, creatorUserId is not null ? int.Parse(creatorUserId) : null);
-            return CreatedAtAction(nameof(GetById), new { id = department.DepartmentId }, department);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var department = await _departmentService.CreateAsync(dto, creatorUserId is not null ? int.Parse(creatorUserId) : null);
+        return CreatedAtAction(nameof(GetById), new { id = department.DepartmentId }, department);
     }
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<ActionResult<DepartmentDto>> Update(int id, [FromBody] UpdateDepartmentDto dto)
     {
-        try
-        {
-            var department = await _departmentService.UpdateAsync(id, dto);
+        var department = await _departmentService.UpdateAsync(id, dto);
 
-            if (department is null)
-                return NotFound();
-
-            return Ok(department);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        return Ok(department);
     }
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _departmentService.DeleteAsync(id);
-
-        if (!result)
-            return NotFound();
+        await _departmentService.DeleteAsync(id);
 
         return NoContent();
     }

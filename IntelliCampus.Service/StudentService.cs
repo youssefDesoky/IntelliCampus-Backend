@@ -5,6 +5,7 @@ using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
+using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
 
@@ -34,13 +35,19 @@ public class StudentService : IStudentService
     private IGenericRepository<Role, int> RolesRepo
         => _unitOfWork.GetRepository<Role, int>();
 
-    public async Task<StudentDto?> GetByIdAsync(int studentId)
+    private IGenericRepository<Faculty, int> Faculties
+        => _unitOfWork.GetRepository<Faculty, int>();
+
+    private IGenericRepository<Specialization, int> Specializations
+        => _unitOfWork.GetRepository<Specialization, int>();
+
+    public async Task<StudentDto> GetByIdAsync(int studentId)
     {
         var spec = new StudentSpec(studentId);
         var student = await Students.GetByIdAsync(spec);
 
         if (student is null)
-            return null;
+            throw new StudentNotFoundException(studentId);
 
         return MapToDto(student);
     }
@@ -74,6 +81,20 @@ public class StudentService : IStudentService
         }
 
         var studentType = ResolveStudentType(dto.StudentType);
+        if (facultyId.HasValue)
+        {
+            var faculty = await Faculties.GetByIdAsync(facultyId.Value);
+            if (faculty is null)
+                throw new InvalidOperationException($"Faculty with ID {facultyId.Value} not found.");
+        }
+
+        if (dto.SpecializationId.HasValue)
+        {
+            var spec = await Specializations.GetByIdAsync(dto.SpecializationId.Value);
+            if (spec is null)
+                throw new SpecializationNotFoundException(dto.SpecializationId.Value);
+        }
+
         var student = new Student
         {
             NationalId = dto.NationalId,
@@ -120,13 +141,13 @@ public class StudentService : IStudentService
         return MapToDto(student);
     }
 
-    public async Task<StudentDto?> UpdateAsync(int studentId, UpdateStudentDto dto)
+    public async Task<StudentDto> UpdateAsync(int studentId, UpdateStudentDto dto)
     {
         var spec = new StudentSpec(studentId);
         var student = await Students.GetByIdAsync(spec);
 
         if (student is null)
-            return null;
+            throw new StudentNotFoundException(studentId);
 
         if (dto.Email is not null && dto.Email != student.Email)
         {
@@ -169,10 +190,10 @@ public class StudentService : IStudentService
         return MapToDto(student);
     }
 
-    public async Task<StudentDto?> UpdateLevelAsync(int studentId, int level)
+    public async Task<StudentDto> UpdateLevelAsync(int studentId, int level)
     {
         var student = await Students.GetByIdAsync(studentId);
-        if (student is null) return null;
+        if (student is null) throw new StudentNotFoundException(studentId);
 
         student.Level = level;
         await _unitOfWork.SaveChangesAsync();
@@ -180,18 +201,16 @@ public class StudentService : IStudentService
         return MapToDto(student);
     }
 
-    public async Task<bool> DeleteAsync(int studentId)
+    public async Task DeleteAsync(int studentId)
     {
         var spec = new StudentSpec(studentId);
         var student = await Students.GetByIdAsync(spec);
 
         if (student is null)
-            return false;
+            throw new StudentNotFoundException(studentId);
 
         Students.Delete(student);
         await _unitOfWork.SaveChangesAsync();
-
-        return true;
     }
 
     private static StudentType ResolveStudentType(string? studentType)
@@ -230,7 +249,9 @@ public class StudentService : IStudentService
         var matched = bylaws.FirstOrDefault(b =>
             string.Equals(b.Name, bylawName, StringComparison.OrdinalIgnoreCase));
 
-        return matched?.BylawId;
+        if (matched is null)
+            throw new BylawNotFoundException(0);
+        return matched.BylawId;
     }
 
     private async Task<int?> ResolveDepartmentIdAsync(int? departmentId, string? departmentName)
@@ -252,7 +273,7 @@ public class StudentService : IStudentService
         var matched = departments.FirstOrDefault(d => string.Equals(GetDepartmentCode(d.DepartmentName), normalized, StringComparison.OrdinalIgnoreCase));
 
         if (matched is null)
-            throw new InvalidOperationException("Department not found.");
+            throw int.TryParse(departmentName, out var parsedId) ? new DepartmentNotFoundException(parsedId) : new DepartmentNotFoundException(0);
 
         return matched.DepartmentId;
     }

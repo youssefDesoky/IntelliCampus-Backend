@@ -2,6 +2,7 @@ using IntelliCampus.Domain.Constants;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.shared.Dtos.Attendance;
@@ -23,12 +24,13 @@ public class AttendanceExcuseService : IAttendanceExcuseService
     private IGenericRepository<AttendanceExcuse, int> Excuses => _unitOfWork.GetRepository<AttendanceExcuse, int>();
     private IGenericRepository<Session, int> Sessions => _unitOfWork.GetRepository<Session, int>();
     private IGenericRepository<Class, int> Classes => _unitOfWork.GetRepository<Class, int>();
+    private IGenericRepository<Student, int> Students => _unitOfWork.GetRepository<Student, int>();
 
     public async Task<AttendanceExcuseDto> SubmitAsync(int studentId, int courseId, SubmitExcuseFormDto dto, CancellationToken ct = default)
     {
         var session = await Sessions.GetByIdAsync(dto.SessionId);
         if (session is null)
-            throw new InvalidOperationException("Session not found.");
+            throw new SessionNotFoundException("Session not found.");
 
         var classEntity = await Classes.GetByIdAsync(session.ClassId);
         if (classEntity?.CourseId != courseId)
@@ -71,6 +73,10 @@ public class AttendanceExcuseService : IAttendanceExcuseService
 
     public async Task<IEnumerable<AttendanceExcuseDto>> GetByStudentAsync(int studentId)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
         var spec = new AttendanceExcuseSpec(studentId);
         var excuses = await Excuses.GetAllAsync(spec);
         return excuses.Select(MapToDto);
@@ -80,7 +86,7 @@ public class AttendanceExcuseService : IAttendanceExcuseService
     {
         var session = await Sessions.GetByIdAsync(sessionId);
         if (session is null)
-            throw new InvalidOperationException("Session not found.");
+            throw new SessionNotFoundException("Session not found.");
 
         var classEntity = await Classes.GetByIdAsync(session.ClassId);
         if (classEntity?.InstructorId != instructorId)
@@ -95,7 +101,7 @@ public class AttendanceExcuseService : IAttendanceExcuseService
     {
         var excuse = await Excuses.GetByIdAsync(excuseId);
         if (excuse is null)
-            throw new InvalidOperationException("Excuse not found.");
+            throw new ExcuseNotFoundException("Excuse not found.");
 
         var session = await Sessions.GetByIdAsync(excuse.SessionId);
         var classEntity = await Classes.GetByIdAsync(session!.ClassId);

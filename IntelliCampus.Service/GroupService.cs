@@ -1,5 +1,6 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Group;
 using Microsoft.EntityFrameworkCore;
@@ -21,8 +22,25 @@ public class GroupService : IGroupService
     private IGenericRepository<GroupMember, int> GroupMembers
         => _unitOfWork.GetRepository<GroupMember, int>();
 
+    private IGenericRepository<User, int> Users
+        => _unitOfWork.GetRepository<User, int>();
+
     public async Task<GroupDto> CreateGroupAsync(int createdById, string title, string? description, List<int> memberIds, string? profileImage = null)
     {
+        var creator = await Users.GetByIdAsync(createdById);
+        if (creator is null)
+            throw new UserNotFoundException(createdById);
+
+        foreach (var memberId in memberIds.Distinct())
+        {
+            if (memberId != createdById)
+            {
+                var member = await Users.GetByIdAsync(memberId);
+                if (member is null)
+                    throw new UserNotFoundException(memberId);
+            }
+        }
+
         var group = new Group
         {
             Title = title,
@@ -57,6 +75,10 @@ public class GroupService : IGroupService
 
     public async Task<IEnumerable<GroupDto>> GetUserGroupsAsync(int userId)
     {
+        var user = await Users.GetByIdAsync(userId);
+        if (user is null)
+            throw new UserNotFoundException(userId);
+
         var memberships = (await GroupMembers.GetAllAsync())
             .Where(gm => gm.UserId == userId)
             .ToList();
@@ -77,7 +99,7 @@ public class GroupService : IGroupService
     public async Task<GroupDto?> GetGroupByIdAsync(int groupId, int userId)
     {
         var group = await Groups.GetByIdAsync(groupId);
-        if (group == null) return null;
+        if (group == null) throw new GroupNotFoundException();
 
         var members = (await GroupMembers.GetAllAsync())
             .Where(gm => gm.GroupId == groupId)
@@ -118,7 +140,7 @@ public class GroupService : IGroupService
     public async Task<bool> AddMemberAsync(int groupId, int userId, int addedByUserId)
     {
         var group = await Groups.GetByIdAsync(groupId);
-        if (group == null) return false;
+        if (group == null) throw new GroupNotFoundException();
 
         if (group.CreatedById != addedByUserId)
             throw new UnauthorizedAccessException("Only the group creator can add members");
@@ -140,7 +162,7 @@ public class GroupService : IGroupService
     public async Task<bool> RemoveMemberAsync(int groupId, int userId, int removedByUserId)
     {
         var group = await Groups.GetByIdAsync(groupId);
-        if (group == null) return false;
+        if (group == null) throw new GroupNotFoundException();
 
         if (group.CreatedById != removedByUserId && userId != removedByUserId)
             throw new UnauthorizedAccessException("Cannot remove this member");
@@ -148,7 +170,7 @@ public class GroupService : IGroupService
         var member = (await GroupMembers.GetAllAsync())
             .FirstOrDefault(gm => gm.GroupId == groupId && gm.UserId == userId);
 
-        if (member == null) return false;
+        if (member == null) throw new GroupNotFoundException();
 
         GroupMembers.Delete(member);
         await _unitOfWork.SaveChangesAsync();

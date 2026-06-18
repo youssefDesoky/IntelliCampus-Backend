@@ -5,6 +5,7 @@ using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Export;
 using IntelliCampus.Shared.Dtos.Grade;
+using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
 
@@ -58,6 +59,14 @@ public class GradeService : IGradeService
 
     public async Task<int> GetCourseWorkAsync(int studentId, int courseId)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
         var (assignTotalScore, assignTotalMax) = await GetAssignmentScoresAsync(studentId, courseId);
         var (quizTotalScore, quizTotalMax) = await GetQuizScoresAsync(studentId, courseId);
 
@@ -72,6 +81,14 @@ public class GradeService : IGradeService
 
     public async Task<CourseGradeDto?> GetCourseGradeAsync(int studentId, int courseId)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
         var assignments = await Assignments.GetAllAsync(new AssignmentSpec(courseId, byCourse: true));
         var assignmentIds = assignments.Select(a => a.AssignmentId).ToHashSet();
 
@@ -94,7 +111,7 @@ public class GradeService : IGradeService
         var final = courseGrades.FirstOrDefault(g => g.GradeType == GradeType.Final && g.Status == "Graded");
 
         if (gradedAssignments.Count == 0 && gradedQuizzes.Count == 0 && midterm is null && final is null)
-            return null;
+            throw new GradeNotFoundException(courseId);
 
         var history = new List<GradeHistoryItemDto>();
 
@@ -254,6 +271,10 @@ public class GradeService : IGradeService
 
     public async Task<IEnumerable<GradeHistoryItemDto>> GetAllGradesAsync(int studentId)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
         var result = new List<GradeHistoryItemDto>();
 
         // Assignment grades
@@ -451,7 +472,7 @@ public class GradeService : IGradeService
     public async Task<int?> UpdateStudentLevelIfPromotedAsync(int studentId)
     {
         var student = await Students.GetByIdAsync(new StudentSpec(studentId));
-        if (student is null || student.Bylaw is null) return null;
+        if (student is null || student.Bylaw is null) throw new BylawNotFoundException(studentId);
 
         var scales = student.Bylaw.LevelScales;
         if (scales?.Count == 0) return null;
@@ -475,6 +496,10 @@ public class GradeService : IGradeService
 
     public async Task<byte[]> ExportTranscriptPdfAsync(int studentId)
     {
+        var studentCheck = await Students.GetByIdAsync(studentId);
+        if (studentCheck is null)
+            throw new StudentNotFoundException(studentId);
+
         var student = await _studentService.GetByIdAsync(studentId);
         var courseDtos = await GetTranscriptAsync(studentId);
 
@@ -534,6 +559,14 @@ public class GradeService : IGradeService
 
     public async Task<IEnumerable<GradeDto>> GetByStudentAndCourseAsync(int instructorId, int studentId, int courseId)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
         var teaches = await Classes.AnyAsync(c => c.CourseId == courseId && c.InstructorId == instructorId);
         if (!teaches)
             throw new InvalidOperationException("Not authorized.");
@@ -606,7 +639,7 @@ public class GradeService : IGradeService
         // dto.GradeId is treated as StudentAssignmentId for now.
         var submission = await StudentAssignments.GetByIdAsync(dto.GradeId);
         if (submission is null || submission.StudentId != studentId)
-            throw new InvalidOperationException("Grade not found.");
+            throw new GradeNotFoundException(dto.GradeId);
 
         if (!submission.Grade.HasValue)
             throw new InvalidOperationException("Cannot complain about an ungraded submission.");
@@ -661,14 +694,17 @@ public class GradeService : IGradeService
     public async Task<GradeComplaintResponseDto?> ReviewComplaintAsync(int complaintId, int instructorId)
     {
         var complaint = await Complaints.GetByIdAsync(complaintId);
-        if (complaint is null) return null;
+        if (complaint is null)
+            throw new ComplaintNotFoundException(complaintId);
 
         // complaint.GradeId is StudentAssignmentId
         var submission = await StudentAssignments.GetByIdAsync(complaint.GradeId);
-        if (submission is null) return null;
+        if (submission is null)
+            throw new GradeNotFoundException(complaint.GradeId);
 
         var assignment = await Assignments.GetByIdAsync(submission.AssignmentId);
-        if (assignment is null) return null;
+        if (assignment is null)
+            throw new AssignmentNotFoundException(submission.AssignmentId);
 
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
         if (!teachesCourse)

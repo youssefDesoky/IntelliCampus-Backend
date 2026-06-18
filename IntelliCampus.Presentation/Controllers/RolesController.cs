@@ -36,40 +36,23 @@ public class RolesController : ControllerBase
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult<UserRoleDto>> AssignRole([FromBody] AssignRoleDto dto)
     {
-        try
-        {
-            var userRole = await _roleService.AssignRoleAsync(dto);
-            return Ok(userRole);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var userRole = await _roleService.AssignRoleAsync(dto);
+        return Ok(userRole);
     }
 
     [HttpPatch("user/{userId}/role/{roleId}")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult<UserRoleDto>> UpdateUserRole(int userId, int roleId, [FromBody] UpdateUserRoleDto dto)
     {
-        try
-        {
-            var userRole = await _roleService.UpdateUserRoleAsync(userId, roleId, dto);
-            return Ok(userRole);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var userRole = await _roleService.UpdateUserRoleAsync(userId, roleId, dto);
+        return Ok(userRole);
     }
 
     [HttpDelete("user/{userId}/role/{roleId}")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<IActionResult> RemoveRole(int userId, int roleId)
     {
-        var result = await _roleService.RemoveRoleAsync(userId, roleId);
-        if (!result)
-            return NotFound(new { message = "User role not found." });
-
+        await _roleService.RemoveRoleAsync(userId, roleId);
         return NoContent();
     }
 }

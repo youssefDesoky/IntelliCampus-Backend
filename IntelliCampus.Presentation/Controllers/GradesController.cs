@@ -20,7 +20,7 @@ public class GradesController(IGradeService gradeService) : ControllerBase
     public async Task<IActionResult> GetCourseGrade(int courseId)
     {
         var result = await gradeService.GetCourseGradeAsync(UserId, courseId);
-        return result is null ? NotFound() : Ok(result);
+        return Ok(result);
     }
 
     [HttpGet("coursework/{courseId}")]
@@ -68,6 +68,6 @@ public class GradesController(IGradeService gradeService) : ControllerBase
     public async Task<IActionResult> ReviewComplaint(int complaintId)
     {
         var result = await gradeService.ReviewComplaintAsync(complaintId, UserId);
-        return result is null ? NotFound() : Ok(result);
+        return Ok(result);
     }
 }

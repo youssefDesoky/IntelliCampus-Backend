@@ -4,6 +4,7 @@ using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Announcement;
+using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
 
@@ -26,18 +27,22 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
 
     public async Task<List<AnnouncementDto>> GetCourseAnnouncementsAsync(int courseId)
     {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
         var spec = new AnnouncementsByCourseSpec(courseId);
         var announcements = await Announcements.GetAllAsync(spec);
         return announcements.Select(MapToDto).ToList();
     }
 
-    public async Task<AnnouncementDto?> GetByIdAsync(int announcementId)
+    public async Task<AnnouncementDto> GetByIdAsync(int announcementId)
     {
         var spec = new AnnouncementByIdSpec(announcementId);
         var announcement = await Announcements.GetByIdAsync(spec);
 
         if (announcement is null)
-            return null;
+            throw new AnnouncementNotFoundException(announcementId);
 
         return MapToDto(announcement);
     }
@@ -46,7 +51,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
     {
         var course = await Courses.GetByIdAsync(courseId);
         if (course is null)
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException(courseId);
 
         var announcement = new Announcement
         {
@@ -79,13 +84,15 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
         return MapToDto(result!);
     }
 
-    public async Task<AnnouncementDto?> UpdateAsync(int announcementId, int senderId, string content)
+    public async Task<AnnouncementDto> UpdateAsync(int announcementId, int senderId, string content)
     {
         var spec = new AnnouncementByIdSpec(announcementId);
         var announcement = await Announcements.GetByIdAsync(spec);
 
-        if (announcement is null || announcement.SenderId != senderId)
-            return null;
+        if (announcement is null)
+            throw new AnnouncementNotFoundException(announcementId);
+        if (announcement.SenderId != senderId)
+            throw new UnauthorizedAccessException("You are not authorized to update this announcement.");
 
         announcement.Content = content;
         announcement.UpdatedAt = DateTime.UtcNow;
@@ -96,19 +103,22 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
         return MapToDto(announcement);
     }
 
-    public async Task<bool> DeleteAsync(int announcementId)
+    public async Task DeleteAsync(int announcementId)
     {
         var announcement = await Announcements.GetByIdAsync(announcementId);
         if (announcement is null)
-            return false;
+            throw new AnnouncementNotFoundException(announcementId);
 
         Announcements.Delete(announcement);
         await _unitOfWork.SaveChangesAsync();
-        return true;
     }
 
     public async Task<CommentDto> AddCommentAsync(int announcementId, int userId, string content)
     {
+        var announcement = await Announcements.GetByIdAsync(announcementId);
+        if (announcement is null)
+            throw new AnnouncementNotFoundException(announcementId);
+
         var comment = new AnnouncementComment
         {
             AnnouncementId = announcementId,
@@ -137,24 +147,27 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
         };
     }
 
-    public async Task<bool> DeleteCommentAsync(int commentId, int userId)
+    public async Task DeleteCommentAsync(int commentId, int userId)
     {
         var comment = await Comments.GetByIdAsync(commentId);
-        if (comment is null || comment.UserId != userId)
-            return false;
+        if (comment is null)
+            throw new CommentNotFoundException(commentId);
+        if (comment.UserId != userId)
+            throw new UnauthorizedAccessException("You are not authorized to delete this comment.");
 
         Comments.Delete(comment);
         await _unitOfWork.SaveChangesAsync();
-        return true;
     }
 
-    public async Task<CommentDto?> EditCommentAsync(int commentId, int userId, string content)
+    public async Task<CommentDto> EditCommentAsync(int commentId, int userId, string content)
     {
         var spec = new CommentByIdSpec(commentId);
         var comment = await Comments.GetByIdAsync(spec);
 
-        if (comment is null || comment.UserId != userId)
-            return null;
+        if (comment is null)
+            throw new CommentNotFoundException(commentId);
+        if (comment.UserId != userId)
+            throw new UnauthorizedAccessException("You are not authorized to edit this comment.");
 
         comment.Content = content;
         comment.UpdatedAt = DateTime.UtcNow;

@@ -58,11 +58,14 @@ public class AssignmentsController(IAssignmentService assignmentService) : Contr
     public async Task<IActionResult> Grade([FromBody] GradeSubmissionDto dto)
     {
         var result = await assignmentService.GradeSubmissionAsync(UserId, dto);
-        return result is null ? NotFound() : Ok(result);
+        return Ok(result);
     }
 
     [HttpDelete("{assignmentId}")]
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> Delete(int assignmentId)
-        => Ok(await assignmentService.DeleteAsync(assignmentId, UserId));
+    {
+        await assignmentService.DeleteAsync(assignmentId, UserId);
+        return Ok();
+    }
 }

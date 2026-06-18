@@ -29,54 +29,28 @@ public class InstructorsController : ControllerBase
     public async Task<ActionResult<InstructorDto>> GetById(int id)
     {
         var instructor = await _instructorService.GetByIdAsync(id);
-
-        if (instructor is null)
-            return NotFound();
-
         return Ok(instructor);
     }
 
     [HttpPost]
     public async Task<ActionResult<InstructorDto>> Create([FromBody] CreateInstructorDto dto)
     {
-        try
-        {
-            var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var instructor = await _instructorService.CreateAsync(dto, creatorUserId is not null ? int.Parse(creatorUserId) : null);
-            return CreatedAtAction(nameof(GetById), new { id = instructor.UserId }, instructor);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var instructor = await _instructorService.CreateAsync(dto, creatorUserId is not null ? int.Parse(creatorUserId) : null);
+        return CreatedAtAction(nameof(GetById), new { id = instructor.UserId }, instructor);
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult<InstructorDto>> Update(int id, [FromBody] UpdateInstructorDto dto)
     {
-        try
-        {
-            var instructor = await _instructorService.UpdateAsync(id, dto);
-
-            if (instructor is null)
-                return NotFound();
-
-            return Ok(instructor);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var instructor = await _instructorService.UpdateAsync(id, dto);
+        return Ok(instructor);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _instructorService.DeleteAsync(id);
-
-        if (!result)
-            return NotFound();
-
+        await _instructorService.DeleteAsync(id);
         return NoContent();
     }
 }

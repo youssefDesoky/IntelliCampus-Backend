@@ -5,6 +5,7 @@ using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
+using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
 
@@ -28,12 +29,18 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
     private IGenericRepository<CoursePrerequisite, int> Prerequisites
         => _unitOfWork.GetRepository<CoursePrerequisite, int>();
 
+    private IGenericRepository<Student, int> Students
+        => _unitOfWork.GetRepository<Student, int>();
+
+    private IGenericRepository<Instructor, int> Instructors
+        => _unitOfWork.GetRepository<Instructor, int>();
+
     public async Task<CourseDto?> GetByIdAsync(int courseId)
     {
         var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
 
         if (course is null)
-            return null;
+            throw new CourseNotFoundException(courseId);
 
         return MapToDto(course);
     }
@@ -53,6 +60,10 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
 
     public async Task<IEnumerable<CourseDto>> GetCoursesByStudentIdAsync(int studentId)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
         var studentCourses = await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId));
         var courseIds = studentCourses.Select(sc => sc.CourseId).ToList();
 
@@ -63,6 +74,10 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
 
     public async Task<IEnumerable<CourseDto>> GetCoursesByInstructorIdAsync(int instructorId)
     {
+        var instructor = await Instructors.GetByIdAsync(instructorId);
+        if (instructor is null)
+            throw new InstructorNotFoundException(instructorId);
+
         var classes = await Classes.GetAllAsync(new ClassByInstructorSpec(instructorId));
         var courseIds = classes.Select(c => c.CourseId).Distinct().ToList();
 
@@ -116,7 +131,7 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
         var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
 
         if (course is null)
-            return null;
+            throw new CourseNotFoundException(courseId);
 
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentName);
 
@@ -157,7 +172,7 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
     public async Task<bool> ActivateAsync(int courseId)
     {
         var course = await Courses.GetByIdAsync(courseId);
-        if (course is null) return false;
+        if (course is null) throw new CourseNotFoundException(courseId);
         course.Status = CourseStatus.Active;
         Courses.Update(course);
         await _unitOfWork.SaveChangesAsync();
@@ -167,7 +182,7 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
     public async Task<bool> DeactivateAsync(int courseId)
     {
         var course = await Courses.GetByIdAsync(courseId);
-        if (course is null) return false;
+        if (course is null) throw new CourseNotFoundException(courseId);
         course.Status = CourseStatus.Inactive;
         Courses.Update(course);
         await _unitOfWork.SaveChangesAsync();
@@ -179,7 +194,7 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
         var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
 
         if (course is null)
-            return null;
+            throw new CourseNotFoundException(courseId);
 
         return
         [
@@ -205,7 +220,7 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
     public async Task<bool> DeleteAsync(int courseId)
     {
         var course = await Courses.GetByIdAsync(courseId);
-        if (course is null) return false;
+        if (course is null) throw new CourseNotFoundException(courseId);
         Courses.Delete(course);
         await _unitOfWork.SaveChangesAsync();
         return true;
@@ -236,7 +251,7 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
             string.Equals(GetDepartmentCode(d.DepartmentName), normalized, StringComparison.OrdinalIgnoreCase));
 
         if (matched is null)
-            throw new InvalidOperationException("Department not found.");
+            throw new DepartmentNotFoundException(0);
 
         return matched.DepartmentId;
     }

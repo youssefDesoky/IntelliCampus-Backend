@@ -1,5 +1,6 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Shared.Dtos.Role;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
@@ -47,12 +48,12 @@ public class RoleService : IRoleService
 
         var user = await userRepo.GetByIdAsync(dto.UserId);
         if (user is null)
-            throw new InvalidOperationException("User not found.");
+            throw new UserNotFoundException(dto.UserId);
 
         var roles = await roleRepo.GetAllAsync();
         var role = roles.FirstOrDefault(r => r.RoleName == dto.RoleName);
         if (role is null)
-            throw new InvalidOperationException($"Role '{dto.RoleName}' not found.");
+            throw new RoleNotFoundException($"Role '{dto.RoleName}' not found.");
 
         var existing = (await userRoleRepo.GetAllAsync())
             .FirstOrDefault(ur => ur.UserId == dto.UserId && ur.RoleId == role.RoleId);
@@ -153,7 +154,7 @@ public class RoleService : IRoleService
         var userRole = userRoles.FirstOrDefault(ur => ur.UserId == userId && ur.RoleId == roleId);
 
         if (userRole is null)
-            return false;
+            throw new RoleNotFoundException(roleId);
 
         userRoleRepo.Delete(userRole);
         await _unitOfWork.SaveChangesAsync();

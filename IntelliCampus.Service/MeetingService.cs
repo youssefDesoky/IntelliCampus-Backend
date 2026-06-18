@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Shared.Dtos.Meeting;
 
 namespace IntelliCampus.Service;
@@ -12,8 +13,15 @@ public class MeetingService(IUnitOfWork unitOfWork) : IMeetingService
     private IGenericRepository<Meeting, int> Meetings
         => _unitOfWork.GetRepository<Meeting, int>();
 
+    private IGenericRepository<Course, int> Courses
+        => _unitOfWork.GetRepository<Course, int>();
+
     public async Task<IEnumerable<MeetingDto>> GetByCourseIdAsync(int courseId)
     {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
         var all = await Meetings.GetAllAsync();
         return all
             .Where(m => m.CourseId == courseId)
@@ -23,6 +31,10 @@ public class MeetingService(IUnitOfWork unitOfWork) : IMeetingService
 
     public async Task<MeetingDto> CreateAsync(CreateMeetingDto dto, int instructorId)
     {
+        var course = await Courses.GetByIdAsync(dto.CourseId);
+        if (course is null)
+            throw new CourseNotFoundException(dto.CourseId);
+
         var roomName = $"Course-{dto.CourseId}-{Guid.NewGuid().ToString()[..8]}";
 
         var meeting = new Meeting
@@ -43,7 +55,7 @@ public class MeetingService(IUnitOfWork unitOfWork) : IMeetingService
     public async Task<bool> DeleteAsync(int meetingId)
     {
         var meeting = await Meetings.GetByIdAsync(meetingId);
-        if (meeting is null) return false;
+        if (meeting is null) throw new MeetingNotFoundException($"Meeting with ID {meetingId} not found.");
 
         Meetings.Delete(meeting);
         await _unitOfWork.SaveChangesAsync();

@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
@@ -20,6 +21,12 @@ public class AssignmentService(
     private readonly INotificationService _notificationService = notificationService;
     private readonly UrlResolver _urlResolver = urlResolver;
 
+    private IGenericRepository<Course, int> Courses
+        => _unitOfWork.GetRepository<Course, int>();
+
+    private IGenericRepository<Student, int> Students
+        => _unitOfWork.GetRepository<Student, int>();
+
     private IGenericRepository<Assignment, int> Assignments
         => _unitOfWork.GetRepository<Assignment, int>();
 
@@ -36,11 +43,11 @@ public class AssignmentService(
         => _unitOfWork.GetRepository<Reminder, int>();
 
     // Instructor/student (optional student view)
-    public async Task<AssignmentDto?> GetByIdAsync(int assignmentId, int? studentId = null)
+    public async Task<AssignmentDto> GetByIdAsync(int assignmentId, int? studentId = null)
     {
         var spec = new AssignmentSpec(assignmentId);
         var assignment = await Assignments.GetByIdAsync(spec);
-        if (assignment is null) return null;
+        if (assignment is null) throw new AssignmentNotFoundException(assignmentId);
 
         if (studentId is null)
             return MapToDtoWithStatus(assignment, submission: null);
@@ -52,6 +59,10 @@ public class AssignmentService(
 
     public async Task<IEnumerable<AssignmentDto>> GetByCourseIdAsync(int courseId, int? studentId = null)
     {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
         var spec = new AssignmentSpec(courseId, byCourse: true);
         var assignments = await Assignments.GetAllAsync(spec);
 
@@ -75,6 +86,10 @@ public class AssignmentService(
 
     public async Task<AssignmentDto> CreateAsync(int instructorId, CreateAssignmentDto dto)
     {
+        var course = await Courses.GetByIdAsync(dto.CourseId);
+        if (course is null)
+            throw new CourseNotFoundException(dto.CourseId);
+
         // Verify instructor teaches this course (at least one class for this course)
         var instructorTeachesCourse = (await Classes.GetAllAsync())
             .Any(c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
@@ -141,7 +156,7 @@ public class AssignmentService(
     {
         var assignment = await Assignments.GetByIdAsync(assignmentId);
         if (assignment is null)
-            throw new InvalidOperationException("Assignment not found.");
+            throw new AssignmentNotFoundException(assignmentId);
 
         // Verify instructor teaches the course this assignment belongs to
         var instructorTeachesCourse = (await Classes.GetAllAsync())
@@ -185,10 +200,10 @@ public class AssignmentService(
         return MapToDtoWithStatus(result!, submission: null);
     }
 
-    public async Task<bool> DeleteAsync(int assignmentId, int instructorId)
+    public async Task DeleteAsync(int assignmentId, int instructorId)
     {
         var assignment = await Assignments.GetByIdAsync(assignmentId);
-        if (assignment is null) return false;
+        if (assignment is null) throw new AssignmentNotFoundException(assignmentId);
 
         // Verify instructor teaches the course this assignment belongs to
         var instructorTeachesCourse = (await Classes.GetAllAsync())
@@ -199,14 +214,13 @@ public class AssignmentService(
 
         Assignments.Delete(assignment);
         await _unitOfWork.SaveChangesAsync();
-        return true;
     }
 
     public async Task<IEnumerable<SubmissionDto>> GetAllSubmissionsAsync(int assignmentId, int instructorId)
     {
         var assignment = await Assignments.GetByIdAsync(assignmentId);
         if (assignment is null)
-            throw new InvalidOperationException("Assignment not found.");
+            throw new AssignmentNotFoundException(assignmentId);
 
         // Verify instructor teaches the course this assignment belongs to
         var instructorTeachesCourse = (await Classes.GetAllAsync())
@@ -222,6 +236,14 @@ public class AssignmentService(
 
     public async Task<AssignmentStatsDto> GetStatsAsync(int courseId, int studentId)
     {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
         var spec = new AssignmentSpec(courseId, byCourse: true);
         var assignments = await Assignments.GetAllAsync(spec);
         var assignmentIds = assignments.Select(a => a.AssignmentId).ToList();
@@ -251,9 +273,13 @@ public class AssignmentService(
 
     public async Task<SubmissionDto> SubmitAsync(int studentId, int assignmentId, SubmitAssignmentDto dto, IFormFileCollection? files)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
         var assignment = await Assignments.GetByIdAsync(assignmentId);
         if (assignment is null)
-            throw new InvalidOperationException("Assignment not found.");
+            throw new AssignmentNotFoundException(assignmentId);
 
         var existingSpec = new StudentAssignmentSpec(studentId, assignmentId);
         var existing = await StudentAssignments.GetByIdAsync(existingSpec);
@@ -318,10 +344,10 @@ public class AssignmentService(
         return MapSubmissionToDto(result!);
     }
 
-    public async Task<AssignmentDto?> GradeSubmissionAsync(int instructorId, GradeSubmissionDto dto)
+    public async Task<AssignmentDto> GradeSubmissionAsync(int instructorId, GradeSubmissionDto dto)
     {
         var submission = await StudentAssignments.GetByIdAsync(dto.StudentAssignmentId);
-        if (submission is null) return null;
+        if (submission is null) throw new StudentAssignmentNotFoundException(dto.StudentAssignmentId);
 
         var assignment = await Assignments.GetByIdAsync(submission.AssignmentId);
 

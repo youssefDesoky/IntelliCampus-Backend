@@ -5,6 +5,7 @@ using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Instructor;
 using System.Globalization;
 using IntelliCampus.Service.Specifications;
+using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
 
@@ -25,13 +26,13 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
     private IGenericRepository<Role, int> RolesRepo
         => _unitOfWork.GetRepository<Role, int>();
 
-    public async Task<InstructorDto?> GetByIdAsync(int instructorId)
+    public async Task<InstructorDto> GetByIdAsync(int instructorId)
     {
         var spec = new InstructorSpec(instructorId);
         var instructor = await Instructors.GetByIdAsync(spec);
 
         if (instructor is null)
-            return null;
+            throw new InstructorNotFoundException(instructorId);
 
         return MapToDto(instructor);
     }
@@ -107,13 +108,13 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         return MapToDto(instructor);
     }
 
-    public async Task<InstructorDto?> UpdateAsync(int instructorId, UpdateInstructorDto dto)
+    public async Task<InstructorDto> UpdateAsync(int instructorId, UpdateInstructorDto dto)
     {
         var spec = new InstructorSpec(instructorId);
         var instructor = await Instructors.GetByIdAsync(spec);
 
         if (instructor is null)
-            return null;
+            throw new InstructorNotFoundException(instructorId);
 
         if (dto.Email is not null && dto.Email != instructor.Email)
         {
@@ -181,18 +182,16 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         };
     }
 
-    public async Task<bool> DeleteAsync(int instructorId)
+    public async Task DeleteAsync(int instructorId)
     {
         var spec = new InstructorSpec(instructorId);
         var instructor = await Instructors.GetByIdAsync(spec);
 
         if (instructor is null)
-            return false;
+            throw new InstructorNotFoundException(instructorId);
 
         Instructors.Delete(instructor);
         await _unitOfWork.SaveChangesAsync();
-
-        return true;
     }
 
     private async Task<int?> ResolveDepartmentIdAsync(string? departmentName)
@@ -218,7 +217,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             string.Equals(GetDepartmentCode(d.DepartmentName), normalized, StringComparison.OrdinalIgnoreCase));
 
         if (matched is null)
-            throw new InvalidOperationException("Department not found.");
+            throw int.TryParse(departmentName, out var parsedId) ? new DepartmentNotFoundException(parsedId) : new DepartmentNotFoundException(0);
 
         return matched.DepartmentId;
     }

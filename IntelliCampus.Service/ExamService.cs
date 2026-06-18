@@ -4,6 +4,7 @@ using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Exam;
+using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
 
@@ -31,12 +32,16 @@ public class ExamService : IExamService
         => _unitOfWork.GetRepository<Class, int>();
     private IGenericRepository<StudentCourse, int> StudentCourseRepo
         => _unitOfWork.GetRepository<StudentCourse, int>();
+    private IGenericRepository<Course, int> CoursesRepo
+        => _unitOfWork.GetRepository<Course, int>();
 
     public async Task<ExamDto?> GetByIdAsync(int examId)
     {
         var spec = new ExamWithDetailsSpec(examId);
         var exam = await Exams.GetByIdAsync(spec);
-        return exam is null ? null : MapToDto(exam);
+        if (exam is null)
+            throw new ExamNotFoundException(examId);
+        return MapToDto(exam);
     }
 
     public async Task<IEnumerable<ExamDto>> GetAllAsync()
@@ -48,6 +53,10 @@ public class ExamService : IExamService
 
     public async Task<IEnumerable<ExamDto>> GetByCourseIdAsync(int courseId)
     {
+        var course = await CoursesRepo.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
         var spec = new ExamWithDetailsSpec();
         var all = await Exams.GetAllAsync(spec);
         return all.Where(e => e.CourseId == courseId).Select(MapToDto);
@@ -55,6 +64,10 @@ public class ExamService : IExamService
 
     public async Task<ExamDto> CreateAsync(CreateExamDto dto)
     {
+        var course = await CoursesRepo.GetByIdAsync(dto.CourseId);
+        if (course is null)
+            throw new CourseNotFoundException(dto.CourseId);
+
         var conflicts = await GetConflictsAsync(dto.CourseId, dto.Date, dto.Time, dto.Time.Add(TimeSpan.FromMinutes(dto.DurationMinutes)));
         if (conflicts.Count > 0)
             throw new InvalidOperationException($"Schedule conflict detected: {conflicts.Count} student(s) have overlapping exams.");
@@ -90,7 +103,7 @@ public class ExamService : IExamService
         var exam = await Exams.GetByIdAsync(spec);
 
         if (exam is null)
-            return null;
+            throw new ExamNotFoundException(examId);
 
         var effectiveCourseId = dto.CourseId ?? exam.CourseId;
         var effectiveDate = dto.Date ?? exam.Date;
@@ -155,7 +168,7 @@ public class ExamService : IExamService
         var exam = await Exams.GetByIdAsync(examId);
 
         if (exam is null)
-            return false;
+            throw new ExamNotFoundException(examId);
 
         await _examScheduleService.RemoveByExamAsync(examId);
 

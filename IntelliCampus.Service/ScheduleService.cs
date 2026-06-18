@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Export;
@@ -27,15 +28,23 @@ public class ScheduleService : IScheduleService
     private IGenericRepository<Class, int> Classes
         => _unitOfWork.GetRepository<Class, int>();
 
-    public async Task<ScheduleDto?> GetByIdAsync(int scheduleId)
+    private IGenericRepository<Student, int> Students
+        => _unitOfWork.GetRepository<Student, int>();
+
+    public async Task<ScheduleDto> GetByIdAsync(int scheduleId)
     {
         var spec = new ScheduleSpec(scheduleId, byId: true);
         var schedule = await Schedules.GetByIdAsync(spec);
-        return schedule is null ? null : MapToDto(schedule);
+        if (schedule is null) throw new ScheduleNotFoundException(scheduleId);
+        return MapToDto(schedule);
     }
 
     public async Task<IEnumerable<ScheduleDto>> GetByStudentIdAsync(int studentId)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
         var spec = new ScheduleSpec(studentId);
         var schedules = await Schedules.GetAllAsync(spec);
         return schedules.Select(MapToDto);
@@ -43,6 +52,10 @@ public class ScheduleService : IScheduleService
 
     public async Task<IEnumerable<ScheduleDto>> GetByStudentIdAndTypeAsync(int studentId, ScheduleType type)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
         var spec = new ScheduleSpec(studentId, type);
         var schedules = await Schedules.GetAllAsync(spec);
         return schedules.Select(MapToDto);
@@ -50,6 +63,10 @@ public class ScheduleService : IScheduleService
 
     public async Task<IEnumerable<ScheduleDto>> GetByStudentIdAndTypesAsync(int studentId, IReadOnlyCollection<ScheduleType> types)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
         if (types is null || types.Count == 0)
             return await GetByStudentIdAsync(studentId);
 
@@ -68,7 +85,7 @@ public class ScheduleService : IScheduleService
     {
         var cls = await Classes.GetByIdAsync(new ClassByIdSpec(classId));
         if (cls is null)
-            throw new InvalidOperationException("Class not found.");
+            throw new ClassNotFoundException(classId);
 
         if (cls.StartTime is null || cls.EndTime is null)
             throw new InvalidOperationException("Class schedule is not fully defined (StartTime/EndTime).");
@@ -112,7 +129,7 @@ public class ScheduleService : IScheduleService
     {
         var cls = await Classes.GetByIdAsync(new ClassByIdSpec(classId));
         if (cls is null)
-            throw new InvalidOperationException("Class not found.");
+            throw new ClassNotFoundException(classId);
 
         if (cls.StartTime is null || cls.EndTime is null)
             throw new InvalidOperationException("Class schedule is not fully defined (StartTime/EndTime).");

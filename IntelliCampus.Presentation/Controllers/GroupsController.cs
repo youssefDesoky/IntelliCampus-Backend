@@ -23,15 +23,8 @@ public class GroupsController(IGroupService groupService) : ControllerBase
         if (dto.MemberIds.Count == 0)
             return BadRequest(new { error = "At least one member must be selected" });
 
-        try
-        {
-            var result = await groupService.CreateGroupAsync(UserId, dto.Title, dto.Description, dto.MemberIds, dto.ProfileImage);
-            return Ok(result);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { error = ex.Message });
-        }
+        var result = await groupService.CreateGroupAsync(UserId, dto.Title, dto.Description, dto.MemberIds, dto.ProfileImage);
+        return Ok(result);
     }
 
     [HttpGet]
@@ -41,37 +34,20 @@ public class GroupsController(IGroupService groupService) : ControllerBase
     [HttpGet("{groupId}")]
     public async Task<IActionResult> GetGroupById(int groupId)
     {
-        var group = await groupService.GetGroupByIdAsync(groupId, UserId);
-        if (group == null)
-            return NotFound(new { error = "Group not found" });
-        return Ok(group);
+        return Ok(await groupService.GetGroupByIdAsync(groupId, UserId));
     }
 
     [HttpPost("{groupId}/members/{userId}")]
     public async Task<IActionResult> AddMember(int groupId, int userId)
     {
-        try
-        {
-            var result = await groupService.AddMemberAsync(groupId, userId, UserId);
-            return result ? Ok() : BadRequest(new { error = "Could not add member" });
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Forbid();
-        }
+        var result = await groupService.AddMemberAsync(groupId, userId, UserId);
+        return result ? Ok() : BadRequest(new { error = "Could not add member" });
     }
 
     [HttpDelete("{groupId}/members/{userId}")]
     public async Task<IActionResult> RemoveMember(int groupId, int userId)
     {
-        try
-        {
-            var result = await groupService.RemoveMemberAsync(groupId, userId, UserId);
-            return result ? Ok() : NotFound(new { error = "Member not found" });
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Forbid();
-        }
+        await groupService.RemoveMemberAsync(groupId, userId, UserId);
+        return Ok();
     }
 }

@@ -5,6 +5,7 @@ using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
+using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
 
@@ -21,13 +22,16 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
     private IGenericRepository<Role, int> RolesRepo
         => _unitOfWork.GetRepository<Role, int>();
 
-    public async Task<AdminDto?> GetByIdAsync(int adminId)
+    private IGenericRepository<Faculty, int> Faculties
+        => _unitOfWork.GetRepository<Faculty, int>();
+
+    public async Task<AdminDto> GetByIdAsync(int adminId)
     {
         var spec = new AdminByIdSpec(adminId);
         var admin = await Admins.GetByIdAsync(spec);
 
         if (admin is null)
-            return null;
+            throw new AdminNotFoundException(adminId);
 
         return MapToDto(admin);
     }
@@ -54,6 +58,13 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         {
             var creator = await Users.GetByIdAsync(creatorUserId.Value);
             facultyId = creator?.FacultyId;
+        }
+
+        if (facultyId.HasValue)
+        {
+            var faculty = await Faculties.GetByIdAsync(facultyId.Value);
+            if (faculty is null)
+                throw new InvalidOperationException($"Faculty with ID {facultyId.Value} not found.");
         }
 
         var roleName = ResolveAdminRoleName(dto.AdminRole);
@@ -90,21 +101,19 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         return MapToDto(admin);
     }
 
-    public async Task<bool> DeleteAsync(int adminId)
+    public async Task DeleteAsync(int adminId)
     {
         var spec = new AdminByIdSpec(adminId);
         var admin = await Admins.GetByIdAsync(spec);
 
         if (admin is null)
-            return false;
+            throw new AdminNotFoundException(adminId);
 
         if (admin.UserRoles.Any(ur => ur.IsActive && ur.Role.RoleName == nameof(UserRole.SuperAdmin)))
             throw new InvalidOperationException("Cannot delete the SuperAdmin account.");
 
         Admins.Delete(admin);
         await _unitOfWork.SaveChangesAsync();
-
-        return true;
     }
 
     private static string ResolveAdminRoleName(string? adminRole)

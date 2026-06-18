@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Friend;
@@ -34,7 +35,7 @@ public class FriendService : IFriendService
 
         var recipient = await Users.GetByIdAsync(recipientId);
         if (recipient == null)
-            throw new InvalidOperationException("Recipient not found");
+            throw new UserNotFoundException("Recipient not found");
 
         var existingRequest = (await FriendRequests.GetAllAsync())
             .FirstOrDefault(fr =>
@@ -88,6 +89,10 @@ public class FriendService : IFriendService
 
     public async Task<IEnumerable<FriendRequestDto>> GetPendingRequestsAsync(int userId)
     {
+        var user = await Users.GetByIdAsync(userId);
+        if (user is null)
+            throw new UserNotFoundException(userId);
+
         var requests = (await FriendRequests.GetAllAsync())
             .Where(fr => fr.RecipientId == userId && fr.Status == FriendRequestStatus.Pending)
             .OrderByDescending(fr => fr.CreatedAt)
@@ -108,7 +113,7 @@ public class FriendService : IFriendService
     {
         var request = await FriendRequests.GetByIdAsync(requestId);
         if (request == null)
-            throw new InvalidOperationException("Friend request not found");
+            throw new FriendRequestNotFoundException("Friend request not found");
 
         if (request.RecipientId != userId)
             throw new UnauthorizedAccessException("Cannot accept this request");
@@ -137,7 +142,7 @@ public class FriendService : IFriendService
     {
         var request = await FriendRequests.GetByIdAsync(requestId);
         if (request == null)
-            throw new InvalidOperationException("Friend request not found");
+            throw new FriendRequestNotFoundException("Friend request not found");
 
         if (request.RecipientId != userId)
             throw new UnauthorizedAccessException("Cannot decline this request");
@@ -156,6 +161,10 @@ public class FriendService : IFriendService
 
     public async Task<IEnumerable<FriendDto>> GetFriendsAsync(int userId)
     {
+        var user = await Users.GetByIdAsync(userId);
+        if (user is null)
+            throw new UserNotFoundException(userId);
+
         var friendships = (await Friendships.GetAllAsync())
             .Where(f => f.UserId1 == userId || f.UserId2 == userId)
             .ToList();

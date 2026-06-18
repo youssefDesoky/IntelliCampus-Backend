@@ -17,7 +17,7 @@ public class ScheduleController(IScheduleService scheduleService) : ControllerBa
     public async Task<IActionResult> GetById(int scheduleId)
     {
         var result = await scheduleService.GetByIdAsync(scheduleId);
-        return result is null ? NotFound() : Ok(result);
+        return Ok(result);
     }
 
     [HttpGet("student/{studentId}")]

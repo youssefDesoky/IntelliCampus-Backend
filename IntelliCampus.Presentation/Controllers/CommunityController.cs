@@ -74,17 +74,13 @@ public class CommunityController(
             return BadRequest("Content is required.");
 
         var post = await communityService.UpdatePostAsync(postId, UserId, request.Content);
-        if (post is null) return Forbid();
-
         return Ok(new { post.PostId, post.Content });
     }
 
     [HttpDelete("questions/{postId}")]
     public async Task<IActionResult> DeleteQuestion(int postId)
     {
-        var deleted = await communityService.DeletePostAsync(postId, UserId);
-        if (!deleted) return Forbid();
-
+        await communityService.DeletePostAsync(postId, UserId);
         return NoContent();
     }
 
@@ -107,9 +103,7 @@ public class CommunityController(
     [HttpDelete("comments/{commentId}")]
     public async Task<IActionResult> DeleteComment(int commentId)
     {
-        var deleted = await communityService.DeleteCommentAsync(commentId, UserId);
-        if (!deleted) return Forbid();
-
+        await communityService.DeleteCommentAsync(commentId, UserId);
         return NoContent();
     }
 
@@ -124,10 +118,6 @@ public class CommunityController(
     public async Task<IActionResult> RouteQuestion(int courseId, [FromBody] RouteQuestionRequest request)
     {
         var result = await communityService.RouteQuestionAsync(courseId, request.PostId, request.TopN ?? 3);
-
-        if (result is null)
-            return NotFound("Post not found.");
-
         return Ok(result);
     }
 }

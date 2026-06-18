@@ -35,10 +35,6 @@ public class SpecializationController : ControllerBase
     public async Task<ActionResult<SpecializationDto>> GetById(int id)
     {
         var item = await _specializationService.GetByIdAsync(id);
-
-        if (item is null)
-            return NotFound();
-
         return Ok(item);
     }
 
@@ -46,45 +42,23 @@ public class SpecializationController : ControllerBase
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult<SpecializationDto>> Create([FromBody] CreateSpecializationDto dto)
     {
-        try
-        {
-            var item = await _specializationService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = item.SpecializationId }, item);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var item = await _specializationService.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = item.SpecializationId }, item);
     }
 
     [HttpPut("{id}")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult<SpecializationDto>> Update(int id, [FromBody] UpdateSpecializationDto dto)
     {
-        try
-        {
-            var item = await _specializationService.UpdateAsync(id, dto);
-
-            if (item is null)
-                return NotFound();
-
-            return Ok(item);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var item = await _specializationService.UpdateAsync(id, dto);
+        return Ok(item);
     }
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _specializationService.DeleteAsync(id);
-
-        if (!result)
-            return NotFound();
-
+        await _specializationService.DeleteAsync(id);
         return NoContent();
     }
 }

@@ -36,8 +36,8 @@ public class NotificationsController(INotificationService notificationService, I
     [HttpPut("{notificationId}/read")]
     public async Task<IActionResult> MarkAsRead(int notificationId)
     {
-        var result = await notificationService.MarkAsReadAsync(notificationId, UserId);
-        return result ? Ok() : NotFound();
+        await notificationService.MarkAsReadAsync(notificationId, UserId);
+        return Ok();
     }
 
     [HttpPut("read-all")]
@@ -50,8 +50,8 @@ public class NotificationsController(INotificationService notificationService, I
     [HttpDelete("{notificationId}")]
     public async Task<IActionResult> Delete(int notificationId)
     {
-        var result = await notificationService.DeleteAsync(notificationId, UserId);
-        return result ? Ok() : NotFound();
+        await notificationService.DeleteAsync(notificationId, UserId);
+        return Ok();
     }
 
     [HttpPost("send")]
