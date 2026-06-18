@@ -275,7 +275,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             Specialization = instructor.Specialization,
             DepartmentId = instructor.DepartmentId,
             DepartmentName = instructor.Department?.DepartmentName,
-            HireDate = instructor.HireDate,
+            HireDate = instructor.HireDate?.ToString("dd MM yyyy"),
             FacultyId = instructor.FacultyId,
             FacultyName = instructor.Faculty?.FacultyName,
             Status = instructor.Status?.ToString(),

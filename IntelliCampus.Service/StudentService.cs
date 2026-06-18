@@ -126,7 +126,7 @@ public class StudentService : IStudentService
             DepartmentId = departmentId,
             BylawId = bylawId,
             EnrollmentDate = enrollmentDate,
-            Program = studentType == StudentType.UnderGrad ? dto.Program : StudentProgram.General,
+            Program = studentType is StudentType.UnderGrad ? dto.Program : StudentProgram.General,
             SpecializationId = dto.SpecializationId
         };
 
@@ -184,7 +184,7 @@ public class StudentService : IStudentService
 
         if (dto.BylawId.HasValue) student.BylawId = dto.BylawId;
 
-        if (dto.Program.HasValue && student.StudentType == StudentType.UnderGrad)
+        if (dto.Program.HasValue && student.StudentType is StudentType.UnderGrad)
             student.Program = dto.Program;
         if (dto.SpecializationId.HasValue) student.SpecializationId = dto.SpecializationId.Value;
 
@@ -237,6 +237,7 @@ public class StudentService : IStudentService
             "undergrad" or "under_grad" => StudentType.UnderGrad,
             "masters" or "master" => StudentType.Masters,
             "phd" => StudentType.PhD,
+            "diploma" => StudentType.Diploma,
             _ => StudentType.UnderGrad
         };
     }
@@ -247,6 +248,7 @@ public class StudentService : IStudentService
         {
             StudentType.Masters => "Student_Masters",
             StudentType.PhD => "Student_PhD",
+            StudentType.Diploma => "Student_Diploma",
             _ => "Student_UnderGrad"
         };
     }

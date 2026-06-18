@@ -21,27 +21,27 @@ public class ExamScheduleController(IExamScheduleService examScheduleService) : 
     }
 
     [HttpGet("my-exams")]
-    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<IActionResult> GetMyExams()
         => Ok(await examScheduleService.GetByStudentIdAsync(UserId));
 
     [HttpGet("my-exams/midterms")]
-    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<IActionResult> GetMidterms()
         => Ok(await examScheduleService.GetByTypeAsync(UserId, ExamType.Midterm));
 
     [HttpGet("my-exams/finals")]
-    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<IActionResult> GetFinals()
         => Ok(await examScheduleService.GetByTypeAsync(UserId, ExamType.Final));
 
     [HttpGet("my-exams/upcoming")]
-    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<IActionResult> GetUpcoming()
         => Ok(await examScheduleService.GetByStatusAsync(UserId, ExamStatus.Upcoming));
 
     [HttpGet("my-exams/export")]
-    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<IActionResult> ExportMyExams([FromQuery] ExamType? type, [FromQuery] ExamStatus? status)
     {
         var pdf = await examScheduleService.ExportExamSchedulePdfAsync(UserId, type, status);

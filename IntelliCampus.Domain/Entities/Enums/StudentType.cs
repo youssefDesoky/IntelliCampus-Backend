@@ -4,5 +4,6 @@ public enum StudentType
 {
     UnderGrad,
     Masters,
-    PhD
+    PhD,
+    Diploma,
 }

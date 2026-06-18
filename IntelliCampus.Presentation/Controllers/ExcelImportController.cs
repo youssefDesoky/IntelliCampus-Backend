@@ -10,7 +10,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin,Instructor")]
+[Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin,Instructor")]
 public class ExcelImportController : ControllerBase
 {
     private readonly IExcelImportService _excelImportService;
@@ -23,42 +23,42 @@ public class ExcelImportController : ControllerBase
     }
 
     [HttpPost("students")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<ActionResult<ExcelImportResultDto>> ImportStudents(IFormFile file, [FromQuery] int? bylawId = null)
     {
         return await Import(ImportEntityType.Students, file, bylawId);
     }
 
     [HttpPost("courses")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<ActionResult<ExcelImportResultDto>> ImportCourses(IFormFile file)
     {
         return await Import(ImportEntityType.Courses, file);
     }
 
     [HttpPost("instructors")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<ActionResult<ExcelImportResultDto>> ImportInstructors(IFormFile file)
     {
         return await Import(ImportEntityType.Instructors, file);
     }
 
     [HttpPost("rooms")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<ActionResult<ExcelImportResultDto>> ImportRooms(IFormFile file)
     {
         return await Import(ImportEntityType.Rooms, file);
     }
 
     [HttpPost("departments")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<ActionResult<ExcelImportResultDto>> ImportDepartments(IFormFile file)
     {
         return await Import(ImportEntityType.Departments, file);
     }
 
     [HttpPost("sections")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<ActionResult<ExcelImportResultDto>> ImportSections(IFormFile file)
     {
         return await Import(ImportEntityType.Sections, file);
@@ -71,7 +71,7 @@ public class ExcelImportController : ControllerBase
     }
 
     [HttpPost("exams")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<ActionResult<ExcelImportResultDto>> ImportExams(IFormFile file)
     {
         return await Import(ImportEntityType.Exams, file);

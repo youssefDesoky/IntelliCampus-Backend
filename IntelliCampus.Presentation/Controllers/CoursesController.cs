@@ -46,7 +46,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpGet("my-courses")]
-    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
+    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<ActionResult<IEnumerable<CourseDto>>> GetMyStudentCourses()
     {
         var userId = GetCurrentUserId();
@@ -96,7 +96,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<ActionResult<CourseDto>> Create([FromBody] CreateCourseDto dto)
     {
         var course = await _courseService.CreateAsync(dto);
@@ -104,7 +104,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<ActionResult<CourseDto>> Update(int id, [FromBody] CreateCourseDto dto)
     {
         var course = await _courseService.UpdateAsync(id, dto);
@@ -113,7 +113,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPatch("{id}/activate")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<IActionResult> Activate(int id)
     {
         await _courseService.ActivateAsync(id);
@@ -122,7 +122,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPatch("{id}/deactivate")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<IActionResult> Deactivate(int id)
     {
         await _courseService.DeactivateAsync(id);
@@ -131,7 +131,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
         await _courseService.DeleteAsync(id);
@@ -158,7 +158,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPost("{courseId}/announcements")]
-    [Authorize(Roles = "Instructor,Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Instructor,Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     [RequestSizeLimit(50 * 1024 * 1024)]
     [RequestFormLimits(MultipartBodyLengthLimit = 50 * 1024 * 1024)]
     public async Task<ActionResult<AnnouncementDto>> CreateAnnouncement(int courseId, [FromForm] AnnouncementContentDto dto, IFormFile? file)
@@ -193,7 +193,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPut("{courseId}/announcements/{announcementId}")]
-    [Authorize(Roles = "Instructor,Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Instructor,Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<ActionResult<AnnouncementDto>> UpdateAnnouncement(int courseId, int announcementId, [FromBody] AnnouncementContentDto dto)
     {
         var senderId = GetCurrentUserId();
@@ -205,7 +205,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpDelete("{courseId}/announcements/{announcementId}")]
-    [Authorize(Roles = "Instructor,Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Instructor,Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<IActionResult> DeleteAnnouncement(int courseId, int announcementId)
     {
         await _announcementService.DeleteAsync(announcementId);

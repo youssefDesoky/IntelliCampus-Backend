@@ -37,7 +37,7 @@ public class ClassesController : ControllerBase
         return Ok(classes);
     }
 
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     [HttpPost("lecture")]
     public async Task<ActionResult<ClassDto>> CreateLecture([FromBody] CreateLectureDto dto)
     {
@@ -45,7 +45,7 @@ public class ClassesController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = classDto.ClassId }, classDto);
     }
 
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     [HttpPost("section")]
     public async Task<ActionResult<ClassDto>> CreateSection([FromBody] CreateSectionDto dto)
     {
@@ -53,7 +53,7 @@ public class ClassesController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = classDto.ClassId }, classDto);
     }
 
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     [HttpPut("{id}/instructor/{instructorId}")]
     public async Task<ActionResult<ClassDto>> AssignInstructor(int id, int instructorId)
     {
@@ -61,7 +61,7 @@ public class ClassesController : ControllerBase
         return Ok(classDto);
     }
 
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

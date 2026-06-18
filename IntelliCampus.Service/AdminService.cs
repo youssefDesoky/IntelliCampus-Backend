@@ -136,6 +136,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             "undergrad" or "under_grad" => "Admin_UnderGrad",
             "masters" or "postgrad" or "post_grad" => "Admin_Masters",
             "phd" => "Admin_PhD",
+            "diploma" => "Admin_Diploma",
             "academicstaff" or "academic_staff" => "Admin_AcademicStaff",
             "superadmin" => "SuperAdmin",
             _ => "Admin_UnderGrad"

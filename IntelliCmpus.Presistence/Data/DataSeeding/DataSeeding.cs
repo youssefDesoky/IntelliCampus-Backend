@@ -633,7 +633,7 @@ public class DataSeed : IDataSeed
                 Gpa = dto.Gpa,
                 SpecializationId = dto.SpecializationId,
                 StudentType = Enum.TryParse<StudentType>(dto.StudentType, out var st) ? st : StudentType.UnderGrad,
-                Program = dto.StudentType is "Masters" or "PhD" ? StudentProgram.General : Enum.TryParse<StudentProgram>(dto.Program, out var prog) ? prog : null
+                Program = dto.StudentType is "Masters" or "PhD" or "Diploma" ? StudentProgram.General : Enum.TryParse<StudentProgram>(dto.Program, out var prog) ? prog : null
             };
             _dbContext.Students.Add(entity);
             await _dbContext.SaveChangesAsync();
