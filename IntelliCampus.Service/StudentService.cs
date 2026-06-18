@@ -304,7 +304,7 @@ public class StudentService : IStudentService
     {
         return new StudentDto
         {
-            StudentId = student.StudentId,
+            StudentId = student.UserId,
             UserId = student.UserId,
             NationalId = student.NationalId,
             FullName = student.FullName,
