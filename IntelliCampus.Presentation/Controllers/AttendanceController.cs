@@ -24,7 +24,7 @@ public class AttendanceController(
     public async Task<IActionResult> GetSession(int sessionId)
     {
         var result = await sessionService.GetByIdAsync(sessionId);
-        return result is null ? NotFound() : Ok(result);
+        return Ok(result);
     }
 
     [HttpGet("sessions/class/{classId}")]
@@ -39,7 +39,10 @@ public class AttendanceController(
     [HttpDelete("sessions/{sessionId}")]
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> DeleteSession(int sessionId)
-        => Ok(await sessionService.DeleteAsync(sessionId, UserId));
+    {
+        await sessionService.DeleteAsync(sessionId, UserId);
+        return Ok();
+    }
 
     // ─── QR — Student dashboard ────────────────────────────────────────────────
 

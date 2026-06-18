@@ -1,3 +1,4 @@
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Shared.Dtos.Material;
 using IntelliCampus.Service_Abstraction;
@@ -42,13 +43,17 @@ public class MaterialService(
         var material = await Materials.GetByIdAsync(new MaterialSpec(materialId));
 
         if (material is null)
-            return null;
+            throw new MaterialNotFoundException();
 
         return MapToDto(material);
     }
 
     public async Task<IEnumerable<MaterialDto>> GetByCourseIdAsync(int courseId)
     {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
         var materials = await Materials.GetAllAsync(new MaterialSpec(courseId, byCourse: true));
 
         return materials.Select(MapToDto);
@@ -59,7 +64,7 @@ public class MaterialService(
         var course = await Courses.GetByIdAsync(courseId);
 
         if (course is null)
-            return null;
+            throw new CourseNotFoundException();
 
         var folders = await Folders.GetAllAsync(new MaterialFolderSpec(courseId, byCourse: true));
 
@@ -99,7 +104,7 @@ public class MaterialService(
         var course = await Courses.GetByIdAsync(dto.CourseId);
 
         if (course is null)
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException("Course not found.");
 
         // Verify the instructor teaches at least one class in this course
         var instructorTeachesCourse = await Classes.AnyAsync(c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
@@ -114,7 +119,7 @@ public class MaterialService(
             folder = await Folders.GetByIdAsync(new MaterialFolderSpec(dto.FolderId.Value, dto.CourseId));
 
             if (folder is null)
-                throw new InvalidOperationException("Folder not found or does not belong to this course.");
+                throw new FolderNotFoundException("Folder not found or does not belong to this course.");
         }
 
         var material = new Material
@@ -174,7 +179,7 @@ public class MaterialService(
         var material = await Materials.GetByIdAsync(new MaterialSpec(materialId, forDelete: "true"));
 
         if (material is null)
-            return false;
+            throw new MaterialNotFoundException();
 
         // Check if the instructor owns this material
         var isOwner = material.InstructorMaterials.Any(im => im.InstructorId == instructorId);
@@ -192,7 +197,7 @@ public class MaterialService(
         var material = await Materials.GetByIdAsync(new MaterialSpec(materialId));
 
         if (material is null)
-            return null;
+            throw new MaterialNotFoundException();
 
         return (material.FileUrl, Path.GetFileName(material.FileUrl));
     }
@@ -206,13 +211,17 @@ public class MaterialService(
         var folder = await Folders.GetByIdAsync(new MaterialFolderSpec(folderId));
 
         if (folder is null)
-            return null;
+            throw new FolderNotFoundException();
 
         return MapFolderToDto(folder);
     }
 
     public async Task<IEnumerable<MaterialFolderDto>> GetFoldersByCourseIdAsync(int courseId)
     {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
         var folders = await Folders.GetAllAsync(new MaterialFolderSpec(courseId, byCourse: true));
 
         return folders.Select(MapFolderToDto);
@@ -223,7 +232,7 @@ public class MaterialService(
         // Verify the course exists
         var course = await Courses.GetByIdAsync(dto.CourseId);
         if (course is null)
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException("Course not found.");
 
         // Verify the instructor teaches at least one class in this course
         var instructorTeachesCourse = await Classes.AnyAsync(c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
@@ -271,7 +280,7 @@ public class MaterialService(
         var folder = await Folders.GetByIdAsync(new MaterialFolderSpec(folderId));
 
         if (folder is null)
-            return null;
+            throw new FolderNotFoundException();
 
         // Check if the instructor created this folder or teaches the course
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == folder.CourseId && c.InstructorId == instructorId);
@@ -293,7 +302,7 @@ public class MaterialService(
         var folder = await Folders.GetByIdAsync(new MaterialFolderSpec(folderId, materialsOnly: "true"));
 
         if (folder is null)
-            return false;
+            throw new FolderNotFoundException();
 
         // Check if the instructor created this folder
         if (folder.CreatedByInstructorId != instructorId)

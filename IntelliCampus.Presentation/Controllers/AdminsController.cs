@@ -29,43 +29,21 @@ public class AdminsController : ControllerBase
     public async Task<ActionResult<AdminDto>> GetById(int id)
     {
         var admin = await _adminService.GetByIdAsync(id);
-
-        if (admin is null)
-            return NotFound();
-
         return Ok(admin);
     }
 
     [HttpPost]
     public async Task<ActionResult<AdminDto>> Create([FromBody] CreateAdminDto dto)
     {
-        try
-        {
-            var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var admin = await _adminService.CreateAsync(dto, creatorUserId is not null ? int.Parse(creatorUserId) : null);
-            return CreatedAtAction(nameof(GetById), new { id = admin.UserId }, admin);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var admin = await _adminService.CreateAsync(dto, creatorUserId is not null ? int.Parse(creatorUserId) : null);
+        return CreatedAtAction(nameof(GetById), new { id = admin.UserId }, admin);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        try
-        {
-            var result = await _adminService.DeleteAsync(id);
-
-            if (!result)
-                return NotFound();
-
-            return NoContent();
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        await _adminService.DeleteAsync(id);
+        return NoContent();
     }
 }

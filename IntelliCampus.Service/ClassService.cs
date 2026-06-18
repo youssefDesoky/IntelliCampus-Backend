@@ -4,6 +4,7 @@ using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 
 namespace IntelliCampus.Service;
@@ -27,7 +28,7 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         var classEntity = await Classes.GetByIdAsync(spec);
 
         if (classEntity is null)
-            return null;
+            throw new ClassNotFoundException(classId);
 
         return MapToDto(classEntity);
     }
@@ -42,6 +43,10 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
 
     public async Task<IEnumerable<ClassDto>> GetByCourseIdAsync(int courseId)
     {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
         var spec = new ClassSpec(courseId, byCourse: true);
         var classes = await Classes.GetAllAsync(spec);
 
@@ -59,7 +64,7 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         var course = await Courses.GetByIdAsync(courseSpec);
 
         if (course is null)
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException(dto.CourseId);
 
         // Only one Lecture class per course
         if (classType == ClassType.Lecture)
@@ -78,7 +83,7 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
             var instructor = await Instructors.GetByIdAsync(spec);
 
             if (instructor is null)
-                throw new InvalidOperationException($"Instructor '{dto.InstructorName}' not found.");
+                throw new InstructorNotFoundException($"Instructor '{dto.InstructorName}' not found.");
 
             ValidateInstructorRoleForClassType(instructor, classType);
             instructorId = instructor.UserId;
@@ -133,7 +138,7 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         var course = await Courses.GetByIdAsync(courseSpec);
 
         if (course is null)
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException(courseId);
 
         if (classType == ClassType.Lecture)
         {
@@ -149,7 +154,7 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
             var instructor = await Instructors.GetByIdAsync(spec);
 
             if (instructor is null)
-                throw new InvalidOperationException($"Instructor '{instructorName}' not found.");
+                throw new InstructorNotFoundException($"Instructor '{instructorName}' not found.");
 
             ValidateInstructorRoleForClassType(instructor, classType);
             instructorId = instructor.UserId;
@@ -188,11 +193,11 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         var classEntity = await Classes.GetByIdAsync(spec);
 
         if (classEntity is null)
-            return null;
+            throw new ClassNotFoundException(classId);
 
         var instructor = await Instructors.GetByIdAsync(instructorId);
         if (instructor is null)
-            throw new InvalidOperationException("Instructor not found.");
+            throw new InstructorNotFoundException(instructorId);
 
         ValidateInstructorRoleForClassType(instructor, classEntity.ClassType);
 
@@ -211,7 +216,7 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         var classEntity = await Classes.GetByIdAsync(classId);
 
         if (classEntity is null)
-            return false;
+            throw new ClassNotFoundException(classId);
 
         Classes.Delete(classEntity);
         await _unitOfWork.SaveChangesAsync();

@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Shared.Dtos.ChatMessage;
 
 namespace IntelliCampus.Service;
@@ -39,6 +40,17 @@ public class ChatService : IChatService
 
     public async Task<IEnumerable<ChatMessageDto>> GetChatHistoryAsync(string userId1, string userId2)
     {
+        if (!int.TryParse(userId1, out var id1) || !int.TryParse(userId2, out var id2))
+            throw new InvalidOperationException("Invalid user IDs.");
+
+        var user1 = await Users.GetByIdAsync(id1);
+        if (user1 is null)
+            throw new UserNotFoundException(id1);
+
+        var user2 = await Users.GetByIdAsync(id2);
+        if (user2 is null)
+            throw new UserNotFoundException(id2);
+
         var messages = (await Messages.GetAllAsync())
             .Where(m =>
                 (m.SenderId == userId1 && m.RecipientId == userId2) ||
@@ -103,9 +115,9 @@ public class ChatService : IChatService
 
         var message = await Messages.GetByIdAsync(msgId);
         if (message == null)
-            throw new InvalidOperationException("Message not found");
+            throw new ChatMessageNotFoundException("Message not found");
 
-        // Only sender or recipient can delete
+            // Only sender or recipient can delete
         if (message.SenderId != userId && message.RecipientId != userId)
             throw new UnauthorizedAccessException("User cannot delete this message");
 
@@ -122,7 +134,7 @@ public class ChatService : IChatService
 
         var message = await Messages.GetByIdAsync(msgId);
         if (message == null)
-            throw new InvalidOperationException("Message not found");
+            throw new ChatMessageNotFoundException("Message not found");
 
         if (message.SenderId != userId && message.RecipientId != userId)
             throw new UnauthorizedAccessException("User cannot pin this message");
@@ -162,7 +174,7 @@ public class ChatService : IChatService
 
         var message = await Messages.GetByIdAsync(msgId);
         if (message == null)
-            throw new InvalidOperationException("Message not found");
+            throw new ChatMessageNotFoundException("Message not found");
 
         if (message.SenderId != userId && message.RecipientId != userId)
             throw new UnauthorizedAccessException("User cannot unpin this message");
@@ -180,7 +192,7 @@ public class ChatService : IChatService
 
         var message = await Messages.GetByIdAsync(msgId);
         if (message == null)
-            throw new InvalidOperationException("Message not found");
+            throw new ChatMessageNotFoundException("Message not found");
 
         // Only sender can edit
         if (message.SenderId != userId)

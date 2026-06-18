@@ -1,5 +1,6 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Room;
 
@@ -12,12 +13,12 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
     private IGenericRepository<Room, int> Rooms
         => _unitOfWork.GetRepository<Room, int>();
 
-    public async Task<RoomDto?> GetByIdAsync(int roomId)
+    public async Task<RoomDto> GetByIdAsync(int roomId)
     {
         var room = await Rooms.GetByIdAsync(roomId);
 
         if (room is null)
-            return null;
+            throw new RoomNotFoundException(roomId);
 
         return MapToDto(room);
     }
@@ -43,12 +44,12 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
         return MapToDto(room);
     }
 
-    public async Task<RoomDto?> UpdateAsync(int roomId, UpdateRoomDto dto)
+    public async Task<RoomDto> UpdateAsync(int roomId, UpdateRoomDto dto)
     {
         var room = await Rooms.GetByIdAsync(roomId);
 
         if (room is null)
-            return null;
+            throw new RoomNotFoundException(roomId);
 
         if (dto.RoomName is not null)
             room.RoomName = dto.RoomName;
@@ -65,17 +66,15 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
         return MapToDto(room);
     }
 
-    public async Task<bool> DeleteAsync(int roomId)
+    public async Task DeleteAsync(int roomId)
     {
         var room = await Rooms.GetByIdAsync(roomId);
 
         if (room is null)
-            return false;
+            throw new RoomNotFoundException(roomId);
 
         Rooms.Delete(room);
         await _unitOfWork.SaveChangesAsync();
-
-        return true;
     }
 
     private static RoomDto MapToDto(Room room)

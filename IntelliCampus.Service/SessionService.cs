@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.shared.Dtos.Attendance;
@@ -16,15 +17,19 @@ public class SessionService : ISessionService
     private IGenericRepository<Session, int> Sessions => _unitOfWork.GetRepository<Session, int>();
     private IGenericRepository<Class, int> Classes => _unitOfWork.GetRepository<Class, int>();
 
-    public async Task<SessionDto?> GetByIdAsync(int sessionId)
+    public async Task<SessionDto> GetByIdAsync(int sessionId)
     {
         var spec = new SessionSpec(sessionId);
-        var session = await Sessions.GetByIdAsync(spec);
-        return session is null ? null : MapToDto(session);
+        var session = await Sessions.GetByIdAsync(spec) ?? throw new SessionNotFoundException(sessionId);
+        return MapToDto(session);
     }
 
     public async Task<IEnumerable<SessionDto>> GetByClassIdAsync(int classId)
     {
+        var classEntity = await Classes.GetByIdAsync(classId);
+        if (classEntity is null)
+            throw new ClassNotFoundException(classId);
+
         var spec = new SessionSpec(classId, byClass: true);
         var sessions = await Sessions.GetAllAsync(spec);
         return sessions.Select(MapToDto);
@@ -34,7 +39,7 @@ public class SessionService : ISessionService
     {
         var classEntity = await Classes.GetByIdAsync(dto.ClassId);
         if (classEntity is null)
-            throw new InvalidOperationException("Class not found.");
+            throw new ClassNotFoundException(dto.ClassId);
         if (classEntity.InstructorId != instructorId)
             throw new InvalidOperationException("Not authorized.");
 
@@ -56,11 +61,9 @@ public class SessionService : ISessionService
         return MapToDto(result!);
     }
 
-    public async Task<bool> DeleteAsync(int sessionId, int instructorId)
+    public async Task DeleteAsync(int sessionId, int instructorId)
     {
-        var session = await Sessions.GetByIdAsync(sessionId);
-        if (session is null)
-            return false;
+        var session = await Sessions.GetByIdAsync(sessionId) ?? throw new SessionNotFoundException(sessionId);
 
         var classEntity = await Classes.GetByIdAsync(session.ClassId);
         if (classEntity?.InstructorId != instructorId)
@@ -68,7 +71,6 @@ public class SessionService : ISessionService
 
         Sessions.Delete(session);
         await _unitOfWork.SaveChangesAsync();
-        return true;
     }
 
     private static SessionDto MapToDto(Session s) => new()

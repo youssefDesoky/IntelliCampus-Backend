@@ -18,7 +18,6 @@ public class RemindersController : ControllerBase
         _reminderService = reminderService;
     }
 
-    // GET api/reminders?selectedDay=2026-04-24
     [HttpGet]
     public async Task<ActionResult<RemindersGroupedDto>> Get([FromQuery] DateOnly selectedDay)
     {
@@ -26,18 +25,10 @@ public class RemindersController : ControllerBase
         if (studentId is null)
             return Unauthorized();
 
-        try
-        {
-            var result = await _reminderService.GetRemindersAsync(studentId.Value, selectedDay);
-            return Ok(result);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var result = await _reminderService.GetRemindersAsync(studentId.Value, selectedDay);
+        return Ok(result);
     }
 
-    // POST api/reminders
     [HttpPost]
     public async Task<ActionResult<ReminderDto>> Create([FromBody] CreateReminderDto dto)
     {
@@ -45,18 +36,10 @@ public class RemindersController : ControllerBase
         if (studentId is null)
             return Unauthorized();
 
-        try
-        {
-            var created = await _reminderService.CreatePersonalReminderAsync(studentId.Value, dto);
-            return Ok(created);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var created = await _reminderService.CreatePersonalReminderAsync(studentId.Value, dto);
+        return Ok(created);
     }
 
-    // PUT api/reminders/{id}
     [HttpPut("{id}")]
     public async Task<ActionResult<ReminderDto>> Update([FromRoute] string id, [FromBody] UpdateReminderDto dto)
     {
@@ -64,21 +47,10 @@ public class RemindersController : ControllerBase
         if (studentId is null)
             return Unauthorized();
 
-        try
-        {
-            var updated = await _reminderService.UpdatePersonalReminderAsync(studentId.Value, id, dto);
-            if (updated is null)
-                return NotFound(new { message = "Reminder not found." });
-
-            return Ok(updated);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var updated = await _reminderService.UpdatePersonalReminderAsync(studentId.Value, id, dto);
+        return Ok(updated);
     }
 
-    // DELETE api/reminders/{id}
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete([FromRoute] string id)
     {
@@ -86,10 +58,7 @@ public class RemindersController : ControllerBase
         if (studentId is null)
             return Unauthorized();
 
-        var deleted = await _reminderService.DeletePersonalReminderAsync(studentId.Value, id);
-        if (!deleted)
-            return NotFound(new { message = "Reminder not found." });
-
+        await _reminderService.DeletePersonalReminderAsync(studentId.Value, id);
         return NoContent();
     }
 

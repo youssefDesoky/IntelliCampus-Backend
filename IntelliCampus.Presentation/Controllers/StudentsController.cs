@@ -32,54 +32,28 @@ public class StudentsController : ControllerBase
     public async Task<ActionResult<StudentDto>> GetById(int id)
     {
         var student = await _studentService.GetByIdAsync(id);
-
-        if (student is null)
-            return NotFound();
-
         return Ok(student);
     }
 
     [HttpPost]
     public async Task<ActionResult<StudentDto>> Create([FromBody] CreateStudentDto dto)
     {
-        try
-        {
-            var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var student = await _studentService.CreateAsync(dto, creatorUserId is not null ? int.Parse(creatorUserId) : null);
-            return CreatedAtAction(nameof(GetById), new { id = student.UserId }, student);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var student = await _studentService.CreateAsync(dto, creatorUserId is not null ? int.Parse(creatorUserId) : null);
+        return CreatedAtAction(nameof(GetById), new { id = student.UserId }, student);
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult<StudentDto>> Update(int id, [FromBody] UpdateStudentDto dto)
     {
-        try
-        {
-            var student = await _studentService.UpdateAsync(id, dto);
-
-            if (student is null)
-                return NotFound();
-
-            return Ok(student);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var student = await _studentService.UpdateAsync(id, dto);
+        return Ok(student);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _studentService.DeleteAsync(id);
-
-        if (!result)
-            return NotFound();
-
+        await _studentService.DeleteAsync(id);
         return NoContent();
     }
 
@@ -92,10 +66,6 @@ public class StudentsController : ControllerBase
             return Forbid();
 
         var student = await _studentService.UpdateLevelAsync(id, dto.Level);
-
-        if (student is null)
-            return NotFound();
-
         return Ok(student);
     }
 
@@ -103,8 +73,6 @@ public class StudentsController : ControllerBase
     public async Task<ActionResult<object>> RecalculateGpa(int id)
     {
         var gpa = await _gradeService.UpdateStudentGpaIfCompleteAsync(id);
-        if (gpa is null)
-            return NotFound(new { message = "Student not found." });
         return Ok(new { gpa });
     }
 }

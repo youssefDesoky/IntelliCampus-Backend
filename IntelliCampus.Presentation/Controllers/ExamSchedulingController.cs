@@ -22,22 +22,11 @@ public class ExamSchedulingController : ControllerBase
     public async Task<ActionResult<AutoScheduleResultDto>> AutoSchedule(
         [FromBody] AutoScheduleRequestDto request)
     {
-        try
-        {
-            var semester = SemesterHelper.GetCurrentSemester();
-            var result = await _schedulingService.AutoScheduleAsync(request, semester);
-            if (!result.Success)
-                return BadRequest(result);
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new AutoScheduleResultDto
-            {
-                Success = false,
-                ErrorMessage = ex.Message
-            });
-        }
+        var semester = SemesterHelper.GetCurrentSemester();
+        var result = await _schedulingService.AutoScheduleAsync(request, semester);
+        if (!result.Success)
+            return BadRequest(result);
+        return Ok(result);
     }
 
     [HttpPost("detect-conflicts")]
@@ -72,29 +61,16 @@ public class ExamSchedulingController : ControllerBase
     public async Task<ActionResult<HallAssignmentResultDto>> AssignHalls(
         int examId, [FromBody] AssignHallsRequestDto request)
     {
-        try
-        {
-            var result = await _schedulingService.AssignHallsToExamAsync(examId, request.ExamHallIds);
-            if (!result.Success)
-                return BadRequest(result);
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new HallAssignmentResultDto
-            {
-                Success = false,
-                ErrorMessage = ex.Message
-            });
-        }
+        var result = await _schedulingService.AssignHallsToExamAsync(examId, request.ExamHallIds);
+        if (!result.Success)
+            return BadRequest(result);
+        return Ok(result);
     }
 
     [HttpGet("hall-assignments/{examId}")]
     public async Task<ActionResult<HallAssignmentResultDto>> GetHallAssignments(int examId)
     {
         var result = await _schedulingService.GetHallAssignmentsAsync(examId);
-        if (!result.Success)
-            return NotFound(result);
         return Ok(result);
     }
 

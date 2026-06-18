@@ -17,7 +17,7 @@ public class ExamScheduleController(IExamScheduleService examScheduleService) : 
     public async Task<IActionResult> GetById(int examScheduleId)
     {
         var result = await examScheduleService.GetByIdAsync(examScheduleId);
-        return result is null ? NotFound() : Ok(result);
+        return Ok(result);
     }
 
     [HttpGet("my-exams")]

@@ -21,15 +21,8 @@ public class ElectiveBucketsController : ControllerBase
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_AcademicStaff,SuperAdmin")]
     public async Task<ActionResult<ElectiveBucketDto>> Create(CreateElectiveBucketDto dto)
     {
-        try
-        {
-            var bucket = await _electiveBucketService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { bucketId = bucket.ElectiveBucketId }, bucket);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var bucket = await _electiveBucketService.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { bucketId = bucket.ElectiveBucketId }, bucket);
     }
 
     [HttpPut("{bucketId}")]
@@ -37,8 +30,6 @@ public class ElectiveBucketsController : ControllerBase
     public async Task<ActionResult<ElectiveBucketDto>> Update(int bucketId, UpdateElectiveBucketDto dto)
     {
         var bucket = await _electiveBucketService.UpdateAsync(bucketId, dto);
-        if (bucket is null)
-            return NotFound(new { message = "Bucket not found." });
         return Ok(bucket);
     }
 
@@ -46,9 +37,7 @@ public class ElectiveBucketsController : ControllerBase
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_AcademicStaff,SuperAdmin")]
     public async Task<IActionResult> Delete(int bucketId)
     {
-        var result = await _electiveBucketService.DeleteAsync(bucketId);
-        if (!result)
-            return NotFound(new { message = "Bucket not found." });
+        await _electiveBucketService.DeleteAsync(bucketId);
         return NoContent();
     }
 
@@ -57,8 +46,6 @@ public class ElectiveBucketsController : ControllerBase
     public async Task<ActionResult<ElectiveBucketDto>> GetById(int bucketId)
     {
         var bucket = await _electiveBucketService.GetByIdAsync(bucketId);
-        if (bucket is null)
-            return NotFound(new { message = "Bucket not found." });
         return Ok(bucket);
     }
 

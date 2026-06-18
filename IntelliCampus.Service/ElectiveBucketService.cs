@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.ElectiveBucket;
@@ -25,6 +26,8 @@ public class ElectiveBucketService : IElectiveBucketService
     private IGenericRepository<Course, int> Courses => _unitOfWork.GetRepository<Course, int>();
     private IGenericRepository<Student, int> Students => _unitOfWork.GetRepository<Student, int>();
     private IGenericRepository<StudentCourse, int> StudentCourses => _unitOfWork.GetRepository<StudentCourse, int>();
+    private IGenericRepository<Bylaw, int> Bylaws => _unitOfWork.GetRepository<Bylaw, int>();
+    private IGenericRepository<Department, int> Departments => _unitOfWork.GetRepository<Department, int>();
 
     public async Task<ElectiveBucketDto> CreateAsync(CreateElectiveBucketDto dto)
     {
@@ -71,7 +74,7 @@ public class ElectiveBucketService : IElectiveBucketService
     public async Task<ElectiveBucketDto?> UpdateAsync(int bucketId, UpdateElectiveBucketDto dto)
     {
         var bucket = await Buckets.GetByIdAsync(bucketId);
-        if (bucket is null) return null;
+        if (bucket is null) throw new ElectiveBucketNotFoundException(bucketId);
 
         if (dto.Name is not null) bucket.Name = dto.Name;
         if (dto.RequiredCreditHours.HasValue) bucket.RequiredCreditHours = dto.RequiredCreditHours.Value;
@@ -104,7 +107,7 @@ public class ElectiveBucketService : IElectiveBucketService
     public async Task<bool> DeleteAsync(int bucketId)
     {
         var bucket = await Buckets.GetByIdAsync(bucketId);
-        if (bucket is null) return false;
+        if (bucket is null) throw new ElectiveBucketNotFoundException(bucketId);
 
         Buckets.Delete(bucket);
         await _unitOfWork.SaveChangesAsync();
@@ -115,13 +118,17 @@ public class ElectiveBucketService : IElectiveBucketService
     {
         var spec = new ElectiveBucketWithCoursesSpec(bucketId);
         var bucket = await Buckets.GetByIdAsync(spec);
-        if (bucket is null) return null;
+        if (bucket is null) throw new ElectiveBucketNotFoundException(bucketId);
 
         return MapToDto(bucket);
     }
 
     public async Task<IEnumerable<ElectiveBucketDto>> GetByBylawAsync(int bylawId)
     {
+        var bylaw = await Bylaws.GetByIdAsync(bylawId);
+        if (bylaw is null)
+            throw new BylawNotFoundException(bylawId);
+
         var spec = new ElectiveBucketsByBylawSpec(bylawId);
         var buckets = await Buckets.GetAllAsync(spec);
         return buckets.Select(MapToDto);
@@ -129,6 +136,10 @@ public class ElectiveBucketService : IElectiveBucketService
 
     public async Task<IEnumerable<ElectiveBucketDto>> GetByDepartmentAsync(int departmentId)
     {
+        var department = await Departments.GetByIdAsync(departmentId);
+        if (department is null)
+            throw new DepartmentNotFoundException(departmentId);
+
         var spec = new ElectiveBucketsByDepartmentSpec(departmentId);
         var buckets = await Buckets.GetAllAsync(spec);
         return buckets.Select(MapToDto);
@@ -136,6 +147,10 @@ public class ElectiveBucketService : IElectiveBucketService
 
     public async Task<IEnumerable<ElectiveBucketProgressDto>> GetStudentProgressAsync(int studentId)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
         var progressSpec = new StudentBucketProgressSpec(studentId);
         var progresses = await Progress.GetAllAsync(progressSpec);
 

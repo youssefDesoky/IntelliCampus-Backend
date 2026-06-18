@@ -25,19 +25,8 @@ public class RegistrationController : ControllerBase
         if (studentId is null)
             return Unauthorized();
 
-        try
-        {
-            var registration = await _registrationService.RegisterStudentInCourseAsync(studentId.Value, dto);
-
-            if (registration is null)
-                return BadRequest(new { message = "Registration failed." });
-
-            return Ok(registration);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var registration = await _registrationService.RegisterStudentInCourseAsync(studentId.Value, dto);
+        return Ok(registration);
     }
 
     [HttpGet("my-courses")]
@@ -58,11 +47,7 @@ public class RegistrationController : ControllerBase
         if (studentId is null)
             return Unauthorized();
 
-        var result = await _registrationService.UnregisterStudentFromCourseAsync(studentId.Value, courseId);
-
-        if (!result)
-            return NotFound(new { message = "Registration not found." });
-
+        await _registrationService.UnregisterStudentFromCourseAsync(studentId.Value, courseId);
         return NoContent();
     }
 

@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
@@ -31,13 +32,16 @@ public class BylawService : IBylawService
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
 
+    private IGenericRepository<Admin, int> Admins
+        => _unitOfWork.GetRepository<Admin, int>();
+
     public async Task<BylawDto?> GetByIdAsync(int bylawId)
     {
         var spec = new BylawSpec(bylawId);
         var bylaw = await Bylaws.GetByIdAsync(spec);
 
         if (bylaw is null)
-            return null;
+            throw new BylawNotFoundException(bylawId);
 
         return MapToDto(bylaw);
     }
@@ -51,6 +55,10 @@ public class BylawService : IBylawService
 
     public async Task<BylawDto> CreateAsync(CreateBylawDto dto, int adminId)
     {
+        var admin = await Admins.GetByIdAsync(adminId);
+        if (admin is null)
+            throw new AdminNotFoundException(adminId);
+
         var bylaw = new Bylaw
         {
             Name = dto.Name,
@@ -93,7 +101,7 @@ public class BylawService : IBylawService
         var bylaw = await Bylaws.GetByIdAsync(spec);
 
         if (bylaw is null)
-            return null;
+            throw new BylawNotFoundException(bylawId);
 
         var fileUrl = await _fileStorageService.SaveAsync(file, "bylaws");
         bylaw.FileUrl = fileUrl;
@@ -110,7 +118,7 @@ public class BylawService : IBylawService
         var bylaw = await Bylaws.GetByIdAsync(spec);
 
         if (bylaw is null)
-            return false;
+            throw new BylawNotFoundException(bylawId);
 
         var bcSpec = new BylawCourseSpec();
         var allBc = await BylawCourses.GetAllAsync(bcSpec);
@@ -137,7 +145,7 @@ public class BylawService : IBylawService
         var bylaw = await Bylaws.GetByIdAsync(spec);
 
         if (bylaw is null)
-            return false;
+            throw new BylawNotFoundException(bylawId);
 
         bylaw.IsActive = !bylaw.IsActive;
         await _unitOfWork.SaveChangesAsync();
@@ -150,12 +158,12 @@ public class BylawService : IBylawService
         var bylaw = await Bylaws.GetByIdAsync(bylawId);
 
         if (bylaw is null)
-            return null;
+            throw new BylawNotFoundException(bylawId);
 
         var existing = bylaw.GradeScales?.FirstOrDefault(g => g.SortOrder == sortOrder);
 
         if (existing is null)
-            return null;
+            throw new BylawNotFoundException("Grade scale not found.");
 
         existing.GradeLetter = item.GradeLetter;
         existing.MinPercentage = item.MinPercentage;
@@ -177,7 +185,7 @@ public class BylawService : IBylawService
         var bylaw = await Bylaws.GetByIdAsync(spec);
 
         if (bylaw is null)
-            throw new InvalidOperationException("Bylaw not found.");
+            throw new BylawNotFoundException(bylawId);
 
         bylaw.GradeScales = items
             .OrderBy(i => i.SortOrder)
@@ -201,7 +209,7 @@ public class BylawService : IBylawService
         var bylaw = await Bylaws.GetByIdAsync(spec);
 
         if (bylaw is null)
-            throw new InvalidOperationException("Bylaw not found.");
+            throw new BylawNotFoundException(bylawId);
 
         bylaw.LevelScales = items
             .OrderBy(i => i.Level)
@@ -222,12 +230,12 @@ public class BylawService : IBylawService
         var bylaw = await Bylaws.GetByIdAsync(bylawId);
 
         if (bylaw is null)
-            return null;
+            throw new BylawNotFoundException(bylawId);
 
         var existing = bylaw.LevelScales?.FirstOrDefault(l => l.Level == level);
 
         if (existing is null)
-            return null;
+            throw new BylawNotFoundException("Level scale not found.");
 
         existing.Level = item.Level;
         existing.MinHours = item.MinHours;
@@ -245,7 +253,7 @@ public class BylawService : IBylawService
     {
         var bylaw = await Bylaws.GetByIdAsync(bylawId);
         if (bylaw is null)
-            throw new InvalidOperationException("Bylaw not found.");
+            throw new BylawNotFoundException(bylawId);
 
         if (dto.MinHoursToChooseDepartment.HasValue)
             bylaw.MinHoursToChooseDepartment = dto.MinHoursToChooseDepartment.Value;
@@ -261,7 +269,7 @@ public class BylawService : IBylawService
     {
         var bylaw = await Bylaws.GetByIdAsync(bylawId);
         if (bylaw is null)
-            return null;
+            throw new BylawNotFoundException(bylawId);
 
         if (dto.Name is not null)
             bylaw.Name = dto.Name;
@@ -279,7 +287,7 @@ public class BylawService : IBylawService
     {
         var bylaw = await Bylaws.GetByIdAsync(bylawId);
         if (bylaw is null)
-            throw new InvalidOperationException("Bylaw not found.");
+            throw new BylawNotFoundException(bylawId);
 
         if (dto.TotalHoursToCompleteDegree.HasValue)
             bylaw.TotalHoursToCompleteDegree = dto.TotalHoursToCompleteDegree.Value;
@@ -299,7 +307,7 @@ public class BylawService : IBylawService
     {
         var bylaw = await Bylaws.GetByIdAsync(bylawId);
         if (bylaw is null)
-            throw new InvalidOperationException("Bylaw not found.");
+            throw new BylawNotFoundException(bylawId);
 
         if (dto.MinPassingGpa.HasValue)
             bylaw.MinPassingGpa = dto.MinPassingGpa.Value;
@@ -317,7 +325,7 @@ public class BylawService : IBylawService
     {
         var bylaw = await Bylaws.GetByIdAsync(bylawId);
         if (bylaw is null)
-            throw new InvalidOperationException("Bylaw not found.");
+            throw new BylawNotFoundException(bylawId);
 
         if (dto.ProbationThreshold.HasValue)
             bylaw.ProbationThreshold = dto.ProbationThreshold.Value;
@@ -333,11 +341,11 @@ public class BylawService : IBylawService
     {
         var course = await Courses.GetByIdAsync(dto.CourseId);
         if (course is null)
-            throw new InvalidOperationException("Course not found.");
+            throw new CourseNotFoundException(dto.CourseId);
 
         var bylaw = await Bylaws.GetByIdAsync(bylawId);
         if (bylaw is null)
-            throw new InvalidOperationException("Bylaw not found.");
+            throw new BylawNotFoundException(bylawId);
 
         var bcSpec = new BylawCourseSpec();
         var allBc = await BylawCourses.GetAllAsync(bcSpec);
@@ -365,7 +373,7 @@ public class BylawService : IBylawService
         var bcSpec = new BylawCourseSpec(bylawCourseId);
         var bylawCourse = await BylawCourses.GetByIdAsync(bcSpec);
         if (bylawCourse is null)
-            return false;
+            throw new BylawCourseNotFoundException(bylawCourseId);
 
         var prereqSpecFrom = new BylawCoursePrerequisiteSpec(bylawCourseId, true);
         var prereqSpecTo = new BylawCoursePrerequisiteSpec(bylawCourseId, false);
@@ -389,7 +397,7 @@ public class BylawService : IBylawService
         var bcSpec = new BylawCourseSpec(bylawCourseId);
         var bylawCourse = await BylawCourses.GetByIdAsync(bcSpec);
         if (bylawCourse is null)
-            throw new InvalidOperationException("BylawCourse not found.");
+            throw new BylawCourseNotFoundException(bylawCourseId);
 
         foreach (var prereq in bylawCourse.Prerequisites.ToList())
             BylawCoursePrerequisites.Delete(prereq);
@@ -402,7 +410,7 @@ public class BylawService : IBylawService
             var prereqBcSpec = new BylawCourseSpec(prereqId);
             var prereqCourse = await BylawCourses.GetByIdAsync(prereqBcSpec);
             if (prereqCourse is null)
-                throw new InvalidOperationException($"Prerequisite BylawCourse with ID {prereqId} not found.");
+                throw new BylawCourseNotFoundException(prereqId);
 
             if (prereqCourse.BylawId != bylawCourse.BylawId)
                 throw new InvalidOperationException("Prerequisite must belong to the same bylaw.");

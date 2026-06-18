@@ -30,10 +30,6 @@ public class BylawController : ControllerBase
     public async Task<ActionResult<BylawDto>> GetById(int id)
     {
         var bylaw = await _bylawService.GetByIdAsync(id);
-
-        if (bylaw is null)
-            return NotFound();
-
         return Ok(bylaw);
     }
 
@@ -52,185 +48,105 @@ public class BylawController : ControllerBase
             return BadRequest(new { message = "No file provided." });
 
         var bylaw = await _bylawService.UploadDocumentAsync(id, file);
-
-        if (bylaw is null)
-            return NotFound();
-
         return Ok(bylaw);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _bylawService.DeleteAsync(id);
-
-        if (!result)
-            return NotFound();
-
+        await _bylawService.DeleteAsync(id);
         return NoContent();
     }
 
     [HttpPatch("{id}/toggle-active")]
     public async Task<IActionResult> ToggleActive(int id)
     {
-        var result = await _bylawService.ToggleActiveAsync(id);
-
-        if (!result)
-            return NotFound();
-
+        await _bylawService.ToggleActiveAsync(id);
         return NoContent();
     }
 
     [HttpPut("{id}/grade-scales")]
     public async Task<ActionResult<BylawDto>> SetGradeScales(int id, [FromBody] List<GradeScaleItemDto> items)
     {
-        try
-        {
-            var bylaw = await _bylawService.SetGradeScalesAsync(id, items);
-            return Ok(bylaw);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        var bylaw = await _bylawService.SetGradeScalesAsync(id, items);
+        return Ok(bylaw);
     }
 
     [HttpPatch("{id}/grade-scales/{sortOrder}")]
     public async Task<ActionResult<BylawDto>> UpdateGradeScale(int id, int sortOrder, [FromBody] GradeScaleItemDto item)
     {
         var bylaw = await _bylawService.UpdateGradeScaleAsync(id, sortOrder, item);
-
-        if (bylaw is null)
-            return NotFound();
-
         return Ok(bylaw);
     }
 
     [HttpPut("{id}/level-scales")]
     public async Task<ActionResult<BylawDto>> SetLevelScales(int id, [FromBody] List<LevelScaleItemDto> items)
     {
-        try
-        {
-            var bylaw = await _bylawService.SetLevelScalesAsync(id, items);
-            return Ok(bylaw);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        var bylaw = await _bylawService.SetLevelScalesAsync(id, items);
+        return Ok(bylaw);
     }
 
     [HttpPatch("{id}/level-scales/{level}")]
     public async Task<ActionResult<BylawDto>> UpdateLevelScale(int id, int level, [FromBody] LevelScaleItemDto item)
     {
         var bylaw = await _bylawService.UpdateLevelScaleAsync(id, level, item);
-
-        if (bylaw is null)
-            return NotFound();
-
         return Ok(bylaw);
     }
 
     [HttpPut("{id}/minhours-departmentAndSpecialization")]
     public async Task<ActionResult<BylawDto>> UpdateMinHours(int id, [FromBody] UpdateBylawMinHoursDto dto)
     {
-        try
-        {
-            var bylaw = await _bylawService.UpdateMinHoursAsync(id, dto);
-            return Ok(bylaw);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        var bylaw = await _bylawService.UpdateMinHoursAsync(id, dto);
+        return Ok(bylaw);
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult<BylawDto>> UpdateDetails(int id, [FromBody] UpdateBylawDetailsDto dto)
     {
         var bylaw = await _bylawService.UpdateDetailsAsync(id, dto);
-        if (bylaw is null)
-            return NotFound();
         return Ok(bylaw);
     }
 
     [HttpPut("{id}/requirements")]
     public async Task<ActionResult<BylawDto>> UpdateRequirements(int id, [FromBody] UpdateBylawRequirementsDto dto)
     {
-        try
-        {
-            var bylaw = await _bylawService.UpdateRequirementsAsync(id, dto);
-            return Ok(bylaw);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        var bylaw = await _bylawService.UpdateRequirementsAsync(id, dto);
+        return Ok(bylaw);
     }
 
     [HttpPut("{id}/passing-grade")]
     public async Task<ActionResult<BylawDto>> UpdatePassingGrade(int id, [FromBody] UpdateBylawPassingGradeDto dto)
     {
-        try
-        {
-            var bylaw = await _bylawService.UpdatePassingGradeAsync(id, dto);
-            return Ok(bylaw);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        var bylaw = await _bylawService.UpdatePassingGradeAsync(id, dto);
+        return Ok(bylaw);
     }
 
     [HttpPut("{id}/probation")]
     public async Task<ActionResult<BylawDto>> UpdateProbation(int id, [FromBody] UpdateBylawProbationDto dto)
     {
-        try
-        {
-            var bylaw = await _bylawService.UpdateProbationAsync(id, dto);
-            return Ok(bylaw);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        var bylaw = await _bylawService.UpdateProbationAsync(id, dto);
+        return Ok(bylaw);
     }
 
     [HttpPost("{id}/courses")]
     public async Task<ActionResult<BylawCourseDto>> MapCourse(int id, [FromBody] MapBylawCourseDto dto)
     {
-        try
-        {
-            var bylawCourse = await _bylawService.MapCourseAsync(id, dto);
-            return CreatedAtAction(nameof(GetById), new { id }, bylawCourse);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var bylawCourse = await _bylawService.MapCourseAsync(id, dto);
+        return CreatedAtAction(nameof(GetById), new { id }, bylawCourse);
     }
 
     [HttpDelete("courses/{bylawCourseId}")]
     public async Task<IActionResult> UnmapCourse(int bylawCourseId)
     {
-        var result = await _bylawService.UnmapCourseAsync(bylawCourseId);
-        if (!result)
-            return NotFound();
+        await _bylawService.UnmapCourseAsync(bylawCourseId);
         return NoContent();
     }
 
     [HttpPut("courses/{bylawCourseId}/prerequisites")]
     public async Task<ActionResult<BylawCourseDto>> SetCoursePrerequisites(int bylawCourseId, [FromBody] SetBylawCoursePrerequisitesDto dto)
     {
-        try
-        {
-            var result = await _bylawService.SetCoursePrerequisitesAsync(bylawCourseId, dto);
-            return Ok(result);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var result = await _bylawService.SetCoursePrerequisitesAsync(bylawCourseId, dto);
+        return Ok(result);
     }
 
     private int GetAdminId()

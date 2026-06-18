@@ -39,8 +39,7 @@ public class MeetingsController : ControllerBase
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _meetingService.DeleteAsync(id);
-        if (!result) return NotFound();
+        await _meetingService.DeleteAsync(id);
         return NoContent();
     }
 }

@@ -3,6 +3,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Shared.Dtos.Routing;
 using Microsoft.Extensions.Logging;
 
@@ -37,6 +38,9 @@ public class CommunityService : ICommunityService
 
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
+
+    private IGenericRepository<User, int> Users
+        => _unitOfWork.GetRepository<User, int>();
 
     public async Task<Post> CreateQuestionPostAsync(int courseId, int userId, string content)
     {
@@ -74,10 +78,13 @@ public class CommunityService : ICommunityService
     public async Task<RoutingResponse?> RouteQuestionAsync(int courseId, int postId, int topN = 3)
     {
         var post = await Posts.GetByIdAsync(postId);
-        if (post is null) return null;
+        if (post is null) throw new PostNotFoundException($"Post {postId} not found.");
 
         var course = await Courses.GetByIdAsync(courseId);
-        var courseCode = course?.CourseCode ?? courseId.ToString();
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
+        var courseCode = course.CourseCode;
 
         var question = new QuestionRequest(
             QuestionId: post.PostId.ToString(),
@@ -107,7 +114,7 @@ public class CommunityService : ICommunityService
 
         var course = await Courses.GetByIdAsync(courseId);
         if (course is null)
-            throw new InvalidOperationException($"Course {courseId} not found.");
+            throw new CourseNotFoundException($"Course {courseId} not found.");
 
         community = new Community { CourseId = courseId };
         Communities.Add(community);
@@ -243,15 +250,20 @@ public class CommunityService : ICommunityService
     public async Task<string> ExportCourseGraphAsync(int courseId, string graphType = "interaction")
     {
         var course = await Courses.GetByIdAsync(courseId);
-        var courseCode = course?.CourseCode ?? courseId.ToString();
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
+        var courseCode = course.CourseCode;
         return await _routingClient.ExportGraphAsync(courseCode, graphType);
     }
 
-    public async Task<Post?> UpdatePostAsync(int postId, int userId, string newContent)
+    public async Task<Post> UpdatePostAsync(int postId, int userId, string newContent)
     {
         var spec = new PostWithDetailsSpec(postId);
         var post = await Posts.GetByIdAsync(spec);
-        if (post is null || post.UserId != userId) return null;
+        if (post is null) throw new PostNotFoundException($"Post {postId} not found.");
+        if (post.UserId != userId)
+            throw new UnauthorizedAccessException("You can only update your own posts.");
 
         post.Content = newContent;
         Posts.Update(post);
@@ -259,22 +271,25 @@ public class CommunityService : ICommunityService
         return post;
     }
 
-    public async Task<bool> DeletePostAsync(int postId, int userId)
+    public async Task DeletePostAsync(int postId, int userId)
     {
         var spec = new PostWithDetailsSpec(postId);
         var post = await Posts.GetByIdAsync(spec);
-        if (post is null) return false;
+        if (post is null) throw new PostNotFoundException($"Post {postId} not found.");
 
         if (post.UserId != userId && !await IsUserCourseInstructor(userId, post.Community.CourseId))
-            return false;
+            throw new UnauthorizedAccessException("You can only delete your own posts.");
 
         Posts.Delete(post);
         await _unitOfWork.SaveChangesAsync();
-        return true;
     }
 
     public async Task<Comment> AddCommentAsync(int postId, int userId, string content)
     {
+        var post = await Posts.GetByIdAsync(postId);
+        if (post is null)
+            throw new PostNotFoundException($"Post {postId} not found.");
+
         var comment = new Comment
         {
             PostId = postId,
@@ -291,6 +306,14 @@ public class CommunityService : ICommunityService
 
     public async Task<bool> ToggleUpvoteAsync(int postId, int userId)
     {
+        var post = await Posts.GetByIdAsync(postId);
+        if (post is null)
+            throw new PostNotFoundException($"Post {postId} not found.");
+
+        var user = await Users.GetByIdAsync(userId);
+        if (user is null)
+            throw new UserNotFoundException(userId);
+
         var votes = _unitOfWork.GetRepository<PostVote, int>();
         var existing = await votes.GetByIdAsync(
             new PostVoteByUserSpec(postId, userId));
@@ -312,16 +335,16 @@ public class CommunityService : ICommunityService
         return true;
     }
 
-    public async Task<bool> DeleteCommentAsync(int commentId, int userId)
+    public async Task DeleteCommentAsync(int commentId, int userId)
     {
         var comments = _unitOfWork.GetRepository<Comment, int>();
         var comment = await comments.GetByIdAsync(commentId);
-        if (comment is null) return false;
-        if (comment.UserId != userId) return false;
+        if (comment is null) throw new CommentNotFoundException($"Comment {commentId} not found.");
+        if (comment.UserId != userId)
+            throw new UnauthorizedAccessException("You can only delete your own comments.");
 
         comments.Delete(comment);
         await _unitOfWork.SaveChangesAsync();
-        return true;
     }
 
     private async Task<bool> IsUserCourseInstructor(int userId, int courseId)

@@ -2,6 +2,7 @@ using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Helpers;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.ExamScheduling;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,8 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
         => _unitOfWork.GetRepository<ExamSeatAssignment, int>();
     private IGenericRepository<ExamHall, int> ExamHallsRepo
         => _unitOfWork.GetRepository<ExamHall, int>();
+    private IGenericRepository<Course, int> CoursesRepo
+        => _unitOfWork.GetRepository<Course, int>();
 
     // ─── Conflict Graph ───────────────────────────────────────────────
 
@@ -60,6 +63,10 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
     public async Task<List<ConflictInfoDto>> DetectConflictsAsync(
         int courseId, string semester, DateTime date, TimeSpan startTime, TimeSpan endTime, int? excludeExamId = null)
     {
+        var course = await CoursesRepo.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
         var enrollments = await StudentCoursesRepo.GetAllAsync();
         var courseEnrolled = enrollments.Where(e => e.CourseId == courseId && e.Semester == semester).ToList();
         if (courseEnrolled.Count == 0)
@@ -390,6 +397,10 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
 
     public async Task<HallAssignmentResultDto> GetHallAssignmentsAsync(int examId)
     {
+        var exam = await ExamsRepo.GetByIdAsync(examId);
+        if (exam is null)
+            throw new ExamNotFoundException(examId);
+
         var result = new HallAssignmentResultDto { ExamId = examId };
         var all = await SeatAssignRepo.GetAllAsync();
         var assignments = all.Where(a => a.ExamId == examId).ToList();
@@ -436,6 +447,10 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
 
     public async Task<List<SeatAssignmentDto>> GetStudentSeatAssignmentsAsync(int examId)
     {
+        var exam = await ExamsRepo.GetByIdAsync(examId);
+        if (exam is null)
+            throw new ExamNotFoundException(examId);
+
         var all = await SeatAssignRepo.GetAllAsync();
         var assignments = all.Where(a => a.ExamId == examId).ToList();
         if (assignments.Count == 0) return [];

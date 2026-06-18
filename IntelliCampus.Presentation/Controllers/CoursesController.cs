@@ -83,9 +83,6 @@ public class CoursesController : ControllerBase
     {
         var result = await _courseService.GetPrerequisitesAsync(courseId);
 
-        if (result is null)
-            return NotFound();
-
         return Ok(result);
     }
 
@@ -95,9 +92,6 @@ public class CoursesController : ControllerBase
     {
         var course = await _courseService.GetByIdAsync(id);
 
-        if (course is null)
-            return NotFound();
-
         return Ok(course);
     }
 
@@ -105,44 +99,24 @@ public class CoursesController : ControllerBase
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<ActionResult<CourseDto>> Create([FromBody] CreateCourseDto dto)
     {
-        try
-        {
-            var course = await _courseService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = course.CourseId }, course);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var course = await _courseService.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = course.CourseId }, course);
     }
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<ActionResult<CourseDto>> Update(int id, [FromBody] CreateCourseDto dto)
     {
-        try
-        {
-            var course = await _courseService.UpdateAsync(id, dto);
+        var course = await _courseService.UpdateAsync(id, dto);
 
-            if (course is null)
-                return NotFound();
-
-            return Ok(course);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        return Ok(course);
     }
 
     [HttpPatch("{id}/activate")]
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<IActionResult> Activate(int id)
     {
-        var result = await _courseService.ActivateAsync(id);
-
-        if (!result)
-            return NotFound();
+        await _courseService.ActivateAsync(id);
 
         return NoContent();
     }
@@ -151,10 +125,7 @@ public class CoursesController : ControllerBase
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<IActionResult> Deactivate(int id)
     {
-        var result = await _courseService.DeactivateAsync(id);
-
-        if (!result)
-            return NotFound();
+        await _courseService.DeactivateAsync(id);
 
         return NoContent();
     }
@@ -163,10 +134,7 @@ public class CoursesController : ControllerBase
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _courseService.DeleteAsync(id);
-
-        if (!result)
-            return NotFound();
+        await _courseService.DeleteAsync(id);
 
         return NoContent();
     }
@@ -186,10 +154,6 @@ public class CoursesController : ControllerBase
     public async Task<ActionResult<AnnouncementDto>> GetAnnouncementById(int courseId, int announcementId)
     {
         var announcement = await _announcementService.GetByIdAsync(announcementId);
-
-        if (announcement is null)
-            return NotFound();
-
         return Ok(announcement);
     }
 
@@ -203,40 +167,29 @@ public class CoursesController : ControllerBase
         if (senderId is null)
             return Unauthorized();
 
-        try
+        string? fileUrl = null;
+        long? fileSize = null;
+
+        if (file is not null)
         {
-            string? fileUrl = null;
-            long? fileSize = null;
+            if (file.Length > 50 * 1024 * 1024)
+                return BadRequest(new { message = "File size exceeds the 50 MB limit." });
 
-            if (file is not null)
-            {
-                if (file.Length > 50 * 1024 * 1024)
-                    return BadRequest(new { message = "File size exceeds the 50 MB limit." });
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "announcements");
+            Directory.CreateDirectory(uploadsFolder);
 
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "announcements");
-                Directory.CreateDirectory(uploadsFolder);
+            var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            fileSize = file.Length;
 
-                var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                fileSize = file.Length;
+            await using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, useAsync: true);
+            await file.CopyToAsync(stream);
 
-                await using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, useAsync: true);
-                await file.CopyToAsync(stream);
-
-                fileUrl = $"/announcements/{uniqueFileName}";
-            }
-
-            var announcement = await _announcementService.CreateAsync(courseId, senderId.Value, dto, fileUrl, fileSize);
-            return CreatedAtAction(nameof(GetAnnouncementById), new { courseId, announcementId = announcement.Id }, announcement);
+            fileUrl = $"/announcements/{uniqueFileName}";
         }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { message = ex.Message, type = ex.GetType().Name });
-        }
+
+        var announcement = await _announcementService.CreateAsync(courseId, senderId.Value, dto, fileUrl, fileSize);
+        return CreatedAtAction(nameof(GetAnnouncementById), new { courseId, announcementId = announcement.Id }, announcement);
     }
 
     [HttpPut("{courseId}/announcements/{announcementId}")]
@@ -248,10 +201,6 @@ public class CoursesController : ControllerBase
             return Unauthorized();
 
         var updated = await _announcementService.UpdateAsync(announcementId, senderId.Value, dto.Content);
-
-        if (updated is null)
-            return NotFound();
-
         return Ok(updated);
     }
 
@@ -259,11 +208,7 @@ public class CoursesController : ControllerBase
     [Authorize(Roles = "Instructor,Admin_UnderGrad,Admin_Masters,Admin_PhD,SuperAdmin")]
     public async Task<IActionResult> DeleteAnnouncement(int courseId, int announcementId)
     {
-        var deleted = await _announcementService.DeleteAsync(announcementId);
-
-        if (!deleted)
-            return NotFound();
-
+        await _announcementService.DeleteAsync(announcementId);
         return NoContent();
     }
 
@@ -287,11 +232,7 @@ public class CoursesController : ControllerBase
         if (userId is null)
             return Unauthorized();
 
-        var deleted = await _announcementService.DeleteCommentAsync(commentId, userId.Value);
-
-        if (!deleted)
-            return NotFound();
-
+        await _announcementService.DeleteCommentAsync(commentId, userId.Value);
         return NoContent();
     }
 
@@ -304,10 +245,6 @@ public class CoursesController : ControllerBase
             return Unauthorized();
 
         var comment = await _announcementService.EditCommentAsync(commentId, userId.Value, dto.Content);
-
-        if (comment is null)
-            return NotFound();
-
         return Ok(comment);
     }
 

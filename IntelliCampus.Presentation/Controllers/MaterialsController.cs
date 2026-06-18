@@ -21,12 +21,7 @@ public class MaterialsController(IMaterialService materialService) : ControllerB
     [HttpGet("{id}")]
     public async Task<ActionResult<MaterialDto>> GetById(int id)
     {
-        var material = await _materialService.GetByIdAsync(id);
-
-        if (material is null)
-            return NotFound();
-
-        return Ok(material);
+        return Ok(await _materialService.GetByIdAsync(id));
     }
 
     [Authorize]
@@ -41,12 +36,7 @@ public class MaterialsController(IMaterialService materialService) : ControllerB
     [HttpGet("course/{courseId}/organized")]
     public async Task<ActionResult<CourseMaterialsDto>> GetCourseMaterialsOrganized(int courseId)
     {
-        var result = await _materialService.GetCourseMaterialsOrganizedAsync(courseId);
-
-        if (result is null)
-            return NotFound(new { message = "Course not found." });
-
-        return Ok(result);
+        return Ok(await _materialService.GetCourseMaterialsOrganizedAsync(courseId));
     }
 
     [Authorize(Roles = "Instructor")]
@@ -59,39 +49,32 @@ public class MaterialsController(IMaterialService materialService) : ControllerB
         if (instructorId is null)
             return Unauthorized();
 
-        try
+        string? fileUrl = null;
+        long? fileSize = null;
+
+        if (file is not null)
         {
-            string? fileUrl = null;
-            long? fileSize = null;
+            if (file.Length > MaxFileSize)
+                return BadRequest(new { message = "File size exceeds the 50 MB limit." });
 
-            if (file is not null)
-            {
-                if (file.Length > MaxFileSize)
-                    return BadRequest(new { message = "File size exceeds the 50 MB limit." });
+            // Save file to wwwroot/materials
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "materials");
+            Directory.CreateDirectory(uploadsFolder);
 
-                // Save file to wwwroot/materials
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "materials");
-                Directory.CreateDirectory(uploadsFolder);
+            var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            fileSize = file.Length;
 
-                var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                fileSize = file.Length;
+            await using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, useAsync: true);
+            await file.CopyToAsync(stream);
 
-                await using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, useAsync: true);
-                await file.CopyToAsync(stream);
+            fileUrl = $"/materials/{uniqueFileName}";
 
-                fileUrl = $"/materials/{uniqueFileName}";
-
-                dto.Type = DetectMaterialType(file.FileName);
-            }
-
-            var material = await _materialService.CreateAsync(instructorId.Value, dto, fileUrl, fileSize);
-            return CreatedAtAction(nameof(GetById), new { id = material.MaterialId }, material);
+            dto.Type = DetectMaterialType(file.FileName);
         }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+
+        var material = await _materialService.CreateAsync(instructorId.Value, dto, fileUrl, fileSize);
+        return CreatedAtAction(nameof(GetById), new { id = material.MaterialId }, material);
     }
 
     [Authorize(Roles = "Instructor")]
@@ -102,19 +85,8 @@ public class MaterialsController(IMaterialService materialService) : ControllerB
         if (instructorId is null)
             return Unauthorized();
 
-        try
-        {
-            var result = await _materialService.DeleteAsync(id, instructorId.Value);
-
-            if (!result)
-                return NotFound();
-
-            return NoContent();
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        await _materialService.DeleteAsync(id, instructorId.Value);
+        return NoContent();
     }
 
     [Authorize]
@@ -122,10 +94,6 @@ public class MaterialsController(IMaterialService materialService) : ControllerB
     public async Task<IActionResult> Download(int id)
     {
         var downloadInfo = await _materialService.GetDownloadInfoAsync(id);
-
-        if (downloadInfo is null)
-            return NotFound();
-
         var (fileUrl, fileName) = downloadInfo.Value;
 
         if (string.IsNullOrEmpty(fileUrl))
@@ -155,12 +123,7 @@ public class MaterialsController(IMaterialService materialService) : ControllerB
     [HttpGet("folders/{folderId}")]
     public async Task<ActionResult<MaterialFolderDto>> GetFolderById(int folderId)
     {
-        var folder = await _materialService.GetFolderByIdAsync(folderId);
-
-        if (folder is null)
-            return NotFound();
-
-        return Ok(folder);
+        return Ok(await _materialService.GetFolderByIdAsync(folderId));
     }
 
     [Authorize]
@@ -179,15 +142,8 @@ public class MaterialsController(IMaterialService materialService) : ControllerB
         if (instructorId is null)
             return Unauthorized();
 
-        try
-        {
-            var folder = await _materialService.CreateFolderAsync(instructorId.Value, dto);
-            return CreatedAtAction(nameof(GetFolderById), new { folderId = folder.MaterialFolderId }, folder);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var folder = await _materialService.CreateFolderAsync(instructorId.Value, dto);
+        return CreatedAtAction(nameof(GetFolderById), new { folderId = folder.MaterialFolderId }, folder);
     }
 
     [Authorize(Roles = "Instructor")]
@@ -198,19 +154,8 @@ public class MaterialsController(IMaterialService materialService) : ControllerB
         if (instructorId is null)
             return Unauthorized();
 
-        try
-        {
-            var folder = await _materialService.UpdateFolderAsync(folderId, instructorId.Value, request.Name, request.Description);
-
-            if (folder is null)
-                return NotFound();
-
-            return Ok(folder);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var folder = await _materialService.UpdateFolderAsync(folderId, instructorId.Value, request.Name, request.Description);
+        return Ok(folder);
     }
 
     [Authorize(Roles = "Instructor")]
@@ -221,19 +166,8 @@ public class MaterialsController(IMaterialService materialService) : ControllerB
         if (instructorId is null)
             return Unauthorized();
 
-        try
-        {
-            var result = await _materialService.DeleteFolderAsync(folderId, instructorId.Value);
-
-            if (!result)
-                return NotFound();
-
-            return NoContent();
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        await _materialService.DeleteFolderAsync(folderId, instructorId.Value);
+        return NoContent();
     }
 
     #endregion

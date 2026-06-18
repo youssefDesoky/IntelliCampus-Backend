@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Reminder;
@@ -21,7 +22,7 @@ public class ReminderService(IUnitOfWork unitOfWork) : IReminderService
     {
         var studentExists = await Students.GetByIdAsync(studentId) != null;
         if (!studentExists)
-            throw new InvalidOperationException("Student not found.");
+            throw new StudentNotFoundException(studentId);
 
         var spec = new RemindersByStudentSpec(studentId);
         var reminders = await Reminders.GetAllAsync(spec);
@@ -59,7 +60,7 @@ public class ReminderService(IUnitOfWork unitOfWork) : IReminderService
     {
         var studentExists = await Students.GetByIdAsync(studentId) != null;
         if (!studentExists)
-            throw new InvalidOperationException("Student not found.");
+            throw new StudentNotFoundException(studentId);
 
         var entity = new Reminder
         {
@@ -80,13 +81,13 @@ public class ReminderService(IUnitOfWork unitOfWork) : IReminderService
     public async Task<ReminderDto?> UpdatePersonalReminderAsync(int studentId, string reminderId, UpdateReminderDto dto)
     {
         if (!int.TryParse(reminderId, out var id))
-            return null;
+            throw new InvalidOperationException("Invalid reminder ID.");
 
         var spec = new ReminderByIdSpec(id);
         var reminder = await Reminders.GetByIdAsync(spec);
 
         if (reminder is null || reminder.StudentId != studentId)
-            return null;
+            throw new ReminderNotFoundException(id);
 
         reminder.Title = dto.Title;
         reminder.Date = dto.DueAt;
@@ -103,13 +104,13 @@ public class ReminderService(IUnitOfWork unitOfWork) : IReminderService
     public async Task<bool> DeletePersonalReminderAsync(int studentId, string reminderId)
     {
         if (!int.TryParse(reminderId, out var id))
-            return false;
+            throw new InvalidOperationException("Invalid reminder ID.");
 
         var spec = new ReminderByIdSpec(id);
         var reminder = await Reminders.GetByIdAsync(spec);
 
         if (reminder is null || reminder.StudentId != studentId)
-            return false;
+            throw new ReminderNotFoundException(id);
 
         Reminders.Delete(reminder);
         await _unitOfWork.SaveChangesAsync();

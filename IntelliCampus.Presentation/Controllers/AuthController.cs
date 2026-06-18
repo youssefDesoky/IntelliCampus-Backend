@@ -27,9 +27,6 @@ public class AuthController : ControllerBase
     {
         var result = await _authService.LoginAsync(dto);
 
-        if (result is null)
-            return Unauthorized();
-
         // Set token in HttpOnly cookie
         Response.Cookies.Append("token", result.Token, new CookieOptions
         {
@@ -71,9 +68,6 @@ public class AuthController : ControllerBase
 
         var result = await _authService.GetMeAsync(userId.Value);
 
-        if (result is null)
-            return NotFound();
-
         return Ok(result);
     }
 
@@ -86,9 +80,6 @@ public class AuthController : ControllerBase
             return Unauthorized();
 
         var profile = await _authService.GetProfileAsync(userId.Value);
-
-        if (profile is null)
-            return NotFound();
 
         return Ok(profile);
     }
@@ -103,9 +94,6 @@ public class AuthController : ControllerBase
 
         var profile = await _authService.UpdateProfileAsync(userId.Value, dto);
 
-        if (profile is null)
-            return NotFound();
-
         return Ok(profile);
     }
 
@@ -119,9 +107,6 @@ public class AuthController : ControllerBase
 
         var result = await _authService.UpdateProfileImageAsync(userId.Value, imageUrl);
 
-        if (result is null)
-            return NotFound();
-
         return Ok(new { profileImage = result });
     }
 
@@ -133,10 +118,7 @@ public class AuthController : ControllerBase
         if (userId is null)
             return Unauthorized();
 
-        var result = await _authService.ChangePasswordAsync(userId.Value, dto);
-
-        if (!result)
-            return BadRequest(new { message = "Current password is incorrect." });
+        await _authService.ChangePasswordAsync(userId.Value, dto);
 
         return Ok(new { message = "Password changed successfully." });
     }

@@ -1,3 +1,4 @@
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Shared.Dtos.Auth;
 using IntelliCampus.Service_Abstraction;
@@ -25,10 +26,10 @@ public class AuthService(
         var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(spec);
 
         if (user is null)
-            return null;
+            throw new UnauthorizedAccessException("Invalid email or password.");
 
         if (!_passwordService.VerifyPassword(dto.Password, user.Password))
-            return null;
+            throw new UnauthorizedAccessException("Invalid email or password.");
 
         var (token, expiresAt) = _tokenService.GenerateToken(user);
 
@@ -51,7 +52,7 @@ public class AuthService(
         var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(spec);
 
         if (user is null)
-            return null;
+            throw new UserNotFoundException(userId);
 
         return new MeResponseDto
         {
@@ -70,7 +71,7 @@ public class AuthService(
         var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(spec);
 
         if (user is null)
-            return null;
+            throw new UserNotFoundException(userId);
 
         return new UserProfileDto
         {
@@ -92,7 +93,7 @@ public class AuthService(
         var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(spec);
 
         if (user is null)
-            return null;
+            throw new UserNotFoundException(userId);
 
         if (dto.Address is not null)
             user.Address = dto.Address;
@@ -125,7 +126,7 @@ public class AuthService(
         var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
 
         if (user is null)
-            return null;
+            throw new UserNotFoundException(userId);
 
         user.ProfileImage = imageUrl;
         _unitOfWork.GetRepository<User, int>().Update(user);
@@ -139,10 +140,10 @@ public class AuthService(
         var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
 
         if (user is null)
-            return false;
+            throw new UserNotFoundException(userId);
 
         if (!_passwordService.VerifyPassword(dto.CurrentPassword, user.Password))
-            return false;
+            throw new InvalidOperationException("Current password is incorrect.");
 
         user.Password = _passwordService.HashPassword(dto.NewPassword);
         _unitOfWork.GetRepository<User, int>().Update(user);

@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Export;
@@ -27,15 +28,22 @@ public class ExamScheduleService : IExamScheduleService
     private IGenericRepository<Exam, int> Exams
         => _unitOfWork.GetRepository<Exam, int>();
 
-    public async Task<ExamScheduleDto?> GetByIdAsync(int examScheduleId)
+    private IGenericRepository<Student, int> Students
+        => _unitOfWork.GetRepository<Student, int>();
+
+    public async Task<ExamScheduleDto> GetByIdAsync(int examScheduleId)
     {
         var spec = new ExamScheduleSpec(examScheduleId, byId: true);
         var exam = await ExamSchedules.GetByIdAsync(spec);
-        return exam is null ? null : MapToDto(exam);
+        return exam is null ? throw new ExamScheduleNotFoundException(examScheduleId) : MapToDto(exam);
     }
 
     public async Task<IEnumerable<ExamScheduleDto>> GetByStudentIdAsync(int studentId)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
         var spec = new ExamScheduleSpec(studentId);
         var exams = await ExamSchedules.GetAllAsync(spec);
         return exams.Select(MapToDto);
@@ -43,6 +51,10 @@ public class ExamScheduleService : IExamScheduleService
 
     public async Task<IEnumerable<ExamScheduleDto>> GetByTypeAsync(int studentId, ExamType examType)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
         var spec = new ExamScheduleSpec(studentId, examType);
         var exams = await ExamSchedules.GetAllAsync(spec);
         return exams.Select(MapToDto);
@@ -50,6 +62,10 @@ public class ExamScheduleService : IExamScheduleService
 
     public async Task<IEnumerable<ExamScheduleDto>> GetByStatusAsync(int studentId, ExamStatus status)
     {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
         var spec = new ExamScheduleSpec(studentId, status);
         var exams = await ExamSchedules.GetAllAsync(spec);
         return exams.Select(MapToDto);
@@ -60,7 +76,7 @@ public class ExamScheduleService : IExamScheduleService
         var spec = new ExamWithDetailsSpec(examId);
         var exam = await Exams.GetByIdAsync(spec);
         if (exam is null)
-            throw new InvalidOperationException("Exam not found.");
+            throw new ExamNotFoundException(examId);
 
         await RemoveByExamAsync(examId);
 
@@ -109,7 +125,11 @@ public class ExamScheduleService : IExamScheduleService
 
     public async Task<byte[]> ExportExamSchedulePdfAsync(int studentId, ExamType? type, ExamStatus? status)
     {
-        var student = await _studentService.GetByIdAsync(studentId);
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var studentDto = await _studentService.GetByIdAsync(studentId);
 
         IEnumerable<ExamScheduleDto> exams;
         if (type.HasValue)
