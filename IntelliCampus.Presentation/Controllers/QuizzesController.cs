@@ -20,83 +20,58 @@ public class QuizzesController : ControllerBase
 
     private int UserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
 
-    // --- Standalone (non-course) endpoints under api/quizzes ---
-
     [HttpGet("{quizId}")]
     public async Task<IActionResult> GetById(int quizId)
     {
         var result = await _quizService.GetByIdAsync(quizId, UserId);
-        return result is null ? NotFound() : Ok(result);
+        return Ok(result);
     }
-
-    // --- Course-nested endpoints under api/courses/{courseId}/quizzes ---
 
     [HttpGet("/api/courses/{courseId}/quizzes")]
     [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Instructor")]
     public async Task<IActionResult> GetQuizzesOverview(string courseId)
     {
         var result = await _quizService.GetQuizzesOverviewAsync(UserId, courseId);
-        return result is null ? NotFound() : Ok(result);
+        return Ok(result);
     }
 
     [HttpGet("/api/courses/{courseId}/quizzes/{quizId}")]
     public async Task<IActionResult> GetQuizById(string courseId, int quizId)
     {
         var result = await _quizService.GetByIdInCourseAsync(quizId, UserId, courseId);
-        return result is null ? NotFound() : Ok(result);
+        return Ok(result);
     }
 
     [HttpGet("/api/courses/{courseId}/quizzes/practice")]
     [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
-    public async Task<IActionResult> GetPracticeQuiz(string courseId ,[FromQuery] int? quizId)
+    public async Task<IActionResult> GetPracticeQuiz(string courseId, [FromQuery] int? quizId)
     {
-        var result = await _quizService.GetPracticeQuizAsync(UserId, courseId , quizId);
-        return result is null ? NotFound() : Ok(result);
+        var result = await _quizService.GetPracticeQuizAsync(UserId, courseId, quizId);
+        return Ok(result);
     }
 
     [HttpPost("/api/courses/{courseId}/quizzes/practice/submit")]
     [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD")]
     public async Task<IActionResult> SubmitPracticeQuiz(string courseId, [FromBody] SubmitQuizDto dto)
     {
-        try
-        {
-            var result = await _quizService.SubmitPracticeQuizAsync(UserId, courseId, dto);
-            return result is null ? NotFound() : Ok(result);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var result = await _quizService.SubmitPracticeQuizAsync(UserId, courseId, dto);
+        return Ok(result);
     }
 
     [HttpPost("/api/courses/{courseId}/quizzes/{quizId}/questions")]
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> AddQuestions(string courseId, int quizId, [FromBody] List<CreateQuestionDto> questions)
     {
-        try
-        {
-            await _quizService.AddQuestionsAsync(quizId, UserId, courseId, questions);
-            return Ok();
-        }
-        catch (InvalidOperationException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        await _quizService.AddQuestionsAsync(quizId, UserId, courseId, questions);
+        return Ok();
     }
 
     [HttpDelete("/api/courses/{courseId}/quizzes/{quizId}/questions/{questionId}")]
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> DeleteQuestion(string courseId, int quizId, int questionId)
     {
-        try
-        {
-            await _quizService.DeleteQuestionAsync(questionId, UserId, courseId);
-            return Ok();
-        }
-        catch (InvalidOperationException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        await _quizService.DeleteQuestionAsync(questionId, UserId, courseId);
+        return Ok();
     }
 
     [HttpGet("/api/courses/{courseId}/quizzes/{quizId}/submissions")]
@@ -111,44 +86,23 @@ public class QuizzesController : ControllerBase
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> GradeWritten(string courseId, int quizId, int studentId, [FromBody] GradeWrittenDto dto)
     {
-        try
-        {
-            await _quizService.GradeWrittenAsync(quizId, studentId, UserId, courseId, dto);
-            return Ok();
-        }
-        catch (InvalidOperationException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        await _quizService.GradeWrittenAsync(quizId, studentId, UserId, courseId, dto);
+        return Ok();
     }
 
     [HttpPost("/api/courses/{courseId}/quizzes")]
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> CreateInCourse(string courseId, [FromBody] CreateQuizDto dto)
     {
-        try
-        {
-            var result = await _quizService.CreateInCourseAsync(UserId, courseId, dto);
-            return Ok(result);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        var result = await _quizService.CreateInCourseAsync(UserId, courseId, dto);
+        return Ok(result);
     }
 
     [HttpDelete("/api/courses/{courseId}/quizzes/{quizId}")]
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> DeleteInCourse(string courseId, int quizId)
     {
-        try
-        {
-            var success = await _quizService.DeleteInCourseAsync(quizId, UserId, courseId);
-            return success ? Ok() : NotFound();
-        }
-        catch (InvalidOperationException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        await _quizService.DeleteInCourseAsync(quizId, UserId, courseId);
+        return Ok();
     }
 }

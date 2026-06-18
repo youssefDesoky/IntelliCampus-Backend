@@ -1,17 +1,19 @@
-using System.Text;
+using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Presentation.Hubs;
+using IntelliCampus.Presistence.Data.Contexts;
+using IntelliCampus.Presistence.Data.DataSeeding;
+using IntelliCampus.Presistence.Repositories;
 using IntelliCampus.Service;
 using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Settings;
-using IntelliCampus.Presistence.Data.Contexts;
-using IntelliCampus.Presistence.Data.DataSeeding;
-using IntelliCampus.Presentation.Hubs;
+using IntelliCampus.Web.CustomMiddleWares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using IntelliCampus.Domain.Interfaces;
-using IntelliCampus.Presistence.Repositories;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -134,13 +136,43 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IMeetingService, MeetingService>();
 builder.Services.AddScoped<IElectiveBucketService, ElectiveBucketService>();
 builder.Services.AddScoped<IDataSeed, DataSeed>();
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = actionContext =>
+    {
+        var Errors = actionContext.ModelState
+            .Where(E => E.Value.Errors.Count > 0)
+            .ToDictionary(
+                X => X.Key,
+                X => X.Value.Errors.Select(X => X.ErrorMessage).ToArray()
+            );
+
+        var Problem = new ProblemDetails()
+        {
+            Title = "Validation Errors",
+            Detail = "One or more validation errors occurred",
+            Status = StatusCodes.Status400BadRequest,
+            Extensions = { { "Errors", Errors } }
+        };
+
+        return new BadRequestObjectResult(Problem);
+    };
+});
+
+
 var app = builder.Build();
+
+
+
+
+app.UseMiddleware<ExceptionHandlerMiddleWare>();
+
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage();
+   
 }
 
 // Apply migrations and seed data
