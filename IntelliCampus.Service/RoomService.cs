@@ -35,7 +35,10 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
         {
             RoomName = dto.RoomName,
             RoomNameAr = dto.RoomNameAr,
-            Capacity = dto.Capacity
+            Capacity = dto.Capacity,
+            Type = dto.Type,
+            Location = dto.Location,
+            LocationAr = dto.LocationAr
         };
 
         Rooms.Add(room);
@@ -59,6 +62,12 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
 
         if (dto.Capacity.HasValue)
             room.Capacity = dto.Capacity.Value;
+        if (dto.Type is not null)
+            room.Type = dto.Type;
+        if (dto.Location is not null)
+            room.Location = dto.Location;
+        if (dto.LocationAr is not null)
+            room.LocationAr = dto.LocationAr;
 
         Rooms.Update(room);
         await _unitOfWork.SaveChangesAsync();
@@ -84,7 +93,10 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
             RoomId = room.RoomId,
             RoomName = room.RoomName,
             RoomNameAr = room.RoomNameAr,
-            Capacity = room.Capacity
+            Capacity = room.Capacity,
+            Type = room.Type,
+            Location = room.Location,
+            LocationAr = room.LocationAr
         };
     }
 }

@@ -2,51 +2,81 @@
   {
     "roomName": "Hall-1",
     "roomNameAr": "قاعة 1",
-    "capacity": 100
+    "capacity": 100,
+    "type": "Lecture Hall",
+    "location": "Building A, Floor 1",
+    "locationAr": "مبنى أ، الطابق الأول"
   },
   {
     "roomName": "Hall-2",
     "roomNameAr": "قاعة 2",
-    "capacity": 80
+    "capacity": 80,
+    "type": "Lecture Hall",
+    "location": "Building A, Floor 2",
+    "locationAr": "مبنى أ، الطابق الثاني"
   },
   {
     "roomName": "Hall-3",
     "roomNameAr": "قاعة 3",
-    "capacity": 60
+    "capacity": 60,
+    "type": "Lecture Hall",
+    "location": "Building A, Floor 3",
+    "locationAr": "مبنى أ، الطابق الثالث"
   },
   {
     "roomName": "Lab-1",
     "roomNameAr": "معمل 1",
-    "capacity": 30
+    "capacity": 30,
+    "type": "Lab",
+    "location": "Building B, Floor 1",
+    "locationAr": "مبنى ب، الطابق الأول"
   },
   {
     "roomName": "Lab-2",
     "roomNameAr": "معمل 2",
-    "capacity": 30
+    "capacity": 30,
+    "type": "Lab",
+    "location": "Building B, Floor 1",
+    "locationAr": "مبنى ب، الطابق الأول"
   },
   {
     "roomName": "Lab-3",
     "roomNameAr": "معمل 3",
-    "capacity": 25
+    "capacity": 25,
+    "type": "Lab",
+    "location": "Building B, Floor 2",
+    "locationAr": "مبنى ب، الطابق الثاني"
   },
   {
     "roomName": "Room-101",
     "roomNameAr": "غرفة 101",
-    "capacity": 50
+    "capacity": 50,
+    "type": "Classroom",
+    "location": "Building C, Floor 1",
+    "locationAr": "مبنى ج، الطابق الأول"
   },
   {
     "roomName": "Room-102",
     "roomNameAr": "غرفة 102",
-    "capacity": 45
+    "capacity": 45,
+    "type": "Classroom",
+    "location": "Building C, Floor 1",
+    "locationAr": "مبنى ج، الطابق الأول"
   },
   {
     "roomName": "Room-103",
     "roomNameAr": "غرفة 103",
-    "capacity": 40
+    "capacity": 40,
+    "type": "Classroom",
+    "location": "Building C, Floor 1",
+    "locationAr": "مبنى ج، الطابق الأول"
   },
   {
     "roomName": "Auditorium-A",
     "roomNameAr": "مدرج أ",
-    "capacity": 200
+    "capacity": 200,
+    "type": "Auditorium",
+    "location": "Building A, Ground Floor",
+    "locationAr": "مبنى أ، الطابق الأرضي"
   }
 ]

@@ -14,7 +14,13 @@ public class BylawConfiguration : IEntityTypeConfiguration<Bylaw>
             .IsRequired()
             .HasMaxLength(200);
 
+        builder.Property(b => b.NameAr)
+            .HasMaxLength(200);
+
         builder.Property(b => b.Description)
+            .HasMaxLength(1000);
+
+        builder.Property(b => b.DescriptionAr)
             .HasMaxLength(1000);
 
         builder.Property(b => b.FileUrl)

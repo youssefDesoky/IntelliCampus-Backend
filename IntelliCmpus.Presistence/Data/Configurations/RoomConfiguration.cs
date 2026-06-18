@@ -16,5 +16,14 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
 
         builder.Property(r => r.RoomNameAr)
             .HasMaxLength(100);
+
+        builder.Property(r => r.Type)
+            .HasMaxLength(50);
+
+        builder.Property(r => r.Location)
+            .HasMaxLength(200);
+
+        builder.Property(r => r.LocationAr)
+            .HasMaxLength(200);
     }
 }

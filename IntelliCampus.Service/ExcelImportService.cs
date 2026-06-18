@@ -207,7 +207,10 @@ public class ExcelImportService : IExcelImportService
         {
             RoomName = row.Cell(1).GetString().Trim(),
             RoomNameAr = GetOptionalString(row, 2),
-            Capacity = int.Parse(row.Cell(3).GetString().Trim())
+            Capacity = int.Parse(row.Cell(3).GetString().Trim()),
+            Type = GetOptionalString(row, 4),
+            Location = GetOptionalString(row, 5),
+            LocationAr = GetOptionalString(row, 6)
         };
 
         await _roomService.CreateAsync(dto);
