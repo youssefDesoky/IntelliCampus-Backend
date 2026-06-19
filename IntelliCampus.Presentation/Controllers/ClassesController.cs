@@ -1,4 +1,6 @@
 using IntelliCampus.Shared.Dtos.Class;
+using IntelliCampus.Shared.Dtos.Instructor;
+using IntelliCampus.Shared.Dtos.Room;
 using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +23,34 @@ public class ClassesController : ControllerBase
     {
         var classes = await _classService.GetAllAsync();
         return Ok(classes);
+    }
+
+    [HttpGet("lecture-instructors")]
+    public async Task<ActionResult<IEnumerable<InstructorDto>>> GetLectureInstructors()
+    {
+        var instructors = await _classService.GetLectureInstructorsAsync();
+        return Ok(instructors);
+    }
+
+    [HttpGet("section-instructors")]
+    public async Task<ActionResult<IEnumerable<InstructorDto>>> GetSectionInstructors()
+    {
+        var instructors = await _classService.GetSectionInstructorsAsync();
+        return Ok(instructors);
+    }
+
+    [HttpGet("lecture-rooms")]
+    public async Task<ActionResult<IEnumerable<RoomDto>>> GetLectureRooms()
+    {
+        var rooms = await _classService.GetLectureRoomsAsync();
+        return Ok(rooms);
+    }
+
+    [HttpGet("section-rooms")]
+    public async Task<ActionResult<IEnumerable<RoomDto>>> GetSectionRooms()
+    {
+        var rooms = await _classService.GetSectionRoomsAsync();
+        return Ok(rooms);
     }
 
     [HttpGet("{id}")]

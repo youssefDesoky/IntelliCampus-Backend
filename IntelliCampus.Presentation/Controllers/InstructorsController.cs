@@ -48,6 +48,13 @@ public class InstructorsController : ControllerBase
         return Ok(instructor);
     }
 
+    [HttpGet("professors")]
+    public async Task<ActionResult<IEnumerable<InstructorDto>>> GetProfessors()
+    {
+        var professors = await _instructorService.GetProfessorsAsync();
+        return Ok(professors);
+    }
+
     [HttpGet("roles")]
     public ActionResult<IEnumerable<string>> GetRoles()
     {

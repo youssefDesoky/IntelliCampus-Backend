@@ -1,5 +1,7 @@
 using System.Globalization;
 using IntelliCampus.Shared.Dtos.Class;
+using IntelliCampus.Shared.Dtos.Instructor;
+using IntelliCampus.Shared.Dtos.Room;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
@@ -21,6 +23,9 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
 
     private IGenericRepository<Instructor, int> Instructors
         => _unitOfWork.GetRepository<Instructor, int>();
+
+    private IGenericRepository<Room, int> Rooms
+        => _unitOfWork.GetRepository<Room, int>();
 
     public async Task<ClassDto?> GetByIdAsync(int classId)
     {
@@ -224,6 +229,36 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         return true;
     }
 
+    public async Task<IEnumerable<InstructorDto>> GetLectureInstructorsAsync()
+    {
+        var spec = new InstructorSpec();
+        var instructors = await Instructors.GetAllAsync(spec);
+        return instructors
+            .Where(i => i.InstructorRole == InstructorRole.Professor || i.InstructorRole == InstructorRole.Lecturer || i.InstructorRole == InstructorRole.AssociateProfessor)
+            .Select(MapInstructorToDto);
+    }
+
+    public async Task<IEnumerable<InstructorDto>> GetSectionInstructorsAsync()
+    {
+        var spec = new InstructorSpec();
+        var instructors = await Instructors.GetAllAsync(spec);
+        return instructors
+            .Where(i => i.InstructorRole == InstructorRole.TeachingAssistant || i.InstructorRole == InstructorRole.AssistantLecturer)
+            .Select(MapInstructorToDto);
+    }
+
+    public async Task<IEnumerable<RoomDto>> GetLectureRoomsAsync()
+    {
+        var rooms = await Rooms.GetAllAsync();
+        return rooms.Select(MapRoomToDto);
+    }
+
+    public async Task<IEnumerable<RoomDto>> GetSectionRoomsAsync()
+    {
+        var rooms = await Rooms.GetAllAsync();
+        return rooms.Select(MapRoomToDto);
+    }
+
     private async Task<string> GenerateGroupCodeAsync(Course course, ClassType classType)
     {
         // Get department code (e.g. "CS", "IS")
@@ -322,6 +357,48 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
             CourseName = classEntity.Course.CourseName,
             InstructorId = classEntity.InstructorId,
             InstructorName = classEntity.Instructor?.FullName
+        };
+    }
+
+    private static InstructorDto MapInstructorToDto(Instructor instructor)
+    {
+        return new InstructorDto
+        {
+            InstructorId = instructor.InstructorId,
+            UserId = instructor.UserId,
+            NationalId = instructor.NationalId,
+            FullName = instructor.FullName,
+            FullNameAr = instructor.FullNameAr,
+            PhoneNumber = instructor.PhoneNumber,
+            Email = instructor.Email,
+            Address = instructor.Address,
+            Nationality = instructor.Nationality,
+            InstructorCode = instructor.InstructorCode,
+            InstructorRole = instructor.InstructorRole?.ToString(),
+            Specialization = instructor.Specialization,
+            DepartmentId = instructor.DepartmentId,
+            DepartmentName = instructor.Department?.DepartmentName,
+            HireDate = instructor.HireDate?.ToString("dd MM yyyy"),
+            FacultyId = instructor.FacultyId,
+            FacultyName = instructor.Faculty?.FacultyName,
+            Status = instructor.Status?.ToString(),
+            OfficeHoursRoomId = instructor.OfficeHoursRoomId,
+            OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName,
+            Roles = instructor.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
+        };
+    }
+
+    private static RoomDto MapRoomToDto(Room room)
+    {
+        return new RoomDto
+        {
+            RoomId = room.RoomId,
+            RoomName = room.RoomName,
+            RoomNameAr = room.RoomNameAr,
+            Capacity = room.Capacity,
+            Type = room.Type,
+            Location = room.Location,
+            LocationAr = room.LocationAr
         };
     }
 }

@@ -46,6 +46,13 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         return instructors.Select(MapToDto);
     }
 
+    public async Task<IEnumerable<InstructorDto>> GetProfessorsAsync()
+    {
+        var spec = new ProfessorsSpec();
+        var professors = await Instructors.GetAllAsync(spec);
+        return professors.Select(MapToDto);
+    }
+
     public async Task<InstructorDto> CreateAsync(CreateInstructorDto dto, int? creatorUserId = null)
     {
         if (await Users.AnyAsync(u => u.NationalId == dto.NationalId))

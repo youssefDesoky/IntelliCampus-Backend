@@ -6,6 +6,7 @@ public interface IInstructorService
 {
     Task<InstructorDto> GetByIdAsync(int instructorId);
     Task<IEnumerable<InstructorDto>> GetAllAsync();
+    Task<IEnumerable<InstructorDto>> GetProfessorsAsync();
     Task<InstructorDto> CreateAsync(CreateInstructorDto dto, int? creatorUserId = null);
     Task<InstructorDto> UpdateAsync(int instructorId, UpdateInstructorDto dto);
     Task DeleteAsync(int instructorId);
