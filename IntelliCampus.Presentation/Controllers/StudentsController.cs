@@ -50,6 +50,13 @@ public class StudentsController : ControllerBase
         return Ok(student);
     }
 
+    [HttpGet("types")]
+    public ActionResult<IEnumerable<string>> GetTypes()
+    {
+        var types = Enum.GetNames<StudentType>();
+        return Ok(types);
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

@@ -8,6 +8,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(s => s.Department!);
             AddInclude(s => s.Bylaw!);
+            AddInclude(s => s.Specialization!);
             AddInclude("UserRoles.Role");
         }
 
@@ -16,6 +17,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(s => s.Department!);
             AddInclude(s => s.Bylaw!);
+            AddInclude(s => s.Specialization!);
             AddInclude("UserRoles.Role");
         }
     }
