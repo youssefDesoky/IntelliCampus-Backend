@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.Shared.Dtos.Registration;
 using IntelliCampus.Shared.Dtos.Student;
 using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
@@ -14,11 +15,13 @@ public class StudentsController : ControllerBase
 {
     private readonly IStudentService _studentService;
     private readonly IGradeService _gradeService;
+    private readonly IRegistrationService _registrationService;
 
-    public StudentsController(IStudentService studentService, IGradeService gradeService)
+    public StudentsController(IStudentService studentService, IGradeService gradeService, IRegistrationService registrationService)
     {
         _studentService = studentService;
         _gradeService = gradeService;
+        _registrationService = registrationService;
     }
 
     [HttpGet]
@@ -82,5 +85,13 @@ public class StudentsController : ControllerBase
     {
         var gpa = await _gradeService.UpdateStudentGpaIfCompleteAsync(id);
         return Ok(new { gpa });
+    }
+
+    [HttpPost("{id}/register")]
+    public async Task<ActionResult<StudentRegistrationDto>> Register(int id, [FromBody] CourseRegistrationDto dto)
+    {
+        var registration = await _registrationService.RegisterStudentInCourseAsync(id, dto);
+        if (registration is null) return NotFound();
+        return Ok(registration);
     }
 }
