@@ -40,6 +40,13 @@ public class AdminsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = admin.UserId }, admin);
     }
 
+    [HttpPut("{id}")]
+    public async Task<ActionResult<AdminDto>> Update(int id, [FromBody] UpdateAdminDto dto)
+    {
+        var admin = await _adminService.UpdateAsync(id, dto);
+        return Ok(admin);
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

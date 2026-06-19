@@ -20,6 +20,9 @@ public class UrlResolver
         if (url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             return url;
 
+        if (url.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+            return url;
+
         return $"{_baseUrl.TrimEnd('/')}/{url.TrimStart('/')}";
     }
 

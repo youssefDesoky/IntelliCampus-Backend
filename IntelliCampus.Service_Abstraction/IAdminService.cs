@@ -7,5 +7,6 @@ public interface IAdminService
     Task<AdminDto> GetByIdAsync(int adminId);
     Task<IEnumerable<AdminDto>> GetAllAsync();
     Task<AdminDto> CreateAsync(CreateAdminDto dto, int? creatorUserId = null);
+    Task<AdminDto> UpdateAsync(int adminId, UpdateAdminDto dto);
     Task DeleteAsync(int adminId);
 }

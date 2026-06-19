@@ -6,14 +6,16 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service.Exceptions;
+using IntelliCampus.Service.Resolvers;
 
 namespace IntelliCampus.Service;
 
-public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration) : IAdminService
+public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration, UrlResolver urlResolver) : IAdminService
 {
     private readonly IPasswordService _passwordService = passwordService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICodeGenerationService _codeGeneration = codeGeneration;
+    private readonly UrlResolver _urlResolver = urlResolver;
     private IGenericRepository<Admin, int> Admins
         => _unitOfWork.GetRepository<Admin, int>();
 
@@ -95,7 +97,8 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             Nationality = dto.Nationality,
             AdminCode = code,
             HireDate = hireDate,
-            FacultyId = facultyId
+            FacultyId = facultyId,
+            ProfileImage = dto.ProfileImage
         };
 
         admin.UserRoles =
@@ -111,6 +114,55 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         Admins.Add(admin);
         await _unitOfWork.SaveChangesAsync();
 
+        return MapToDto(admin);
+    }
+
+    public async Task<AdminDto> UpdateAsync(int adminId, UpdateAdminDto dto)
+    {
+        var spec = new AdminByIdSpec(adminId);
+        var admin = await Admins.GetByIdAsync(spec);
+
+        if (admin is null)
+            throw new AdminNotFoundException(adminId);
+
+        if (dto.Email is not null && dto.Email != admin.Email)
+        {
+            if (await Users.AnyAsync(u => u.Email == dto.Email && u.UserId != adminId))
+                throw new InvalidOperationException("Email already exists.");
+            admin.Email = dto.Email;
+        }
+
+        if (dto.FullName is not null) admin.FullName = dto.FullName;
+        if (dto.FullNameAr is not null) admin.FullNameAr = dto.FullNameAr;
+        if (dto.PhoneNumber is not null) admin.PhoneNumber = dto.PhoneNumber;
+        if (dto.Address is not null) admin.Address = dto.Address;
+        if (dto.Nationality is not null) admin.Nationality = dto.Nationality;
+        if (dto.AdminCode is not null) admin.AdminCode = dto.AdminCode;
+        if (dto.FacultyId.HasValue) admin.FacultyId = dto.FacultyId;
+        if (dto.ProfileImage is not null) admin.ProfileImage = dto.ProfileImage;
+
+        var hireDate = ParseDate(dto.HireDate);
+        if (hireDate.HasValue) admin.HireDate = hireDate.Value;
+
+        if (dto.AdminRole is not null)
+        {
+            var roleName = ResolveAdminRoleName(dto.AdminRole);
+            var newRole = (await RolesRepo.GetAllAsync()).First(r => r.RoleName == roleName);
+            var activeRole = admin.UserRoles.FirstOrDefault(ur => ur.IsActive);
+            if (activeRole is not null)
+            {
+                activeRole.IsActive = false;
+                activeRole.AssignedAt = DateTime.UtcNow;
+            }
+            admin.UserRoles.Add(new UserRoleJunction
+            {
+                Role = newRole,
+                IsActive = true,
+                AssignedAt = DateTime.UtcNow
+            });
+        }
+
+        await _unitOfWork.SaveChangesAsync();
         return MapToDto(admin);
     }
 
@@ -159,7 +211,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         throw new InvalidOperationException("Invalid date format.");
     }
 
-    private static AdminDto MapToDto(Admin admin)
+    private AdminDto MapToDto(Admin admin)
     {
         return new AdminDto
         {
@@ -176,6 +228,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             HireDate = admin.HireDate?.ToString("dd MM yyyy"),
             FacultyId = admin.FacultyId,
             FacultyName = admin.Faculty?.FacultyName,
+            ProfileImage = _urlResolver.ResolveProfile(admin.ProfileImage),
             Roles = admin.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }

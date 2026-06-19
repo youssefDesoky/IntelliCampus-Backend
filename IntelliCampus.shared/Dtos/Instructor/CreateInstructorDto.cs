@@ -20,4 +20,5 @@ public class CreateInstructorDto
     public int? FacultyId { get; set; }
     public string? Status { get; set; }
     public int? OfficeHoursRoomId { get; set; }
+    public string? ProfileImage { get; set; }
 }

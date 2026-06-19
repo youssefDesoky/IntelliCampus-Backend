@@ -6,14 +6,16 @@ using IntelliCampus.Shared.Dtos.Instructor;
 using System.Globalization;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service.Exceptions;
+using IntelliCampus.Service.Resolvers;
 
 namespace IntelliCampus.Service;
 
-public class InstructorService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration) : IInstructorService
+public class InstructorService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration, UrlResolver urlResolver) : IInstructorService
 {
     private readonly IPasswordService _passwordService = passwordService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICodeGenerationService _codeGeneration = codeGeneration;
+    private readonly UrlResolver _urlResolver = urlResolver;
 
     private IGenericRepository<Instructor, int> Instructors
         => _unitOfWork.GetRepository<Instructor, int>();
@@ -101,7 +103,8 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             HireDate = hireDate,
             FacultyId = facultyId,
             Status = ParseStatus(dto.Status),
-            OfficeHoursRoomId = dto.OfficeHoursRoomId
+            OfficeHoursRoomId = dto.OfficeHoursRoomId,
+            ProfileImage = dto.ProfileImage
         };
 
         Instructors.Add(instructor);
@@ -154,6 +157,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         if (dto.FacultyId.HasValue) instructor.FacultyId = dto.FacultyId;
         if (dto.Status is not null) instructor.Status = ParseStatus(dto.Status);
         if (dto.OfficeHoursRoomId.HasValue) instructor.OfficeHoursRoomId = dto.OfficeHoursRoomId;
+        if (dto.ProfileImage is not null) instructor.ProfileImage = dto.ProfileImage;
 
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentName);
         if (departmentId.HasValue) instructor.DepartmentId = departmentId;
@@ -264,7 +268,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         throw new InvalidOperationException("Invalid date format.");
     }
 
-    private static InstructorDto MapToDto(Instructor instructor)
+    private InstructorDto MapToDto(Instructor instructor)
     {
         return new InstructorDto
         {
@@ -288,6 +292,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             Status = instructor.Status?.ToString(),
             OfficeHoursRoomId = instructor.OfficeHoursRoomId,
             OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName,
+            ProfileImage = _urlResolver.ResolveProfile(instructor.ProfileImage),
             Roles = instructor.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }

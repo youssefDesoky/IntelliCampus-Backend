@@ -28,4 +28,5 @@ public class CreateStudentDto
 
     public StudentProgram? Program { get; set; }
     public int? SpecializationId { get; set; }
+    public string? ProfileImage { get; set; }
 }

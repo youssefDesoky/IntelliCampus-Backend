@@ -6,6 +6,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service.Exceptions;
+using IntelliCampus.Service.Resolvers;
 
 namespace IntelliCampus.Service;
 
@@ -14,12 +15,14 @@ public class StudentService : IStudentService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordService _passwordService;
     private readonly ICodeGenerationService _codeGeneration;
+    private readonly UrlResolver _urlResolver;
 
-    public StudentService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration)
+    public StudentService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration, UrlResolver urlResolver)
     {
         _unitOfWork = unitOfWork;
         _passwordService = passwordService;
         _codeGeneration = codeGeneration;
+        _urlResolver = urlResolver;
     }
 
     private IGenericRepository<Student, int> Students
@@ -127,7 +130,8 @@ public class StudentService : IStudentService
             BylawId = bylawId,
             EnrollmentDate = enrollmentDate,
             Program = studentType is StudentType.UnderGrad ? dto.Program : StudentProgram.General,
-            SpecializationId = dto.SpecializationId
+            SpecializationId = dto.SpecializationId,
+            ProfileImage = dto.ProfileImage
         };
 
         Students.Add(student);
@@ -187,6 +191,7 @@ public class StudentService : IStudentService
         if (dto.Program.HasValue && student.StudentType is StudentType.UnderGrad)
             student.Program = dto.Program;
         if (dto.SpecializationId.HasValue) student.SpecializationId = dto.SpecializationId.Value;
+        if (dto.ProfileImage is not null) student.ProfileImage = dto.ProfileImage;
 
         var enrollmentDate = ParseEnrollmentDate(dto.EnrollmentDate);
         if (enrollmentDate.HasValue) student.EnrollmentDate = enrollmentDate.Value;
@@ -316,7 +321,7 @@ public class StudentService : IStudentService
         throw new InvalidOperationException("Invalid enrollment date format.");
     }
 
-    private static StudentDto MapToDto(Student student)
+    private StudentDto MapToDto(Student student)
     {
         return new StudentDto
         {
@@ -344,6 +349,7 @@ public class StudentService : IStudentService
             SpecializationId = student.SpecializationId,
             SpecializationName = student.Specialization?.Name,
             StudentType = student.StudentType,
+            ProfileImage = _urlResolver.ResolveProfile(student.ProfileImage),
             Roles = student.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }
