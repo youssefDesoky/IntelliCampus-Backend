@@ -47,8 +47,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(256);
 
-        builder.Property(u => u.ProfileImage)
-            .HasMaxLength(500);
+        builder.Property(u => u.ProfileImage);
 
         builder.Property(u => u.FacultyId);
         builder.HasOne(u => u.Faculty)
