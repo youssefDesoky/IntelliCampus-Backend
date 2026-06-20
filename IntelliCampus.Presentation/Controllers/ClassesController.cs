@@ -32,6 +32,20 @@ public class ClassesController : ControllerBase
         return Ok(instructors);
     }
 
+    [HttpGet("professor-lectures")]
+    public async Task<ActionResult<IEnumerable<ClassDto>>> GetProfessorLectures()
+    {
+        var classes = await _classService.GetProfessorLecturesAsync();
+        return Ok(classes);
+    }
+
+    [HttpGet("ta-sections")]
+    public async Task<ActionResult<IEnumerable<ClassDto>>> GetTALecturerSections()
+    {
+        var classes = await _classService.GetTALecturerSectionsAsync();
+        return Ok(classes);
+    }
+
     [HttpGet("section-instructors")]
     public async Task<ActionResult<IEnumerable<InstructorDto>>> GetSectionInstructors()
     {

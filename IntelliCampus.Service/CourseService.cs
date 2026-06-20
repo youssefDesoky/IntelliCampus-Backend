@@ -140,6 +140,9 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver) : IC
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
+        if (course.Status == CourseStatus.Active)
+            throw new InvalidOperationException("Cannot edit an active course. Deactivate it first.");
+
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentName);
 
         course.CourseCode = dto.CourseCode;

@@ -30,7 +30,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
 
     public async Task<AdminDto> GetByIdAsync(int adminId)
     {
-        var spec = new AdminByIdSpec(adminId);
+        var spec = new AdminSpec(adminId);
         var admin = await Admins.GetByIdAsync(spec);
 
         if (admin is null)
@@ -41,7 +41,8 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
 
     public async Task<IEnumerable<AdminDto>> GetAllAsync()
     {
-        var admins = await Admins.GetAllAsync();
+        var spec = new AdminSpec();
+        var admins = await Admins.GetAllAsync(spec);
         return admins.Select(MapToDto);
     }
 
@@ -119,7 +120,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
 
     public async Task<AdminDto> UpdateAsync(int adminId, UpdateAdminDto dto)
     {
-        var spec = new AdminByIdSpec(adminId);
+        var spec = new AdminSpec(adminId);
         var admin = await Admins.GetByIdAsync(spec);
 
         if (admin is null)
@@ -168,7 +169,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
 
     public async Task DeleteAsync(int adminId)
     {
-        var spec = new AdminByIdSpec(adminId);
+        var spec = new AdminSpec(adminId);
         var admin = await Admins.GetByIdAsync(spec);
 
         if (admin is null)

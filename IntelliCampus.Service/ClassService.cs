@@ -247,6 +247,20 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
             .Select(MapInstructorToDto);
     }
 
+    public async Task<IEnumerable<ClassDto>> GetProfessorLecturesAsync()
+    {
+        var spec = new ProfessorLecturesSpec();
+        var classes = await Classes.GetAllAsync(spec);
+        return classes.Select(MapToDto);
+    }
+
+    public async Task<IEnumerable<ClassDto>> GetTALecturerSectionsAsync()
+    {
+        var spec = new TALecturerSectionsSpec();
+        var classes = await Classes.GetAllAsync(spec);
+        return classes.Select(MapToDto);
+    }
+
     public async Task<IEnumerable<RoomDto>> GetLectureRoomsAsync()
     {
         var rooms = await Rooms.GetAllAsync();

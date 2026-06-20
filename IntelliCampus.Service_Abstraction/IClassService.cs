@@ -18,4 +18,6 @@ public interface IClassService
     Task<IEnumerable<InstructorDto>> GetSectionInstructorsAsync();
     Task<IEnumerable<RoomDto>> GetLectureRoomsAsync();
     Task<IEnumerable<RoomDto>> GetSectionRoomsAsync();
+    Task<IEnumerable<ClassDto>> GetProfessorLecturesAsync();
+    Task<IEnumerable<ClassDto>> GetTALecturerSectionsAsync();
 }
