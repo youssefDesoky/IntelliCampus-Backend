@@ -1,6 +1,7 @@
 [
   {
     "name": "FCIAI Grading Policy",
+    "nameAr": "سياسة تقييم كلية الحاسبات والذكاء الاصطناعي",
     "version": 2,
     "description": "Standard grading scale for Faculty of Computers and Artificial Intelligence",
     "isActive": true,

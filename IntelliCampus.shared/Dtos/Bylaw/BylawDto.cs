@@ -30,6 +30,7 @@ public class BylawDto
     public int? MinPassingGradeSortOrder { get; set; }
     public decimal? ProbationThreshold { get; set; }
     public int? ProbationRegistrationLimit { get; set; }
+    public int? MinCreditHoursForGraduationProject { get; set; }
     public List<BylawCourseDto>? BylawCourses { get; set; }
 }
 

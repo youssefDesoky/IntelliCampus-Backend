@@ -121,6 +121,12 @@ public class BylawService : IBylawService
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
 
+        if (bylaw.IsActive)
+            throw new InvalidOperationException("Cannot delete active bylaw. Deactivate it first.");
+
+        if (bylaw.Students?.Count > 0)
+            throw new InvalidOperationException("Cannot delete bylaw with assigned students. Remove students from this bylaw first.");
+
         var bcSpec = new BylawCourseSpec();
         var allBc = await BylawCourses.GetAllAsync(bcSpec);
         var bylawBc = allBc.Where(bc => bc.BylawId == bylawId).ToList();
@@ -509,7 +515,8 @@ public class BylawService : IBylawService
             MinPassingGradeLetter = bylaw.MinPassingGradeLetter,
             MinPassingGradeSortOrder = bylaw.MinPassingGradeSortOrder,
             ProbationThreshold = bylaw.ProbationThreshold,
-            ProbationRegistrationLimit = bylaw.ProbationRegistrationLimit
+            ProbationRegistrationLimit = bylaw.ProbationRegistrationLimit,
+            MinCreditHoursForGraduationProject = bylaw.MinCreditHoursForGraduationProject
         };
     }
 }
