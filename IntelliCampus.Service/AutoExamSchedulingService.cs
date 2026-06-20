@@ -12,10 +12,12 @@ namespace IntelliCampus.Service;
 public class AutoExamSchedulingService : IAutoExamSchedulingService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IExamScheduleService _examScheduleService;
 
-    public AutoExamSchedulingService(IUnitOfWork unitOfWork)
+    public AutoExamSchedulingService(IUnitOfWork unitOfWork, IExamScheduleService examScheduleService)
     {
         _unitOfWork = unitOfWork;
+        _examScheduleService = examScheduleService;
     }
 
     private IGenericRepository<StudentCourse, int> StudentCoursesRepo
@@ -253,6 +255,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             };
             ExamsRepo.Add(exam);
             await _unitOfWork.SaveChangesAsync();
+            await _examScheduleService.SyncFromExamAsync(exam.ExamId);
 
             var enrollmentCount = (await StudentCoursesRepo.GetAllAsync())
                 .Count(e => e.CourseId == course.CourseId && e.Semester == semester);
