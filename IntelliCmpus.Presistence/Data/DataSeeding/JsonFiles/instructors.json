@@ -6,7 +6,7 @@
     "email": "202601001@intellicampus.online",
     "phoneNumber": "01100000001",
     "address": "Cairo, Egypt",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "2750315012341",
     "roles": [
       "Instructor"
@@ -24,7 +24,7 @@
     "email": "202601002@intellicampus.online",
     "phoneNumber": "01100000002",
     "address": "Giza, Egypt",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "2800620115672",
     "roles": [
       "Instructor"
@@ -41,7 +41,7 @@
     "email": "202601003@intellicampus.online",
     "phoneNumber": "01100000003",
     "address": "Alexandria, Egypt",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "2950910023453",
     "roles": [
       "Instructor"
@@ -58,7 +58,7 @@
     "email": "202601004@intellicampus.online",
     "phoneNumber": "01100000004",
     "address": "Cairo, Egypt",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "2981205017894",
     "roles": [
       "Instructor"
@@ -75,7 +75,7 @@
     "email": "202601005@intellicampus.online",
     "phoneNumber": "01100000005",
     "address": "Cairo, Egypt",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "2820418112345",
     "roles": [
       "Instructor"
@@ -92,7 +92,7 @@
     "email": "202601006@intellicampus.online",
     "phoneNumber": "01100000006",
     "address": "Giza, Egypt",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "2960125016786",
     "roles": [
       "Instructor"
@@ -109,7 +109,7 @@
     "email": "202601007@intellicampus.online",
     "phoneNumber": "01100000007",
     "address": "Cairo, Egypt",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "2780830013457",
     "roles": [
       "Instructor"
@@ -126,7 +126,7 @@
     "email": "202601008@intellicampus.online",
     "phoneNumber": "01100000008",
     "address": "Cairo, Egypt",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "2970714017898",
     "roles": [
       "Instructor"
@@ -143,7 +143,7 @@
     "email": "202601009@intellicampus.online",
     "phoneNumber": "01100000009",
     "address": "Alexandria, Egypt",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "2701102012349",
     "roles": [
       "Instructor"
@@ -160,7 +160,7 @@
     "email": "202601010@intellicampus.online",
     "phoneNumber": "01100000010",
     "address": "Cairo, Egypt",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "2940522115670",
     "roles": [
       "Instructor"

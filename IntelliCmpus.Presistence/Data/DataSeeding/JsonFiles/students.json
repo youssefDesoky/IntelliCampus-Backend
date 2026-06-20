@@ -7,7 +7,7 @@
     "email": "2023010001@intellicampus.online",
     "phoneNumber": "01115138796",
     "address": "2512 Taha Hussein St., District 2, 6th of October, Giza",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "30412022101731",
     "roles": [
       "Student_UnderGrad"
@@ -26,7 +26,7 @@
     "email": "2023010002@intellicampus.online",
     "phoneNumber": "01096132270",
     "address": "64 Ali Fayed St., Boulaq El Dakrour, Giza",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "30404011300039",
     "roles": [
       "Student_UnderGrad"
@@ -45,7 +45,7 @@
     "email": "2023010003@intellicampus.online",
     "phoneNumber": "01098510400",
     "address": "139 El Haram St., El Haram, Giza",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "30210122101273",
     "roles": [
       "Student_UnderGrad"
@@ -64,7 +64,7 @@
     "email": "2022010001@intellicampus.online",
     "phoneNumber": "01154602603",
     "address": "Villa 4, Tamr Henna 3, Fifth Settlement, New Cairo",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "30312192100441",
     "roles": [
       "Student_UnderGrad"
@@ -83,7 +83,7 @@
     "email": "2022010002@intellicampus.online",
     "phoneNumber": "01012007580",
     "address": "Qalyubia, Egypt",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "30410151400084",
     "roles": [
       "Student_UnderGrad"
@@ -102,7 +102,7 @@
     "email": "2022010003@intellicampus.online",
     "phoneNumber": "01010401719",
     "address": "Building 4S, Block 1258, Sheraton, Cairo",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "30410250101595",
     "roles": [
       "Student_UnderGrad"
@@ -121,7 +121,7 @@
     "email": "2022010004@intellicampus.online",
     "phoneNumber": "01104215861",
     "address": "Block 8047, El Beya St., Behind El Moqattam Club, Cairo",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "30409298800128",
     "roles": [
       "Student_UnderGrad"
@@ -140,7 +140,7 @@
     "email": "2022010005@intellicampus.online",
     "phoneNumber": "01154118003",
     "address": "80D, Hadayek El Ahram, Gate 1, El Haram, Giza",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "30409090101625",
     "roles": [
       "Student_UnderGrad"
@@ -159,7 +159,7 @@
     "email": "2022010006@intellicampus.online",
     "phoneNumber": "01222679143",
     "address": "Block 14B, 51 St. 9, Nasr City, Cairo",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "30402260101604",
     "roles": [
       "Student_UnderGrad"
@@ -178,7 +178,7 @@
     "email": "2024010001@intellicampus.online",
     "phoneNumber": "01001112233",
     "address": "15 Nile St., Giza",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "30501012200101",
     "roles": [
       "Student_Masters"
@@ -196,7 +196,7 @@
     "email": "2024010002@intellicampus.online",
     "phoneNumber": "01204445566",
     "address": "42 Abbas El Akkad St., Nasr City, Cairo",
-    "nationality": "Egyptian",
+    "nationality": "EG",
     "password": "30502012200202",
     "roles": [
       "Student_PhD"
