@@ -652,6 +652,7 @@ public class DataSeed : IDataSeed
         var allStudents = await _dbContext.Students.ToListAsync();
         var studentEnrollment = allStudents.ToDictionary(s => s.UserId, s => s.EnrollmentDate ?? DateTime.UtcNow.AddYears(-4));
         var allCourses = await _dbContext.Courses.ToDictionaryAsync(c => c.CourseId);
+        var allClasses = await _dbContext.Classes.ToListAsync();
 
         var currentSemester = SemesterHelper.GetCurrentSemester();
 
@@ -667,6 +668,9 @@ public class DataSeed : IDataSeed
             var studentSemesters = GenerateSemesterList(enrollmentDate, DateTime.UtcNow);
             if (studentSemesters.Count == 0) studentSemesters.Add(currentSemester);
 
+            // Track assigned classes per semester to avoid time-slot conflicts
+            var assignedBySemester = new Dictionary<string, List<Class>>();
+
             var courseList = group.ToList();
             for (int i = 0; i < courseList.Count; i++)
             {
@@ -676,7 +680,26 @@ public class DataSeed : IDataSeed
 
                 var classKey = $"{dto.ClassCode}_{dto.CourseCode}";
                 var classId = _classKeys.GetValueOrDefault(classKey);
+                var cls = allClasses.FirstOrDefault(c => c.ClassId == classId);
                 var sem = studentSemesters[i % studentSemesters.Count];
+
+                // Skip if this class would overlap with another already assigned in the same semester
+                if (cls is not null && cls.Day is not null && cls.StartTime is not null && cls.EndTime is not null)
+                {
+                    if (!assignedBySemester.TryGetValue(sem, out var assignedClasses))
+                        assignedClasses = new List<Class>();
+
+                    var conflict = assignedClasses.Any(a =>
+                        a.Day == cls.Day &&
+                        a.StartTime < cls.EndTime &&
+                        a.EndTime > cls.StartTime);
+
+                    if (conflict) continue;
+
+                    if (!assignedBySemester.ContainsKey(sem))
+                        assignedBySemester[sem] = assignedClasses;
+                    assignedClasses.Add(cls);
+                }
 
                 var status = sem == currentSemester
                     ? StudentCourseStatus.InProgress
@@ -722,13 +745,31 @@ public class DataSeed : IDataSeed
     private async Task SeedSchedulesAsync()
     {
         if (await _dbContext.Schedules.AnyAsync()) return;
-        var studentCourses = await _dbContext.Set<StudentCourse>().Include(sc => sc.Course).ToListAsync();
+        var currentSemester = SemesterHelper.GetCurrentSemester();
+        var studentCourses = await _dbContext.Set<StudentCourse>()
+            .Where(sc => sc.Semester == currentSemester)
+            .Include(sc => sc.Course)
+            .ToListAsync();
         var allClasses = await _dbContext.Classes.Include(c => c.Instructor).ToListAsync();
         var schedules = new List<Schedule>();
+        var scheduledSlots = new List<(int StudentId, DayOfWeekEnum Day, TimeSpan StartTime, TimeSpan EndTime)>();
+
         foreach (var sc in studentCourses)
         {
             var cls = allClasses.FirstOrDefault(c => c.ClassId == sc.ClassId);
             if (cls is null || sc.Course is null) continue;
+            if (cls.Day is null || cls.StartTime is null || cls.EndTime is null) continue;
+
+            // Enforce no overlapping time slots for the same student
+            var conflict = scheduledSlots.Any(slot =>
+                slot.StudentId == sc.StudentId &&
+                slot.Day == cls.Day &&
+                slot.StartTime < cls.EndTime &&
+                slot.EndTime > cls.StartTime);
+            if (conflict) continue;
+
+            scheduledSlots.Add((sc.StudentId, cls.Day.Value, cls.StartTime.Value, cls.EndTime.Value));
+
             schedules.Add(new Schedule
             {
                 Title = sc.Course.CourseName,
@@ -743,8 +784,8 @@ public class DataSeed : IDataSeed
                     _ => ""
                 },
                 Date = DateTime.MinValue,
-                StartTime = cls.StartTime ?? TimeSpan.Zero,
-                EndTime = cls.EndTime ?? TimeSpan.Zero,
+                StartTime = cls.StartTime.Value,
+                EndTime = cls.EndTime.Value,
                 Location = cls.Room,
                 ScheduleType = cls.ClassType switch
                 {

@@ -65,14 +65,40 @@ public class RegistrationService : IRegistrationService
         // Auto-generate semester based on current date
         var semester = SemesterHelper.GetCurrentSemester();
 
+        // Get lecture class for this course
+        var lectureSpec = new LectureClassSpec(dto.CourseId);
+        var lectureClass = await Classes.GetByIdAsync(lectureSpec);
+
+        // Load existing semester registrations for validation
+        var existingSemesterCourses = await StudentCourses.GetAllAsync(
+            new StudentCourseSemesterSpec(studentId, semester));
+
+        // Check for scheduling conflicts
+        var newClasses = new List<Class> { classEntity };
+        if (classEntity.ClassType != ClassType.Lecture && lectureClass is not null)
+            newClasses.Add(lectureClass);
+
+        foreach (var existing in existingSemesterCourses)
+        {
+            if (existing.Class is null || existing.Course is null) continue;
+            if (existing.Class.Day is null || existing.Class.StartTime is null || existing.Class.EndTime is null) continue;
+
+            foreach (var nc in newClasses)
+            {
+                if (nc.Day is null || nc.StartTime is null || nc.EndTime is null) continue;
+                if (existing.Class.Day != nc.Day) continue;
+                if (existing.Class.StartTime < nc.EndTime && existing.Class.EndTime > nc.StartTime)
+                    throw new InvalidOperationException(
+                        $"Cannot register for \"{course.CourseName}\": time conflict with \"{existing.Course.CourseName}\" on {existing.Class.Day}.");
+            }
+        }
+
         // Semester credit hours validation from bylaw
         if (student.BylawId is not null)
         {
             var bylaw = await Bylaws.GetByIdAsync(student.BylawId.Value);
             if (bylaw is not null)
             {
-                var existingSemesterCourses = await StudentCourses.GetAllAsync(
-                    new StudentCourseSemesterSpec(studentId, semester));
                 var existingHours = existingSemesterCourses.Sum(sc => sc.Course.CreditHours);
                 var totalAfterRegistration = existingHours + course.CreditHours;
 
@@ -108,10 +134,6 @@ public class RegistrationService : IRegistrationService
             studentId,
             NotificationType.CourseRegistered,
             $"You have successfully registered for {course.CourseName}.");
-
-        // Get lecture class for this course
-        var lectureSpec = new LectureClassSpec(dto.CourseId);
-        var lectureClass = await Classes.GetByIdAsync(lectureSpec);
 
         // Sync schedule entry for the registered class
         await _scheduleService.SyncFromCourseRegistrationAsync(studentId, dto.ClassId);

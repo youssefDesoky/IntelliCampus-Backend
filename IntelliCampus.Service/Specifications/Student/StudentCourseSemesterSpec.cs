@@ -8,5 +8,6 @@ internal class StudentCourseSemesterSpec : BaseSpecifications<StudentCourse>
         : base(sc => sc.StudentId == studentId && sc.Semester == semester)
     {
         AddInclude(sc => sc.Course);
+        AddInclude(sc => sc.Class!);
     }
 }
