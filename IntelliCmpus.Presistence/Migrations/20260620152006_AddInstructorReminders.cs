@@ -35,7 +35,7 @@ namespace IntelliCampus.Presistence.Migrations
                 column: "InstructorId",
                 principalTable: "Instructors",
                 principalColumn: "UserId",
-                onDelete: ReferentialAction.SetNull);
+                onDelete: ReferentialAction.NoAction);
         }
 
         /// <inheritdoc />

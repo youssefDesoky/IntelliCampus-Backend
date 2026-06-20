@@ -10,6 +10,8 @@ public class BylawCourseConfiguration : IEntityTypeConfiguration<BylawCourse>
     {
         builder.HasKey(bc => bc.BylawCourseId);
 
+        builder.HasIndex(bc => new { bc.BylawId, bc.CourseId }).IsUnique();
+
         builder.Property(bc => bc.CourseType)
             .IsRequired()
             .HasConversion<string>()

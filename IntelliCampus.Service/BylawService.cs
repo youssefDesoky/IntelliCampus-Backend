@@ -359,9 +359,9 @@ public class BylawService : IBylawService
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
 
-        var bcSpec = new BylawCourseSpec();
-        var allBc = await BylawCourses.GetAllAsync(bcSpec);
-        if (allBc.Any(bc => bc.BylawId == bylawId && bc.CourseId == dto.CourseId))
+        var bcSpec = new BylawCourseSpec(bylawId, dto.CourseId);
+        var existingBc = await BylawCourses.GetByIdAsync(bcSpec);
+        if (existingBc is not null)
             throw new InvalidOperationException("Course is already mapped to this bylaw.");
 
         if (!Enum.TryParse<CourseType>(dto.CourseType, true, out var courseType))

@@ -34,6 +34,7 @@ public class ElectiveBucketService : IElectiveBucketService
         var bucket = new ElectiveBucket
         {
             Name = dto.Name,
+            NameAr = dto.NameAr,
             BylawId = dto.BylawId,
             DepartmentId = dto.DepartmentId,
             RequiredCreditHours = dto.RequiredCreditHours,
@@ -77,6 +78,7 @@ public class ElectiveBucketService : IElectiveBucketService
         if (bucket is null) throw new ElectiveBucketNotFoundException(bucketId);
 
         if (dto.Name is not null) bucket.Name = dto.Name;
+        if (dto.NameAr is not null) bucket.NameAr = dto.NameAr;
         if (dto.RequiredCreditHours.HasValue) bucket.RequiredCreditHours = dto.RequiredCreditHours.Value;
         if (dto.RequiredCourseCount.HasValue) bucket.RequiredCourseCount = dto.RequiredCourseCount;
         if (dto.IsActive.HasValue) bucket.IsActive = dto.IsActive.Value;
@@ -252,6 +254,7 @@ public class ElectiveBucketService : IElectiveBucketService
         {
             ElectiveBucketId = bucket.ElectiveBucketId,
             Name = bucket.Name,
+            NameAr = bucket.NameAr,
             BylawId = bucket.BylawId,
             BylawName = bucket.Bylaw?.Name,
             DepartmentId = bucket.DepartmentId,

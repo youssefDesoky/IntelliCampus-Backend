@@ -4,6 +4,7 @@ public class ElectiveBucketDto
 {
     public int ElectiveBucketId { get; set; }
     public string Name { get; set; } = null!;
+    public string? NameAr { get; set; }
     public int BylawId { get; set; }
     public string? BylawName { get; set; }
     public int DepartmentId { get; set; }

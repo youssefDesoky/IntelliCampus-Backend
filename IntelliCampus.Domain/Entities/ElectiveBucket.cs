@@ -4,6 +4,7 @@ public class ElectiveBucket
 {
     public int ElectiveBucketId { get; set; }
     public string Name { get; set; } = null!;
+    public string? NameAr { get; set; }
     public int BylawId { get; set; }
     public int DepartmentId { get; set; }
     public decimal RequiredCreditHours { get; set; }
