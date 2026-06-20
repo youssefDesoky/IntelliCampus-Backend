@@ -94,8 +94,13 @@ public class SpecializationService : ISpecializationService
 
     public async Task DeleteAsync(int id)
     {
-        var specialization = await Specializations.GetByIdAsync(id);
+        var specialization = await Specializations.GetByIdAsync(new SpecializationSpec(id));
         if (specialization is null) throw new SpecializationNotFoundException(id);
+
+        var studentsRepo = _unitOfWork.GetRepository<Student, int>();
+        var hasStudents = await studentsRepo.AnyAsync(s => s.SpecializationId == id);
+        if (hasStudents)
+            throw new InvalidOperationException("Cannot delete specialization with assigned students. Remove students from this specialization first.");
 
         Specializations.Delete(specialization);
         await _unitOfWork.SaveChangesAsync();

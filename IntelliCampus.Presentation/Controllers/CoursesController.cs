@@ -152,15 +152,8 @@ public class CoursesController : ControllerBase
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
-        try
-        {
-            await _courseService.DeleteAsync(id);
-            return NoContent();
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        await _courseService.DeleteAsync(id);
+        return NoContent();
     }
 
     #region Announcements

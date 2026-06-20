@@ -235,10 +235,18 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver) : IC
 
     public async Task<bool> DeleteAsync(int courseId)
     {
-        var course = await Courses.GetByIdAsync(courseId);
+        var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
         if (course is null) throw new CourseNotFoundException(courseId);
         if (course.Status == CourseStatus.Active)
             throw new InvalidOperationException("can't delete active course");
+
+        if (course.Classes?.Count > 0)
+            throw new InvalidOperationException("Cannot delete course with existing class schedules. Remove all classes first.");
+
+        var hasPrerequisiteFor = await Prerequisites.AnyAsync(p => p.PrerequisiteCourseId == courseId);
+        if (hasPrerequisiteFor)
+            throw new InvalidOperationException("Cannot delete course that is a prerequisite for other courses. Remove the prerequisites first.");
+
         Courses.Delete(course);
         await _unitOfWork.SaveChangesAsync();
         return true;

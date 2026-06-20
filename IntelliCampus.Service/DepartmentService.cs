@@ -129,10 +129,20 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
 
     public async Task<bool> DeleteAsync(int departmentId)
     {
-        var department = await Departments.GetByIdAsync(departmentId);
+        var department = await Departments.GetByIdAsync(new DepartmentSpec(departmentId));
 
         if (department is null)
             throw new DepartmentNotFoundException(departmentId);
+
+        var specializationsRepo = _unitOfWork.GetRepository<Specialization, int>();
+        var hasSpecializations = await specializationsRepo.AnyAsync(s => s.DepartmentId == departmentId);
+        if (hasSpecializations)
+            throw new InvalidOperationException("Cannot delete department with existing specializations. Remove all specializations first.");
+
+        var electiveBucketsRepo = _unitOfWork.GetRepository<ElectiveBucket, int>();
+        var hasElectiveBuckets = await electiveBucketsRepo.AnyAsync(e => e.DepartmentId == departmentId);
+        if (hasElectiveBuckets)
+            throw new InvalidOperationException("Cannot delete department with existing elective buckets. Remove all elective buckets first.");
 
         Departments.Delete(department);
         await _unitOfWork.SaveChangesAsync();
