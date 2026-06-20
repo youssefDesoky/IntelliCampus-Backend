@@ -6,7 +6,9 @@ public class Reminder
 {
     public int ReminderId { get; set; }
 
-    public int StudentId { get; set; }
+    public int? StudentId { get; set; }
+
+    public int? InstructorId { get; set; }
 
     public string Title { get; set; } = null!;
 
@@ -19,5 +21,7 @@ public class Reminder
     public string Priority { get; set; } = "low";
 
     // Navigation properties
-    public Student Student { get; set; } = null!;
+    public Student? Student { get; set; }
+
+    public Instructor? Instructor { get; set; }
 }

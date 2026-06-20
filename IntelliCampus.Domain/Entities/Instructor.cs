@@ -18,5 +18,6 @@ public class Instructor : User
     public Room? OfficeHoursRoom { get; set; }
     public ICollection<InstructorMaterial> InstructorMaterials { get; set; } = [];
     public ICollection<Class> Classes { get; set; } = [];
+    public ICollection<Reminder> Reminders { get; set; } = [];
     public ICollection<MaterialFolder> CreatedFolders { get; set; } = [];
 }

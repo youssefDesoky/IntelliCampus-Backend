@@ -110,6 +110,7 @@ builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<IReminderService, ReminderService>();
+builder.Services.AddScoped<IInstructorReminderService, InstructorReminderService>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 builder.Services.AddScoped<IAssignmentService, AssignmentService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
@@ -140,6 +141,7 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IMeetingService, MeetingService>();
 builder.Services.AddScoped<IElectiveBucketService, ElectiveBucketService>();
 builder.Services.AddScoped<IDataSeed, DataSeed>();
+builder.Services.AddScoped<IInstructorScheduleService, InstructorScheduleService>();
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = actionContext =>
