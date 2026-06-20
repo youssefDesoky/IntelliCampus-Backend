@@ -20,6 +20,9 @@ public class DepartmentConfiguration : IEntityTypeConfiguration<Department>
         builder.Property(d => d.Description)
             .HasMaxLength(500);
 
+        builder.Property(d => d.DescriptionAr)
+            .HasMaxLength(500);
+
         builder.HasOne(d => d.HeadInstructor)
             .WithMany()
             .HasForeignKey(d => d.InstructorId)

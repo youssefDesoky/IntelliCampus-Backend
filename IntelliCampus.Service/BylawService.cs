@@ -64,6 +64,7 @@ public class BylawService : IBylawService
             Name = dto.Name,
             Version = dto.Version,
             Description = dto.Description,
+            DescriptionAr = dto.DescriptionAr,
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
             UploadedByAdminId = adminId,
@@ -273,10 +274,15 @@ public class BylawService : IBylawService
 
         if (dto.Name is not null)
             bylaw.Name = dto.Name;
+        if (dto.NameAr is not null)
+            bylaw.NameAr = dto.NameAr;
         if (dto.Version.HasValue)
             bylaw.Version = dto.Version.Value;
         if (dto.Description is not null)
             bylaw.Description = dto.Description;
+
+        if (dto.DescriptionAr is not null)
+            bylaw.DescriptionAr = dto.DescriptionAr;
 
         await _unitOfWork.SaveChangesAsync();
 
@@ -464,8 +470,10 @@ public class BylawService : IBylawService
         {
             BylawId = bylaw.BylawId,
             Name = bylaw.Name,
+            NameAr = bylaw.NameAr,
             Version = bylaw.Version,
             Description = bylaw.Description,
+            DescriptionAr = bylaw.DescriptionAr,
             FileUrl = _urlResolver.Resolve(bylaw.FileUrl),
             FileName = bylaw.FileName,
             IsActive = bylaw.IsActive,

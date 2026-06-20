@@ -18,7 +18,7 @@ public class GroupMemberConfiguration : IEntityTypeConfiguration<GroupMember>
         builder.HasOne(gm => gm.User)
             .WithMany(u => u.GroupMembers)
             .HasForeignKey(gm => gm.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasIndex(gm => new { gm.GroupId, gm.UserId }).IsUnique();
     }

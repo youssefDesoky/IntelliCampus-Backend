@@ -13,7 +13,7 @@ public class AttendanceExcuseConfiguration : IEntityTypeConfiguration<Attendance
         builder.HasOne(e => e.Student)
             .WithMany()
             .HasForeignKey(e => e.StudentId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(e => e.Session)
             .WithMany(s => s.Excuses)

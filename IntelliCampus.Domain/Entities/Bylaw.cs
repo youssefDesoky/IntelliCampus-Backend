@@ -44,6 +44,8 @@ public class Bylaw
     public decimal? ProbationThreshold { get; set; }
     public int? ProbationRegistrationLimit { get; set; }
     public int? MinCreditHoursForGraduationProject { get; set; }
+    public decimal? CourseWorkGrade { get; set; }
+    public decimal? FinalExamGrade { get; set; }
     public ICollection<BylawCourse> BylawCourses { get; set; } = new List<BylawCourse>();
     public ICollection<ElectiveBucket> ElectiveBuckets { get; set; } = new List<ElectiveBucket>();
 }

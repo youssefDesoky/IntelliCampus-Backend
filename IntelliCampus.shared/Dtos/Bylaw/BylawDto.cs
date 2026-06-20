@@ -6,8 +6,10 @@ public class BylawDto
 {
     public int BylawId { get; set; }
     public string Name { get; set; } = null!;
+    public string? NameAr { get; set; }
     public int Version { get; set; }
     public string? Description { get; set; }
+    public string? DescriptionAr { get; set; }
     public string? FileUrl { get; set; }
     public string? FileName { get; set; }
     public bool IsActive { get; set; }

@@ -345,6 +345,7 @@ public class DataSeed : IDataSeed
                     DepartmentName = dto.DepartmentName,
                     DepartmentNameAr = dto.DepartmentNameAr,
                     Description = dto.Description,
+                    DescriptionAr = dto.DescriptionAr,
                     FacultyId = _facultyId
                 };
                 _dbContext.Departments.Add(entity);
@@ -355,6 +356,7 @@ public class DataSeed : IDataSeed
             {
                 existing.DepartmentNameAr = dto.DepartmentNameAr;
                 existing.Description = dto.Description;
+                existing.DescriptionAr = dto.DescriptionAr;
                 existing.FacultyId = _facultyId;
                 _departmentIds[dto.DepartmentName] = existing.DepartmentId;
             }
@@ -558,7 +560,9 @@ public class DataSeed : IDataSeed
             MinPassingGradeSortOrder = dto.MinPassingGradeSortOrder,
             ProbationThreshold = dto.ProbationThreshold,
             ProbationRegistrationLimit = dto.ProbationRegistrationLimit,
-            MinCreditHoursForGraduationProject = dto.MinCreditHoursForGraduationProject
+            MinCreditHoursForGraduationProject = dto.MinCreditHoursForGraduationProject,
+            CourseWorkGrade = dto.CourseWorkGrade,
+            FinalExamGrade = dto.FinalExamGrade
         };
         _dbContext.Bylaws.Add(entity);
         await _dbContext.SaveChangesAsync();
@@ -1271,6 +1275,7 @@ public class DataSeed : IDataSeed
         public string DepartmentName { get; init; } = "";
         public string? DepartmentNameAr { get; init; }
         public string? Description { get; init; }
+        public string? DescriptionAr { get; init; }
         public string? FacultyName { get; init; }
         public string? HeadEmail { get; init; }
     }
@@ -1361,6 +1366,8 @@ public class DataSeed : IDataSeed
         public decimal? ProbationThreshold { get; init; }
         public int? ProbationRegistrationLimit { get; init; }
         public int? MinCreditHoursForGraduationProject { get; init; }
+        public decimal? CourseWorkGrade { get; init; }
+        public decimal? FinalExamGrade { get; init; }
     }
 
     private record BylawCourseSeedDto

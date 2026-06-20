@@ -94,4 +94,18 @@ public class StudentsController : ControllerBase
         if (registration is null) return NotFound();
         return Ok(registration);
     }
+
+    [HttpDelete("{studentId}/courses/{courseId}")]
+    public async Task<IActionResult> Unregister(int studentId, int courseId)
+    {
+        await _registrationService.UnregisterStudentFromCourseAsync(studentId, courseId);
+        return NoContent();
+    }
+
+    [HttpPatch("{studentId}/courses/{courseId}/section")]
+    public async Task<IActionResult> ChangeSection(int studentId, int courseId, [FromBody] ChangeSectionDto dto)
+    {
+        await _registrationService.ChangeStudentCourseSectionAsync(studentId, courseId, dto.ClassId);
+        return NoContent();
+    }
 }
