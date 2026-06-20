@@ -21,6 +21,7 @@ public interface IBylawService
     Task<BylawDto> UpdateRequirementsAsync(int bylawId, UpdateBylawRequirementsDto dto);
     Task<BylawDto> UpdatePassingGradeAsync(int bylawId, UpdateBylawPassingGradeDto dto);
     Task<BylawDto> UpdateProbationAsync(int bylawId, UpdateBylawProbationDto dto);
+    Task<BylawDto> UpdateGradeWeightsAsync(int bylawId, UpdateBylawGradeWeightsDto dto);
     Task<BylawCourseDto> MapCourseAsync(int bylawId, MapBylawCourseDto dto);
     Task<bool> UnmapCourseAsync(int bylawCourseId);
     Task<BylawCourseDto> SetCoursePrerequisitesAsync(int bylawCourseId, SetBylawCoursePrerequisitesDto dto);

@@ -21,4 +21,9 @@ public class CreateInstructorDto
     public string? Status { get; set; }
     public int? OfficeHoursRoomId { get; set; }
     public string? ProfileImage { get; set; }
+    public string? ContractStartDate { get; set; }
+    public string? ContractEndDate { get; set; }
+    public int? LoanFromDepartmentId { get; set; }
+    public string? LoanProfessorId { get; set; }
+    public string? Secondment { get; set; }
 }

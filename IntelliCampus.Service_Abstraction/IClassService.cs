@@ -13,11 +13,12 @@ public interface IClassService
     Task<ClassDto> CreateLectureAsync(CreateLectureDto dto);
     Task<ClassDto> CreateSectionAsync(CreateSectionDto dto);
     Task<ClassDto?> AssignInstructorAsync(int classId, int instructorId);
+    Task<ClassDto?> UpdateAsync(int classId, UpdateClassDto dto);
     Task<bool> DeleteAsync(int classId);
     Task<IEnumerable<InstructorDto>> GetLectureInstructorsAsync();
     Task<IEnumerable<InstructorDto>> GetSectionInstructorsAsync();
     Task<IEnumerable<RoomDto>> GetLectureRoomsAsync();
     Task<IEnumerable<RoomDto>> GetSectionRoomsAsync();
     Task<IEnumerable<ClassDto>> GetProfessorLecturesAsync();
-    Task<IEnumerable<ClassDto>> GetTALecturerSectionsAsync();
+    Task<IEnumerable<ClassDto>> GetTALecturerSectionsAsync(int? instructorId = null);
 }

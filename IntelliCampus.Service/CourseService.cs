@@ -1,3 +1,4 @@
+using System.Text.Json;
 using IntelliCampus.Shared.Dtos.Course;
 using IntelliCampus.Shared.Dtos.Student;
 using IntelliCampus.Service_Abstraction;
@@ -233,6 +234,39 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver) : IC
         ];
     }
 
+    public async Task<CourseDto> UpdateRegistrationSettingsAsync(int courseId, UpdateCourseRegistrationSettingsDto dto)
+    {
+        var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
+        if (dto.RegStartDate is not null)
+        {
+            if (DateTime.TryParse(dto.RegStartDate, out var regStart))
+                course.RegistrationStartDate = regStart;
+        }
+
+        if (dto.RegEndDate is not null)
+        {
+            if (DateTime.TryParse(dto.RegEndDate, out var regEnd))
+                course.RegistrationEndDate = regEnd;
+        }
+
+        course.AllowedLevels = dto.AllowedLevels is { Count: > 0 }
+            ? JsonSerializer.Serialize(dto.AllowedLevels)
+            : null;
+
+        course.AllowedDepartmentIds = dto.AllowedDepartmentIds is { Count: > 0 }
+            ? JsonSerializer.Serialize(dto.AllowedDepartmentIds)
+            : null;
+
+        Courses.Update(course);
+        await _unitOfWork.SaveChangesAsync();
+
+        var result = await Courses.GetByIdAsync(new CourseSpec(course.CourseId));
+        return MapToDto(result!);
+    }
+
     public async Task<bool> DeleteAsync(int courseId)
     {
         var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
@@ -435,7 +469,15 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver) : IC
             ClassId = classId,
             ClassName = className,
             IsElective = false,
-            ProfessorName = lectureClass?.Instructor?.FullName
+            ProfessorName = lectureClass?.Instructor?.FullName,
+            RegistrationStartDate = course.RegistrationStartDate,
+            RegistrationEndDate = course.RegistrationEndDate,
+            AllowedLevels = course.AllowedLevels is not null
+                ? JsonSerializer.Deserialize<List<int>>(course.AllowedLevels)
+                : null,
+            AllowedDepartments = course.AllowedDepartmentIds is not null
+                ? JsonSerializer.Deserialize<List<int>>(course.AllowedDepartmentIds)
+                : null
         };
     }
 }

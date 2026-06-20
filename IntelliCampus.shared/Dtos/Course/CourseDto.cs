@@ -34,4 +34,10 @@ public class CourseDto
     public string? ClassName { get; set; }
     public bool IsElective { get; set; }
     public string? ProfessorName { get; set; }
+
+    // Registration settings
+    public DateTime? RegistrationStartDate { get; set; }
+    public DateTime? RegistrationEndDate { get; set; }
+    public List<int>? AllowedLevels { get; set; }
+    public List<int>? AllowedDepartments { get; set; }
 }

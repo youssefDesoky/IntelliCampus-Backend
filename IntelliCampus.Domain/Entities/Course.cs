@@ -15,6 +15,12 @@ public class Course
     public CourseStatus Status { get; set; }
     public int? DepartmentId { get; set; }
 
+    // Registration settings
+    public DateTime? RegistrationStartDate { get; set; }
+    public DateTime? RegistrationEndDate { get; set; }
+    public string? AllowedLevels { get; set; }
+    public string? AllowedDepartmentIds { get; set; }
+
     // Navigation properties
     public Department? Department { get; set; }
     public ICollection<Class> Classes { get; set; } = new List<Class>();

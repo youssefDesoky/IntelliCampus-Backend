@@ -128,6 +128,13 @@ public class BylawController : ControllerBase
         return Ok(bylaw);
     }
 
+    [HttpPut("{id}/grade-weights")]
+    public async Task<ActionResult<BylawDto>> UpdateGradeWeights(int id, [FromBody] UpdateBylawGradeWeightsDto dto)
+    {
+        var bylaw = await _bylawService.UpdateGradeWeightsAsync(id, dto);
+        return Ok(bylaw);
+    }
+
     [HttpPost("{id}/courses")]
     public async Task<ActionResult<BylawCourseDto>> MapCourse(int id, [FromBody] MapBylawCourseDto dto)
     {

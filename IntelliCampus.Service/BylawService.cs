@@ -349,6 +349,22 @@ public class BylawService : IBylawService
         return MapToDto(bylaw);
     }
 
+    public async Task<BylawDto> UpdateGradeWeightsAsync(int bylawId, UpdateBylawGradeWeightsDto dto)
+    {
+        var bylaw = await Bylaws.GetByIdAsync(bylawId);
+        if (bylaw is null)
+            throw new BylawNotFoundException(bylawId);
+
+        if (dto.CourseWorkGrade.HasValue)
+            bylaw.CourseWorkGrade = dto.CourseWorkGrade.Value;
+        if (dto.FinalExamGrade.HasValue)
+            bylaw.FinalExamGrade = dto.FinalExamGrade.Value;
+
+        await _unitOfWork.SaveChangesAsync();
+
+        return MapToDto(bylaw);
+    }
+
     public async Task<BylawCourseDto> MapCourseAsync(int bylawId, MapBylawCourseDto dto)
     {
         var course = await Courses.GetByIdAsync(dto.CourseId);

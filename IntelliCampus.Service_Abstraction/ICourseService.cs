@@ -18,4 +18,5 @@ public interface ICourseService
     Task<bool> DeleteAsync(int courseId);
     Task<IEnumerable<CoursePrerequisiteDto>?> GetPrerequisitesAsync(int courseId);
     Task<IEnumerable<StudentDto>> GetStudentsByCourseIdAsync(int courseId);
+    Task<CourseDto> UpdateRegistrationSettingsAsync(int courseId, UpdateCourseRegistrationSettingsDto dto);
 }

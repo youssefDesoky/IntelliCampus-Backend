@@ -1,0 +1,13 @@
+using IntelliCampus.Domain.Entities.Enums;
+
+namespace IntelliCampus.Shared.Dtos.Class;
+
+public class UpdateClassDto
+{
+    public string? Schedule { get; set; }
+    public string? Room { get; set; }
+    public DayOfWeekEnum? Day { get; set; }
+    public TimeSpan? StartTime { get; set; }
+    public TimeSpan? EndTime { get; set; }
+    public int? InstructorId { get; set; }
+}

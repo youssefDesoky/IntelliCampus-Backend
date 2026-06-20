@@ -14,4 +14,15 @@ internal class TALecturerSectionsSpec : BaseSpecifications<Class>
         AddInclude(c => c.Course!);
         AddInclude(c => c.Instructor!);
     }
+
+    public TALecturerSectionsSpec(int instructorId)
+        : base(c => c.ClassType == ClassType.Section
+            && c.InstructorId == instructorId
+            && c.Instructor != null
+            && (c.Instructor.InstructorRole == InstructorRole.TeachingAssistant
+                || c.Instructor.InstructorRole == InstructorRole.AssistantLecturer))
+    {
+        AddInclude(c => c.Course!);
+        AddInclude(c => c.Instructor!);
+    }
 }

@@ -130,6 +130,14 @@ public class CoursesController : ControllerBase
         return Ok(course);
     }
 
+    [HttpPut("{id}/registration-settings")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
+    public async Task<ActionResult<CourseDto>> UpdateRegistrationSettings(int id, [FromBody] UpdateCourseRegistrationSettingsDto dto)
+    {
+        var course = await _courseService.UpdateRegistrationSettingsAsync(id, dto);
+        return Ok(course);
+    }
+
     [HttpPatch("{id}/activate")]
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<IActionResult> Activate(int id)

@@ -86,26 +86,62 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         if (await Users.AnyAsync(u => u.Email == email))
             throw new InvalidOperationException("Email already exists.");
 
-        var instructor = new Instructor
+        Instructor instructor;
+
+        if (dto.LoanFromDepartmentId.HasValue || dto.LoanProfessorId is not null)
         {
-            NationalId = dto.NationalId,
-            FullName = dto.FullName,
-            FullNameAr = dto.FullNameAr,
-            PhoneNumber = dto.PhoneNumber,
-            Email = email,
-            Address = dto.Address,
-            Password = _passwordService.HashPassword(password),
-            Nationality = dto.Nationality,
-            InstructorCode = code,
-            InstructorRole = ParseInstructorRole(dto.InstructorRole),
-            Specialization = dto.Specialization,
-            DepartmentId = departmentId,
-            HireDate = hireDate,
-            FacultyId = facultyId,
-            Status = ParseStatus(dto.Status),
-            OfficeHoursRoomId = dto.OfficeHoursRoomId,
-            ProfileImage = dto.ProfileImage
-        };
+            instructor = new LoanInstructor
+            {
+                NationalId = dto.NationalId,
+                FullName = dto.FullName,
+                FullNameAr = dto.FullNameAr,
+                PhoneNumber = dto.PhoneNumber,
+                Email = email,
+                Address = dto.Address,
+                Password = _passwordService.HashPassword(password),
+                Nationality = dto.Nationality,
+                InstructorCode = code,
+                InstructorRole = ParseInstructorRole(dto.InstructorRole),
+                Specialization = dto.Specialization,
+                DepartmentId = departmentId,
+                HireDate = hireDate,
+                FacultyId = facultyId,
+                Status = ParseStatus(dto.Status),
+                OfficeHoursRoomId = dto.OfficeHoursRoomId,
+                ProfileImage = dto.ProfileImage,
+                ContractStartDate = ParseDate(dto.ContractStartDate),
+                ContractEndDate = ParseDate(dto.ContractEndDate),
+                Secondment = dto.Secondment,
+                LoanFromDepartmentId = dto.LoanFromDepartmentId,
+                LoanProfessorId = dto.LoanProfessorId
+            };
+        }
+        else
+        {
+            instructor = new Instructor
+            {
+                NationalId = dto.NationalId,
+                FullName = dto.FullName,
+                FullNameAr = dto.FullNameAr,
+                PhoneNumber = dto.PhoneNumber,
+                Email = email,
+                Address = dto.Address,
+                Password = _passwordService.HashPassword(password),
+                Nationality = dto.Nationality,
+                InstructorCode = code,
+                InstructorRole = ParseInstructorRole(dto.InstructorRole),
+                Specialization = dto.Specialization,
+                DepartmentId = departmentId,
+                HireDate = hireDate,
+                FacultyId = facultyId,
+                Status = ParseStatus(dto.Status),
+                OfficeHoursRoomId = dto.OfficeHoursRoomId,
+                ProfileImage = dto.ProfileImage,
+                ContractStartDate = ParseDate(dto.ContractStartDate),
+                ContractEndDate = ParseDate(dto.ContractEndDate),
+                Secondment = dto.Secondment
+            };
+        }
 
         Instructors.Add(instructor);
         await _unitOfWork.SaveChangesAsync();
@@ -158,6 +194,19 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         if (dto.Status is not null) instructor.Status = ParseStatus(dto.Status);
         if (dto.OfficeHoursRoomId.HasValue) instructor.OfficeHoursRoomId = dto.OfficeHoursRoomId;
         if (dto.ProfileImage is not null) instructor.ProfileImage = dto.ProfileImage;
+        if (dto.Secondment is not null) instructor.Secondment = dto.Secondment;
+
+        if (instructor is LoanInstructor loanInstructor)
+        {
+            if (dto.LoanFromDepartmentId.HasValue) loanInstructor.LoanFromDepartmentId = dto.LoanFromDepartmentId;
+            if (dto.LoanProfessorId is not null) loanInstructor.LoanProfessorId = dto.LoanProfessorId;
+        }
+
+        var contractStartDate = ParseDate(dto.ContractStartDate);
+        if (contractStartDate.HasValue) instructor.ContractStartDate = contractStartDate.Value;
+
+        var contractEndDate = ParseDate(dto.ContractEndDate);
+        if (contractEndDate.HasValue) instructor.ContractEndDate = contractEndDate.Value;
 
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentName);
         if (departmentId.HasValue) instructor.DepartmentId = departmentId;
@@ -270,6 +319,41 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
 
     private InstructorDto MapToDto(Instructor instructor)
     {
+        if (instructor is LoanInstructor loanInstructor)
+        {
+            return new LoanInstructorDto
+            {
+                InstructorId = instructor.InstructorId,
+                UserId = instructor.UserId,
+                NationalId = instructor.NationalId,
+                FullName = instructor.FullName,
+                FullNameAr = instructor.FullNameAr,
+                PhoneNumber = instructor.PhoneNumber,
+                Email = instructor.Email,
+                Address = instructor.Address,
+                Nationality = instructor.Nationality,
+                InstructorCode = instructor.InstructorCode,
+                InstructorRole = instructor.InstructorRole?.ToString(),
+                Specialization = instructor.Specialization,
+                DepartmentId = instructor.DepartmentId,
+                DepartmentName = instructor.Department?.DepartmentName,
+                HireDate = instructor.HireDate?.ToString("dd MM yyyy"),
+                FacultyId = instructor.FacultyId,
+                FacultyName = instructor.Faculty?.FacultyName,
+                Status = instructor.Status?.ToString(),
+                OfficeHoursRoomId = instructor.OfficeHoursRoomId,
+                OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName,
+                ProfileImage = _urlResolver.ResolveProfile(instructor.ProfileImage),
+                ContractStartDate = instructor.ContractStartDate?.ToString("dd MM yyyy"),
+                ContractEndDate = instructor.ContractEndDate?.ToString("dd MM yyyy"),
+                Secondment = instructor.Secondment,
+                LoanFromDepartmentId = loanInstructor.LoanFromDepartmentId,
+                LoanFromDepartmentName = loanInstructor.LoanFromDepartment?.DepartmentName,
+                LoanProfessorId = loanInstructor.LoanProfessorId,
+                Roles = instructor.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
+            };
+        }
+
         return new InstructorDto
         {
             InstructorId = instructor.InstructorId,
@@ -293,6 +377,9 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             OfficeHoursRoomId = instructor.OfficeHoursRoomId,
             OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName,
             ProfileImage = _urlResolver.ResolveProfile(instructor.ProfileImage),
+            ContractStartDate = instructor.ContractStartDate?.ToString("dd MM yyyy"),
+            ContractEndDate = instructor.ContractEndDate?.ToString("dd MM yyyy"),
+            Secondment = instructor.Secondment,
             Roles = instructor.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }

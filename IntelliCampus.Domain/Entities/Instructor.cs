@@ -12,6 +12,9 @@ public class Instructor : User
     public DateTime? HireDate { get; set; }
     public InstructorStatus? Status { get; set; }
     public int? OfficeHoursRoomId { get; set; }
+    public DateTime? ContractStartDate { get; set; }
+    public DateTime? ContractEndDate { get; set; }
+    public string? Secondment { get; set; }
 
     // Navigation properties
     public Department? Department { get; set; }

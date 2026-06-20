@@ -192,6 +192,59 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         return MapToDto(reloadedClass!);
     }
 
+    public async Task<ClassDto?> UpdateAsync(int classId, UpdateClassDto dto)
+    {
+        var spec = new ClassSpec(classId);
+        var classEntity = await Classes.GetByIdAsync(spec);
+
+        if (classEntity is null)
+            throw new ClassNotFoundException(classId);
+
+        DayOfWeekEnum? day = null;
+        TimeSpan? startTime = null;
+
+        if (dto.Schedule is not null)
+            ParseSchedule(dto.Schedule, out day, out startTime);
+        else if (dto.Day.HasValue || dto.StartTime.HasValue || dto.EndTime.HasValue)
+        {
+            if (dto.Day.HasValue)
+                classEntity.Day = dto.Day.Value;
+            if (dto.StartTime.HasValue)
+            {
+                classEntity.StartTime = dto.StartTime.Value;
+                classEntity.EndTime = dto.EndTime ?? dto.StartTime.Value.Add(TimeSpan.FromMinutes(90));
+            }
+            if (dto.EndTime.HasValue && !dto.StartTime.HasValue)
+                classEntity.EndTime = dto.EndTime.Value;
+        }
+
+        if (dto.Schedule is not null)
+        {
+            classEntity.Day = day;
+            classEntity.StartTime = startTime;
+            classEntity.EndTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : null;
+        }
+
+        if (dto.Room is not null)
+            classEntity.Room = dto.Room;
+
+        if (dto.InstructorId.HasValue)
+        {
+            var instructor = await Instructors.GetByIdAsync(dto.InstructorId.Value);
+            if (instructor is null)
+                throw new InstructorNotFoundException(dto.InstructorId.Value);
+            classEntity.InstructorId = dto.InstructorId.Value;
+        }
+
+        Classes.Update(classEntity);
+        await _unitOfWork.SaveChangesAsync();
+
+        var reloadSpec = new ClassSpec(classId);
+        var reloadedClass = await Classes.GetByIdAsync(reloadSpec);
+
+        return MapToDto(reloadedClass!);
+    }
+
     public async Task<ClassDto?> AssignInstructorAsync(int classId, int instructorId)
     {
         var spec = new ClassSpec(classId);
@@ -254,11 +307,18 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         return classes.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<ClassDto>> GetTALecturerSectionsAsync()
+    public async Task<IEnumerable<ClassDto>> GetTALecturerSectionsAsync(int? instructorId = null)
     {
-        var spec = new TALecturerSectionsSpec();
-        var classes = await Classes.GetAllAsync(spec);
-        return classes.Select(MapToDto);
+        if (instructorId.HasValue)
+        {
+            var spec = new TALecturerSectionsSpec(instructorId.Value);
+            var classes = await Classes.GetAllAsync(spec);
+            return classes.Select(MapToDto);
+        }
+
+        var allSpec = new TALecturerSectionsSpec();
+        var allClasses = await Classes.GetAllAsync(allSpec);
+        return allClasses.Select(MapToDto);
     }
 
     public async Task<IEnumerable<RoomDto>> GetLectureRoomsAsync()
@@ -376,6 +436,39 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
 
     private static InstructorDto MapInstructorToDto(Instructor instructor)
     {
+        if (instructor is LoanInstructor loanInstructor)
+        {
+            return new LoanInstructorDto
+            {
+                InstructorId = instructor.InstructorId,
+                UserId = instructor.UserId,
+                NationalId = instructor.NationalId,
+                FullName = instructor.FullName,
+                FullNameAr = instructor.FullNameAr,
+                PhoneNumber = instructor.PhoneNumber,
+                Email = instructor.Email,
+                Address = instructor.Address,
+                Nationality = instructor.Nationality,
+                InstructorCode = instructor.InstructorCode,
+                InstructorRole = instructor.InstructorRole?.ToString(),
+                Specialization = instructor.Specialization,
+                DepartmentId = instructor.DepartmentId,
+                DepartmentName = instructor.Department?.DepartmentName,
+                HireDate = instructor.HireDate?.ToString("dd MM yyyy"),
+                FacultyId = instructor.FacultyId,
+                FacultyName = instructor.Faculty?.FacultyName,
+                Status = instructor.Status?.ToString(),
+                OfficeHoursRoomId = instructor.OfficeHoursRoomId,
+                OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName,
+                ContractStartDate = instructor.ContractStartDate?.ToString("dd MM yyyy"),
+                ContractEndDate = instructor.ContractEndDate?.ToString("dd MM yyyy"),
+                Secondment = instructor.Secondment,
+                LoanFromDepartmentId = loanInstructor.LoanFromDepartmentId,
+                LoanProfessorId = loanInstructor.LoanProfessorId,
+                Roles = instructor.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
+            };
+        }
+
         return new InstructorDto
         {
             InstructorId = instructor.InstructorId,
@@ -398,6 +491,9 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
             Status = instructor.Status?.ToString(),
             OfficeHoursRoomId = instructor.OfficeHoursRoomId,
             OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName,
+            ContractStartDate = instructor.ContractStartDate?.ToString("dd MM yyyy"),
+            ContractEndDate = instructor.ContractEndDate?.ToString("dd MM yyyy"),
+            Secondment = instructor.Secondment,
             Roles = instructor.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }

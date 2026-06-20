@@ -23,5 +23,8 @@ public class InstructorDto
     public int? OfficeHoursRoomId { get; set; }
     public string? OfficeHoursRoomName { get; set; }
     public string? ProfileImage { get; set; }
+    public string? ContractStartDate { get; set; }
+    public string? ContractEndDate { get; set; }
+    public string? Secondment { get; set; }
     public List<string> Roles { get; set; } = [];
 }

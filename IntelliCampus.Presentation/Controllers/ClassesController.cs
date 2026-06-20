@@ -40,9 +40,9 @@ public class ClassesController : ControllerBase
     }
 
     [HttpGet("ta-sections")]
-    public async Task<ActionResult<IEnumerable<ClassDto>>> GetTALecturerSections()
+    public async Task<ActionResult<IEnumerable<ClassDto>>> GetTALecturerSections([FromQuery] int? instructorId = null)
     {
-        var classes = await _classService.GetTALecturerSectionsAsync();
+        var classes = await _classService.GetTALecturerSectionsAsync(instructorId);
         return Ok(classes);
     }
 
@@ -95,6 +95,14 @@ public class ClassesController : ControllerBase
     {
         var classDto = await _classService.CreateSectionAsync(dto);
         return CreatedAtAction(nameof(GetById), new { id = classDto.ClassId }, classDto);
+    }
+
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
+    [HttpPut("{id}")]
+    public async Task<ActionResult<ClassDto>> Update(int id, [FromBody] UpdateClassDto dto)
+    {
+        var classDto = await _classService.UpdateAsync(id, dto);
+        return Ok(classDto);
     }
 
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
