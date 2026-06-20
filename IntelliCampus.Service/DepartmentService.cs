@@ -70,6 +70,7 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
             DepartmentName = dto.DepartmentName,
             DepartmentNameAr = dto.DepartmentNameAr,
             Description = dto.Description,
+            DescriptionAr = dto.DescriptionAr,
             InstructorId = dto.InstructorId,
             FacultyId = facultyId
         };
@@ -98,6 +99,9 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
 
         if (dto.Description is not null)
             department.Description = dto.Description;
+
+        if (dto.DescriptionAr is not null)
+            department.DescriptionAr = dto.DescriptionAr;
 
         if (dto.InstructorId.HasValue)
         {
@@ -144,6 +148,7 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
             DepartmentName = department.DepartmentName,
             DepartmentNameAr = department.DepartmentNameAr,
             Description = department.Description,
+            DescriptionAr = department.DescriptionAr,
             InstructorId = department.InstructorId,
             HeadInstructorName = department.HeadInstructor?.FullName,
             FacultyId = department.FacultyId,

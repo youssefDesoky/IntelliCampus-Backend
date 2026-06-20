@@ -16,7 +16,7 @@ public class UserNotificationConfiguration : IEntityTypeConfiguration<UserNotifi
         builder.HasOne(un => un.User)
             .WithMany(u => u.UserNotifications)
             .HasForeignKey(un => un.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(un => un.Notification)
             .WithMany(n => n.UserNotifications)

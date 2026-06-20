@@ -26,6 +26,9 @@ public class CourseDto
     public int Weeks { get; set; }
     public decimal? Attendance { get; set; }
     public decimal? Grade { get; set; }
+    public decimal? CourseWork { get; set; }
+    public int? ClassId { get; set; }
+    public string? ClassName { get; set; }
     public bool IsElective { get; set; }
     public string? ProfessorName { get; set; }
 }

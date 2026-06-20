@@ -1,5 +1,7 @@
 using IntelliCampus.Shared.Dtos.Course;
+using IntelliCampus.Shared.Dtos.Student;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Domain.Helpers;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
@@ -9,10 +11,11 @@ using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
 
-public class CourseService(IUnitOfWork unitOfWork) : ICourseService
+public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver) : ICourseService
 {
     private const int TotalSemesterWeeks = 16;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly UrlResolver _urlResolver = urlResolver;
 
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
@@ -48,28 +51,32 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
     public async Task<IEnumerable<CourseDto>> GetAllAsync()
     {
         var courses = await Courses.GetAllAsync(new CourseSpec());
-        return courses.Select(MapToDto);
+        return courses.Select(c => MapToDto(c));
     }
 
     public async Task<IEnumerable<CourseDto>> GetActiveCoursesAsync()
     {
         var courses = await Courses.GetAllAsync(new CourseSpec(CourseStatus.Active));
 
-        return courses.Select(MapToDto);
+        return courses.Select(c => MapToDto(c));
     }
 
-    public async Task<IEnumerable<CourseDto>> GetCoursesByStudentIdAsync(int studentId)
+    public async Task<IEnumerable<CourseDto>> GetCoursesByStudentIdAsync(int studentId, StudentCourseStatus? status = null)
     {
         var student = await Students.GetByIdAsync(studentId);
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
         var studentCourses = await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId));
+
+        if (status.HasValue)
+            studentCourses = studentCourses.Where(sc => sc.Status == status.Value).ToList();
+
         var courseIds = studentCourses.Select(sc => sc.CourseId).ToList();
 
         var courses = await Courses.GetAllAsync(new CourseSpec(courseIds));
 
-        return courses.Select(MapToDto);
+        return courses.Select(c => MapToDto(c, studentId));
     }
 
     public async Task<IEnumerable<CourseDto>> GetCoursesByInstructorIdAsync(int instructorId)
@@ -83,7 +90,7 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
 
         var courses = await Courses.GetAllAsync(new CourseSpec(courseIds));
 
-        return courses.Select(MapToDto);
+        return courses.Select(c => MapToDto(c));
     }
 
     public async Task<CourseDto> CreateAsync(CreateCourseDto dto)
@@ -221,9 +228,54 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
     {
         var course = await Courses.GetByIdAsync(courseId);
         if (course is null) throw new CourseNotFoundException(courseId);
+        if (course.Status == CourseStatus.Active)
+            throw new InvalidOperationException("can't delete active course");
         Courses.Delete(course);
         await _unitOfWork.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<IEnumerable<StudentDto>> GetStudentsByCourseIdAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null) throw new CourseNotFoundException(courseId);
+
+        var studentCourses = await StudentCourses.GetAllAsync(new CourseStudentsSpec(courseId));
+
+        return studentCourses.Select(sc => MapStudentToDto(sc.Student));
+    }
+
+    private StudentDto MapStudentToDto(Student student)
+    {
+        return new StudentDto
+        {
+            StudentId = student.UserId,
+            UserId = student.UserId,
+            NationalId = student.NationalId,
+            FullName = student.FullName,
+            FullNameAr = student.FullNameAr,
+            PhoneNumber = student.PhoneNumber,
+            Email = student.Email,
+            Address = student.Address,
+            Nationality = student.Nationality,
+            StudentCode = student.StudentCode,
+            FacultyId = student.FacultyId,
+            FacultyName = student.Faculty?.FacultyName,
+            Level = student.Level,
+            DepartmentId = student.DepartmentId,
+            DepartmentName = student.Department?.DepartmentName,
+            BylawId = student.BylawId,
+            BylawName = student.Bylaw?.Name,
+            BylawVersion = student.Bylaw?.Version,
+            EnrollmentDate = student.EnrollmentDate?.ToString("dd MM yyyy"),
+            Gpa = student.Gpa,
+            Program = student.Program,
+            SpecializationId = student.SpecializationId,
+            SpecializationName = student.Specialization?.Name,
+            StudentType = student.StudentType,
+            ProfileImage = _urlResolver.ResolveProfile(student.ProfileImage),
+            Roles = student.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
+        };
     }
 
     private async Task<int?> ResolveDepartmentIdAsync(string? departmentName)
@@ -262,7 +314,7 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
         return string.Concat(parts.Select(p => char.ToUpperInvariant(p[0])));
     }
 
-    private static CourseDto MapToDto(Course course)
+    private static CourseDto MapToDto(Course course, int? studentId = null)
     {
         var currentSemester = SemesterHelper.GetCurrentSemester();
 
@@ -273,7 +325,28 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
         var attendancePercent = totalAttendances > 0 ? Math.Round((decimal)presentAttendances / totalAttendances * 100, 1) : (decimal?)null;
 
         var courseGrades = course.Grades ?? [];
-        var avgGrade = courseGrades.Any() ? Math.Round(courseGrades.Average(g => g.Score), 1) : (decimal?)null;
+        if (studentId.HasValue)
+            courseGrades = courseGrades.Where(g => g.StudentId == studentId.Value).ToList();
+
+        decimal? avgGrade;
+        decimal? courseWork;
+        if (studentId.HasValue && courseGrades.Count != 0)
+        {
+            var percentages = courseGrades.Select(g => g.MaxScore > 0 ? g.Score / g.MaxScore * 100 : 0).ToList();
+            avgGrade = Math.Round(percentages.Average(), 0);
+
+            var courseworkGrades = courseGrades
+                .Where(g => g.GradeType is GradeType.Assignment or GradeType.Quiz)
+                .ToList();
+            courseWork = courseworkGrades.Count != 0
+                ? Math.Round(courseworkGrades.Average(g => g.MaxScore > 0 ? g.Score / g.MaxScore * 100 : 0), 0)
+                : (decimal?)null;
+        }
+        else
+        {
+            avgGrade = courseGrades.Any() ? Math.Round(courseGrades.Average(g => g.Score), 1) : (decimal?)null;
+            courseWork = null;
+        }
 
         var numStudents = course.StudentCourses?.Count ?? 0;
 
@@ -302,6 +375,19 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
             .Distinct()
             .Count();
 
+        int? classId = null;
+        string? className = null;
+        if (studentId.HasValue)
+        {
+            var studentCourse = course.StudentCourses?
+                .FirstOrDefault(sc => sc.StudentId == studentId.Value);
+            if (studentCourse is not null)
+            {
+                classId = studentCourse.ClassId;
+                className = studentCourse.Class?.GroupCode;
+            }
+        }
+
         return new CourseDto
         {
             CourseId = course.CourseId,
@@ -325,6 +411,9 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
             Weeks = TotalSemesterWeeks,
             Attendance = attendancePercent,
             Grade = avgGrade,
+            CourseWork = courseWork,
+            ClassId = classId,
+            ClassName = className,
             IsElective = false,
             ProfessorName = lectureClass?.Instructor?.FullName
         };

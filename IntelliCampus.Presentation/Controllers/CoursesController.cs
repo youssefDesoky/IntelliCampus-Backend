@@ -1,6 +1,8 @@
 using System.Security.Claims;
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Shared.Dtos.Announcement;
 using IntelliCampus.Shared.Dtos.Course;
+using IntelliCampus.Shared.Dtos.Student;
 using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -39,9 +41,17 @@ public class CoursesController : ControllerBase
 
     [HttpGet("student/{studentId}")]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<CourseDto>>> GetByStudentId(int studentId)
+    public async Task<ActionResult<IEnumerable<CourseDto>>> GetByStudentId(int studentId, [FromQuery] string? status = null)
     {
-        var courses = await _courseService.GetCoursesByStudentIdAsync(studentId);
+        StudentCourseStatus? statusFilter = status?.ToLowerInvariant() switch
+        {
+            "completed" => StudentCourseStatus.Completed,
+            "inprogress" => StudentCourseStatus.InProgress,
+            "failed" => StudentCourseStatus.Failed,
+            _ => null
+        };
+
+        var courses = await _courseService.GetCoursesByStudentIdAsync(studentId, statusFilter);
         return Ok(courses);
     }
 
@@ -95,6 +105,14 @@ public class CoursesController : ControllerBase
         return Ok(course);
     }
 
+    [HttpGet("{courseId}/students")]
+    [Authorize]
+    public async Task<ActionResult<IEnumerable<StudentDto>>> GetStudents(int courseId)
+    {
+        var students = await _courseService.GetStudentsByCourseIdAsync(courseId);
+        return Ok(students);
+    }
+
     [HttpPost]
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<ActionResult<CourseDto>> Create([FromBody] CreateCourseDto dto)
@@ -134,9 +152,15 @@ public class CoursesController : ControllerBase
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _courseService.DeleteAsync(id);
-
-        return NoContent();
+        try
+        {
+            await _courseService.DeleteAsync(id);
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     #region Announcements

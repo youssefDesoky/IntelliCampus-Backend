@@ -4,6 +4,7 @@ public class Department
 {
     public int DepartmentId { get; set; }
     public string? Description { get; set; }
+    public string? DescriptionAr { get; set; }
     public string DepartmentName { get; set; } = null!;
     public string? DepartmentNameAr { get; set; }
     public int? InstructorId { get; set; }

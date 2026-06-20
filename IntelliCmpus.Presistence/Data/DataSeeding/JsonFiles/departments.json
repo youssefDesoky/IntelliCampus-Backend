@@ -3,24 +3,28 @@
     "departmentName": "Information Systems",
     "departmentNameAr": "نظم المعلومات",
     "description": "Information Systems Department — General Program",
+    "descriptionAr": "قسم نظم المعلومات — البرنامج العام",
     "headEmail": "202601001@intellicampus.online"
   },
   {
     "departmentName": "Data Science",
     "departmentNameAr": "علوم البيانات",
     "description": "Data Science Department — Credit Hours Program",
+    "descriptionAr": "قسم علوم البيانات — برنامج الساعات المعتمدة",
     "headEmail": "202601005@intellicampus.online"
   },
   {
     "departmentName": "Software Engineering",
     "departmentNameAr": "هندسة البرمجيات",
     "description": "Software Engineering Department — Credit Hours Program",
+    "descriptionAr": "قسم هندسة البرمجيات — برنامج الساعات المعتمدة",
     "headEmail": "202601007@intellicampus.online"
   },
   {
     "departmentName": "Networks and Cyber Security",
     "departmentNameAr": "الشبكات وأمن السيبراني",
     "description": "Networks and Cyber Security Department — Credit Hours Program",
+    "descriptionAr": "قسم الشبكات وأمن السيبراني — برنامج الساعات المعتمدة",
     "headEmail": "202601009@intellicampus.online"
   }
 ]

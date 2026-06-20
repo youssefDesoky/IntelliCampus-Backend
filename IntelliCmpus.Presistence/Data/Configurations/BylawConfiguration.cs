@@ -59,5 +59,7 @@ public class BylawConfiguration : IEntityTypeConfiguration<Bylaw>
         builder.Property(b => b.ProbationThreshold).HasPrecision(4, 2);
         builder.Property(b => b.ProbationRegistrationLimit);
         builder.Property(b => b.MinCreditHoursForGraduationProject);
+        builder.Property(b => b.CourseWorkGrade).HasPrecision(5, 2);
+        builder.Property(b => b.FinalExamGrade).HasPrecision(5, 2);
     }
 }

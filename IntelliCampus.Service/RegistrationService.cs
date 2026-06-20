@@ -85,7 +85,7 @@ public class RegistrationService : IRegistrationService
                     throw new InvalidOperationException(
                         $"Cannot register for \"{course.CourseName}\". Adding {course.CreditHours} credit hours would bring your semester total to {totalAfterRegistration}, exceeding the maximum of {maxHours.Value} credit hours{(isSummer ? " for summer" : "")}.");
 
-                if (bylaw.MinCreditHoursPerSemester.HasValue && totalAfterRegistration < bylaw.MinCreditHoursPerSemester.Value)
+                if (!isSummer && bylaw.MinCreditHoursPerSemester.HasValue && totalAfterRegistration < bylaw.MinCreditHoursPerSemester.Value)
                     throw new InvalidOperationException(
                         $"Cannot register for \"{course.CourseName}\". The total of {totalAfterRegistration} credit hours is below the minimum of {bylaw.MinCreditHoursPerSemester.Value} credit hours per semester.");
             }
@@ -167,6 +167,35 @@ public class RegistrationService : IRegistrationService
         await _scheduleService.RemoveByStudentAndCourseAsync(studentId, courseId);
 
         return true;
+    }
+
+    public async Task ChangeStudentCourseSectionAsync(int studentId, int courseId, int newClassId)
+    {
+        var spec = new StudentCourseSpec(studentId, courseId);
+        var studentCourse = await StudentCourses.GetByIdAsync(spec);
+
+        if (studentCourse is null)
+            throw new InvalidOperationException($"Registration not found for student {studentId} in course {courseId}.");
+
+        var classEntity = await Classes.GetByIdAsync(newClassId);
+        if (classEntity is null || classEntity.CourseId != courseId)
+            throw new ClassNotFoundException($"Class with ID {newClassId} not found or does not belong to course {courseId}.");
+
+        var oldClassId = studentCourse.ClassId;
+        studentCourse.ClassId = newClassId;
+        StudentCourses.Update(studentCourse);
+        await _unitOfWork.SaveChangesAsync();
+
+        await _scheduleService.RemoveByStudentAndCourseAsync(studentId, courseId);
+        await _scheduleService.SyncFromCourseRegistrationAsync(studentId, newClassId);
+
+        if (classEntity.ClassType != ClassType.Lecture)
+        {
+            var lectureSpec = new LectureClassSpec(courseId);
+            var lectureClass = await Classes.GetByIdAsync(lectureSpec);
+            if (lectureClass is not null)
+                await _scheduleService.SyncFromCourseRegistrationAsync(studentId, lectureClass.ClassId);
+        }
     }
 
     private async Task<int> GetTotalEarnedCreditHoursAsync(int studentId)
