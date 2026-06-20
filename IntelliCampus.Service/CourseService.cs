@@ -100,6 +100,9 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver) : IC
         var course = new Course
         {
             CourseCode = dto.CourseCode,
+            CourseCodeAr = dto.CourseCodeAr,
+            Description = dto.Description,
+            DescriptionAr = dto.DescriptionAr,
             CourseName = dto.CourseName,
             CourseNameAr = dto.CourseNameAr,
             CreditHours = dto.CreditHours,
@@ -146,6 +149,9 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver) : IC
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentName);
 
         course.CourseCode = dto.CourseCode;
+        course.CourseCodeAr = dto.CourseCodeAr;
+        course.Description = dto.Description;
+        course.DescriptionAr = dto.DescriptionAr;
         course.CourseName = dto.CourseName;
         course.CourseNameAr = dto.CourseNameAr;
         course.CreditHours = dto.CreditHours;
@@ -395,6 +401,9 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver) : IC
         {
             CourseId = course.CourseId,
             CourseCode = course.CourseCode,
+            CourseCodeAr = course.CourseCodeAr,
+            Description = course.Description,
+            DescriptionAr = course.DescriptionAr,
             CourseName = course.CourseName,
             CourseNameAr = course.CourseNameAr,
             CreditHours = course.CreditHours,

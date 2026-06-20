@@ -3,6 +3,9 @@
     "courseCode": "MA111",
     "courseName": "Math-1",
     "courseNameAr": "Math-1",
+    "courseCodeAr": "رياضيات111",
+    "description": "Introduction to calculus, limits, derivatives, and integrals of single-variable functions.",
+    "descriptionAr": "مقدمة في التفاضل والتكامل، النهايات، المشتقات، وتكامل دوال متغير واحد.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -11,6 +14,9 @@
     "courseCode": "IT111",
     "courseName": "Electronics",
     "courseNameAr": "Electronics",
+    "courseCodeAr": "تقنية111",
+    "description": "Fundamentals of electronic circuits, semiconductors, diodes, and transistors.",
+    "descriptionAr": "أساسيات الدوائر الإلكترونية، أشباه الموصلات، الدايودات، والترانزستورات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -19,6 +25,9 @@
     "courseCode": "CS111",
     "courseName": "Fundamentals of Computer Science",
     "courseNameAr": "Fundamentals of Computer Science",
+    "courseCodeAr": "حاسوب111",
+    "description": "Overview of computer science: hardware, software, algorithms, and problem-solving.",
+    "descriptionAr": "نظرة عامة على علوم الحاسب: العتاد، البرمجيات، الخوارزميات، وحل المشكلات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -27,6 +36,9 @@
     "courseCode": "MA113",
     "courseName": "Math-2",
     "courseNameAr": "Math-2",
+    "courseCodeAr": "رياضيات113",
+    "description": "Continuation of calculus: integration techniques, series, and multivariable calculus.",
+    "descriptionAr": "تكملة التفاضل والتكامل: طرق التكامل، المتسلسلات، وتفاضل وتكامل متعدد المتغيرات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -35,6 +47,9 @@
     "courseCode": "ST121",
     "courseName": "Probability and Statistics-1",
     "courseNameAr": "Probability and Statistics-1",
+    "courseCodeAr": "إحصاء121",
+    "description": "Foundations of probability theory and descriptive/inferential statistics.",
+    "descriptionAr": "أساسيات نظرية الاحتمالات والإحصاء الوصفي والاستدلالي.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -43,6 +58,9 @@
     "courseCode": "DS251",
     "courseName": "Fundamentals of Management",
     "courseNameAr": "Fundamentals of Management",
+    "courseCodeAr": "بيانات251",
+    "description": "Introduction to management principles, organizational behavior, and business processes.",
+    "descriptionAr": "مقدمة في مبادئ الإدارة، السلوك التنظيمي، والعمليات التجارية.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -51,6 +69,9 @@
     "courseCode": "CS112",
     "courseName": "Structured Programming",
     "courseNameAr": "Structured Programming",
+    "courseCodeAr": "حاسوب112",
+    "description": "Introduction to structured programming using a high-level language, control structures, and functions.",
+    "descriptionAr": "مقدمة في البرمجة المنظمة باستخدام لغة عالية المستوى، هياكل التحكم، والدوال.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -59,6 +80,9 @@
     "courseCode": "IT221",
     "courseName": "Computer Networks Technology",
     "courseNameAr": "Computer Networks Technology",
+    "courseCodeAr": "تقنية221",
+    "description": "Fundamentals of computer networking: OSI model, TCP/IP, routing, and switching.",
+    "descriptionAr": "أساسيات شبكات الحاسب: نموذج OSI، TCP/IP، التوجيه، والتحويل.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -67,6 +91,9 @@
     "courseCode": "CS213",
     "courseName": "Object Oriented Programming",
     "courseNameAr": "Object Oriented Programming",
+    "courseCodeAr": "حاسوب213",
+    "description": "Object-oriented programming concepts: classes, inheritance, polymorphism, and design patterns.",
+    "descriptionAr": "مفاهيم البرمجة كائنية التوجه: الفئات، الوراثة، تعدد الأشكال، وأنماط التصميم.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -75,6 +102,9 @@
     "courseCode": "DS211",
     "courseName": "Intro to Operations Research & Decision Support",
     "courseNameAr": "Intro to Operations Research & Decision Support",
+    "courseCodeAr": "بيانات211",
+    "description": "Introduction to operations research: linear programming, optimization, and decision support systems.",
+    "descriptionAr": "مقدمة في بحوث العمليات: البرمجة الخطية، الأمثلة، وأنظمة دعم القرار.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -83,6 +113,9 @@
     "courseCode": "ST222",
     "courseName": "Probability and Statistics-2",
     "courseNameAr": "Probability and Statistics-2",
+    "courseCodeAr": "إحصاء222",
+    "description": "Advanced probability distributions, hypothesis testing, regression analysis, and ANOVA.",
+    "descriptionAr": "توزيعات احتمالية متقدمة، اختبار الفرضيات، تحليل الانحدار، وتحليل التباين.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -91,6 +124,9 @@
     "courseCode": "MA112",
     "courseName": "Discrete Mathematics",
     "courseNameAr": "Discrete Mathematics",
+    "courseCodeAr": "رياضيات112",
+    "description": "Discrete mathematics: logic, sets, relations, graphs, and combinatorics.",
+    "descriptionAr": "الرياضيات المتقطعة: المنطق، المجموعات، العلاقات، الرسوم البيانية، والتوافقيات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -99,6 +135,9 @@
     "courseCode": "HU111",
     "courseName": "Technical Report Writing",
     "courseNameAr": "Technical Report Writing",
+    "courseCodeAr": "إنسانية111",
+    "description": "Developing technical writing skills for reports, proposals, and documentation.",
+    "descriptionAr": "تطوير مهارات الكتابة الفنية للتقارير، المقترحات، والتوثيق.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -107,6 +146,9 @@
     "courseCode": "HU118",
     "courseName": "Selected Topics in Humanities",
     "courseNameAr": "Selected Topics in Humanities",
+    "courseCodeAr": "إنسانية118",
+    "description": "Exploration of selected topics in humanities and their relevance to technology.",
+    "descriptionAr": "استكشاف موضوعات مختارة في العلوم الإنسانية وعلاقتها بالتكنولوجيا.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -115,6 +157,9 @@
     "courseCode": "HU113",
     "courseName": "Creative Thinking and Communication Skills",
     "courseNameAr": "Creative Thinking and Communication Skills",
+    "courseCodeAr": "إنسانية113",
+    "description": "Developing creative thinking, problem-solving, and effective communication skills.",
+    "descriptionAr": "تنمية التفكير الإبداعي، حل المشكلات، ومهارات الاتصال الفعال.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -123,6 +168,9 @@
     "courseCode": "HU121",
     "courseName": "Fundamentals of Economics",
     "courseNameAr": "Fundamentals of Economics",
+    "courseCodeAr": "إنسانية121",
+    "description": "Basic economic principles: supply and demand, market structures, and economic policy.",
+    "descriptionAr": "مبادئ الاقتصاد الأساسية: العرض والطلب، هياكل السوق، والسياسة الاقتصادية.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -131,6 +179,9 @@
     "courseCode": "HU117",
     "courseName": "Social Issues",
     "courseNameAr": "Social Issues",
+    "courseCodeAr": "إنسانية117",
+    "description": "Study of contemporary social issues and their impact on society and technology.",
+    "descriptionAr": "دراسة القضايا الاجتماعية المعاصرة وتأثيرها على المجتمع والتكنولوجيا.",
     "creditHours": 0,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -139,6 +190,9 @@
     "courseCode": "HU124",
     "courseName": "Critical Thinking",
     "courseNameAr": "Critical Thinking",
+    "courseCodeAr": "إنسانية124",
+    "description": "Developing analytical and critical thinking skills for evaluating arguments and evidence.",
+    "descriptionAr": "تنمية مهارات التفكير التحليلي والنقدي لتقييم الحجج والأدلة.",
     "creditHours": 0,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -147,6 +201,9 @@
     "courseCode": "CS214",
     "courseName": "Data Structures",
     "courseNameAr": "Data Structures",
+    "courseCodeAr": "حاسوب214",
+    "description": "Data structures: arrays, linked lists, trees, graphs, hash tables, and sorting algorithms.",
+    "descriptionAr": "هياكل البيانات: المصفوفات، القوائم المترابطة، الأشجار، الرسوم البيانية، جداول التجزئة، وخوارزميات الترتيب.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -155,6 +212,9 @@
     "courseCode": "CS251",
     "courseName": "Intro to Software Engineering",
     "courseNameAr": "Intro to Software Engineering",
+    "courseCodeAr": "حاسوب251",
+    "description": "Introduction to software engineering: SDLC, requirements, design, testing, and project management.",
+    "descriptionAr": "مقدمة في هندسة البرمجيات: دورة حياة البرمجيات، المتطلبات، التصميم، الاختبار، وإدارة المشاريع.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -163,6 +223,9 @@
     "courseCode": "IS211",
     "courseName": "Introduction to Database Systems",
     "courseNameAr": "Introduction to Database Systems",
+    "courseCodeAr": "نظم211",
+    "description": "Introduction to database systems: relational model, SQL, normalization, and transaction management.",
+    "descriptionAr": "مقدمة في نظم قواعد البيانات: النموذج العلائقي، SQL، التطبيع، وإدارة المعاملات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -171,6 +234,9 @@
     "courseCode": "IS231",
     "courseName": "Web Technology",
     "courseNameAr": "Web Technology",
+    "courseCodeAr": "نظم231",
+    "description": "Web development fundamentals: HTML, CSS, JavaScript, and client-server architecture.",
+    "descriptionAr": "أساسيات تطوير الويب: HTML، CSS، JavaScript، وهيكلة العميل-خادم.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -179,6 +245,9 @@
     "courseCode": "MA214",
     "courseName": "Math-3",
     "courseNameAr": "Math-3",
+    "courseCodeAr": "رياضيات214",
+    "description": "Linear algebra: vectors, matrices, eigenvalues, and linear transformations.",
+    "descriptionAr": "الجبر الخطي: المتجهات، المصفوفات، القيم الذاتية، والتحويلات الخطية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -187,6 +256,9 @@
     "courseCode": "HU112",
     "courseName": "Ethics and Professionalism",
     "courseNameAr": "Ethics and Professionalism",
+    "courseCodeAr": "إنسانية112",
+    "description": "Study of ethical theories, professional codes of conduct, and moral decision-making.",
+    "descriptionAr": "دراسة النظريات الأخلاقية، مدونات السلوك المهني، واتخاذ القرارات الأخلاقية.",
     "creditHours": 1,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -195,6 +267,9 @@
     "courseCode": "HU225",
     "courseName": "Entrepreneurship",
     "courseNameAr": "Entrepreneurship",
+    "courseCodeAr": "إنسانية225",
+    "description": "Introduction to entrepreneurship: business planning, innovation, startup funding, and marketing.",
+    "descriptionAr": "مقدمة في ريادة الأعمال: تخطيط الأعمال، الابتكار، تمويل الشركات الناشئة، والتسويق.",
     "creditHours": 0,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -203,6 +278,9 @@
     "courseCode": "CS352",
     "courseName": "Advanced Software Engineering",
     "courseNameAr": "Advanced Software Engineering",
+    "courseCodeAr": "حاسوب352",
+    "description": "Advanced software engineering: architecture, design patterns, quality assurance, and DevOps.",
+    "descriptionAr": "هندسة برمجيات متقدمة: الهندسة المعمارية، أنماط التصميم، ضمان الجودة، وDevOps.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -211,6 +289,9 @@
     "courseCode": "IS332",
     "courseName": "Analysis and Design of Information Systems",
     "courseNameAr": "Analysis and Design of Information Systems",
+    "courseCodeAr": "نظم332",
+    "description": "System analysis and design: requirements engineering, UML, structural and behavioral modeling.",
+    "descriptionAr": "تحليل وتصميم النظم: هندسة المتطلبات، UML، النمذجة الهيكلية والسلوكية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -219,6 +300,9 @@
     "courseCode": "CS321",
     "courseName": "Algorithms Analysis and Design",
     "courseNameAr": "Algorithms Analysis and Design",
+    "courseCodeAr": "حاسوب321",
+    "description": "Algorithm design and analysis: complexity theory, divide and conquer, dynamic programming, greedy algorithms.",
+    "descriptionAr": "تصميم وتحليل الخوارزميات: نظرية التعقيد، فرق تسد، البرمجة الديناميكية، الخوارزميات الجشعة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -227,6 +311,9 @@
     "courseCode": "CS341",
     "courseName": "Operating Systems",
     "courseNameAr": "Operating Systems",
+    "courseCodeAr": "حاسوب341",
+    "description": "Operating systems: processes, memory management, file systems, and concurrency.",
+    "descriptionAr": "نظم التشغيل: العمليات، إدارة الذاكرة، أنظمة الملفات، والتوازي.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -235,6 +322,9 @@
     "courseCode": "IS312",
     "courseName": "Database Management Systems",
     "courseNameAr": "Database Management Systems",
+    "courseCodeAr": "نظم312",
+    "description": "Advanced database management: query optimization, indexing, storage engines, and distributed databases.",
+    "descriptionAr": "إدارة قواعد بيانات متقدمة: تحسين الاستعلامات، الفهرسة، محركات التخزين، وقواعد البيانات الموزعة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -243,6 +333,9 @@
     "courseCode": "IS321",
     "courseName": "File Management and Processing",
     "courseNameAr": "File Management and Processing",
+    "courseCodeAr": "نظم321",
+    "description": "File organization, access methods, physical storage, and multimedia data management.",
+    "descriptionAr": "تنظيم الملفات، طرق الوصول، التخزين المادي، وإدارة بيانات الوسائط المتعددة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -251,6 +344,9 @@
     "courseCode": "IS322",
     "courseName": "Information Retrieval",
     "courseNameAr": "Information Retrieval",
+    "courseCodeAr": "نظم322",
+    "description": "Information retrieval: indexing, search algorithms, ranking, and evaluation of search systems.",
+    "descriptionAr": "استرجاع المعلومات: الفهرسة، خوارزميات البحث، الترتيب، وتقييم أنظمة البحث.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -259,6 +355,9 @@
     "courseCode": "CS361",
     "courseName": "Artificial Intelligence",
     "courseNameAr": "Artificial Intelligence",
+    "courseCodeAr": "حاسوب361",
+    "description": "Introduction to AI: search algorithms, knowledge representation, machine learning, and NLP.",
+    "descriptionAr": "مقدمة في الذكاء الاصطناعي: خوارزميات البحث، تمثيل المعرفة، التعلم الآلي، ومعالجة اللغة الطبيعية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -267,6 +366,9 @@
     "courseCode": "IS313",
     "courseName": "Data Warehousing",
     "courseNameAr": "Data Warehousing",
+    "courseCodeAr": "نظم313",
+    "description": "Data warehousing concepts: ETL, multidimensional modeling, OLAP, and data warehouse architecture.",
+    "descriptionAr": "مفاهيم مستودعات البيانات: ETL، النمذجة متعددة الأبعاد، OLAP، وهيكلة مستودعات البيانات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -275,6 +377,9 @@
     "courseCode": "IS341",
     "courseName": "Business Process Management",
     "courseNameAr": "Business Process Management",
+    "courseCodeAr": "نظم341",
+    "description": "Business process management: modeling, analysis, redesign, and automation of business processes.",
+    "descriptionAr": "إدارة العمليات التجارية: النمذجة، التحليل، إعادة التصميم، وأتمتة العمليات التجارية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -283,6 +388,9 @@
     "courseCode": "IS333",
     "courseName": "Web-based Information Systems Development",
     "courseNameAr": "Web-based Information Systems Development",
+    "courseCodeAr": "نظم333",
+    "description": "Developing web-based information systems: front-end, back-end, databases, and deployment.",
+    "descriptionAr": "تطوير نظم معلومات قائمة على الويب: الواجهة الأمامية، الخلفية، قواعد البيانات، والنشر.",
     "creditHours": 4,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -291,6 +399,9 @@
     "courseCode": "IT212",
     "courseName": "Logic Design",
     "courseNameAr": "Logic Design",
+    "courseCodeAr": "تقنية212",
+    "description": "Digital logic design: Boolean algebra, combinational and sequential circuits, and simplification.",
+    "descriptionAr": "تصميم المنطق الرقمي: الجبر البولياني، الدوائر التوافقية والمتسلسلة، والتبسيط.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -299,6 +410,9 @@
     "courseCode": "TR301",
     "courseName": "Field Training",
     "courseNameAr": "Field Training",
+    "courseCodeAr": "تدريب301",
+    "description": "Practical field training in an IT-related organization to gain real-world experience.",
+    "descriptionAr": "تدريب ميداني عملي في مؤسسة مرتبطة بتكنولوجيا المعلومات لاكتساب خبرة عملية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -307,6 +421,9 @@
     "courseCode": "IS498",
     "courseName": "Graduation Project",
     "courseNameAr": "Graduation Project",
+    "courseCodeAr": "نظم498",
+    "description": "Capstone graduation project: apply learned skills to develop a complete information system.",
+    "descriptionAr": "مشروع التخرج: تطبيق المهارات المكتسبة لتطوير نظام معلومات متكامل.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -315,6 +432,9 @@
     "courseCode": "IS437",
     "courseName": "IS Development Methodologies",
     "courseNameAr": "IS Development Methodologies",
+    "courseCodeAr": "نظم437",
+    "description": "Study of various IS development methodologies: agile, waterfall, prototyping, and RAD.",
+    "descriptionAr": "دراسة منهجيات تطوير نظم المعلومات المختلفة: agile، waterfall، النمذجة الأولية، وRAD.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -323,6 +443,9 @@
     "courseCode": "DS342",
     "courseName": "Data Analytics",
     "courseNameAr": "Data Analytics",
+    "courseCodeAr": "بيانات342",
+    "description": "Data analytics: data preprocessing, exploratory analysis, visualization, and statistical modeling.",
+    "descriptionAr": "تحليل البيانات: المعالجة الأولية، التحليل الاستكشافي، التصور، والنمذجة الإحصائية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -331,6 +454,9 @@
     "courseCode": "CS462",
     "courseName": "Machine Learning",
     "courseNameAr": "Machine Learning",
+    "courseCodeAr": "حاسوب462",
+    "description": "Machine learning: supervised and unsupervised learning, neural networks, and model evaluation.",
+    "descriptionAr": "التعلم الآلي: التعلم الموجّه وغير الموجّه، الشبكات العصبية، وتقييم النماذج.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -339,6 +465,9 @@
     "courseCode": "IS434",
     "courseName": "Service-Oriented Architecture",
     "courseNameAr": "Service-Oriented Architecture",
+    "courseCodeAr": "نظم434",
+    "description": "Service-oriented architecture: web services, SOAP, REST, microservices, and enterprise integration.",
+    "descriptionAr": "الهندسة الموجهة بالخدمات: خدمات الويب، SOAP، REST، الخدمات المصغرة، والتكامل المؤسسي.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -347,6 +476,9 @@
     "courseCode": "IS442",
     "courseName": "Geographical Information Systems",
     "courseNameAr": "Geographical Information Systems",
+    "courseCodeAr": "نظم442",
+    "description": "Geographic Information Systems: spatial data, mapping, analysis, and GIS applications.",
+    "descriptionAr": "نظم المعلومات الجغرافية: البيانات المكانية، الخرائط، التحليل، وتطبيقات GIS.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -355,6 +487,9 @@
     "courseCode": "IS414",
     "courseName": "Managing and Modeling Big Data",
     "courseNameAr": "Managing and Modeling Big Data",
+    "courseCodeAr": "نظم414",
+    "description": "Big data management: NoSQL databases, Hadoop, Spark, and large-scale data processing.",
+    "descriptionAr": "إدارة البيانات الضخمة: قواعد NoSQL، Hadoop، Spark، ومعالجة البيانات واسعة النطاق.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -363,6 +498,9 @@
     "courseCode": "IS422",
     "courseName": "Data Mining",
     "courseNameAr": "Data Mining",
+    "courseCodeAr": "نظم422",
+    "description": "Data mining: association rules, classification, clustering, and anomaly detection.",
+    "descriptionAr": "التنقيب عن البيانات: قواعد الارتباط، التصنيف، التجميع، وكشف الشذوذ.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -371,6 +509,9 @@
     "courseCode": "IS424",
     "courseName": "Selected Topics in Data Engineering",
     "courseNameAr": "Selected Topics in Data Engineering",
+    "courseCodeAr": "نظم424",
+    "description": "Selected topics in data engineering: data pipelines, streaming, and data infrastructure.",
+    "descriptionAr": "موضوعات مختارة في هندسة البيانات: خطوط البيانات، التدفق، والبنية التحتية للبيانات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -379,6 +520,9 @@
     "courseCode": "IS448",
     "courseName": "E-Business",
     "courseNameAr": "E-Business",
+    "courseCodeAr": "نظم448",
+    "description": "E-business: online business models, e-commerce platforms, digital marketing, and security.",
+    "descriptionAr": "الأعمال الإلكترونية: نماذج الأعمال عبر الإنترنت، منصات التجارة الإلكترونية، التسويق الرقمي، والأمن.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -387,6 +531,9 @@
     "courseCode": "IS495",
     "courseName": "Selected Topics in Information Systems-1",
     "courseNameAr": "Selected Topics in Information Systems-1",
+    "courseCodeAr": "نظم495",
+    "description": "Selected advanced topics in information systems and emerging technologies.",
+    "descriptionAr": "موضوعات متقدمة مختارة في نظم المعلومات والتقنيات الناشئة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -395,6 +542,9 @@
     "courseCode": "DS456",
     "courseName": "Project Management",
     "courseNameAr": "Project Management",
+    "courseCodeAr": "بيانات456",
+    "description": "Project management: planning, scheduling, risk management, budgeting, and agile methodologies.",
+    "descriptionAr": "إدارة المشاريع: التخطيط، الجدولة، إدارة المخاطر، الميزانية، ومنهجيات agile.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Information Systems"
@@ -403,6 +553,9 @@
     "courseCode": "SCS111",
     "courseName": "Fundamentals of Computers",
     "courseNameAr": "Fundamentals of Computers",
+    "courseCodeAr": "حاسوب111",
+    "description": "Fundamentals of computers: hardware, software, operating systems, and computer organization.",
+    "descriptionAr": "أساسيات الحاسبات: العتاد، البرمجيات، نظم التشغيل، وتنظيم الحاسب.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -411,6 +564,9 @@
     "courseCode": "SIT111",
     "courseName": "Electronics-1",
     "courseNameAr": "Electronics-1",
+    "courseCodeAr": "تقنية111",
+    "description": "Basic electronics: circuit analysis, amplifiers, and digital/analog conversion.",
+    "descriptionAr": "إلكترونيات أساسية: تحليل الدوائر، المضخمات، والتحويل الرقمي/التناظري.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -419,6 +575,9 @@
     "courseCode": "SMA111",
     "courseName": "Math-1",
     "courseNameAr": "Math-1",
+    "courseCodeAr": "رياضيات111",
+    "description": "Calculus I: limits, derivatives, and integrals of single-variable functions.",
+    "descriptionAr": "التفاضل والتكامل 1: النهايات، المشتقات، وتكامل دوال متغير واحد.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -427,6 +586,9 @@
     "courseCode": "SHU111",
     "courseName": "Technical Report Writing",
     "courseNameAr": "Technical Report Writing",
+    "courseCodeAr": "إنسانية111",
+    "description": "Technical report writing and communication skills for engineering students.",
+    "descriptionAr": "كتابة التقارير الفنية ومهارات الاتصال لطلاب الهندسة.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Data Science"
@@ -435,6 +597,9 @@
     "courseCode": "SMA112",
     "courseName": "Discrete Mathematics",
     "courseNameAr": "Discrete Mathematics",
+    "courseCodeAr": "رياضيات112",
+    "description": "Discrete mathematics for computer science: logic, sets, and graph theory.",
+    "descriptionAr": "الرياضيات المتقطعة لعلوم الحاسب: المنطق، المجموعات، ونظرية الرسوم البيانية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -443,6 +608,9 @@
     "courseCode": "SHU121",
     "courseName": "Human Rights",
     "courseNameAr": "Human Rights",
+    "courseCodeAr": "إنسانية121",
+    "description": "Study of human rights principles, international declarations, and social justice.",
+    "descriptionAr": "دراسة مبادئ حقوق الإنسان، الإعلانات الدولية، والعدالة الاجتماعية.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Data Science"
@@ -451,6 +619,9 @@
     "courseCode": "SHU233",
     "courseName": "Fundamentals of Management",
     "courseNameAr": "Fundamentals of Management",
+    "courseCodeAr": "إنسانية233",
+    "description": "Fundamentals of management: planning, organizing, leading, and controlling organizations.",
+    "descriptionAr": "أساسيات الإدارة: التخطيط، التنظيم، القيادة، والرقابة في المنظمات.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Data Science"
@@ -459,6 +630,9 @@
     "courseCode": "SHU124",
     "courseName": "Critical Thinking",
     "courseNameAr": "Critical Thinking",
+    "courseCodeAr": "إنسانية124",
+    "description": "Critical thinking: logical reasoning, argument analysis, and evidence evaluation.",
+    "descriptionAr": "التفكير النقدي: الاستدلال المنطقي، تحليل الحجج، وتقييم الأدلة.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Data Science"
@@ -467,6 +641,9 @@
     "courseCode": "SCS112",
     "courseName": "Structured Programming",
     "courseNameAr": "Structured Programming",
+    "courseCodeAr": "حاسوب112",
+    "description": "Structured programming: algorithms, control flow, functions, arrays, and file I/O.",
+    "descriptionAr": "البرمجة المنظمة: الخوارزميات، تدفق التحكم، الدوال، المصفوفات، والإدخال/الإخراج.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -475,6 +652,9 @@
     "courseCode": "SIT213",
     "courseName": "Logic Design",
     "courseNameAr": "Logic Design",
+    "courseCodeAr": "تقنية213",
+    "description": "Logic design: Boolean algebra, combinational circuits, flip-flops, and sequential circuits.",
+    "descriptionAr": "تصميم المنطق: الجبر البولياني، الدوائر التوافقية، القلابات، والدوائر المتسلسلة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -483,6 +663,9 @@
     "courseCode": "SMA113",
     "courseName": "Math-2",
     "courseNameAr": "Math-2",
+    "courseCodeAr": "رياضيات113",
+    "description": "Calculus II: integration techniques, series, and multivariable calculus.",
+    "descriptionAr": "التفاضل والتكامل 2: طرق التكامل، المتسلسلات، وتفاضل وتكامل متعدد المتغيرات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -491,6 +674,9 @@
     "courseCode": "SST121",
     "courseName": "Probability and Statistics-1",
     "courseNameAr": "Probability and Statistics-1",
+    "courseCodeAr": "SST121",
+    "description": "Probability and statistics: distributions, sampling, estimation, and hypothesis testing.",
+    "descriptionAr": "الاحتمالات والإحصاء: التوزيعات، أخذ العينات، التقدير، واختبار الفرضيات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -499,6 +685,9 @@
     "courseCode": "SHU234",
     "courseName": "Entrepreneurship",
     "courseNameAr": "Entrepreneurship",
+    "courseCodeAr": "إنسانية234",
+    "description": "Entrepreneurship: business models, innovation, funding, and startup management.",
+    "descriptionAr": "ريادة الأعمال: نماذج الأعمال، الابتكار، التمويل، وإدارة الشركات الناشئة.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Data Science"
@@ -507,6 +696,9 @@
     "courseCode": "SCS213",
     "courseName": "Object Oriented Programming",
     "courseNameAr": "Object Oriented Programming",
+    "courseCodeAr": "حاسوب213",
+    "description": "Object-oriented programming: classes, inheritance, polymorphism, and exception handling.",
+    "descriptionAr": "البرمجة كائنية التوجه: الفئات، الوراثة، تعدد الأشكال، ومعالجة الاستثناءات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -515,6 +707,9 @@
     "courseCode": "SIT223",
     "courseName": "Fundamentals of Computer Networks",
     "courseNameAr": "Fundamentals of Computer Networks",
+    "courseCodeAr": "تقنية223",
+    "description": "Fundamentals of computer networks: protocols, OSI model, and network devices.",
+    "descriptionAr": "أساسيات شبكات الحاسب: البروتوكولات، نموذج OSI، وأجهزة الشبكة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -523,6 +718,9 @@
     "courseCode": "SST222",
     "courseName": "Probability and Statistics-2",
     "courseNameAr": "Probability and Statistics-2",
+    "courseCodeAr": "SST222",
+    "description": "Advanced statistics: regression, ANOVA, non-parametric tests, and statistical computing.",
+    "descriptionAr": "إحصاء متقدم: الانحدار، ANOVA، الاختبارات غير المعلمية، والحوسبة الإحصائية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -531,6 +729,9 @@
     "courseCode": "SMA214",
     "courseName": "Math-3",
     "courseNameAr": "Math-3",
+    "courseCodeAr": "رياضيات214",
+    "description": "Linear algebra: vector spaces, matrices, linear transformations, and eigenvalues.",
+    "descriptionAr": "الجبر الخطي: الفضاءات المتجهة، المصفوفات، التحويلات الخطية، والقيم الذاتية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -539,6 +740,9 @@
     "courseCode": "SCS251",
     "courseName": "Fundamentals of Software Engineering",
     "courseNameAr": "Fundamentals of Software Engineering",
+    "courseCodeAr": "حاسوب251",
+    "description": "Fundamentals of software engineering: requirements, design, testing, and maintenance.",
+    "descriptionAr": "أساسيات هندسة البرمجيات: المتطلبات، التصميم، الاختبار، والصيانة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -547,6 +751,9 @@
     "courseCode": "SCS214",
     "courseName": "Data Structures",
     "courseNameAr": "Data Structures",
+    "courseCodeAr": "حاسوب214",
+    "description": "Data structures: stacks, queues, trees, graphs, hash tables, and algorithm analysis.",
+    "descriptionAr": "هياكل البيانات: الأكوام، الطوابير، الأشجار، الرسوم البيانية، جداول التجزئة، وتحليل الخوارزميات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -555,6 +762,9 @@
     "courseCode": "SIS211",
     "courseName": "Database Systems",
     "courseNameAr": "Database Systems",
+    "courseCodeAr": "نظم211",
+    "description": "Database systems: relational model, SQL, normalization, and database design.",
+    "descriptionAr": "نظم قواعد البيانات: النموذج العلائقي، SQL، التطبيع، وتصميم قواعد البيانات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -563,6 +773,9 @@
     "courseCode": "SIS213",
     "courseName": "Introduction to Data Science",
     "courseNameAr": "Introduction to Data Science",
+    "courseCodeAr": "نظم213",
+    "description": "Introduction to data science: data collection, cleaning, analysis, and visualization.",
+    "descriptionAr": "مقدمة في علم البيانات: جمع البيانات، التنظيف، التحليل، والتصور.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -571,6 +784,9 @@
     "courseCode": "SHU132",
     "courseName": "Marketing & Sales",
     "courseNameAr": "Marketing & Sales",
+    "courseCodeAr": "إنسانية132",
+    "description": "Marketing and sales: market research, consumer behavior, branding, and selling strategies.",
+    "descriptionAr": "التسويق والمبيعات: أبحاث السوق، سلوك المستهلك، العلامات التجارية، واستراتيجيات البيع.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Data Science"
@@ -579,6 +795,9 @@
     "courseCode": "SIS334",
     "courseName": "Business Process Management",
     "courseNameAr": "Business Process Management",
+    "courseCodeAr": "نظم334",
+    "description": "Business process management: modeling, analysis, and optimization of business workflows.",
+    "descriptionAr": "إدارة العمليات التجارية: نمذجة، تحليل، وتحسين سير العمل التجاري.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -587,6 +806,9 @@
     "courseCode": "SDS212",
     "courseName": "Mathematical Optimization",
     "courseNameAr": "Mathematical Optimization",
+    "courseCodeAr": "بيانات212",
+    "description": "Mathematical optimization: linear, integer, and nonlinear programming techniques.",
+    "descriptionAr": "الأمثلة الرياضية: تقنيات البرمجة الخطية، الصحيحة، وغير الخطية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -595,6 +817,9 @@
     "courseCode": "SCS241",
     "courseName": "Operating Systems",
     "courseNameAr": "Operating Systems",
+    "courseCodeAr": "حاسوب241",
+    "description": "Operating systems: process scheduling, memory management, and file systems.",
+    "descriptionAr": "نظم التشغيل: جدولة العمليات، إدارة الذاكرة، وأنظمة الملفات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -603,6 +828,9 @@
     "courseCode": "SIS314",
     "courseName": "Advanced Database",
     "courseNameAr": "Advanced Database",
+    "courseCodeAr": "نظم314",
+    "description": "Advanced database: query optimization, transaction processing, and distributed databases.",
+    "descriptionAr": "قواعد بيانات متقدمة: تحسين الاستعلامات، معالجة المعاملات، وقواعد البيانات الموزعة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -611,6 +839,9 @@
     "courseCode": "SIS315",
     "courseName": "Database Management Systems",
     "courseNameAr": "Database Management Systems",
+    "courseCodeAr": "نظم315",
+    "description": "Database management systems: administration, security, backup, and performance tuning.",
+    "descriptionAr": "نظم إدارة قواعد البيانات: الإدارة، الأمن، النسخ الاحتياطي، وضبط الأداء.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -619,6 +850,9 @@
     "courseCode": "SLB442",
     "courseName": "Data Visualization Lab",
     "courseNameAr": "Data Visualization Lab",
+    "courseCodeAr": "معمل442",
+    "description": "Data visualization lab: practical exercises in creating visualizations using modern tools.",
+    "descriptionAr": "معمل تصور البيانات: تمارين عملية في إنشاء التصورات باستخدام أدوات حديثة.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Data Science"
@@ -627,6 +861,9 @@
     "courseCode": "SCS316",
     "courseName": "Algorithms Analysis & Design",
     "courseNameAr": "Algorithms Analysis & Design",
+    "courseCodeAr": "حاسوب316",
+    "description": "Algorithms: design techniques, complexity analysis, and advanced algorithmic paradigms.",
+    "descriptionAr": "الخوارزميات: تقنيات التصميم، تحليل التعقيد، والنماذج الخوارزمية المتقدمة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -635,6 +872,9 @@
     "courseCode": "SIS333",
     "courseName": "Geographical Information Systems",
     "courseNameAr": "Geographical Information Systems",
+    "courseCodeAr": "نظم333",
+    "description": "Geographic information systems: spatial analysis, mapping, and GIS applications.",
+    "descriptionAr": "نظم المعلومات الجغرافية: التحليل المكاني، الخرائط، وتطبيقات GIS.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -643,6 +883,9 @@
     "courseCode": "SCS361",
     "courseName": "Artificial Intelligence",
     "courseNameAr": "Artificial Intelligence",
+    "courseCodeAr": "حاسوب361",
+    "description": "Artificial intelligence: search, reasoning, knowledge representation, and learning.",
+    "descriptionAr": "الذكاء الاصطناعي: البحث، الاستدلال، تمثيل المعرفة، والتعلم.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -651,6 +894,9 @@
     "courseCode": "SIS335",
     "courseName": "Web Technology",
     "courseNameAr": "Web Technology",
+    "courseCodeAr": "نظم335",
+    "description": "Web technology: client-side and server-side web development, APIs, and web services.",
+    "descriptionAr": "تكنولوجيا الويب: تطوير الويب من جانب العميل والخادم، APIs، وخدمات الويب.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -659,6 +905,9 @@
     "courseCode": "SIS317",
     "courseName": "Data Mining",
     "courseNameAr": "Data Mining",
+    "courseCodeAr": "نظم317",
+    "description": "Data mining: pattern discovery, classification, clustering, and predictive modeling.",
+    "descriptionAr": "التنقيب عن البيانات: اكتشاف الأنماط، التصنيف، التجميع، والنمذجة التنبؤية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -667,6 +916,9 @@
     "courseCode": "SCS462",
     "courseName": "Machine Learning",
     "courseNameAr": "Machine Learning",
+    "courseCodeAr": "حاسوب462",
+    "description": "Machine learning: regression, classification, neural networks, and deep learning fundamentals.",
+    "descriptionAr": "التعلم الآلي: الانحدار، التصنيف، الشبكات العصبية، وأساسيات التعلم العميق.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -675,6 +927,9 @@
     "courseCode": "SDS344",
     "courseName": "Forecasting and Predictive Analytics",
     "courseNameAr": "Forecasting and Predictive Analytics",
+    "courseCodeAr": "بيانات344",
+    "description": "Forecasting and predictive analytics: time series analysis and predictive modeling.",
+    "descriptionAr": "التنبؤ والتحليلات التنبؤية: تحليل السلاسل الزمنية والنمذجة التنبؤية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -683,6 +938,9 @@
     "courseCode": "STR304",
     "courseName": "Field Training for Data Science",
     "courseNameAr": "Field Training for Data Science",
+    "courseCodeAr": "إحصاءR304",
+    "description": "Field training in data science: practical experience in data analysis and modeling.",
+    "descriptionAr": "تدريب ميداني في علم البيانات: خبرة عملية في تحليل البيانات والنمذجة.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Data Science"
@@ -691,6 +949,9 @@
     "courseCode": "SIS436",
     "courseName": "Business Process Mining",
     "courseNameAr": "Business Process Mining",
+    "courseCodeAr": "نظم436",
+    "description": "Business process mining: discovering, monitoring, and improving real business processes.",
+    "descriptionAr": "التنقيب في العمليات التجارية: اكتشاف ومراقبة وتحسين العمليات التجارية الحقيقية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -699,6 +960,9 @@
     "courseCode": "SIS421",
     "courseName": "Big Data Management and Modeling",
     "courseNameAr": "Big Data Management and Modeling",
+    "courseCodeAr": "نظم421",
+    "description": "Big data management: scalable data storage, processing frameworks, and analytics.",
+    "descriptionAr": "إدارة البيانات الضخمة: تخزين قابل للتوسع، أطر المعالجة، والتحليلات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -707,6 +971,9 @@
     "courseCode": "SIS422",
     "courseName": "Social Networks Analysis",
     "courseNameAr": "Social Networks Analysis",
+    "courseCodeAr": "نظم422",
+    "description": "Social network analysis: graph theory, network metrics, community detection, and influence analysis.",
+    "descriptionAr": "تحليل الشبكات الاجتماعية: نظرية الرسوم البيانية، مقاييس الشبكة، اكتشاف المجتمعات، وتحليل التأثير.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -715,6 +982,9 @@
     "courseCode": "SIS423",
     "courseName": "Unstructured Data",
     "courseNameAr": "Unstructured Data",
+    "courseCodeAr": "نظم423",
+    "description": "Unstructured data: text mining, natural language processing, and multimedia data analysis.",
+    "descriptionAr": "البيانات غير المهيكلة: التنقيب في النصوص، معالجة اللغة الطبيعية، وتحليل بيانات الوسائط المتعددة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -723,6 +993,9 @@
     "courseCode": "SCS469",
     "courseName": "Deep Learning",
     "courseNameAr": "Deep Learning",
+    "courseCodeAr": "حاسوب469",
+    "description": "Deep learning: neural networks, CNNs, RNNs, transformers, and deep learning frameworks.",
+    "descriptionAr": "التعلم العميق: الشبكات العصبية، CNNs، RNNs، المحولات، وأطر التعلم العميق.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -731,6 +1004,9 @@
     "courseCode": "SPD498",
     "courseName": "Graduation Project",
     "courseNameAr": "Graduation Project",
+    "courseCodeAr": "مشروع498",
+    "description": "Graduation project in data science: end-to-end data science project implementation.",
+    "descriptionAr": "مشروع تخرج في علم البيانات: تنفيذ مشروع علم بيانات متكامل.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -739,6 +1015,9 @@
     "courseCode": "SIS418",
     "courseName": "Selected Topics in Data Engineering",
     "courseNameAr": "Selected Topics in Data Engineering",
+    "courseCodeAr": "نظم418",
+    "description": "Selected topics in data engineering: modern data architectures and data platforms.",
+    "descriptionAr": "موضوعات مختارة في هندسة البيانات: الهياكل الحديثة للبيانات ومنصات البيانات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -747,6 +1026,9 @@
     "courseCode": "SIS438",
     "courseName": "Selected Topics in Information Systems",
     "courseNameAr": "Selected Topics in Information Systems",
+    "courseCodeAr": "نظم438",
+    "description": "Selected topics in information systems: contemporary IS research and applications.",
+    "descriptionAr": "موضوعات مختارة في نظم المعلومات: أبحاث وتطبيقات معاصرة في نظم المعلومات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -755,6 +1037,9 @@
     "courseCode": "SIS425",
     "courseName": "Applied Data Science",
     "courseNameAr": "Applied Data Science",
+    "courseCodeAr": "نظم425",
+    "description": "Applied data science: real-world data science projects and case studies.",
+    "descriptionAr": "علم البيانات التطبيقي: مشاريع علم بيانات واقعية ودراسات حالة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -763,6 +1048,9 @@
     "courseCode": "SLB441",
     "courseName": "Deep Learning Applications Lab",
     "courseNameAr": "Deep Learning Applications Lab",
+    "courseCodeAr": "معمل441",
+    "description": "Deep learning applications lab: hands-on implementation of deep learning models.",
+    "descriptionAr": "معمل تطبيقات التعلم العميق: تنفيذ عملي لنماذج التعلم العميق.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Data Science"
@@ -771,6 +1059,9 @@
     "courseCode": "SLB443",
     "courseName": "Big Data and Data Science Lab",
     "courseNameAr": "Big Data and Data Science Lab",
+    "courseCodeAr": "معمل443",
+    "description": "Big data and data science lab: practical exercises with big data tools and platforms.",
+    "descriptionAr": "معمل البيانات الضخمة وعلم البيانات: تمارين عملية باستخدام أدوات ومنصات البيانات الضخمة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -779,6 +1070,9 @@
     "courseCode": "SMA001",
     "courseName": "Math-0",
     "courseNameAr": "Math-0",
+    "courseCodeAr": "رياضيات001",
+    "description": "Remedial mathematics: basic algebra, functions, and pre-calculus concepts.",
+    "descriptionAr": "رياضيات تأسيسية: الجبر الأساسي، الدوال، ومفاهيم ما قبل التفاضل والتكامل.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Data Science"
@@ -787,6 +1081,9 @@
     "courseCode": "SDS321",
     "courseName": "Project Management",
     "courseNameAr": "Project Management",
+    "courseCodeAr": "بيانات321",
+    "description": "Project management: methodologies, tools, and techniques for managing software projects.",
+    "descriptionAr": "إدارة المشاريع: المنهجيات، الأدوات، والتقنيات لإدارة مشاريع البرمجيات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -795,6 +1092,9 @@
     "courseCode": "SCS252",
     "courseName": "Software Modeling",
     "courseNameAr": "Software Modeling",
+    "courseCodeAr": "حاسوب252",
+    "description": "Software modeling: UML, system modeling, and model-driven development approaches.",
+    "descriptionAr": "نمذجة البرمجيات: UML، نمذجة النظم، ومناهج التطوير المدفوعة بالنماذج.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -803,6 +1103,9 @@
     "courseCode": "SCS253",
     "courseName": "Software Process & Quality Management",
     "courseNameAr": "Software Process & Quality Management",
+    "courseCodeAr": "حاسوب253",
+    "description": "Software process and quality management: process improvement and quality assurance.",
+    "descriptionAr": "عملية وجودة البرمجيات: تحسين العمليات وضمان الجودة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -811,6 +1114,9 @@
     "courseCode": "SCS254",
     "courseName": "Software Requirement Analysis",
     "courseNameAr": "Software Requirement Analysis",
+    "courseCodeAr": "حاسوب254",
+    "description": "Software requirements analysis: elicitation, specification, validation, and management.",
+    "descriptionAr": "تحليل متطلبات البرمجيات: الاستنباط، التوثيق، التحقق، والإدارة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -819,6 +1125,9 @@
     "courseCode": "SCS331",
     "courseName": "Computer Architecture",
     "courseNameAr": "Computer Architecture",
+    "courseCodeAr": "حاسوب331",
+    "description": "Computer architecture: processor design, memory hierarchy, and pipelining.",
+    "descriptionAr": "هندسة الحاسبات: تصميم المعالجات، التسلسل الهرمي للذاكرة، وخطوط الأنابيب.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -827,6 +1136,9 @@
     "courseCode": "SIS212",
     "courseName": "Database Management Engineering",
     "courseNameAr": "Database Management Engineering",
+    "courseCodeAr": "نظم212",
+    "description": "Database management engineering: database design, administration, and performance tuning.",
+    "descriptionAr": "هندسة إدارة قواعد البيانات: تصميم قواعد البيانات، الإدارة، وضبط الأداء.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -835,6 +1147,9 @@
     "courseCode": "SCS315",
     "courseName": "Algorithms Analysis & Design",
     "courseNameAr": "Algorithms Analysis & Design",
+    "courseCodeAr": "حاسوب315",
+    "description": "Algorithms analysis and design: advanced algorithms and computational complexity.",
+    "descriptionAr": "تحليل وتصميم الخوارزميات: خوارزميات متقدمة والتعقيد الحسابي.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -843,6 +1158,9 @@
     "courseCode": "SCS355",
     "courseName": "Software Design & Architecture",
     "courseNameAr": "Software Design & Architecture",
+    "courseCodeAr": "حاسوب355",
+    "description": "Software design and architecture: architectural patterns, design principles, and system design.",
+    "descriptionAr": "تصميم وهندسة البرمجيات: الأنماط المعمارية، مبادئ التصميم، وتصميم النظم.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -851,6 +1169,9 @@
     "courseCode": "SLB321",
     "courseName": "Software Engineering Tools Lab",
     "courseNameAr": "Software Engineering Tools Lab",
+    "courseCodeAr": "معمل321",
+    "description": "Software engineering tools lab: practical experience with IDE, version control, and testing tools.",
+    "descriptionAr": "معمل أدوات هندسة البرمجيات: خبرة عملية مع IDEs، التحكم في الإصدارات، وأدوات الاختبار.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -859,6 +1180,9 @@
     "courseCode": "SCS317",
     "courseName": "Concepts of Programming Languages",
     "courseNameAr": "Concepts of Programming Languages",
+    "courseCodeAr": "حاسوب317",
+    "description": "Concepts of programming languages: syntax, semantics, type systems, and paradigms.",
+    "descriptionAr": "مفاهيم لغات البرمجة: بناء الجملة، علم الدلالة، أنظمة الأنواع، والنماذج.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -867,6 +1191,9 @@
     "courseCode": "SCS356",
     "courseName": "Human Computer Interaction",
     "courseNameAr": "Human Computer Interaction",
+    "courseCodeAr": "حاسوب356",
+    "description": "Human-computer interaction: usability, user interface design, and user experience evaluation.",
+    "descriptionAr": "التفاعل بين الإنسان والحاسوب: قابلية الاستخدام، تصميم واجهات المستخدم، وتقييم تجربة المستخدم.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -875,6 +1202,9 @@
     "courseCode": "SCS358",
     "courseName": "Software Maintenance & Evolution",
     "courseNameAr": "Software Maintenance & Evolution",
+    "courseCodeAr": "حاسوب358",
+    "description": "Software maintenance and evolution: legacy systems, refactoring, and software reengineering.",
+    "descriptionAr": "صيانة وتطوير البرمجيات: النظم القديمة، إعادة الهيكلة، وإعادة هندسة البرمجيات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -883,6 +1213,9 @@
     "courseCode": "SCS357",
     "courseName": "Software Testing",
     "courseNameAr": "Software Testing",
+    "courseCodeAr": "حاسوب357",
+    "description": "Software testing: test design, automation, coverage analysis, and quality metrics.",
+    "descriptionAr": "اختبار البرمجيات: تصميم الاختبارات، الأتمتة، تحليل التغطية، ومقاييس الجودة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -891,6 +1224,9 @@
     "courseCode": "SLB322",
     "courseName": "Advanced Software Engineering Tools Lab",
     "courseNameAr": "Advanced Software Engineering Tools Lab",
+    "courseCodeAr": "معمل322",
+    "description": "Advanced software engineering tools lab: CI/CD, automated testing, and deployment pipelines.",
+    "descriptionAr": "معمل أدوات هندسة البرمجيات المتقدمة: CI/CD، الاختبار الآلي، وخطوط النشر.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -899,6 +1235,9 @@
     "courseCode": "STR302",
     "courseName": "Field Training (Software Engineering)",
     "courseNameAr": "Field Training (Software Engineering)",
+    "courseCodeAr": "إحصاءR302",
+    "description": "Field training in software engineering: practical experience in software development.",
+    "descriptionAr": "تدريب ميداني في هندسة البرمجيات: خبرة عملية في تطوير البرمجيات.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -907,6 +1246,9 @@
     "courseCode": "SCS465",
     "courseName": "Soft Computing",
     "courseNameAr": "Soft Computing",
+    "courseCodeAr": "حاسوب465",
+    "description": "Soft computing: fuzzy logic, neural networks, genetic algorithms, and evolutionary computation.",
+    "descriptionAr": "الحوسبة اللينة: المنطق الضبابي، الشبكات العصبية، الخوارزميات الجينية، والحوسبة التطورية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -915,6 +1257,9 @@
     "courseCode": "SCS491",
     "courseName": "Selected Topics in SE-1",
     "courseNameAr": "Selected Topics in SE-1",
+    "courseCodeAr": "حاسوب491",
+    "description": "Selected topics in software engineering - 1: emerging topics in SE research and practice.",
+    "descriptionAr": "موضوعات مختارة في هندسة البرمجيات - 1: موضوعات ناشئة في أبحاث وممارسة هندسة البرمجيات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -923,6 +1268,9 @@
     "courseCode": "SCS472",
     "courseName": "Cloud Computing",
     "courseNameAr": "Cloud Computing",
+    "courseCodeAr": "حاسوب472",
+    "description": "Cloud computing: virtualization, IaaS, PaaS, SaaS, and cloud deployment models.",
+    "descriptionAr": "الحوسبة السحابية: الافتراضية، IaaS، PaaS، SaaS، ونماذج النشر السحابي.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -931,6 +1279,9 @@
     "courseCode": "SCS481",
     "courseName": "Web Engineering",
     "courseNameAr": "Web Engineering",
+    "courseCodeAr": "حاسوب481",
+    "description": "Web engineering: web application development, frameworks, and web quality assurance.",
+    "descriptionAr": "هندسة الويب: تطوير تطبيقات الويب، الأطر، وضمان جودة الويب.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -939,6 +1290,9 @@
     "courseCode": "SLB423",
     "courseName": "Selected Labs in Software Engineering",
     "courseNameAr": "Selected Labs in Software Engineering",
+    "courseCodeAr": "معمل423",
+    "description": "Selected labs in software engineering: advanced practical topics in SE.",
+    "descriptionAr": "معامل مختارة في هندسة البرمجيات: موضوعات عملية متقدمة في هندسة البرمجيات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -947,6 +1301,9 @@
     "courseCode": "SPS498",
     "courseName": "Graduation Project",
     "courseNameAr": "Graduation Project",
+    "courseCodeAr": "مشروع498",
+    "description": "Graduation project in software engineering: complete software development project.",
+    "descriptionAr": "مشروع تخرج في هندسة البرمجيات: مشروع تطوير برمجيات متكامل.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -955,6 +1312,9 @@
     "courseCode": "SCS432",
     "courseName": "Theory of Computations",
     "courseNameAr": "Theory of Computations",
+    "courseCodeAr": "حاسوب432",
+    "description": "Theory of computation: automata, computability, and complexity theory.",
+    "descriptionAr": "نظرية الحوسبة: الأتمتة، قابلية الحساب، ونظرية التعقيد.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -963,6 +1323,9 @@
     "courseCode": "SCS359",
     "courseName": "Software Security",
     "courseNameAr": "Software Security",
+    "courseCodeAr": "حاسوب359",
+    "description": "Software security: secure coding, vulnerability analysis, and security testing.",
+    "descriptionAr": "أمن البرمجيات: البرمجة الآمنة، تحليل الثغرات، واختبار الأمان.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -971,6 +1334,9 @@
     "courseCode": "SCS471",
     "courseName": "Distributed Systems",
     "courseNameAr": "Distributed Systems",
+    "courseCodeAr": "حاسوب471",
+    "description": "Distributed systems: communication, consistency, replication, and fault tolerance.",
+    "descriptionAr": "النظم الموزعة: الاتصال، الاتساق، التكرار، وتحمل الأخطاء.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -979,6 +1345,9 @@
     "courseCode": "SCS492",
     "courseName": "Selected Topics in SE-2",
     "courseNameAr": "Selected Topics in SE-2",
+    "courseCodeAr": "حاسوب492",
+    "description": "Selected topics in software engineering - 2: advanced topics in SE.",
+    "descriptionAr": "موضوعات مختارة في هندسة البرمجيات - 2: موضوعات متقدمة في هندسة البرمجيات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Software Engineering"
@@ -987,6 +1356,9 @@
     "courseCode": "SIT221",
     "courseName": "Data Communication",
     "courseNameAr": "Data Communication",
+    "courseCodeAr": "تقنية221",
+    "description": "Data communication: signal transmission, modulation, multiplexing, and error control.",
+    "descriptionAr": "اتصالات البيانات: نقل الإشارات، التعديل، تعدد الإرسال، والتحكم في الأخطاء.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -995,6 +1367,9 @@
     "courseCode": "SIT271",
     "courseName": "Cryptography",
     "courseNameAr": "Cryptography",
+    "courseCodeAr": "تقنية271",
+    "description": "Cryptography: encryption, decryption, digital signatures, and cryptographic protocols.",
+    "descriptionAr": "التشفير: التشفير، فك التشفير، التوقيعات الرقمية، والبروتوكولات التشفيرية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1003,6 +1378,9 @@
     "courseCode": "SIT222",
     "courseName": "Computer Networks-1",
     "courseNameAr": "Computer Networks-1",
+    "courseCodeAr": "تقنية222",
+    "description": "Computer networks I: LAN, WAN, routing protocols, and network addressing.",
+    "descriptionAr": "شبكات الحاسب 1: الشبكات المحلية والواسعة، بروتوكولات التوجيه، وعناونة الشبكة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1011,6 +1389,9 @@
     "courseCode": "SIT324",
     "courseName": "Computer Networks-2",
     "courseNameAr": "Computer Networks-2",
+    "courseCodeAr": "تقنية324",
+    "description": "Computer networks II: advanced routing, switching, QoS, and network security.",
+    "descriptionAr": "شبكات الحاسب 2: توجيه متقدم، تحويل، جودة الخدمة، وأمن الشبكات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1019,6 +1400,9 @@
     "courseCode": "SIT351",
     "courseName": "Networks and Web Programming",
     "courseNameAr": "Networks and Web Programming",
+    "courseCodeAr": "تقنية351",
+    "description": "Network and web programming: socket programming, HTTP, and web services.",
+    "descriptionAr": "برمجة الشبكات والويب: برمجة المقابس، HTTP، وخدمات الويب.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1027,6 +1411,9 @@
     "courseCode": "SIT345",
     "courseName": "Computer Security and Privacy",
     "courseNameAr": "Computer Security and Privacy",
+    "courseCodeAr": "تقنية345",
+    "description": "Computer security and privacy: access control, authentication, and privacy protection.",
+    "descriptionAr": "أمن الحاسبات والخصوصية: التحكم في الوصول، المصادقة، وحماية الخصوصية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1035,6 +1422,9 @@
     "courseCode": "SLB316",
     "courseName": "Selected Labs in Networks-1",
     "courseNameAr": "Selected Labs in Networks-1",
+    "courseCodeAr": "معمل316",
+    "description": "Selected labs in networks I: practical network configuration and troubleshooting.",
+    "descriptionAr": "معامل مختارة في الشبكات 1: تكوين الشبكات العملي واستكشاف الأخطاء.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1043,6 +1433,9 @@
     "courseCode": "SIT333",
     "courseName": "Computer Graphics",
     "courseNameAr": "Computer Graphics",
+    "courseCodeAr": "تقنية333",
+    "description": "Computer graphics: rendering, transformations, shading, and graphics pipelines.",
+    "descriptionAr": "رسومات الحاسب: التصيير، التحويلات، التظليل، وخطوط أنابيب الرسومات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1051,6 +1444,9 @@
     "courseCode": "SIT237",
     "courseName": "Signals Processing",
     "courseNameAr": "Signals Processing",
+    "courseCodeAr": "تقنية237",
+    "description": "Signal processing: analog/digital signals, filtering, and spectral analysis.",
+    "descriptionAr": "معالجة الإشارات: الإشارات التماثلية/الرقمية، الترشيح، والتحليل الطيفي.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1059,6 +1455,9 @@
     "courseCode": "SIT381",
     "courseName": "Fundamentals of Cyber Security",
     "courseNameAr": "Fundamentals of Cyber Security",
+    "courseCodeAr": "تقنية381",
+    "description": "Fundamentals of cybersecurity: threats, vulnerabilities, and security controls.",
+    "descriptionAr": "أساسيات الأمن السيبراني: التهديدات، الثغرات، والضوابط الأمنية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1067,6 +1466,9 @@
     "courseCode": "STR305",
     "courseName": "Field Training for Cyber Security",
     "courseNameAr": "Field Training for Cyber Security",
+    "courseCodeAr": "إحصاءR305",
+    "description": "Field training in cybersecurity: practical security assessment and defense.",
+    "descriptionAr": "تدريب ميداني في الأمن السيبراني: تقييم أمني عملي والدفاع.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1075,6 +1477,9 @@
     "courseCode": "SIT472",
     "courseName": "Digital Forensics",
     "courseNameAr": "Digital Forensics",
+    "courseCodeAr": "تقنية472",
+    "description": "Digital forensics: evidence collection, analysis, and incident response procedures.",
+    "descriptionAr": "الأدلة الرقمية الجنائية: جمع الأدلة، التحليل، وإجراءات الاستجابة للحوادث.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1083,6 +1488,9 @@
     "courseCode": "SIT325",
     "courseName": "Wireless and Mobile Networks",
     "courseNameAr": "Wireless and Mobile Networks",
+    "courseCodeAr": "تقنية325",
+    "description": "Wireless and mobile networks: cellular networks, WiFi, and mobile communication protocols.",
+    "descriptionAr": "الشبكات اللاسلكية والمتنقلة: الشبكات الخلوية، WiFi، وبروتوكولات الاتصال المتنقلة.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1091,6 +1499,9 @@
     "courseCode": "SIT446",
     "courseName": "Networks and Mobile Security",
     "courseNameAr": "Networks and Mobile Security",
+    "courseCodeAr": "تقنية446",
+    "description": "Network and mobile security: secure protocols, intrusion detection, and mobile security.",
+    "descriptionAr": "أمن الشبكات والمحمول: البروتوكولات الآمنة، كشف الاختراق، وأمن المحمول.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1099,6 +1510,9 @@
     "courseCode": "SLB451",
     "courseName": "Ethical Hacking",
     "courseNameAr": "Ethical Hacking",
+    "courseCodeAr": "معمل451",
+    "description": "Ethical hacking: penetration testing, vulnerability assessment, and security auditing.",
+    "descriptionAr": "الاختراق الأخلاقي: اختبار الاختراق، تقييم الثغرات، والتدقيق الأمني.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1107,6 +1521,9 @@
     "courseCode": "SPC498",
     "courseName": "Graduation Project",
     "courseNameAr": "Graduation Project",
+    "courseCodeAr": "مشروع498",
+    "description": "Graduation project in cybersecurity: comprehensive security project implementation.",
+    "descriptionAr": "مشروع تخرج في الأمن السيبراني: تنفيذ مشروع أمني متكامل.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1115,6 +1532,9 @@
     "courseCode": "SLB311",
     "courseName": "Networking Fundamentals Lab",
     "courseNameAr": "Networking Fundamentals Lab",
+    "courseCodeAr": "معمل311",
+    "description": "Networking fundamentals lab: hands-on network setup, configuration, and diagnostics.",
+    "descriptionAr": "معمل أساسيات الشبكات: إعداد الشبكات العملي، التكوين، والتشخيص.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1123,6 +1543,9 @@
     "courseCode": "SIT473",
     "courseName": "Advanced Cryptography",
     "courseNameAr": "Advanced Cryptography",
+    "courseCodeAr": "تقنية473",
+    "description": "Advanced cryptography: elliptic curve, post-quantum cryptography, and cryptographic protocols.",
+    "descriptionAr": "تشفير متقدم: المنحنيات الإهليلجية، التشفير بعد الكمي، والبروتوكولات التشفيرية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1131,6 +1554,9 @@
     "courseCode": "SIT455",
     "courseName": "Secure Programming",
     "courseNameAr": "Secure Programming",
+    "courseCodeAr": "تقنية455",
+    "description": "Secure programming: secure coding practices, input validation, and vulnerability prevention.",
+    "descriptionAr": "البرمجة الآمنة: ممارسات البرمجة الآمنة، التحقق من المدخلات، ومنع الثغرات.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1139,6 +1565,9 @@
     "courseCode": "SIT326",
     "courseName": "Optical Networks",
     "courseNameAr": "Optical Networks",
+    "courseCodeAr": "تقنية326",
+    "description": "Optical networks: fiber optics, WDM, and optical network architectures.",
+    "descriptionAr": "الشبكات الضوئية: الألياف الضوئية، WDM، وهياكل الشبكات الضوئية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1147,6 +1576,9 @@
     "courseCode": "SIT452",
     "courseName": "Cloud Computing & Network Virtualization",
     "courseNameAr": "Cloud Computing & Network Virtualization",
+    "courseCodeAr": "تقنية452",
+    "description": "Cloud computing and network virtualization: SDN, NFV, and virtual network functions.",
+    "descriptionAr": "الحوسبة السحابية والافتراضية الشبكية: SDN، NFV، ووظائف الشبكة الافتراضية.",
     "creditHours": 3,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1155,6 +1587,9 @@
     "courseCode": "SLB417",
     "courseName": "Selected Labs in Networks-2",
     "courseNameAr": "Selected Labs in Networks-2",
+    "courseCodeAr": "معمل417",
+    "description": "Selected labs in networks II: advanced network configuration and security labs.",
+    "descriptionAr": "معامل مختارة في الشبكات 2: تكوين شبكات متقدم ومعامل أمنية.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"
@@ -1163,6 +1598,9 @@
     "courseCode": "SLB452",
     "courseName": "Computer Networks Defense",
     "courseNameAr": "Computer Networks Defense",
+    "courseCodeAr": "معمل452",
+    "description": "Computer network defense: firewall, IDS/IPS, and network defense strategies.",
+    "descriptionAr": "الدفاع عن شبكات الحاسب: الجدار الناري، IDS/IPS، واستراتيجيات الدفاع عن الشبكات.",
     "creditHours": 2,
     "status": "Active",
     "departmentName": "Networks and Cyber Security"

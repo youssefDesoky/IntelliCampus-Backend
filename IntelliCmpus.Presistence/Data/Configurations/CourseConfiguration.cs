@@ -13,6 +13,16 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         builder.Property(c => c.CourseCode)
             .HasMaxLength(50);
 
+        builder.Property(c => c.CourseCodeAr)
+            .HasMaxLength(50);
+
+        builder.Property(c => c.Description)
+            .HasMaxLength(500);
+
+        builder.Property(c => c.DescriptionAr)
+            .HasMaxLength(500)
+            .IsUnicode();
+
         builder.Property(c => c.CourseName)
             .IsRequired()
             .HasMaxLength(100);

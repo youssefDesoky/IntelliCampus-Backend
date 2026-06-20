@@ -471,6 +471,9 @@ public class DataSeed : IDataSeed
             var entity = new Course
             {
                 CourseCode = dto.CourseCode,
+                CourseCodeAr = dto.CourseCodeAr,
+                Description = dto.Description,
+                DescriptionAr = dto.DescriptionAr,
                 CourseName = dto.CourseName,
                 CourseNameAr = dto.CourseNameAr,
                 CreditHours = dto.CreditHours,
@@ -1324,6 +1327,9 @@ public class DataSeed : IDataSeed
     private record CourseDto
     {
         public string CourseCode { get; init; } = "";
+        public string? CourseCodeAr { get; init; }
+        public string? Description { get; init; }
+        public string? DescriptionAr { get; init; }
         public string CourseName { get; init; } = "";
         public string? CourseNameAr { get; init; }
         public int CreditHours { get; init; }
