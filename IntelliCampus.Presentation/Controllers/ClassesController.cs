@@ -75,9 +75,9 @@ public class ClassesController : ControllerBase
     }
 
     [HttpGet("course/{courseId}")]
-    public async Task<ActionResult<IEnumerable<ClassDto>>> GetByCourse(int courseId)
+    public async Task<ActionResult<IEnumerable<ClassDto>>> GetByCourse(int courseId, [FromQuery] string? classType = null)
     {
-        var classes = await _classService.GetByCourseIdAsync(courseId);
+        var classes = await _classService.GetByCourseIdAsync(courseId, classType);
         return Ok(classes);
     }
 

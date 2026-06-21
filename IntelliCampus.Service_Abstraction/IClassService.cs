@@ -8,7 +8,7 @@ public interface IClassService
 {
     Task<ClassDto?> GetByIdAsync(int classId);
     Task<IEnumerable<ClassDto>> GetAllAsync();
-    Task<IEnumerable<ClassDto>> GetByCourseIdAsync(int courseId);
+    Task<IEnumerable<ClassDto>> GetByCourseIdAsync(int courseId, string? classType = null);
     Task<ClassDto> CreateAsync(CreateClassDto dto);
     Task<ClassDto> CreateLectureAsync(CreateLectureDto dto);
     Task<ClassDto> CreateSectionAsync(CreateSectionDto dto);

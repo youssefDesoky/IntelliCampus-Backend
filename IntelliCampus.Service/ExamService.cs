@@ -1,5 +1,6 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.Domain.Helpers;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
@@ -180,9 +181,10 @@ public class ExamService : IExamService
 
     private async Task<List<int>> GetConflictsAsync(int courseId, DateTime date, TimeSpan startTime, TimeSpan endTime, int? excludeExamId = null)
     {
+        var semester = SemesterHelper.GetSemesterFromDate(date);
         var allStudentCourses = await StudentCourseRepo.GetAllAsync();
         var enrolledStudentIds = allStudentCourses
-            .Where(sc => sc.CourseId == courseId)
+            .Where(sc => sc.CourseId == courseId && sc.Semester == semester)
             .Select(sc => sc.StudentId)
             .ToHashSet();
 
@@ -190,7 +192,7 @@ public class ExamService : IExamService
             return [];
 
         var otherEnrolledCourseIds = allStudentCourses
-            .Where(sc => enrolledStudentIds.Contains(sc.StudentId) && sc.CourseId != courseId)
+            .Where(sc => enrolledStudentIds.Contains(sc.StudentId) && sc.CourseId != courseId && sc.Semester == semester)
             .Select(sc => sc.CourseId)
             .ToHashSet();
 

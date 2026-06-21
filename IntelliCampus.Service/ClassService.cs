@@ -46,13 +46,13 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         return classes.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<ClassDto>> GetByCourseIdAsync(int courseId)
+    public async Task<IEnumerable<ClassDto>> GetByCourseIdAsync(int courseId, string? classType = null)
     {
         var course = await Courses.GetByIdAsync(courseId);
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
-        var spec = new ClassSpec(courseId, byCourse: true);
+        var spec = new ClassSpec(courseId, byCourse: true, classType: classType);
         var classes = await Classes.GetAllAsync(spec);
 
         return classes.Select(MapToDto);

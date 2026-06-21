@@ -52,10 +52,10 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
         foreach (var studentCourses in byStudent)
         {
             for (var i = 0; i < studentCourses.Count; i++)
-            for (var j = i + 1; j < studentCourses.Count; j++)
-            {
-                graph.AddEdge(studentCourses[i], studentCourses[j]);
-            }
+                for (var j = i + 1; j < studentCourses.Count; j++)
+                {
+                    graph.AddEdge(studentCourses[i], studentCourses[j]);
+                }
         }
         return graph;
     }
@@ -136,7 +136,6 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
 
     public async Task<List<AvailableSlotDto>> GetAvailableSlotsAsync(AvailableSlotRequestDto request)
     {
-        var semester = SemesterHelper.GetCurrentSemester();
         var workingDays = EgyptianHolidays.GetWorkingDays(request.ScheduleFrom, request.ScheduleTo);
         var result = new List<AvailableSlotDto>();
 
@@ -144,9 +143,11 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
         {
             foreach (var slot in request.DailySlots)
             {
+                var examDate = day.ToDateTime(TimeOnly.FromTimeSpan(slot.StartTime));
+                var semester = SemesterHelper.GetSemesterFromDate(examDate);
                 var conflicts = await DetectConflictsAsync(
                     request.CourseId, semester,
-                    day.ToDateTime(TimeOnly.FromTimeSpan(slot.StartTime)),
+                    examDate,
                     slot.StartTime, slot.EndTime,
                     request.ExcludeExamId);
 
