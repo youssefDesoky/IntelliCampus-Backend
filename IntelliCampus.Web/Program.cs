@@ -12,8 +12,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -93,18 +91,10 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// Firebase Admin SDK
-var firebaseSettings = builder.Configuration.GetSection("Firebase").Get<FirebaseSettings>()!;
-var credFullPath = Path.GetFullPath(firebaseSettings.CredentialPath);
-if (!string.IsNullOrEmpty(firebaseSettings.CredentialPath) && File.Exists(credFullPath))
-{
-    FirebaseApp.Create(new AppOptions
-    {
-        Credential = GoogleCredential.FromFile(credFullPath)
-    });
-}
+// VAPID settings for Native Web Push
+builder.Services.Configure<VapidSettings>(builder.Configuration.GetSection("Vapid"));
 
-builder.Services.AddSingleton<IFcmSender, FcmSender>();
+builder.Services.AddSingleton<IPushSender, WebPushSender>();
 
 // Register services
 builder.Services.AddScoped<IPasswordService, PasswordService>();

@@ -12,13 +12,13 @@ public class NotificationService : INotificationService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly INotificationStreamService _notificationStreamService;
-    private readonly IFcmSender _fcmSender;
+    private readonly IPushSender _pushSender;
 
-    public NotificationService(IUnitOfWork unitOfWork, INotificationStreamService notificationStreamService, IFcmSender fcmSender)
+    public NotificationService(IUnitOfWork unitOfWork, INotificationStreamService notificationStreamService, IPushSender pushSender)
     {
         _unitOfWork = unitOfWork;
         _notificationStreamService = notificationStreamService;
-        _fcmSender = fcmSender;
+        _pushSender = pushSender;
     }
 
     private IGenericRepository<Notification, int> Notifications
@@ -270,8 +270,8 @@ public class NotificationService : INotificationService
 
             if (activeTokens.Count == 0) return;
 
-            var result = await _fcmSender.SendAsync(
-                activeTokens.Select(dt => dt.Token),
+            var result = await _pushSender.SendAsync(
+                activeTokens,
                 notification.Title,
                 notification.Message,
                 notification.ClickUrl,
@@ -282,12 +282,8 @@ public class NotificationService : INotificationService
             {
                 foreach (var invalidToken in result.InvalidTokens)
                 {
-                    var match = activeTokens.FirstOrDefault(dt => dt.Token == invalidToken);
-                    if (match is not null)
-                    {
-                        match.IsActive = false;
-                        deviceTokenRepo.Update(match);
-                    }
+                    invalidToken.IsActive = false;
+                    deviceTokenRepo.Update(invalidToken);
                 }
                 await _unitOfWork.SaveChangesAsync();
             }

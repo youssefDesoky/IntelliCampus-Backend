@@ -4,7 +4,9 @@ public class DeviceToken
 {
     public int DeviceTokenId { get; set; }
     public int UserId { get; set; }
-    public string Token { get; set; } = null!;
+    public string Endpoint { get; set; } = null!;
+    public string P256dh { get; set; } = null!;
+    public string Auth { get; set; } = null!;
     public string? Platform { get; set; }
     public DateTime RegisteredAt { get; set; } = DateTime.UtcNow;
     public DateTime LastSeenAt { get; set; }
