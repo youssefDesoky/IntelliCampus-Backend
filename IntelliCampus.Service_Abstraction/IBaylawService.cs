@@ -7,7 +7,7 @@ namespace IntelliCampus.Service_Abstraction;
 public interface IBylawService
 {
     Task<BylawDto?> GetByIdAsync(int bylawId);
-    Task<IEnumerable<BylawDto>> GetAllAsync();
+    Task<IEnumerable<BylawDto>> GetAllAsync(string? type = null);
     Task<BylawDto> CreateAsync(CreateBylawDto dto, int adminId);
     Task<BylawDto?> UploadDocumentAsync(int bylawId, IFormFile file);
     Task<bool> DeleteAsync(int bylawId);

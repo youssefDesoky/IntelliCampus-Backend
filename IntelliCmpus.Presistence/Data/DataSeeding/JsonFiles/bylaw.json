@@ -1,65 +1,21 @@
 [
   {
-    "name": "FCIAI Grading Policy",
-    "nameAr": "سياسة تقييم كلية الحاسبات والذكاء الاصطناعي",
+    "name": "FCIAI Grading Policy - Bachelor",
+    "nameAr": "سياسة تقييم كلية الحاسبات والذكاء الاصطناعي - بكالوريوس",
+    "type": "Bachelor",
     "version": 2,
-    "description": "Standard grading scale for Faculty of Computers and Artificial Intelligence",
+    "description": "Standard grading scale for Undergraduate programs",
     "isActive": true,
     "gradeScales": [
-      {
-        "gradeLetter": "A+",
-        "minPercentage": 95,
-        "gpaValue": 4,
-        "sortOrder": 1
-      },
-      {
-        "gradeLetter": "A",
-        "minPercentage": 90,
-        "gpaValue": 3.7,
-        "sortOrder": 2
-      },
-      {
-        "gradeLetter": "B+",
-        "minPercentage": 85,
-        "gpaValue": 3.3,
-        "sortOrder": 3
-      },
-      {
-        "gradeLetter": "B",
-        "minPercentage": 80,
-        "gpaValue": 3,
-        "sortOrder": 4
-      },
-      {
-        "gradeLetter": "C+",
-        "minPercentage": 75,
-        "gpaValue": 2.7,
-        "sortOrder": 5
-      },
-      {
-        "gradeLetter": "C",
-        "minPercentage": 70,
-        "gpaValue": 2.4,
-        "sortOrder": 6
-      },
-      {
-        "gradeLetter": "D+",
-        "minPercentage": 65,
-        "gpaValue": 2.1,
-        "sortOrder": 7
-      },
-      {
-        "gradeLetter": "D",
-        "minPercentage": 60,
-        "gpaValue": 1.8,
-        "sortOrder": 8
-      },
-      {
-        "gradeLetter": "F",
-        "minPercentage": 0,
-        "gpaValue": 0,
-        "sortOrder": 9
-      }
+      { "gradeLetter": "A+", "minPercentage": 95, "gpaValue": 4, "sortOrder": 1 },
+      { "gradeLetter": "A", "minPercentage": 90, "gpaValue": 3.7, "sortOrder": 2 },
+      { "gradeLetter": "B+", "minPercentage": 85, "gpaValue": 3.3, "sortOrder": 3 },
+      { "gradeLetter": "B", "minPercentage": 80, "gpaValue": 3, "sortOrder": 4 },
+      { "gradeLetter": "C+", "minPercentage": 75, "gpaValue": 2.7, "sortOrder": 5 },
+      { "gradeLetter": "C", "minPercentage": 70, "gpaValue": 2.4, "sortOrder": 6 },
+      { "gradeLetter": "D+", "minPercentage": 65, "gpaValue": 2.1, "sortOrder": 7 },
+      { "gradeLetter": "D", "minPercentage": 60, "gpaValue": 1.8, "sortOrder": 8 },
+      { "gradeLetter": "F", "minPercentage": 0, "gpaValue": 0, "sortOrder": 9 }
     ],
     "minHoursToChooseDepartment": 30,
     "minHoursToChooseSpecialization": 60,
@@ -75,5 +31,63 @@
     "minCreditHoursForGraduationProject": 90,
     "courseWorkGrade": 20,
     "finalExamGrade": 40
+  },
+  {
+    "name": "FCIAI Grading Policy - Master",
+    "nameAr": "سياسة تقييم كلية الحاسبات والذكاء الاصطناعي - ماجستير",
+    "type": "Master",
+    "version": 1,
+    "description": "Grading policy for Master's programs",
+    "isActive": true,
+    "gradeScales": [
+      { "gradeLetter": "A+", "minPercentage": 95, "gpaValue": 4, "sortOrder": 1 },
+      { "gradeLetter": "A", "minPercentage": 90, "gpaValue": 3.7, "sortOrder": 2 },
+      { "gradeLetter": "B+", "minPercentage": 85, "gpaValue": 3.3, "sortOrder": 3 },
+      { "gradeLetter": "B", "minPercentage": 80, "gpaValue": 3, "sortOrder": 4 },
+      { "gradeLetter": "C+", "minPercentage": 75, "gpaValue": 2.7, "sortOrder": 5 },
+      { "gradeLetter": "C", "minPercentage": 70, "gpaValue": 2.4, "sortOrder": 6 },
+      { "gradeLetter": "F", "minPercentage": 0, "gpaValue": 0, "sortOrder": 7 }
+    ],
+    "totalHoursToCompleteDegree": 36,
+    "minCreditHoursPerSemester": 6,
+    "maxCreditHoursPerSemester": 15,
+    "summerMaxCreditHours": 9,
+    "minPassingGpa": 3.0,
+    "minPassingGradeLetter": "C",
+    "minPassingGradeSortOrder": 6,
+    "probationThreshold": 2.7,
+    "probationRegistrationLimit": 9,
+    "minCreditHoursForGraduationProject": 24,
+    "courseWorkGrade": 30,
+    "finalExamGrade": 70
+  },
+  {
+    "name": "FCIAI Grading Policy - PhD",
+    "nameAr": "سياسة تقييم كلية الحاسبات والذكاء الاصطناعي - دكتوراه",
+    "type": "PhD",
+    "version": 1,
+    "description": "Grading policy for PhD programs",
+    "isActive": true,
+    "gradeScales": [
+      { "gradeLetter": "A+", "minPercentage": 95, "gpaValue": 4, "sortOrder": 1 },
+      { "gradeLetter": "A", "minPercentage": 90, "gpaValue": 3.7, "sortOrder": 2 },
+      { "gradeLetter": "B+", "minPercentage": 85, "gpaValue": 3.3, "sortOrder": 3 },
+      { "gradeLetter": "B", "minPercentage": 80, "gpaValue": 3, "sortOrder": 4 },
+      { "gradeLetter": "C+", "minPercentage": 75, "gpaValue": 2.7, "sortOrder": 5 },
+      { "gradeLetter": "C", "minPercentage": 70, "gpaValue": 2.4, "sortOrder": 6 },
+      { "gradeLetter": "F", "minPercentage": 0, "gpaValue": 0, "sortOrder": 7 }
+    ],
+    "totalHoursToCompleteDegree": 60,
+    "minCreditHoursPerSemester": 6,
+    "maxCreditHoursPerSemester": 15,
+    "summerMaxCreditHours": 9,
+    "minPassingGpa": 3.0,
+    "minPassingGradeLetter": "C",
+    "minPassingGradeSortOrder": 6,
+    "probationThreshold": 2.7,
+    "probationRegistrationLimit": 9,
+    "minCreditHoursForGraduationProject": 30,
+    "courseWorkGrade": 25,
+    "finalExamGrade": 75
   }
 ]

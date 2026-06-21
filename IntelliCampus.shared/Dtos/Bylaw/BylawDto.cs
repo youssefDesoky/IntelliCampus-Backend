@@ -31,6 +31,7 @@ public class BylawDto
     public decimal? ProbationThreshold { get; set; }
     public int? ProbationRegistrationLimit { get; set; }
     public int? MinCreditHoursForGraduationProject { get; set; }
+    public string Type { get; set; } = null!;
     public List<BylawCourseDto>? BylawCourses { get; set; }
 }
 

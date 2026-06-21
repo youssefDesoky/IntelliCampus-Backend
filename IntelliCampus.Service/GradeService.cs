@@ -474,7 +474,7 @@ public class GradeService : IGradeService
         var student = await Students.GetByIdAsync(new StudentSpec(studentId));
         if (student is null || student.Bylaw is null) throw new BylawNotFoundException(studentId);
 
-        var scales = student.Bylaw.LevelScales;
+        var scales = student.Bylaw.Settings.LevelScales;
         if (scales?.Count == 0) return null;
 
         var completedHours = await GetCompletedHoursAsync(studentId);

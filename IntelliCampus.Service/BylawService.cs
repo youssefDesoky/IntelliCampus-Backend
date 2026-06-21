@@ -46,10 +46,14 @@ public class BylawService : IBylawService
         return MapToDto(bylaw);
     }
 
-    public async Task<IEnumerable<BylawDto>> GetAllAsync()
+    public async Task<IEnumerable<BylawDto>> GetAllAsync(string? type = null)
     {
         var spec = new BylawSpec();
         var bylaws = await Bylaws.GetAllAsync(spec);
+
+        if (type is not null && Enum.TryParse<BylawType>(type, true, out var bylawType))
+            bylaws = bylaws.Where(b => b.Type == bylawType);
+
         return bylaws.Select(MapToDto);
     }
 
@@ -62,6 +66,8 @@ public class BylawService : IBylawService
         var bylaw = new Bylaw
         {
             Name = dto.Name,
+            Type = Enum.TryParse<BylawType>(dto.Type, true, out var parsedType) ? parsedType
+                : throw new InvalidOperationException($"Invalid bylaw type: {dto.Type}"),
             Version = dto.Version,
             Description = dto.Description,
             DescriptionAr = dto.DescriptionAr,
@@ -78,16 +84,19 @@ public class BylawService : IBylawService
                     SortOrder = g.SortOrder
                 })
                 .ToList() ?? new(),
-            LevelScales = dto.LevelScales?
-                .OrderBy(l => l.Level)
-                .Select(l => new LevelScaleItem
-                {
-                    Level = l.Level,
-                    MinHours = l.MinHours
-                })
-                .ToList() ?? new(),
-            MinHoursToChooseDepartment = dto.MinHoursToChooseDepartment,
-            MinHoursToChooseSpecialization = dto.MinHoursToChooseSpecialization
+            Settings = new BylawSettings
+            {
+                LevelScales = dto.LevelScales?
+                    .OrderBy(l => l.Level)
+                    .Select(l => new LevelScaleItem
+                    {
+                        Level = l.Level,
+                        MinHours = l.MinHours
+                    })
+                    .ToList() ?? new(),
+                MinHoursToChooseDepartment = dto.MinHoursToChooseDepartment,
+                MinHoursToChooseSpecialization = dto.MinHoursToChooseSpecialization
+            }
         };
 
         Bylaws.Add(bylaw);
@@ -218,7 +227,7 @@ public class BylawService : IBylawService
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
 
-        bylaw.LevelScales = items
+        bylaw.Settings.LevelScales = items
             .OrderBy(i => i.Level)
             .Select(i => new LevelScaleItem
             {
@@ -239,7 +248,7 @@ public class BylawService : IBylawService
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
 
-        var existing = bylaw.LevelScales?.FirstOrDefault(l => l.Level == level);
+        var existing = bylaw.Settings.LevelScales?.FirstOrDefault(l => l.Level == level);
 
         if (existing is null)
             throw new BylawNotFoundException("Level scale not found.");
@@ -247,7 +256,7 @@ public class BylawService : IBylawService
         existing.Level = item.Level;
         existing.MinHours = item.MinHours;
 
-        bylaw.LevelScales = bylaw.LevelScales!
+        bylaw.Settings.LevelScales = bylaw.Settings.LevelScales!
             .OrderBy(l => l.Level)
             .ToList();
 
@@ -263,9 +272,11 @@ public class BylawService : IBylawService
             throw new BylawNotFoundException(bylawId);
 
         if (dto.MinHoursToChooseDepartment.HasValue)
-            bylaw.MinHoursToChooseDepartment = dto.MinHoursToChooseDepartment.Value;
+            bylaw.Settings.MinHoursToChooseDepartment = dto.MinHoursToChooseDepartment.Value;
         if (dto.MinHoursToChooseSpecialization.HasValue)
-            bylaw.MinHoursToChooseSpecialization = dto.MinHoursToChooseSpecialization.Value;
+            bylaw.Settings.MinHoursToChooseSpecialization = dto.MinHoursToChooseSpecialization.Value;
+        if (dto.MinCreditHoursForGraduationProject.HasValue)
+            bylaw.Settings.MinCreditHoursForGraduationProject = dto.MinCreditHoursForGraduationProject.Value;
 
         await _unitOfWork.SaveChangesAsync();
 
@@ -302,13 +313,13 @@ public class BylawService : IBylawService
             throw new BylawNotFoundException(bylawId);
 
         if (dto.TotalHoursToCompleteDegree.HasValue)
-            bylaw.TotalHoursToCompleteDegree = dto.TotalHoursToCompleteDegree.Value;
+            bylaw.Settings.TotalHoursToCompleteDegree = dto.TotalHoursToCompleteDegree.Value;
         if (dto.MinCreditHoursPerSemester.HasValue)
-            bylaw.MinCreditHoursPerSemester = dto.MinCreditHoursPerSemester.Value;
+            bylaw.Settings.MinCreditHoursPerSemester = dto.MinCreditHoursPerSemester.Value;
         if (dto.MaxCreditHoursPerSemester.HasValue)
-            bylaw.MaxCreditHoursPerSemester = dto.MaxCreditHoursPerSemester.Value;
+            bylaw.Settings.MaxCreditHoursPerSemester = dto.MaxCreditHoursPerSemester.Value;
         if (dto.SummerMaxCreditHours.HasValue)
-            bylaw.SummerMaxCreditHours = dto.SummerMaxCreditHours.Value;
+            bylaw.Settings.SummerMaxCreditHours = dto.SummerMaxCreditHours.Value;
 
         await _unitOfWork.SaveChangesAsync();
 
@@ -340,9 +351,9 @@ public class BylawService : IBylawService
             throw new BylawNotFoundException(bylawId);
 
         if (dto.ProbationThreshold.HasValue)
-            bylaw.ProbationThreshold = dto.ProbationThreshold.Value;
+            bylaw.Settings.ProbationThreshold = dto.ProbationThreshold.Value;
         if (dto.ProbationRegistrationLimit.HasValue)
-            bylaw.ProbationRegistrationLimit = dto.ProbationRegistrationLimit.Value;
+            bylaw.Settings.ProbationRegistrationLimit = dto.ProbationRegistrationLimit.Value;
 
         await _unitOfWork.SaveChangesAsync();
 
@@ -356,9 +367,9 @@ public class BylawService : IBylawService
             throw new BylawNotFoundException(bylawId);
 
         if (dto.CourseWorkGrade.HasValue)
-            bylaw.CourseWorkGrade = dto.CourseWorkGrade.Value;
+            bylaw.Settings.CourseWorkGrade = dto.CourseWorkGrade.Value;
         if (dto.FinalExamGrade.HasValue)
-            bylaw.FinalExamGrade = dto.FinalExamGrade.Value;
+            bylaw.Settings.FinalExamGrade = dto.FinalExamGrade.Value;
 
         await _unitOfWork.SaveChangesAsync();
 
@@ -513,7 +524,7 @@ public class BylawService : IBylawService
                     SortOrder = g.SortOrder
                 })
                 .ToList(),
-            LevelScales = bylaw.LevelScales?
+            LevelScales = bylaw.Settings.LevelScales?
                 .OrderBy(l => l.Level)
                 .Select(l => new LevelScaleItemDto
                 {
@@ -521,18 +532,19 @@ public class BylawService : IBylawService
                     MinHours = l.MinHours
                 })
                 .ToList(),
-            MinHoursToChooseDepartment = bylaw.MinHoursToChooseDepartment,
-            MinHoursToChooseSpecialization = bylaw.MinHoursToChooseSpecialization,
-            TotalHoursToCompleteDegree = bylaw.TotalHoursToCompleteDegree,
-            MinCreditHoursPerSemester = bylaw.MinCreditHoursPerSemester,
-            MaxCreditHoursPerSemester = bylaw.MaxCreditHoursPerSemester,
-            SummerMaxCreditHours = bylaw.SummerMaxCreditHours,
+            MinHoursToChooseDepartment = bylaw.Settings.MinHoursToChooseDepartment,
+            MinHoursToChooseSpecialization = bylaw.Settings.MinHoursToChooseSpecialization,
+            TotalHoursToCompleteDegree = bylaw.Settings.TotalHoursToCompleteDegree,
+            MinCreditHoursPerSemester = bylaw.Settings.MinCreditHoursPerSemester,
+            MaxCreditHoursPerSemester = bylaw.Settings.MaxCreditHoursPerSemester,
+            SummerMaxCreditHours = bylaw.Settings.SummerMaxCreditHours,
             MinPassingGpa = bylaw.MinPassingGpa,
             MinPassingGradeLetter = bylaw.MinPassingGradeLetter,
             MinPassingGradeSortOrder = bylaw.MinPassingGradeSortOrder,
-            ProbationThreshold = bylaw.ProbationThreshold,
-            ProbationRegistrationLimit = bylaw.ProbationRegistrationLimit,
-            MinCreditHoursForGraduationProject = bylaw.MinCreditHoursForGraduationProject
+            ProbationThreshold = bylaw.Settings.ProbationThreshold,
+            ProbationRegistrationLimit = bylaw.Settings.ProbationRegistrationLimit,
+            MinCreditHoursForGraduationProject = bylaw.Settings.MinCreditHoursForGraduationProject,
+            Type = bylaw.Type.ToString()
         };
     }
 }

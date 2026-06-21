@@ -103,17 +103,17 @@ public class RegistrationService : IRegistrationService
                 var totalAfterRegistration = existingHours + course.CreditHours;
 
                 var isSummer = semester.StartsWith("Summer", StringComparison.OrdinalIgnoreCase);
-                var maxHours = isSummer && bylaw.SummerMaxCreditHours.HasValue
-                    ? bylaw.SummerMaxCreditHours.Value
-                    : bylaw.MaxCreditHoursPerSemester;
+                var maxHours = isSummer && bylaw.Settings.SummerMaxCreditHours.HasValue
+                    ? bylaw.Settings.SummerMaxCreditHours.Value
+                    : bylaw.Settings.MaxCreditHoursPerSemester;
 
                 if (maxHours.HasValue && totalAfterRegistration > maxHours.Value)
                     throw new InvalidOperationException(
                         $"Cannot register for \"{course.CourseName}\". Adding {course.CreditHours} credit hours would bring your semester total to {totalAfterRegistration}, exceeding the maximum of {maxHours.Value} credit hours{(isSummer ? " for summer" : "")}.");
 
-                if (!isSummer && bylaw.MinCreditHoursPerSemester.HasValue && totalAfterRegistration < bylaw.MinCreditHoursPerSemester.Value)
+                if (!isSummer && bylaw.Settings.MinCreditHoursPerSemester.HasValue && totalAfterRegistration < bylaw.Settings.MinCreditHoursPerSemester.Value)
                     throw new InvalidOperationException(
-                        $"Cannot register for \"{course.CourseName}\". The total of {totalAfterRegistration} credit hours is below the minimum of {bylaw.MinCreditHoursPerSemester.Value} credit hours per semester.");
+                        $"Cannot register for \"{course.CourseName}\". The total of {totalAfterRegistration} credit hours is below the minimum of {bylaw.Settings.MinCreditHoursPerSemester.Value} credit hours per semester.");
             }
         }
 
