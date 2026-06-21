@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Bylaw;
 using Microsoft.AspNetCore.Authorization;
@@ -20,10 +21,17 @@ public class BylawController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BylawDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<BylawDto>>> GetAll([FromQuery] string? type = null)
     {
-        var bylaws = await _bylawService.GetAllAsync();
+        var bylaws = await _bylawService.GetAllAsync(type);
         return Ok(bylaws);
+    }
+
+    [HttpGet("types")]
+    public ActionResult<IEnumerable<string>> GetTypes()
+    {
+        var types = Enum.GetNames<BylawType>();
+        return Ok(types);
     }
 
     [HttpGet("{id}")]

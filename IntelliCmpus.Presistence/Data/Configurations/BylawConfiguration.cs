@@ -42,24 +42,18 @@ public class BylawConfiguration : IEntityTypeConfiguration<Bylaw>
             gbs.Property(g => g.GpaValue).HasPrecision(4, 2);
         });
 
-        builder.OwnsMany(b => b.LevelScales, lbs =>
+        builder.OwnsOne(b => b.Settings, s =>
         {
-            lbs.ToJson();
+            s.ToJson();
+            s.OwnsMany(x => x.LevelScales);
         });
 
-        builder.Property(b => b.MinHoursToChooseDepartment);
-        builder.Property(b => b.MinHoursToChooseSpecialization);
-        builder.Property(b => b.TotalHoursToCompleteDegree);
-        builder.Property(b => b.MinCreditHoursPerSemester);
-        builder.Property(b => b.MaxCreditHoursPerSemester);
-        builder.Property(b => b.SummerMaxCreditHours);
         builder.Property(b => b.MinPassingGpa).HasPrecision(4, 2);
         builder.Property(b => b.MinPassingGradeLetter).HasMaxLength(5);
         builder.Property(b => b.MinPassingGradeSortOrder);
-        builder.Property(b => b.ProbationThreshold).HasPrecision(4, 2);
-        builder.Property(b => b.ProbationRegistrationLimit);
-        builder.Property(b => b.MinCreditHoursForGraduationProject);
-        builder.Property(b => b.CourseWorkGrade).HasPrecision(5, 2);
-        builder.Property(b => b.FinalExamGrade).HasPrecision(5, 2);
+        builder.Property(b => b.Type)
+            .HasConversion<string>()
+            .HasMaxLength(20)
+            .IsRequired();
     }
 }

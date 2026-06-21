@@ -83,6 +83,8 @@ public class StudentService : IStudentService
         }
 
         var studentType = ResolveStudentType(dto.StudentType);
+        await ValidateBylawTypeMatch(bylawId, studentType);
+
         if (facultyId.HasValue)
         {
             var faculty = await Faculties.GetByIdAsync(facultyId.Value);
@@ -186,7 +188,11 @@ public class StudentService : IStudentService
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentId, dto.DepartmentName);
         if (departmentId.HasValue) student.DepartmentId = departmentId;
 
-        if (dto.BylawId.HasValue) student.BylawId = dto.BylawId;
+        if (dto.BylawId.HasValue)
+        {
+            await ValidateBylawTypeMatch(dto.BylawId, student.StudentType);
+            student.BylawId = dto.BylawId;
+        }
 
         if (dto.Program.HasValue && student.StudentType is StudentType.UnderGrad)
             student.Program = dto.Program;
@@ -230,6 +236,31 @@ public class StudentService : IStudentService
 
         Students.Delete(student);
         await _unitOfWork.SaveChangesAsync();
+    }
+
+    private static BylawType ToBylawType(StudentType studentType) => studentType switch
+    {
+        StudentType.UnderGrad => BylawType.Bachelor,
+        StudentType.Masters => BylawType.Master,
+        StudentType.PhD => BylawType.PhD,
+        StudentType.Diploma => BylawType.Diploma,
+        _ => BylawType.Bachelor
+    };
+
+    private async Task ValidateBylawTypeMatch(int? bylawId, StudentType studentType)
+    {
+        if (!bylawId.HasValue)
+            return;
+
+        var bylaw = await Bylaws.GetByIdAsync(bylawId.Value);
+        if (bylaw is null)
+            throw new BylawNotFoundException(bylawId.Value);
+
+        var expectedType = ToBylawType(studentType);
+        if (bylaw.Type != expectedType)
+            throw new InvalidOperationException(
+                $"Bylaw type '{bylaw.Type}' does not match student type '{studentType}'. " +
+                $"Expected a '{expectedType}' bylaw.");
     }
 
     private static StudentType ResolveStudentType(string? studentType)

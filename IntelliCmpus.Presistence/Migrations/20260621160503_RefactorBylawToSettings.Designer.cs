@@ -4,6 +4,7 @@ using IntelliCampus.Presistence.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260621160503_RefactorBylawToSettings")]
+    partial class RefactorBylawToSettings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2318,10 +2321,12 @@ namespace IntelliCampus.Presistence.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<decimal?>("CourseWorkGrade")
-                                .HasColumnType("decimal(18,2)");
+                                .HasPrecision(5, 2)
+                                .HasColumnType("decimal(5,2)");
 
                             b1.Property<decimal?>("FinalExamGrade")
-                                .HasColumnType("decimal(18,2)");
+                                .HasPrecision(5, 2)
+                                .HasColumnType("decimal(5,2)");
 
                             b1.Property<bool?>("HasComprehensiveExam")
                                 .HasColumnType("bit");
@@ -2345,7 +2350,8 @@ namespace IntelliCampus.Presistence.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<decimal?>("ProbationThreshold")
-                                .HasColumnType("decimal(18,2)");
+                                .HasPrecision(4, 2)
+                                .HasColumnType("decimal(4,2)");
 
                             b1.Property<int?>("SummerMaxCreditHours")
                                 .HasColumnType("int");

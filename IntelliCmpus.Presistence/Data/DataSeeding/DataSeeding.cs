@@ -17,6 +17,7 @@ public class DataSeed : IDataSeed
 
     private int _facultyId;
     private int _bylawId;
+    private readonly Dictionary<string, int> _bylawIdsByType = new();
     private readonly Dictionary<string, int> _departmentIds = new();
     private readonly Dictionary<string, int> _courseIds = new();
     private readonly Dictionary<string, int> _userIds = new();
@@ -177,6 +178,8 @@ public class DataSeed : IDataSeed
     {
         _facultyId = await _dbContext.Faculties.Select(f => f.FacultyId).FirstOrDefaultAsync();
         _bylawId = await _dbContext.Bylaws.Select(b => b.BylawId).FirstOrDefaultAsync();
+        foreach (var b in await _dbContext.Bylaws.ToListAsync())
+            _bylawIdsByType[b.Type.ToString()] = b.BylawId;
 
         foreach (var d in await _dbContext.Departments.ToListAsync())
             if (d.DepartmentName != null) _departmentIds[d.DepartmentName] = d.DepartmentId;
@@ -234,12 +237,10 @@ public class DataSeed : IDataSeed
 
         var roleNames = Enum.GetNames<UserRole>();
         foreach (var roleName in roleNames)
-        {
-            var role = new Role { RoleName = roleName };
-            _dbContext.Roles.Add(role);
-            await _dbContext.SaveChangesAsync();
-            _roleCache[roleName] = role;
-        }
+            _dbContext.Roles.Add(new Role { RoleName = roleName });
+        await _dbContext.SaveChangesAsync();
+        foreach (var role in await _dbContext.Roles.ToListAsync())
+            if (role.RoleName != null) _roleCache[role.RoleName] = role;
     }
 
     private async Task AddUserRolesAsync(User user, IEnumerable<string> roleNames)
@@ -335,6 +336,7 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Departments.AnyAsync()) return;
         var items = await ReadJsonAsync<DepartmentDto>("departments.json");
+        var created = new List<(DepartmentDto, Department)>();
         foreach (var dto in items)
         {
             var existing = await _dbContext.Departments.FirstOrDefaultAsync(d => d.DepartmentName == dto.DepartmentName);
@@ -349,8 +351,7 @@ public class DataSeed : IDataSeed
                     FacultyId = _facultyId
                 };
                 _dbContext.Departments.Add(entity);
-                await _dbContext.SaveChangesAsync();
-                _departmentIds[dto.DepartmentName] = entity.DepartmentId;
+                created.Add((dto, entity));
             }
             else
             {
@@ -361,6 +362,9 @@ public class DataSeed : IDataSeed
                 _departmentIds[dto.DepartmentName] = existing.DepartmentId;
             }
         }
+        await _dbContext.SaveChangesAsync();
+        foreach (var (dto, entity) in created)
+            _departmentIds[dto.DepartmentName] = entity.DepartmentId;
     }
 
     // ---- Admin ----
@@ -388,6 +392,7 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Admins.AnyAsync()) return;
         var items = await ReadJsonAsync<AdminDto>("admin.json");
+        var created = new List<(AdminDto, Admin)>();
         foreach (var dto in items)
         {
             var entity = new Admin
@@ -405,11 +410,15 @@ public class DataSeed : IDataSeed
                 HireDate = DateTime.UtcNow
             };
             _dbContext.Admins.Add(entity);
-            await _dbContext.SaveChangesAsync();
+            created.Add((dto, entity));
+        }
+        await _dbContext.SaveChangesAsync();
+        foreach (var (dto, entity) in created)
+        {
             await AddUserRolesAsync(entity, dto.Roles);
-            await _dbContext.SaveChangesAsync();
             _userIds[dto.Email] = entity.UserId;
         }
+        await _dbContext.SaveChangesAsync();
     }
 
     // ---- Instructors ----
@@ -418,6 +427,7 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Instructors.AnyAsync()) return;
         var items = await ReadJsonAsync<InstructorDto>("instructors.json");
+        var created = new List<(InstructorDto, Instructor)>();
         foreach (var dto in items)
         {
             var entity = new Instructor
@@ -439,11 +449,15 @@ public class DataSeed : IDataSeed
                 Status = !string.IsNullOrEmpty(dto.Status) && Enum.TryParse<InstructorStatus>(dto.Status, true, out var status) ? status : InstructorStatus.Employed
             };
             _dbContext.Instructors.Add(entity);
-            await _dbContext.SaveChangesAsync();
+            created.Add((dto, entity));
+        }
+        await _dbContext.SaveChangesAsync();
+        foreach (var (dto, entity) in created)
+        {
             await AddUserRolesAsync(entity, dto.Roles);
-            await _dbContext.SaveChangesAsync();
             _userIds[dto.Email] = entity.UserId;
         }
+        await _dbContext.SaveChangesAsync();
     }
 
     private async Task SetDepartmentHeadsAsync()
@@ -466,6 +480,7 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Courses.AnyAsync()) return;
         var items = await ReadJsonAsync<CourseDto>("courses.json");
+        var created = new List<(CourseDto, Course)>();
         foreach (var dto in items)
         {
             var entity = new Course
@@ -481,9 +496,11 @@ public class DataSeed : IDataSeed
                 DepartmentId = _departmentIds.GetValueOrDefault(dto.DepartmentName)
             };
             _dbContext.Courses.Add(entity);
-            await _dbContext.SaveChangesAsync();
-            _courseIds[dto.CourseCode] = entity.CourseId;
+            created.Add((dto, entity));
         }
+        await _dbContext.SaveChangesAsync();
+        foreach (var (dto, entity) in created)
+            _courseIds[dto.CourseCode] = entity.CourseId;
     }
 
     // ---- Prerequisites ----
@@ -511,6 +528,7 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Classes.AnyAsync()) return;
         var items = await ReadJsonAsync<ClassDto>("classes.json");
+        var created = new List<(ClassDto, Class)>();
         foreach (var dto in items)
         {
             var courseId = _courseIds.GetValueOrDefault(dto.CourseCode);
@@ -527,9 +545,11 @@ public class DataSeed : IDataSeed
                 InstructorId = _userIds.GetValueOrDefault(dto.InstructorEmail)
             };
             _dbContext.Classes.Add(entity);
-            await _dbContext.SaveChangesAsync();
-            _classKeys[$"{dto.GroupCode}_{dto.CourseCode}"] = entity.ClassId;
+            created.Add((dto, entity));
         }
+        await _dbContext.SaveChangesAsync();
+        foreach (var (dto, entity) in created)
+            _classKeys[$"{dto.GroupCode}_{dto.CourseCode}"] = entity.ClassId;
     }
 
     // ---- Bylaw ----
@@ -538,38 +558,49 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Bylaws.AnyAsync()) return;
         var items = await ReadJsonAsync<BylawDto>("bylaw.json");
-        if (items.Count == 0) return;
-        var dto = items[0];
-        var entity = new Bylaw
+        var created = new List<(BylawDto, Bylaw)>();
+        foreach (var dto in items)
         {
-            Name = dto.Name,
-            Version = dto.Version,
-            Description = dto.Description,
-            IsActive = dto.IsActive,
-            CreatedAt = DateTime.UtcNow,
-            GradeScales = dto.GradeScales.Select(gs => new GradeScaleItem
+            var entity = new Bylaw
             {
-                GradeLetter = gs.GradeLetter,
-                MinPercentage = gs.MinPercentage,
-                GpaValue = gs.GpaValue,
-                SortOrder = gs.SortOrder
-            }).ToList(),
-            TotalHoursToCompleteDegree = dto.TotalHoursToCompleteDegree,
-            MinCreditHoursPerSemester = dto.MinCreditHoursPerSemester,
-            MaxCreditHoursPerSemester = dto.MaxCreditHoursPerSemester,
-            SummerMaxCreditHours = dto.SummerMaxCreditHours,
-            MinPassingGpa = dto.MinPassingGpa,
-            MinPassingGradeLetter = dto.MinPassingGradeLetter,
-            MinPassingGradeSortOrder = dto.MinPassingGradeSortOrder,
-            ProbationThreshold = dto.ProbationThreshold,
-            ProbationRegistrationLimit = dto.ProbationRegistrationLimit,
-            MinCreditHoursForGraduationProject = dto.MinCreditHoursForGraduationProject,
-            CourseWorkGrade = dto.CourseWorkGrade,
-            FinalExamGrade = dto.FinalExamGrade
-        };
-        _dbContext.Bylaws.Add(entity);
+                Name = dto.Name,
+                Type = Enum.Parse<BylawType>(dto.Type, true),
+                Version = dto.Version,
+                Description = dto.Description,
+                IsActive = dto.IsActive,
+                CreatedAt = DateTime.UtcNow,
+                GradeScales = dto.GradeScales.Select(gs => new GradeScaleItem
+                {
+                    GradeLetter = gs.GradeLetter,
+                    MinPercentage = gs.MinPercentage,
+                    GpaValue = gs.GpaValue,
+                    SortOrder = gs.SortOrder
+                }).ToList(),
+                MinPassingGpa = dto.MinPassingGpa,
+                MinPassingGradeLetter = dto.MinPassingGradeLetter,
+                MinPassingGradeSortOrder = dto.MinPassingGradeSortOrder,
+                Settings = new BylawSettings
+                {
+                    MinHoursToChooseDepartment = dto.MinHoursToChooseDepartment,
+                    MinHoursToChooseSpecialization = dto.MinHoursToChooseSpecialization,
+                    TotalHoursToCompleteDegree = dto.TotalHoursToCompleteDegree,
+                    MinCreditHoursPerSemester = dto.MinCreditHoursPerSemester,
+                    MaxCreditHoursPerSemester = dto.MaxCreditHoursPerSemester,
+                    SummerMaxCreditHours = dto.SummerMaxCreditHours,
+                    ProbationThreshold = dto.ProbationThreshold,
+                    ProbationRegistrationLimit = dto.ProbationRegistrationLimit,
+                    MinCreditHoursForGraduationProject = dto.MinCreditHoursForGraduationProject,
+                    CourseWorkGrade = dto.CourseWorkGrade,
+                    FinalExamGrade = dto.FinalExamGrade
+                }
+            };
+            _dbContext.Bylaws.Add(entity);
+            created.Add((dto, entity));
+        }
         await _dbContext.SaveChangesAsync();
-        _bylawId = entity.BylawId;
+        foreach (var (dto, entity) in created)
+            _bylawIdsByType[dto.Type] = entity.BylawId;
+        _bylawId = _bylawIdsByType.GetValueOrDefault("Bachelor", 0);
     }
 
     // ---- Bylaw Courses ----
@@ -578,6 +609,7 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Set<BylawCourse>().AnyAsync()) return;
         var items = await ReadJsonAsync<BylawCourseSeedDto>("bylaw-courses.json");
+        var created = new List<(BylawCourseSeedDto, BylawCourse)>();
         foreach (var dto in items)
         {
             var courseId = _courseIds.GetValueOrDefault(dto.CourseCode);
@@ -589,9 +621,11 @@ public class DataSeed : IDataSeed
                 CourseType = Enum.Parse<CourseType>(dto.CourseType)
             };
             _dbContext.Set<BylawCourse>().Add(entity);
-            await _dbContext.SaveChangesAsync();
-            _bylawCourseIds[dto.CourseCode] = entity.BylawCourseId;
+            created.Add((dto, entity));
         }
+        await _dbContext.SaveChangesAsync();
+        foreach (var (dto, entity) in created)
+            _bylawCourseIds[dto.CourseCode] = entity.BylawCourseId;
     }
 
     // ---- Bylaw Course Prerequisites ----
@@ -619,8 +653,18 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Students.AnyAsync()) return;
         var items = await ReadJsonAsync<StudentDto>("students.json");
+        var created = new List<(StudentDto, Student)>();
         foreach (var dto in items)
         {
+            var studentType = Enum.TryParse<StudentType>(dto.StudentType, out var st) ? st : StudentType.UnderGrad;
+            var bylawTypeName = studentType switch
+            {
+                StudentType.UnderGrad => "Bachelor",
+                StudentType.Masters => "Master",
+                StudentType.PhD => "PhD",
+                StudentType.Diploma => "Diploma",
+                _ => "Bachelor"
+            };
             var entity = new Student
             {
                 NationalId = dto.NationalId,
@@ -635,19 +679,23 @@ public class DataSeed : IDataSeed
                 FacultyId = _facultyId,
                 Level = dto.Level,
                 DepartmentId = dto.DepartmentName != null ? _departmentIds.GetValueOrDefault(dto.DepartmentName) : null,
-                BylawId = _bylawId,
+                BylawId = _bylawIdsByType.GetValueOrDefault(bylawTypeName),
                 EnrollmentDate = ParseDateOffset(dto.EnrollmentDateOffset),
                 Gpa = dto.Gpa,
                 SpecializationId = dto.SpecializationId,
-                StudentType = Enum.TryParse<StudentType>(dto.StudentType, out var st) ? st : StudentType.UnderGrad,
-                Program = dto.StudentType is "Masters" or "PhD" or "Diploma" ? StudentProgram.General : Enum.TryParse<StudentProgram>(dto.Program, out var prog) ? prog : null
+                StudentType = studentType,
+                Program = studentType is StudentType.Masters or StudentType.PhD or StudentType.Diploma ? StudentProgram.General : Enum.TryParse<StudentProgram>(dto.Program, out var prog) ? prog : null
             };
             _dbContext.Students.Add(entity);
-            await _dbContext.SaveChangesAsync();
+            created.Add((dto, entity));
+        }
+        await _dbContext.SaveChangesAsync();
+        foreach (var (dto, entity) in created)
+        {
             await AddUserRolesAsync(entity, dto.Roles);
-            await _dbContext.SaveChangesAsync();
             _userIds[dto.Email] = entity.UserId;
         }
+        await _dbContext.SaveChangesAsync();
     }
 
     // ---- Student Courses ----
@@ -817,6 +865,7 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.MaterialFolders.AnyAsync()) return;
         var items = await ReadJsonAsync<MaterialFolderDto>("material-folders.json");
+        var created = new List<(MaterialFolderDto, MaterialFolder)>();
         foreach (var dto in items)
         {
             var courseId = _courseIds.GetValueOrDefault(dto.CourseCode);
@@ -832,9 +881,11 @@ public class DataSeed : IDataSeed
                 DisplayOrder = dto.DisplayOrder
             };
             _dbContext.MaterialFolders.Add(entity);
-            await _dbContext.SaveChangesAsync();
-            _folderIds[dto.Name] = entity.MaterialFolderId;
+            created.Add((dto, entity));
         }
+        await _dbContext.SaveChangesAsync();
+        foreach (var (dto, entity) in created)
+            _folderIds[dto.Name] = entity.MaterialFolderId;
     }
 
     // ---- Materials ----
@@ -843,6 +894,7 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Materials.AnyAsync()) return;
         var items = await ReadJsonAsync<MaterialDto>("materials.json");
+        var created = new List<(MaterialDto, Material)>();
         foreach (var dto in items)
         {
             var courseId = _courseIds.GetValueOrDefault(dto.CourseCode);
@@ -858,9 +910,11 @@ public class DataSeed : IDataSeed
                 UploadDate = DateTime.UtcNow
             };
             _dbContext.Materials.Add(entity);
-            await _dbContext.SaveChangesAsync();
-            _materialIds[dto.Title] = entity.MaterialId;
+            created.Add((dto, entity));
         }
+        await _dbContext.SaveChangesAsync();
+        foreach (var (dto, entity) in created)
+            _materialIds[dto.Title] = entity.MaterialId;
     }
 
     // ---- Instructor Materials ----
@@ -918,6 +972,7 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Rooms.AnyAsync()) return;
         var items = await ReadJsonAsync<RoomDto>("rooms.json");
+        var created = new List<(RoomDto, Room)>();
         foreach (var dto in items)
         {
             var existing = await _dbContext.Rooms.FirstOrDefaultAsync(r => r.RoomName == dto.RoomName);
@@ -933,8 +988,7 @@ public class DataSeed : IDataSeed
                     LocationAr = dto.LocationAr
                 };
                 _dbContext.Rooms.Add(entity);
-                await _dbContext.SaveChangesAsync();
-                _roomIds[dto.RoomName] = entity.RoomId;
+                created.Add((dto, entity));
             }
             else
             {
@@ -946,6 +1000,9 @@ public class DataSeed : IDataSeed
                 _roomIds[dto.RoomName] = existing.RoomId;
             }
         }
+        await _dbContext.SaveChangesAsync();
+        foreach (var (dto, entity) in created)
+            _roomIds[dto.RoomName] = entity.RoomId;
     }
 
     // ---- Announcements ----
@@ -969,9 +1026,9 @@ public class DataSeed : IDataSeed
                 UpdatedAt = ParseDateOffset(dto.UpdatedAtOffset)
             };
             _dbContext.Announcements.Add(entity);
-            await _dbContext.SaveChangesAsync();
-            _announcements.Add(entity);
         }
+        await _dbContext.SaveChangesAsync();
+        _announcements.AddRange(_dbContext.Announcements.Local);
     }
 
     // ---- Announcement Comments ----
@@ -1048,6 +1105,7 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Assignments.AnyAsync()) return;
         var items = await ReadJsonAsync<AssignmentDto>("assignments.json");
+        var created = new List<(AssignmentDto, Assignment)>();
         foreach (var dto in items)
         {
             var courseId = _courseIds.GetValueOrDefault(dto.CourseCode);
@@ -1062,9 +1120,11 @@ public class DataSeed : IDataSeed
                 CourseId = courseId
             };
             _dbContext.Assignments.Add(entity);
-            await _dbContext.SaveChangesAsync();
-            _assignmentIds[dto.Title] = entity.AssignmentId;
+            created.Add((dto, entity));
         }
+        await _dbContext.SaveChangesAsync();
+        foreach (var (dto, entity) in created)
+            _assignmentIds[dto.Title] = entity.AssignmentId;
     }
 
     // ---- Student Assignments ----
@@ -1101,6 +1161,7 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Quizzes.AnyAsync()) return;
         var items = await ReadJsonAsync<QuizDto>("quizzes.json");
+        var created = new List<(QuizDto, Quiz)>();
         foreach (var dto in items)
         {
             var courseId = _courseIds.GetValueOrDefault(dto.CourseCode);
@@ -1117,9 +1178,11 @@ public class DataSeed : IDataSeed
                 CourseId = courseId
             };
             _dbContext.Quizzes.Add(entity);
-            await _dbContext.SaveChangesAsync();
-            _quizIds[dto.Title] = entity.QuizId;
+            created.Add((dto, entity));
         }
+        await _dbContext.SaveChangesAsync();
+        foreach (var (dto, entity) in created)
+            _quizIds[dto.Title] = entity.QuizId;
     }
 
     // ---- Questions ----
@@ -1172,15 +1235,18 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Communities.AnyAsync()) return;
         var items = await ReadJsonAsync<CommunityDto>("communities.json");
+        var created = new List<(CommunityDto, Community)>();
         foreach (var dto in items)
         {
             var courseId = _courseIds.GetValueOrDefault(dto.CourseCode);
             if (courseId == 0) continue;
             var entity = new Community { CourseId = courseId };
             _dbContext.Communities.Add(entity);
-            await _dbContext.SaveChangesAsync();
-            _communityIds[dto.CourseCode] = entity.CommunityId;
+            created.Add((dto, entity));
         }
+        await _dbContext.SaveChangesAsync();
+        foreach (var (dto, entity) in created)
+            _communityIds[dto.CourseCode] = entity.CommunityId;
     }
 
     // ---- Posts ----
@@ -1204,9 +1270,9 @@ public class DataSeed : IDataSeed
                 IsPinned = dto.IsPinned
             };
             _dbContext.Posts.Add(entity);
-            await _dbContext.SaveChangesAsync();
-            _posts.Add(entity);
         }
+        await _dbContext.SaveChangesAsync();
+        _posts.AddRange(_dbContext.Posts.Local);
     }
 
     // ---- Comments ----
@@ -1358,10 +1424,13 @@ public class DataSeed : IDataSeed
     private record BylawDto
     {
         public string Name { get; init; } = "";
+        public string Type { get; init; } = "Bachelor";
         public int Version { get; init; }
         public string? Description { get; init; }
         public bool IsActive { get; init; }
         public List<GradeScaleDto> GradeScales { get; init; } = new();
+        public int? MinHoursToChooseDepartment { get; init; }
+        public int? MinHoursToChooseSpecialization { get; init; }
         public int? TotalHoursToCompleteDegree { get; init; }
         public int? MinCreditHoursPerSemester { get; init; }
         public int? MaxCreditHoursPerSemester { get; init; }
