@@ -12,4 +12,7 @@ public class NotificationDto
     public bool IsRead { get; set; }
     public string CreatedAt { get; set; } = string.Empty;
     public string TimeAgo { get; set; } = string.Empty;
+    public string? Title { get; set; }
+    public string? ClickUrl { get; set; }
+    public string? ImageUrl { get; set; }
 }

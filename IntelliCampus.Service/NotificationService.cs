@@ -12,11 +12,13 @@ public class NotificationService : INotificationService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly INotificationStreamService _notificationStreamService;
+    private readonly IFcmSender _fcmSender;
 
-    public NotificationService(IUnitOfWork unitOfWork, INotificationStreamService notificationStreamService)
+    public NotificationService(IUnitOfWork unitOfWork, INotificationStreamService notificationStreamService, IFcmSender fcmSender)
     {
         _unitOfWork = unitOfWork;
         _notificationStreamService = notificationStreamService;
+        _fcmSender = fcmSender;
     }
 
     private IGenericRepository<Notification, int> Notifications
@@ -128,12 +130,15 @@ public class NotificationService : INotificationService
         return true;
     }
 
-    public async Task SendAsync(int userId, NotificationType type, string message)
+    public async Task SendAsync(int userId, NotificationType type, string message, string? title = null, string? clickUrl = null, string? imageUrl = null)
     {
         var notification = new Notification
         {
             Message = message,
             Type = type,
+            Title = title,
+            ClickUrl = clickUrl,
+            ImageUrl = imageUrl,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -153,12 +158,17 @@ public class NotificationService : INotificationService
         await _unitOfWork.SaveChangesAsync();
 
         _notificationStreamService.Publish(userId, MapToDto(userNotification));
+
+        await DispatchPushAsync(notification, [userId]);
     }
 
     public async Task SendToManyAsync(
         IEnumerable<int> userIds,
         NotificationType type,
-        string message)
+        string message,
+        string? title = null,
+        string? clickUrl = null,
+        string? imageUrl = null)
     {
         var userIdList = userIds.ToList();
         if (userIdList.Count == 0) return;
@@ -167,6 +177,9 @@ public class NotificationService : INotificationService
         {
             Message = message,
             Type = type,
+            Title = title,
+            ClickUrl = clickUrl,
+            ImageUrl = imageUrl,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -195,6 +208,8 @@ public class NotificationService : INotificationService
         {
             _notificationStreamService.Publish(userNotification.UserId, MapToDto(userNotification));
         }
+
+        await DispatchPushAsync(notification, userIdList);
     }
 
     private static NotificationDto MapToDto(UserNotification un) => new()
@@ -204,6 +219,9 @@ public class NotificationService : INotificationService
         Message = un.Notification.Message,
         Type = un.Notification.Type,
         TypeLabel = GetTypeLabel(un.Notification.Type),
+        Title = un.Notification.Title,
+        ClickUrl = un.Notification.ClickUrl,
+        ImageUrl = un.Notification.ImageUrl,
         IsRead = un.IsRead,
         CreatedAt = un.Notification.CreatedAt.ToString("dd MM yy HH:mm:ss"),
         TimeAgo = GetTimeAgo(un.Notification.CreatedAt)
@@ -239,6 +257,44 @@ public class NotificationService : INotificationService
              : diff.TotalDays < 7 ? $"{(int)diff.TotalDays} days ago"
              : diff.TotalDays < 30 ? $"{(int)(diff.TotalDays / 7)} weeks ago"
              : diff.TotalDays < 365 ? $"{(int)(diff.TotalDays / 30)} months ago"
-             : $"{(int)(diff.TotalDays / 365)} years ago";
+              : $"{(int)(diff.TotalDays / 365)} years ago";
+    }
+
+    private async Task DispatchPushAsync(Notification notification, IEnumerable<int> userIds)
+    {
+        try
+        {
+            var deviceTokenRepo = _unitOfWork.GetRepository<DeviceToken, int>();
+            var spec = new DeviceTokenSpec(userIds);
+            var activeTokens = (await deviceTokenRepo.GetAllAsync(spec)).ToList();
+
+            if (activeTokens.Count == 0) return;
+
+            var result = await _fcmSender.SendAsync(
+                activeTokens.Select(dt => dt.Token),
+                notification.Title,
+                notification.Message,
+                notification.ClickUrl,
+                notification.ImageUrl,
+                notification.NotificationId);
+
+            if (result.InvalidTokens.Count > 0)
+            {
+                foreach (var invalidToken in result.InvalidTokens)
+                {
+                    var match = activeTokens.FirstOrDefault(dt => dt.Token == invalidToken);
+                    if (match is not null)
+                    {
+                        match.IsActive = false;
+                        deviceTokenRepo.Update(match);
+                    }
+                }
+                await _unitOfWork.SaveChangesAsync();
+            }
+        }
+        catch
+        {
+            // Push delivery failure must never break in-app notification delivery
+        }
     }
 }

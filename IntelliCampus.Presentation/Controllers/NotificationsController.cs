@@ -55,13 +55,13 @@ public class NotificationsController(INotificationService notificationService, I
     }
 
     [HttpPost("send")]
-    [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,Instructor")]
+    [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin,Instructor")]
     public async Task<IActionResult> SendBulk(SendBulkNotificationDto dto)
     {
         if (dto.UserIds is null || dto.UserIds.Count == 0)
             return BadRequest("At least one user must be specified.");
 
-        await notificationService.SendToManyAsync(dto.UserIds, dto.Type, dto.Message);
+        await notificationService.SendToManyAsync(dto.UserIds, dto.Type, dto.Message, dto.Title, dto.ClickUrl, dto.ImageUrl);
 
         return Ok(new { sent = dto.UserIds.Count });
     }
