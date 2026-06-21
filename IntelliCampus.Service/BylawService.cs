@@ -290,13 +290,18 @@ public class BylawService : IBylawService
 
         if (dto.Name is not null)
             bylaw.Name = dto.Name;
+
         if (dto.NameAr is not null)
             bylaw.NameAr = dto.NameAr;
+
         if (dto.Description is not null)
             bylaw.Description = dto.Description;
 
         if (dto.DescriptionAr is not null)
             bylaw.DescriptionAr = dto.DescriptionAr;
+
+        if (dto.Type is not null && Enum.TryParse<BylawType>(dto.Type, true, out var parsedType))
+            bylaw.Type = parsedType;
 
         await _unitOfWork.SaveChangesAsync();
 
