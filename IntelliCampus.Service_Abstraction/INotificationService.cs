@@ -13,6 +13,6 @@ public interface INotificationService
     Task MarkAllAsReadAsync(int userId);
     Task<bool> DeleteAsync(int notificationId, int userId);
 
-    Task SendAsync(int userId, NotificationType type, string message);
-    Task SendToManyAsync(IEnumerable<int> userIds, NotificationType type, string message);
+    Task SendAsync(int userId, NotificationType type, string message, string? title = null, string? clickUrl = null, string? imageUrl = null);
+    Task SendToManyAsync(IEnumerable<int> userIds, NotificationType type, string message, string? title = null, string? clickUrl = null, string? imageUrl = null);
 }

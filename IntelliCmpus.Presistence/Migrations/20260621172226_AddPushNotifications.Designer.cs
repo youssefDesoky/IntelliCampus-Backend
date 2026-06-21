@@ -4,6 +4,7 @@ using IntelliCampus.Presistence.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260621172226_AddPushNotifications")]
+    partial class AddPushNotifications
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -276,6 +279,10 @@ namespace IntelliCampus.Presistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BylawId"));
 
+                    b.Property<decimal?>("CourseWorkGrade")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -295,8 +302,27 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<decimal?>("FinalExamGrade")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("MaxCreditHoursPerSemester")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MinCreditHoursForGraduationProject")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MinCreditHoursPerSemester")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MinHoursToChooseDepartment")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MinHoursToChooseSpecialization")
+                        .HasColumnType("int");
 
                     b.Property<decimal?>("MinPassingGpa")
                         .HasPrecision(4, 2)
@@ -318,12 +344,23 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int?>("ProbationRegistrationLimit")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("ProbationThreshold")
+                        .HasPrecision(4, 2)
+                        .HasColumnType("decimal(4,2)");
+
+                    b.Property<int?>("SummerMaxCreditHours")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TotalHoursToCompleteDegree")
+                        .HasColumnType("int");
 
                     b.Property<int?>("UploadedByAdminId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Version")
                         .HasColumnType("int");
 
                     b.HasKey("BylawId");
@@ -354,10 +391,9 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.HasKey("BylawCourseId");
 
-                    b.HasIndex("CourseId");
+                    b.HasIndex("BylawId");
 
-                    b.HasIndex("BylawId", "CourseId")
-                        .IsUnique();
+                    b.HasIndex("CourseId");
 
                     b.ToTable("BylawCourses");
                 });
@@ -552,17 +588,7 @@ namespace IntelliCampus.Presistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourseId"));
 
-                    b.Property<string>("AllowedDepartmentIds")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AllowedLevels")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CourseCode")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("CourseCodeAr")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -581,21 +607,6 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("DescriptionAr")
-                        .HasMaxLength(500)
-                        .IsUnicode(true)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime?>("RegistrationEndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("RegistrationStartDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -724,9 +735,6 @@ namespace IntelliCampus.Presistence.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("NameAr")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("RequiredCourseCount")
                         .HasColumnType("int");
@@ -1598,9 +1606,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("InstructorId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Location")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
@@ -1612,7 +1617,7 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasDefaultValue("low");
 
-                    b.Property<int?>("StudentId")
+                    b.Property<int>("StudentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -1626,8 +1631,6 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("ReminderId");
-
-                    b.HasIndex("InstructorId");
 
                     b.HasIndex("StudentId");
 
@@ -2136,12 +2139,6 @@ namespace IntelliCampus.Presistence.Migrations
                 {
                     b.HasBaseType("IntelliCampus.Domain.Entities.User");
 
-                    b.Property<DateTime?>("ContractEndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ContractStartDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
@@ -2164,9 +2161,6 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.Property<int?>("OfficeHoursRoomId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Secondment")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Specialization")
                         .HasMaxLength(100)
@@ -2226,22 +2220,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.HasIndex("SpecializationId");
 
                     b.ToTable("Students", (string)null);
-                });
-
-            modelBuilder.Entity("IntelliCampus.Domain.Entities.LoanInstructor", b =>
-                {
-                    b.HasBaseType("IntelliCampus.Domain.Entities.Instructor");
-
-                    b.Property<int?>("LoanFromDepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LoanProfessorId")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasIndex("LoanFromDepartmentId");
-
-                    b.ToTable("LoanInstructors", (string)null);
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Announcement", b =>
@@ -2360,85 +2338,6 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasForeignKey("UploadedByAdminId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.OwnsOne("IntelliCampus.Domain.Entities.BylawSettings", "Settings", b1 =>
-                        {
-                            b1.Property<int>("BylawId")
-                                .HasColumnType("int");
-
-                            b1.Property<decimal?>("CourseWorkGrade")
-                                .HasColumnType("decimal(18,2)");
-
-                            b1.Property<decimal?>("FinalExamGrade")
-                                .HasColumnType("decimal(18,2)");
-
-                            b1.Property<bool?>("HasComprehensiveExam")
-                                .HasColumnType("bit");
-
-                            b1.Property<int?>("MaxCreditHoursPerSemester")
-                                .HasColumnType("int");
-
-                            b1.Property<int?>("MinCreditHoursForGraduationProject")
-                                .HasColumnType("int");
-
-                            b1.Property<int?>("MinCreditHoursPerSemester")
-                                .HasColumnType("int");
-
-                            b1.Property<int?>("MinHoursToChooseDepartment")
-                                .HasColumnType("int");
-
-                            b1.Property<int?>("MinHoursToChooseSpecialization")
-                                .HasColumnType("int");
-
-                            b1.Property<int?>("ProbationRegistrationLimit")
-                                .HasColumnType("int");
-
-                            b1.Property<decimal?>("ProbationThreshold")
-                                .HasColumnType("decimal(18,2)");
-
-                            b1.Property<int?>("SummerMaxCreditHours")
-                                .HasColumnType("int");
-
-                            b1.Property<int?>("ThesisCreditHours")
-                                .HasColumnType("int");
-
-                            b1.Property<int?>("TotalHoursToCompleteDegree")
-                                .HasColumnType("int");
-
-                            b1.HasKey("BylawId");
-
-                            b1.ToTable("Bylaws");
-
-                            b1.ToJson("Settings");
-
-                            b1.WithOwner()
-                                .HasForeignKey("BylawId");
-
-                            b1.OwnsMany("IntelliCampus.Domain.Entities.LevelScaleItem", "LevelScales", b2 =>
-                                {
-                                    b2.Property<int>("BylawSettingsBylawId")
-                                        .HasColumnType("int");
-
-                                    b2.Property<int>("Id")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("int");
-
-                                    b2.Property<int>("Level")
-                                        .HasColumnType("int");
-
-                                    b2.Property<int>("MinHours")
-                                        .HasColumnType("int");
-
-                                    b2.HasKey("BylawSettingsBylawId", "Id");
-
-                                    b2.ToTable("Bylaws");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("BylawSettingsBylawId");
-                                });
-
-                            b1.Navigation("LevelScales");
-                        });
-
                     b.OwnsMany("IntelliCampus.Domain.Entities.GradeScaleItem", "GradeScales", b1 =>
                         {
                             b1.Property<int>("BylawId")
@@ -2474,10 +2373,34 @@ namespace IntelliCampus.Presistence.Migrations
                                 .HasForeignKey("BylawId");
                         });
 
+                    b.OwnsMany("IntelliCampus.Domain.Entities.LevelScaleItem", "LevelScales", b1 =>
+                        {
+                            b1.Property<int>("BylawId")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Level")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("MinHours")
+                                .HasColumnType("int");
+
+                            b1.HasKey("BylawId", "Id");
+
+                            b1.ToTable("Bylaws");
+
+                            b1.ToJson("LevelScales");
+
+                            b1.WithOwner()
+                                .HasForeignKey("BylawId");
+                        });
+
                     b.Navigation("GradeScales");
 
-                    b.Navigation("Settings")
-                        .IsRequired();
+                    b.Navigation("LevelScales");
 
                     b.Navigation("UploadedBy");
                 });
@@ -3018,17 +2941,11 @@ namespace IntelliCampus.Presistence.Migrations
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Reminder", b =>
                 {
-                    b.HasOne("IntelliCampus.Domain.Entities.Instructor", "Instructor")
-                        .WithMany("Reminders")
-                        .HasForeignKey("InstructorId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("IntelliCampus.Domain.Entities.Student", "Student")
                         .WithMany("Reminders")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Instructor");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Student");
                 });
@@ -3310,22 +3227,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("Specialization");
                 });
 
-            modelBuilder.Entity("IntelliCampus.Domain.Entities.LoanInstructor", b =>
-                {
-                    b.HasOne("IntelliCampus.Domain.Entities.Department", "LoanFromDepartment")
-                        .WithMany()
-                        .HasForeignKey("LoanFromDepartmentId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("IntelliCampus.Domain.Entities.Instructor", null)
-                        .WithOne()
-                        .HasForeignKey("IntelliCampus.Domain.Entities.LoanInstructor", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LoanFromDepartment");
-                });
-
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Announcement", b =>
                 {
                     b.Navigation("Attachments");
@@ -3512,8 +3413,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("CreatedFolders");
 
                     b.Navigation("InstructorMaterials");
-
-                    b.Navigation("Reminders");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Student", b =>

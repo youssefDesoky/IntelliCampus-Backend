@@ -58,6 +58,9 @@ Desktop.ini
 # Application settings (uncomment if you want to ignore)
 # appsettings.Development.json
 
+# Firebase Admin SDK credentials (secret — never commit)
+firebase-admin.json
+
 # Announcements uploads
 IntelliCampus.Web/wwwroot/announcements/
 IntelliCampus.Web.csproj

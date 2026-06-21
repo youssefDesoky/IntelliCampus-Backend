@@ -17,5 +17,14 @@ public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
         builder.Property(n => n.Type)
             .HasConversion<string>()
             .HasMaxLength(30);
+
+        builder.Property(n => n.Title)
+            .HasMaxLength(200);
+
+        builder.Property(n => n.ClickUrl)
+            .HasMaxLength(500);
+
+        builder.Property(n => n.ImageUrl)
+            .HasMaxLength(500);
     }
 }
