@@ -1,5 +1,6 @@
 using IntelliCampus.Shared.Dtos.Room;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Domain.Entities.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,13 @@ public class RoomsController : ControllerBase
     {
         var rooms = await _roomService.GetAllAsync();
         return Ok(rooms);
+    }
+
+    [HttpGet("types")]
+    public ActionResult<IEnumerable<string>> GetTypes()
+    {
+        var types = Enum.GetNames<RoomType>();
+        return Ok(types);
     }
 
     [HttpGet("{id}")]

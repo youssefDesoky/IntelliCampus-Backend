@@ -10,4 +10,6 @@ public interface ISpecializationService
     Task<SpecializationDto> CreateAsync(CreateSpecializationDto dto);
     Task<SpecializationDto> UpdateAsync(int id, UpdateSpecializationDto dto);
     Task DeleteAsync(int id);
+    Task<IEnumerable<SpecializationPrerequisiteDto>> GetPrerequisitesAsync(int specializationId);
+    Task SetPrerequisitesAsync(int specializationId, SetSpecializationPrerequisitesDto dto);
 }

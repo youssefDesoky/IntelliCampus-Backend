@@ -72,7 +72,8 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
             Description = dto.Description,
             DescriptionAr = dto.DescriptionAr,
             InstructorId = dto.InstructorId,
-            FacultyId = facultyId
+            FacultyId = facultyId,
+            MaxCapacity = dto.MaxCapacity
         };
 
         Departments.Add(department);
@@ -119,6 +120,9 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
             department.FacultyId = dto.FacultyId;
         }
 
+        if (dto.MaxCapacity.HasValue)
+            department.MaxCapacity = dto.MaxCapacity;
+
         Departments.Update(department);
         await _unitOfWork.SaveChangesAsync();
 
@@ -150,6 +154,28 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
         return true;
     }
 
+    public async Task<DepartmentDto?> UpdateRegistrationSettingsAsync(int departmentId, DepartmentRegistrationSettingsDto dto)
+    {
+        var spec = new DepartmentSpec(departmentId);
+        var department = await Departments.GetByIdAsync(spec);
+
+        if (department is null)
+            throw new DepartmentNotFoundException(departmentId);
+
+        department.RegistrationSettings = new DepartmentRegistrationSettings
+        {
+            RegistrationStartDate = dto.RegistrationStartDate,
+            RegistrationEndDate = dto.RegistrationEndDate,
+            AllowedLevels = dto.AllowedLevels ?? new List<int>()
+        };
+
+        await _unitOfWork.SaveChangesAsync();
+
+        var updatedSpec = new DepartmentSpec(department.DepartmentId);
+        var result = await Departments.GetByIdAsync(updatedSpec);
+        return MapToDto(result!);
+    }
+
     private static DepartmentDto MapToDto(Department department)
     {
         return new DepartmentDto
@@ -162,7 +188,8 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
             InstructorId = department.InstructorId,
             HeadInstructorName = department.HeadInstructor?.FullName,
             FacultyId = department.FacultyId,
-            FacultyName = department.Faculty?.FacultyName
+            FacultyName = department.Faculty?.FacultyName,
+            MaxCapacity = department.MaxCapacity
         };
     }
 }

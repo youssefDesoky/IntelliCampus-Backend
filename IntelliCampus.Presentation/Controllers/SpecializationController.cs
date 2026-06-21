@@ -61,4 +61,19 @@ public class SpecializationController : ControllerBase
         await _specializationService.DeleteAsync(id);
         return NoContent();
     }
+
+    [HttpGet("{specializationId}/prerequisites")]
+    public async Task<ActionResult<IEnumerable<SpecializationPrerequisiteDto>>> GetPrerequisites(int specializationId)
+    {
+        var items = await _specializationService.GetPrerequisitesAsync(specializationId);
+        return Ok(items);
+    }
+
+    [HttpPut("{specializationId}/prerequisites")]
+    [Authorize(Roles = "SuperAdmin")]
+    public async Task<IActionResult> SetPrerequisites(int specializationId, [FromBody] SetSpecializationPrerequisitesDto dto)
+    {
+        await _specializationService.SetPrerequisitesAsync(specializationId, dto);
+        return NoContent();
+    }
 }

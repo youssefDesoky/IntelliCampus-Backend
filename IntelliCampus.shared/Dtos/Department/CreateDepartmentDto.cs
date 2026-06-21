@@ -8,4 +8,5 @@ public class CreateDepartmentDto
     public string? DescriptionAr { get; set; }
     public int? InstructorId { get; set; }
     public int? FacultyId { get; set; }
+    public int? MaxCapacity { get; set; }
 }

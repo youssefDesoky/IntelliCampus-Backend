@@ -6,7 +6,9 @@ public class Specialization
     public string Name { get; set; } = null!;
     public string? NameAr { get; set; }
     public int DepartmentId { get; set; }
+    public int? MaxCapacity { get; set; }
 
     public Department Department { get; set; } = null!;
     public ICollection<Student> Students { get; set; } = new List<Student>();
+    public ICollection<SpecializationPrerequisite> Prerequisites { get; set; } = new List<SpecializationPrerequisite>();
 }

@@ -41,4 +41,11 @@ public class LocalFileStorageService : IFileStorageService
     }
 
     public string GetUrl(string path) => $"{_baseUrl.TrimEnd('/')}/{path.TrimStart('/')}";
+
+    public Task<Stream> OpenReadAsync(string path, CancellationToken ct = default)
+    {
+        var fullPath = Path.Combine(_root, "..", path);
+        var stream = File.OpenRead(fullPath);
+        return Task.FromResult<Stream>(stream);
+    }
 }

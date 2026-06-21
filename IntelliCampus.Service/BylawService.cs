@@ -7,6 +7,7 @@ using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Bylaw;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace IntelliCampus.Service;
 
@@ -119,6 +120,23 @@ public class BylawService : IBylawService
         await _unitOfWork.SaveChangesAsync();
 
         return MapToDto(bylaw);
+    }
+
+    public async Task<(Stream Stream, string FileName, string ContentType)> DownloadDocumentAsync(int bylawId)
+    {
+        var bylaw = await Bylaws.GetByIdAsync(bylawId);
+        if (bylaw is null)
+            throw new BylawNotFoundException(bylawId);
+
+        if (string.IsNullOrEmpty(bylaw.FileUrl))
+            throw new InvalidOperationException("No document uploaded for this bylaw.");
+
+        var stream = await _fileStorageService.OpenReadAsync(bylaw.FileUrl);
+
+        var fileName = bylaw.FileName ?? "bylaw-document";
+        new FileExtensionContentTypeProvider().TryGetContentType(fileName, out var contentType);
+
+        return (stream, fileName, contentType ?? "application/octet-stream");
     }
 
     public async Task<bool> DeleteAsync(int bylawId)
