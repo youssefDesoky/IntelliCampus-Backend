@@ -20,7 +20,6 @@ public class ExcelImportService : IExcelImportService
 {
     private readonly IStudentService _studentService;
     private readonly IInstructorService _instructorService;
-    private readonly ICourseService _courseService;
     private readonly IRoomService _roomService;
     private readonly IDepartmentService _departmentService;
     private readonly IClassService _classService;
@@ -28,10 +27,16 @@ public class ExcelImportService : IExcelImportService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IGradeService _gradeService;
 
+    private IGenericRepository<Course, int> Courses
+        => _unitOfWork.GetRepository<Course, int>();
+    private IGenericRepository<Department, int> Departments
+        => _unitOfWork.GetRepository<Department, int>();
+    private IGenericRepository<CoursePrerequisite, int> Prerequisites
+        => _unitOfWork.GetRepository<CoursePrerequisite, int>();
+
     public ExcelImportService(
         IStudentService studentService,
         IInstructorService instructorService,
-        ICourseService courseService,
         IRoomService roomService,
         IDepartmentService departmentService,
         IClassService classService,
@@ -41,7 +46,6 @@ public class ExcelImportService : IExcelImportService
     {
         _studentService = studentService;
         _instructorService = instructorService;
-        _courseService = courseService;
         _roomService = roomService;
         _departmentService = departmentService;
         _classService = classService;
@@ -180,25 +184,64 @@ public class ExcelImportService : IExcelImportService
 
     private async Task ImportCourseRowAsync(IXLRangeRow row)
     {
-        var dto = new CreateCourseDto
+        var departmentName = GetOptionalString(row, 5);
+        int? departmentId = null;
+
+        if (!string.IsNullOrWhiteSpace(departmentName))
+        {
+            if (int.TryParse(departmentName, out var id))
+            {
+                if (await Departments.GetByIdAsync(id) is not null)
+                    departmentId = id;
+            }
+
+            if (departmentId is null)
+            {
+                var allDepts = await Departments.GetAllAsync();
+                var dept = allDepts.FirstOrDefault(d =>
+                    string.Equals(d.DepartmentName, departmentName, StringComparison.OrdinalIgnoreCase));
+                departmentId = dept?.DepartmentId;
+            }
+        }
+
+        var course = new Course
         {
             CourseCode = row.Cell(1).GetString().Trim(),
             CourseName = row.Cell(2).GetString().Trim(),
             CourseNameAr = GetOptionalString(row, 3),
             CreditHours = int.Parse(row.Cell(4).GetString().Trim()),
-            DepartmentName = GetOptionalString(row, 5)
+            DepartmentId = departmentId,
+            Status = CourseStatus.Active
         };
+
+        Courses.Add(course);
+        await _unitOfWork.SaveChangesAsync();
 
         var prereqs = GetOptionalString(row, 6);
         if (!string.IsNullOrWhiteSpace(prereqs))
         {
-            dto.PrerequisiteCodes = prereqs
+            var prereqCodes = prereqs
                 .Split(',', StringSplitOptions.RemoveEmptyEntries)
                 .Select(p => p.Trim())
                 .ToList();
-        }
 
-        await _courseService.CreateAsync(dto);
+            var allCourses = await Courses.GetAllAsync();
+            foreach (var code in prereqCodes)
+            {
+                var prereqCourse = allCourses.FirstOrDefault(c =>
+                    string.Equals(c.CourseCode, code, StringComparison.OrdinalIgnoreCase));
+                if (prereqCourse is not null)
+                {
+                    Prerequisites.Add(new CoursePrerequisite
+                    {
+                        CourseId = course.CourseId,
+                        PrerequisiteCourseId = prereqCourse.CourseId
+                    });
+                }
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 
     private async Task ImportRoomRowAsync(IXLRangeRow row)

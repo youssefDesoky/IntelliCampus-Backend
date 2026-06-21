@@ -1,7 +1,10 @@
 using System.Text.Json;
+using IntelliCampus.Shared.Dtos.Bylaw;
 using IntelliCampus.Shared.Dtos.Course;
 using IntelliCampus.Shared.Dtos.Student;
 using IntelliCampus.Service_Abstraction;
+using Microsoft.AspNetCore.Http;
+
 using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Domain.Helpers;
 using IntelliCampus.Domain.Entities;
@@ -12,11 +15,12 @@ using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
 
-public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver) : ICourseService
+public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExcelImportService excelImportService) : ICourseService
 {
     private const int TotalSemesterWeeks = 16;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly UrlResolver _urlResolver = urlResolver;
+    private readonly IExcelImportService _excelImportService = excelImportService;
 
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
@@ -265,6 +269,33 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver) : IC
 
         var result = await Courses.GetByIdAsync(new CourseSpec(course.CourseId));
         return MapToDto(result!);
+    }
+
+    public async Task<CourseRegistrationSettingsDto?> GetRegistrationSettingsAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
+        return new CourseRegistrationSettingsDto
+        {
+            RegistrationStartDate = course.RegistrationStartDate?.ToString("dd MM yyyy"),
+            RegistrationEndDate = course.RegistrationEndDate?.ToString("dd MM yyyy"),
+            AllowedLevels = course.AllowedLevels is not null
+                ? JsonSerializer.Deserialize<List<int>>(course.AllowedLevels)
+                : null,
+            AllowedDepartments = course.AllowedDepartmentIds is not null
+                ? JsonSerializer.Deserialize<List<int>>(course.AllowedDepartmentIds)
+                : null
+        };
+    }
+
+    public async Task<ExcelImportResultDto> UploadGradesAsync(int courseId, IFormFile file, int? userId)
+    {
+        if (file is null || file.Length is 0)
+            throw new ArgumentException("No file uploaded.");
+
+        return await _excelImportService.ImportAsync(ImportEntityType.Grades, file, null, userId);
     }
 
     public async Task<bool> DeleteAsync(int courseId)

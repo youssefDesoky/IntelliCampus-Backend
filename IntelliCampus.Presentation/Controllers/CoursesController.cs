@@ -3,6 +3,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Shared.Dtos.Announcement;
 using IntelliCampus.Shared.Dtos.Course;
 using IntelliCampus.Shared.Dtos.Student;
+using IntelliCampus.Shared.Dtos.Bylaw;
 using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -130,12 +131,29 @@ public class CoursesController : ControllerBase
         return Ok(course);
     }
 
+    [HttpGet("{id}/registration-settings")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
+    public async Task<ActionResult<CourseRegistrationSettingsDto>> GetRegistrationSettings(int id)
+    {
+        var settings = await _courseService.GetRegistrationSettingsAsync(id);
+        return Ok(settings);
+    }
+
     [HttpPut("{id}/registration-settings")]
     [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<ActionResult<CourseDto>> UpdateRegistrationSettings(int id, [FromBody] UpdateCourseRegistrationSettingsDto dto)
     {
         var course = await _courseService.UpdateRegistrationSettingsAsync(id, dto);
         return Ok(course);
+    }
+
+    [HttpPost("{id}/grades/upload")]
+    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin,Instructor")]
+    public async Task<ActionResult<ExcelImportResultDto>> UploadGrades(int id, IFormFile file)
+    {
+        var userId = GetCurrentUserId();
+        var result = await _courseService.UploadGradesAsync(id, file, userId);
+        return Ok(result);
     }
 
     [HttpPatch("{id}/activate")]
