@@ -72,9 +72,9 @@ public class ExcelImportController : ControllerBase
 
     [HttpPost("exams")]
     [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
-    public async Task<ActionResult<ExcelImportResultDto>> ImportExams(IFormFile file)
+    public async Task<ActionResult<ExcelImportResultDto>> ImportExams(IFormFile file, [FromQuery] string? examType = null)
     {
-        return await Import(ImportEntityType.Exams, file);
+        return await Import(ImportEntityType.Exams, file, examType: examType);
     }
 
     [HttpGet("students/template")]
@@ -146,7 +146,7 @@ public class ExcelImportController : ControllerBase
         });
     }
 
-    private async Task<ActionResult<ExcelImportResultDto>> Import(ImportEntityType type, IFormFile file, int? bylawId = null)
+    private async Task<ActionResult<ExcelImportResultDto>> Import(ImportEntityType type, IFormFile file, int? bylawId = null, string? examType = null)
     {
         if (file is null || file.Length is 0)
             return BadRequest(new { message = "No file uploaded." });

@@ -147,6 +147,7 @@ builder.Services.AddScoped<IMeetingService, MeetingService>();
 builder.Services.AddScoped<IElectiveBucketService, ElectiveBucketService>();
 builder.Services.AddScoped<IDataSeed, DataSeed>();
 builder.Services.AddScoped<IInstructorScheduleService, InstructorScheduleService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = actionContext =>

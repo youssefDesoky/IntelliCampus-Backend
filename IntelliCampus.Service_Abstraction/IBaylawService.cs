@@ -25,4 +25,5 @@ public interface IBylawService
     Task<BylawCourseDto> MapCourseAsync(int bylawId, MapBylawCourseDto dto);
     Task<bool> UnmapCourseAsync(int bylawCourseId);
     Task<BylawCourseDto> SetCoursePrerequisitesAsync(int bylawCourseId, SetBylawCoursePrerequisitesDto dto);
+    Task<(Stream Stream, string FileName, string ContentType)> DownloadDocumentAsync(int bylawId);
 }

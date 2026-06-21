@@ -9,6 +9,7 @@ public class Department
     public string? DepartmentNameAr { get; set; }
     public int? InstructorId { get; set; }
     public int? FacultyId { get; set; }
+    public int? MaxCapacity { get; set; }
 
     // Navigation properties
     public Instructor? HeadInstructor { get; set; }
@@ -18,4 +19,5 @@ public class Department
     public ICollection<Course> Courses { get; set; } = new List<Course>();
     public ICollection<Specialization> Specializations { get; set; } = new List<Specialization>();
     public ICollection<ElectiveBucket> ElectiveBuckets { get; set; } = new List<ElectiveBucket>();
+    public DepartmentRegistrationSettings? RegistrationSettings { get; set; }
 }

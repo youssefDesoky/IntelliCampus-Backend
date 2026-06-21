@@ -22,6 +22,12 @@ public class SpecializationService : ISpecializationService
     private IGenericRepository<Department, int> Departments
         => _unitOfWork.GetRepository<Department, int>();
 
+    private IGenericRepository<SpecializationPrerequisite, int> SpecializationPrerequisites
+        => _unitOfWork.GetRepository<SpecializationPrerequisite, int>();
+
+    private IGenericRepository<Course, int> Courses
+        => _unitOfWork.GetRepository<Course, int>();
+
     public async Task<IEnumerable<SpecializationDto>> GetAllAsync()
     {
         var spec = new SpecializationSpec();
@@ -58,7 +64,8 @@ public class SpecializationService : ISpecializationService
         {
             Name = dto.Name,
             NameAr = dto.NameAr,
-            DepartmentId = dto.DepartmentId
+            DepartmentId = dto.DepartmentId,
+            MaxCapacity = dto.MaxCapacity
         };
 
         Specializations.Add(specialization);
@@ -84,6 +91,9 @@ public class SpecializationService : ISpecializationService
             specialization.DepartmentId = dto.DepartmentId.Value;
         }
 
+        if (dto.MaxCapacity.HasValue)
+            specialization.MaxCapacity = dto.MaxCapacity;
+
         Specializations.Update(specialization);
         await _unitOfWork.SaveChangesAsync();
 
@@ -106,6 +116,55 @@ public class SpecializationService : ISpecializationService
         await _unitOfWork.SaveChangesAsync();
     }
 
+    public async Task<IEnumerable<SpecializationPrerequisiteDto>> GetPrerequisitesAsync(int specializationId)
+    {
+        var specialization = await Specializations.GetByIdAsync(specializationId);
+        if (specialization is null) throw new SpecializationNotFoundException(specializationId);
+
+        var prerequisites = await SpecializationPrerequisites.GetAllAsync(
+            new SpecializationPrerequisiteSpec(specializationId));
+
+        return prerequisites.Select(p => new SpecializationPrerequisiteDto
+        {
+            CourseId = p.CourseId,
+            CourseName = p.Course?.CourseName,
+            CourseCode = p.Course?.CourseCode,
+            MinGrade = p.MinGrade
+        });
+    }
+
+    public async Task SetPrerequisitesAsync(int specializationId, SetSpecializationPrerequisitesDto dto)
+    {
+        var specialization = await Specializations.GetByIdAsync(specializationId);
+        if (specialization is null) throw new SpecializationNotFoundException(specializationId);
+
+        foreach (var item in dto.Prerequisites)
+        {
+            var course = await Courses.GetByIdAsync(item.CourseId);
+            if (course is null)
+                throw new InvalidOperationException($"Course with ID {item.CourseId} not found.");
+        }
+
+        var existing = await SpecializationPrerequisites.GetAllAsync(
+            new SpecializationPrerequisiteSpec(specializationId));
+        foreach (var prereq in existing)
+        {
+            SpecializationPrerequisites.Delete(prereq);
+        }
+
+        foreach (var item in dto.Prerequisites)
+        {
+            SpecializationPrerequisites.Add(new SpecializationPrerequisite
+            {
+                SpecializationId = specializationId,
+                CourseId = item.CourseId,
+                MinGrade = item.MinGrade
+            });
+        }
+
+        await _unitOfWork.SaveChangesAsync();
+    }
+
     private static SpecializationDto MapToDto(Specialization specialization)
     {
         return new SpecializationDto
@@ -114,7 +173,8 @@ public class SpecializationService : ISpecializationService
             Name = specialization.Name,
             NameAr = specialization.NameAr,
             DepartmentId = specialization.DepartmentId,
-            DepartmentName = specialization.Department?.DepartmentName
+            DepartmentName = specialization.Department?.DepartmentName,
+            MaxCapacity = specialization.MaxCapacity
         };
     }
 }

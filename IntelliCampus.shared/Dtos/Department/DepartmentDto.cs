@@ -11,4 +11,5 @@ public class DepartmentDto
     public string? HeadInstructorName { get; set; }
     public int? FacultyId { get; set; }
     public string? FacultyName { get; set; }
+    public int? MaxCapacity { get; set; }
 }

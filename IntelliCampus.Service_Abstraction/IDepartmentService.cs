@@ -9,4 +9,5 @@ public interface IDepartmentService
     Task<DepartmentDto> CreateAsync(CreateDepartmentDto dto, int? creatorUserId = null);
     Task<DepartmentDto?> UpdateAsync(int departmentId, UpdateDepartmentDto dto);
     Task<bool> DeleteAsync(int departmentId);
+    Task<DepartmentDto?> UpdateRegistrationSettingsAsync(int departmentId, DepartmentRegistrationSettingsDto dto);
 }

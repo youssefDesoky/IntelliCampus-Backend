@@ -59,6 +59,13 @@ public class BylawController : ControllerBase
         return Ok(bylaw);
     }
 
+    [HttpGet("{id}/download")]
+    public async Task<IActionResult> DownloadDocument(int id)
+    {
+        var (stream, fileName, contentType) = await _bylawService.DownloadDocumentAsync(id);
+        return File(stream, contentType, fileName);
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

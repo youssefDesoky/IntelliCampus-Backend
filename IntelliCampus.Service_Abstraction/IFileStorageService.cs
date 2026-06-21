@@ -9,4 +9,6 @@ public interface IFileStorageService
     Task DeleteAsync(string path, CancellationToken ct = default);
 
     string GetUrl(string path);
+
+    Task<Stream> OpenReadAsync(string path, CancellationToken ct = default);
 }

@@ -34,7 +34,7 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult<DepartmentDto>> Create([FromBody] CreateDepartmentDto dto)
     {
         var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -43,7 +43,7 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult<DepartmentDto>> Update(int id, [FromBody] UpdateDepartmentDto dto)
     {
         var department = await _departmentService.UpdateAsync(id, dto);
@@ -52,10 +52,18 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
         await _departmentService.DeleteAsync(id);
         return NoContent();
+    }
+
+    [HttpPut("{id}/registration-settings")]
+    [Authorize(Roles = "SuperAdmin")]
+    public async Task<ActionResult<DepartmentDto>> UpdateRegistrationSettings(int id, [FromBody] DepartmentRegistrationSettingsDto dto)
+    {
+        var department = await _departmentService.UpdateRegistrationSettingsAsync(id, dto);
+        return Ok(department);
     }
 }
