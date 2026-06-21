@@ -131,7 +131,7 @@ public class StudentService : IStudentService
             DepartmentId = departmentId,
             BylawId = bylawId,
             EnrollmentDate = enrollmentDate,
-            Program = studentType is StudentType.UnderGrad ? dto.Program : StudentProgram.General,
+            Program = studentType is StudentType.Bachelor ? dto.Program : StudentProgram.General,
             SpecializationId = dto.SpecializationId,
             ProfileImage = dto.ProfileImage
         };
@@ -194,7 +194,7 @@ public class StudentService : IStudentService
             student.BylawId = dto.BylawId;
         }
 
-        if (dto.Program.HasValue && student.StudentType is StudentType.UnderGrad)
+        if (dto.Program.HasValue && student.StudentType is StudentType.Bachelor)
             student.Program = dto.Program;
         if (dto.SpecializationId.HasValue) student.SpecializationId = dto.SpecializationId.Value;
         if (dto.ProfileImage is not null) student.ProfileImage = dto.ProfileImage;
@@ -240,7 +240,7 @@ public class StudentService : IStudentService
 
     private static BylawType ToBylawType(StudentType studentType) => studentType switch
     {
-        StudentType.UnderGrad => BylawType.Bachelor,
+        StudentType.Bachelor => BylawType.Bachelor,
         StudentType.Masters => BylawType.Master,
         StudentType.PhD => BylawType.PhD,
         StudentType.Diploma => BylawType.Diploma,
@@ -266,15 +266,15 @@ public class StudentService : IStudentService
     private static StudentType ResolveStudentType(string? studentType)
     {
         if (string.IsNullOrWhiteSpace(studentType))
-            return StudentType.UnderGrad;
+            return StudentType.Bachelor;
 
         return studentType.ToLowerInvariant() switch
         {
-            "undergrad" or "under_grad" => StudentType.UnderGrad,
+            "Bachelor" or "bachelor" => StudentType.Bachelor,
             "masters" or "master" => StudentType.Masters,
             "phd" => StudentType.PhD,
             "diploma" => StudentType.Diploma,
-            _ => StudentType.UnderGrad
+            _ => StudentType.Bachelor
         };
     }
 
@@ -285,7 +285,7 @@ public class StudentService : IStudentService
             StudentType.Masters => "Student_Masters",
             StudentType.PhD => "Student_PhD",
             StudentType.Diploma => "Student_Diploma",
-            _ => "Student_UnderGrad"
+            _ => "Student_Bachelor"
         };
     }
 
@@ -373,7 +373,6 @@ public class StudentService : IStudentService
             DepartmentName = student.Department?.DepartmentName,
             BylawId = student.BylawId,
             BylawName = student.Bylaw?.Name,
-            BylawVersion = student.Bylaw?.Version,
             EnrollmentDate = student.EnrollmentDate?.ToString("dd MM yyyy"),
             Gpa = student.Gpa,
             Program = student.Program,

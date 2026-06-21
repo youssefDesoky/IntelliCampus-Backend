@@ -10,7 +10,7 @@
     "nationality": "EG",
     "password": "30412022101731",
     "roles": [
-      "Student_UnderGrad"
+      "Student_Bachelor"
     ],
     "level": 4,
     "departmentName": "Information Systems",
@@ -29,7 +29,7 @@
     "nationality": "EG",
     "password": "30404011300039",
     "roles": [
-      "Student_UnderGrad"
+      "Student_Bachelor"
     ],
     "level": 4,
     "departmentName": "Information Systems",
@@ -48,7 +48,7 @@
     "nationality": "EG",
     "password": "30210122101273",
     "roles": [
-      "Student_UnderGrad"
+      "Student_Bachelor"
     ],
     "level": 4,
     "departmentName": "Information Systems",
@@ -67,7 +67,7 @@
     "nationality": "EG",
     "password": "30312192100441",
     "roles": [
-      "Student_UnderGrad"
+      "Student_Bachelor"
     ],
     "level": 4,
     "departmentName": "Data Science",
@@ -86,7 +86,7 @@
     "nationality": "EG",
     "password": "30410151400084",
     "roles": [
-      "Student_UnderGrad"
+      "Student_Bachelor"
     ],
     "level": 4,
     "departmentName": "Data Science",
@@ -105,7 +105,7 @@
     "nationality": "EG",
     "password": "30410250101595",
     "roles": [
-      "Student_UnderGrad"
+      "Student_Bachelor"
     ],
     "level": 4,
     "departmentName": "Data Science",
@@ -124,7 +124,7 @@
     "nationality": "EG",
     "password": "30409298800128",
     "roles": [
-      "Student_UnderGrad"
+      "Student_Bachelor"
     ],
     "level": 4,
     "departmentName": "Software Engineering",
@@ -143,7 +143,7 @@
     "nationality": "EG",
     "password": "30409090101625",
     "roles": [
-      "Student_UnderGrad"
+      "Student_Bachelor"
     ],
     "level": 4,
     "departmentName": "Software Engineering",
@@ -162,7 +162,7 @@
     "nationality": "EG",
     "password": "30402260101604",
     "roles": [
-      "Student_UnderGrad"
+      "Student_Bachelor"
     ],
     "level": 4,
     "departmentName": "Networks and Cyber Security",

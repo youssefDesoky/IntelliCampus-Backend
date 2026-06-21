@@ -21,7 +21,6 @@ public class StudentDto
     public string? DepartmentName { get; set; }
     public int? BylawId { get; set; }
     public string? BylawName { get; set; }
-    public int? BylawVersion { get; set; }
     public string? EnrollmentDate { get; set; }
     public double Gpa { get; set; }
     public StudentProgram? Program { get; set; }

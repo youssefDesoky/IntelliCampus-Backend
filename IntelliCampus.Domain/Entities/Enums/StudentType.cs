@@ -2,7 +2,7 @@ namespace IntelliCampus.Domain.Entities.Enums;
 
 public enum StudentType
 {
-    UnderGrad,
+    Bachelor,
     Masters,
     PhD,
     Diploma,

@@ -348,7 +348,6 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             DepartmentName = student.Department?.DepartmentName,
             BylawId = student.BylawId,
             BylawName = student.Bylaw?.Name,
-            BylawVersion = student.Bylaw?.Version,
             EnrollmentDate = student.EnrollmentDate?.ToString("dd MM yyyy"),
             Gpa = student.Gpa,
             Program = student.Program,

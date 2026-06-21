@@ -565,7 +565,6 @@ public class DataSeed : IDataSeed
             {
                 Name = dto.Name,
                 Type = Enum.Parse<BylawType>(dto.Type, true),
-                Version = dto.Version,
                 Description = dto.Description,
                 IsActive = dto.IsActive,
                 CreatedAt = DateTime.UtcNow,
@@ -591,7 +590,14 @@ public class DataSeed : IDataSeed
                     ProbationRegistrationLimit = dto.ProbationRegistrationLimit,
                     MinCreditHoursForGraduationProject = dto.MinCreditHoursForGraduationProject,
                     CourseWorkGrade = dto.CourseWorkGrade,
-                    FinalExamGrade = dto.FinalExamGrade
+                    FinalExamGrade = dto.FinalExamGrade,
+                    LevelScales = dto.LevelScales?.Select(l => new LevelScaleItem
+                    {
+                        Level = l.Level,
+                        MinHours = l.MinHours
+                    }).ToList() ?? new(),
+                    ThesisCreditHours = dto.ThesisCreditHours,
+                    HasComprehensiveExam = dto.HasComprehensiveExam
                 }
             };
             _dbContext.Bylaws.Add(entity);
@@ -656,10 +662,10 @@ public class DataSeed : IDataSeed
         var created = new List<(StudentDto, Student)>();
         foreach (var dto in items)
         {
-            var studentType = Enum.TryParse<StudentType>(dto.StudentType, out var st) ? st : StudentType.UnderGrad;
+            var studentType = Enum.TryParse<StudentType>(dto.StudentType, out var st) ? st : StudentType.Bachelor;
             var bylawTypeName = studentType switch
             {
-                StudentType.UnderGrad => "Bachelor",
+                StudentType.Bachelor => "Bachelor",
                 StudentType.Masters => "Master",
                 StudentType.PhD => "PhD",
                 StudentType.Diploma => "Diploma",
@@ -1425,10 +1431,10 @@ public class DataSeed : IDataSeed
     {
         public string Name { get; init; } = "";
         public string Type { get; init; } = "Bachelor";
-        public int Version { get; init; }
         public string? Description { get; init; }
         public bool IsActive { get; init; }
         public List<GradeScaleDto> GradeScales { get; init; } = new();
+        public List<LevelScaleDto>? LevelScales { get; init; }
         public int? MinHoursToChooseDepartment { get; init; }
         public int? MinHoursToChooseSpecialization { get; init; }
         public int? TotalHoursToCompleteDegree { get; init; }
@@ -1443,6 +1449,14 @@ public class DataSeed : IDataSeed
         public int? MinCreditHoursForGraduationProject { get; init; }
         public decimal? CourseWorkGrade { get; init; }
         public decimal? FinalExamGrade { get; init; }
+        public int? ThesisCreditHours { get; init; }
+        public bool? HasComprehensiveExam { get; init; }
+    }
+
+    private record LevelScaleDto
+    {
+        public int Level { get; init; }
+        public int MinHours { get; init; }
     }
 
     private record BylawCourseSeedDto

@@ -4,7 +4,6 @@ public class UpdateBylawDetailsDto
 {
     public string? Name { get; set; }
     public string? NameAr { get; set; }
-    public int? Version { get; set; }
     public string? Description { get; set; }
     public string? DescriptionAr { get; set; }
 }

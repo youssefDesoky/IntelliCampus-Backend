@@ -36,6 +36,6 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
 
         builder.Property(s => s.StudentType)
             .HasConversion<int>()
-            .HasDefaultValue(IntelliCampus.Domain.Entities.Enums.StudentType.UnderGrad);
+            .HasDefaultValue(IntelliCampus.Domain.Entities.Enums.StudentType.Bachelor);
     }
 }

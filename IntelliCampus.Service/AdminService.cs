@@ -186,13 +186,13 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
     {
         return (adminRole?.ToLowerInvariant()) switch
         {
-            "undergrad" or "under_grad" or "admin_undergrad" => "Admin_UnderGrad",
+            "Bachelor" or "bachelor" or "Admin_Bachelor" => "Admin_Bachelor",
             "masters" or "postgrad" or "post_grad" or "admin_masters" => "Admin_Masters",
             "phd" or "admin_phd" => "Admin_PhD",
             "diploma" or "admin_diploma" => "Admin_Diploma",
             "academicstaff" or "academic_staff" or "admin_academicstaff" => "Admin_AcademicStaff",
             "superadmin" => "SuperAdmin",
-            _ => "Admin_UnderGrad"
+            _ => "Admin_Bachelor"
         };
     }
 

@@ -6,4 +6,6 @@ public class UpdateBylawRequirementsDto
     public int? MinCreditHoursPerSemester { get; set; }
     public int? MaxCreditHoursPerSemester { get; set; }
     public int? SummerMaxCreditHours { get; set; }
+    public int? ThesisCreditHours { get; set; }
+    public bool? HasComprehensiveExam { get; set; }
 }

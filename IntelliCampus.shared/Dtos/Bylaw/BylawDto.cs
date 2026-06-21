@@ -7,7 +7,6 @@ public class BylawDto
     public int BylawId { get; set; }
     public string Name { get; set; } = null!;
     public string? NameAr { get; set; }
-    public int Version { get; set; }
     public string? Description { get; set; }
     public string? DescriptionAr { get; set; }
     public string? FileUrl { get; set; }
@@ -31,6 +30,10 @@ public class BylawDto
     public decimal? ProbationThreshold { get; set; }
     public int? ProbationRegistrationLimit { get; set; }
     public int? MinCreditHoursForGraduationProject { get; set; }
+    public decimal? CourseWorkGrade { get; set; }
+    public decimal? FinalExamGrade { get; set; }
+    public int? ThesisCreditHours { get; set; }
+    public bool? HasComprehensiveExam { get; set; }
     public string Type { get; set; } = null!;
     public List<BylawCourseDto>? BylawCourses { get; set; }
 }

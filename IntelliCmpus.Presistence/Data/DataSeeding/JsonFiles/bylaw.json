@@ -3,7 +3,6 @@
     "name": "FCIAI Grading Policy - Bachelor",
     "nameAr": "سياسة تقييم كلية الحاسبات والذكاء الاصطناعي - بكالوريوس",
     "type": "Bachelor",
-    "version": 2,
     "description": "Standard grading scale for Undergraduate programs",
     "isActive": true,
     "gradeScales": [
@@ -36,7 +35,6 @@
     "name": "FCIAI Grading Policy - Master",
     "nameAr": "سياسة تقييم كلية الحاسبات والذكاء الاصطناعي - ماجستير",
     "type": "Master",
-    "version": 1,
     "description": "Grading policy for Master's programs",
     "isActive": true,
     "gradeScales": [
@@ -65,7 +63,6 @@
     "name": "FCIAI Grading Policy - PhD",
     "nameAr": "سياسة تقييم كلية الحاسبات والذكاء الاصطناعي - دكتوراه",
     "type": "PhD",
-    "version": 1,
     "description": "Grading policy for PhD programs",
     "isActive": true,
     "gradeScales": [

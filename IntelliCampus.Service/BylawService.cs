@@ -68,7 +68,6 @@ public class BylawService : IBylawService
             Name = dto.Name,
             Type = Enum.TryParse<BylawType>(dto.Type, true, out var parsedType) ? parsedType
                 : throw new InvalidOperationException($"Invalid bylaw type: {dto.Type}"),
-            Version = dto.Version,
             Description = dto.Description,
             DescriptionAr = dto.DescriptionAr,
             IsActive = true,
@@ -293,8 +292,6 @@ public class BylawService : IBylawService
             bylaw.Name = dto.Name;
         if (dto.NameAr is not null)
             bylaw.NameAr = dto.NameAr;
-        if (dto.Version.HasValue)
-            bylaw.Version = dto.Version.Value;
         if (dto.Description is not null)
             bylaw.Description = dto.Description;
 
@@ -320,6 +317,10 @@ public class BylawService : IBylawService
             bylaw.Settings.MaxCreditHoursPerSemester = dto.MaxCreditHoursPerSemester.Value;
         if (dto.SummerMaxCreditHours.HasValue)
             bylaw.Settings.SummerMaxCreditHours = dto.SummerMaxCreditHours.Value;
+        if (dto.ThesisCreditHours.HasValue)
+            bylaw.Settings.ThesisCreditHours = dto.ThesisCreditHours.Value;
+        if (dto.HasComprehensiveExam.HasValue)
+            bylaw.Settings.HasComprehensiveExam = dto.HasComprehensiveExam.Value;
 
         await _unitOfWork.SaveChangesAsync();
 
@@ -504,7 +505,6 @@ public class BylawService : IBylawService
             BylawId = bylaw.BylawId,
             Name = bylaw.Name,
             NameAr = bylaw.NameAr,
-            Version = bylaw.Version,
             Description = bylaw.Description,
             DescriptionAr = bylaw.DescriptionAr,
             FileUrl = _urlResolver.Resolve(bylaw.FileUrl),
@@ -544,6 +544,10 @@ public class BylawService : IBylawService
             ProbationThreshold = bylaw.Settings.ProbationThreshold,
             ProbationRegistrationLimit = bylaw.Settings.ProbationRegistrationLimit,
             MinCreditHoursForGraduationProject = bylaw.Settings.MinCreditHoursForGraduationProject,
+            CourseWorkGrade = bylaw.Settings.CourseWorkGrade,
+            FinalExamGrade = bylaw.Settings.FinalExamGrade,
+            ThesisCreditHours = bylaw.Settings.ThesisCreditHours,
+            HasComprehensiveExam = bylaw.Settings.HasComprehensiveExam,
             Type = bylaw.Type.ToString()
         };
     }

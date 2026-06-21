@@ -21,12 +21,12 @@ public class ScheduleController(IScheduleService scheduleService) : ControllerBa
     }
 
     [HttpGet("student/{studentId}")]
-    [Authorize(Roles = "Admin_UnderGrad,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
+    [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<IActionResult> GetByStudentId(int studentId)
         => Ok(await scheduleService.GetByStudentIdAsync(studentId));
 
     [HttpGet("my-schedule")]
-    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Student_Diploma")]
+    [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<IActionResult> GetMySchedule([FromQuery(Name = "type")] ScheduleType[]? types)
     {
         if (types is null || types.Length == 0)
@@ -36,7 +36,7 @@ public class ScheduleController(IScheduleService scheduleService) : ControllerBa
     }
 
     [HttpGet("my-schedule/export")]
-    [Authorize(Roles = "Student_UnderGrad,Student_Masters,Student_PhD,Student_Diploma")]
+    [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<IActionResult> ExportMySchedule([FromQuery(Name = "type")] ScheduleType[]? types)
     {
         var pdf = await scheduleService.ExportSchedulePdfAsync(UserId, types);
