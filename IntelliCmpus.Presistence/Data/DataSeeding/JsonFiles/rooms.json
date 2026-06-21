@@ -3,7 +3,7 @@
     "roomName": "Hall-1",
     "roomNameAr": "قاعة 1",
     "capacity": 100,
-    "type": "Lecture Hall",
+    "type": "Hall",
     "location": "Building A, Floor 1",
     "locationAr": "مبنى أ، الطابق الأول"
   },
@@ -11,7 +11,7 @@
     "roomName": "Hall-2",
     "roomNameAr": "قاعة 2",
     "capacity": 80,
-    "type": "Lecture Hall",
+    "type": "Hall",
     "location": "Building A, Floor 2",
     "locationAr": "مبنى أ، الطابق الثاني"
   },
@@ -19,7 +19,7 @@
     "roomName": "Hall-3",
     "roomNameAr": "قاعة 3",
     "capacity": 60,
-    "type": "Lecture Hall",
+    "type": "Hall",
     "location": "Building A, Floor 3",
     "locationAr": "مبنى أ، الطابق الثالث"
   },
@@ -75,7 +75,7 @@
     "roomName": "Auditorium-A",
     "roomNameAr": "مدرج أ",
     "capacity": 200,
-    "type": "Auditorium",
+    "type": "Hall",
     "location": "Building A, Ground Floor",
     "locationAr": "مبنى أ، الطابق الأرضي"
   }
