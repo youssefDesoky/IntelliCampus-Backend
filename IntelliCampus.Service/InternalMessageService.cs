@@ -20,12 +20,16 @@ public class InternalMessageService : IInternalMessageService
         _notificationService = notificationService;
     }
 
-    public async Task<InternalMessageDto> SendMessageAsync(int senderId, int recipientId, string subject, string body)
+    public async Task<InternalMessageDto> SendMessageAsync(int senderId, string recipientEmail, string subject, string body)
     {
+        var recipient = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(
+            new UserByEmailSpec(recipientEmail))
+            ?? throw new UserNotFoundException($"User with email '{recipientEmail}' not found");
+
         var message = new InternalMessage
         {
             SenderId = senderId,
-            RecipientId = recipientId,
+            RecipientId = recipient.UserId,
             Subject = subject,
             Body = body,
             SentAt = DateTime.UtcNow
@@ -39,7 +43,7 @@ public class InternalMessageService : IInternalMessageService
         {
             var sender = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(senderId);
             await _notificationService.SendAsync(
-                recipientId,
+                recipient.UserId,
                 NotificationType.NewMessage,
                 $"New message: {subject}",
                 title: sender?.FullName ?? "Unknown",

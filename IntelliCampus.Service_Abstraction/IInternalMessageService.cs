@@ -4,7 +4,7 @@ namespace IntelliCampus.Service_Abstraction;
 
 public interface IInternalMessageService
 {
-    Task<InternalMessageDto> SendMessageAsync(int senderId, int recipientId, string subject, string body);
+    Task<InternalMessageDto> SendMessageAsync(int senderId, string recipientEmail, string subject, string body);
     Task<IEnumerable<InternalMessageDto>> GetInboxMessagesAsync(int userId);
     Task<IEnumerable<InternalMessageDto>> GetSentMessagesAsync(int userId);
     Task MarkAsReadAsync(int userId, int messageId);

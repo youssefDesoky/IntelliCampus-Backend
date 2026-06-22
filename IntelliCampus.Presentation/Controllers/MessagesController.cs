@@ -16,7 +16,7 @@ public class MessagesController(IInternalMessageService messageService) : Contro
     [HttpPost]
     public async Task<IActionResult> Send([FromBody] SendMessageDto dto)
     {
-        var result = await messageService.SendMessageAsync(UserId, dto.RecipientId, dto.Subject, dto.Body);
+        var result = await messageService.SendMessageAsync(UserId, dto.RecipientEmail, dto.Subject, dto.Body);
         return Ok(result);
     }
 
