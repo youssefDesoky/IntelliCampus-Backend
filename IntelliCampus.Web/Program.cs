@@ -128,6 +128,7 @@ builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<IAttendanceExcuseService, AttendanceExcuseService>();
+builder.Services.AddScoped<IFacultyService, FacultyService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddSingleton<INotificationStreamService, NotificationStreamService>();
 builder.Services.AddHostedService<RouterInitializerService>();

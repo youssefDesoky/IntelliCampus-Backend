@@ -1,18 +1,18 @@
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace IntelliCampus.Presistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddSpecializationMaxCapacity : Migration
+    public partial class AddLoanFromFacultyId : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "MaxCapacity",
-                table: "Specializations",
+                name: "LoanFromFacultyId",
+                table: "LoanInstructors",
                 type: "int",
                 nullable: true);
         }
@@ -21,8 +21,8 @@ namespace IntelliCampus.Presistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "MaxCapacity",
-                table: "Specializations");
+                name: "LoanFromFacultyId",
+                table: "LoanInstructors");
         }
     }
 }

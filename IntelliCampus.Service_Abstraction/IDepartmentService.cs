@@ -10,4 +10,5 @@ public interface IDepartmentService
     Task<DepartmentDto?> UpdateAsync(int departmentId, UpdateDepartmentDto dto);
     Task<bool> DeleteAsync(int departmentId);
     Task<DepartmentDto?> UpdateRegistrationSettingsAsync(int departmentId, DepartmentRegistrationSettingsDto dto);
+    Task<IEnumerable<DepartmentDto>> UpdateAllRegistrationSettingsAsync(DepartmentRegistrationSettingsDto dto);
 }

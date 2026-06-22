@@ -49,9 +49,9 @@ public class InstructorsController : ControllerBase
     }
 
     [HttpGet("professors")]
-    public async Task<ActionResult<IEnumerable<InstructorDto>>> GetProfessors()
+    public async Task<ActionResult<IEnumerable<InstructorDto>>> GetProfessors([FromQuery] int? departmentId = null, [FromQuery] int? facultyId = null)
     {
-        var professors = await _instructorService.GetProfessorsAsync();
+        var professors = await _instructorService.GetProfessorsAsync(departmentId, facultyId);
         return Ok(professors);
     }
 

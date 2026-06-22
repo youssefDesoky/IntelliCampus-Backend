@@ -58,7 +58,9 @@ public class ElectiveBucketService : IElectiveBucketService
             await _unitOfWork.SaveChangesAsync();
         }
 
-        var students = await Students.GetAllAsync(new StudentsByBylawAndDepartmentSpec(dto.BylawId, dto.DepartmentId));
+        var students = dto.DepartmentId.HasValue
+            ? await Students.GetAllAsync(new StudentsByBylawAndDepartmentSpec(dto.BylawId, dto.DepartmentId.Value))
+            : new List<Student>();
         foreach (var student in students)
         {
             Progress.Add(new StudentElectiveBucketProgress

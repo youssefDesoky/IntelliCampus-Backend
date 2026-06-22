@@ -48,9 +48,9 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         return instructors.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<InstructorDto>> GetProfessorsAsync()
+    public async Task<IEnumerable<InstructorDto>> GetProfessorsAsync(int? departmentId = null, int? facultyId = null)
     {
-        var spec = new ProfessorsSpec();
+        var spec = new ProfessorsSpec(departmentId, facultyId);
         var professors = await Instructors.GetAllAsync(spec);
         return professors.Select(MapToDto);
     }
@@ -88,7 +88,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
 
         Instructor instructor;
 
-        if (dto.LoanFromDepartmentId.HasValue || dto.LoanProfessorId is not null)
+        if (dto.LoanFromDepartmentId.HasValue || dto.LoanFromFacultyId.HasValue || dto.LoanProfessorId is not null)
         {
             instructor = new LoanInstructor
             {
@@ -113,6 +113,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
                 ContractEndDate = ParseDate(dto.ContractEndDate),
                 Secondment = dto.Secondment,
                 LoanFromDepartmentId = dto.LoanFromDepartmentId,
+                LoanFromFacultyId = dto.LoanFromFacultyId,
                 LoanProfessorId = dto.LoanProfessorId
             };
         }
@@ -199,6 +200,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         if (instructor is LoanInstructor loanInstructor)
         {
             if (dto.LoanFromDepartmentId.HasValue) loanInstructor.LoanFromDepartmentId = dto.LoanFromDepartmentId;
+            if (dto.LoanFromFacultyId.HasValue) loanInstructor.LoanFromFacultyId = dto.LoanFromFacultyId;
             if (dto.LoanProfessorId is not null) loanInstructor.LoanProfessorId = dto.LoanProfessorId;
         }
 
@@ -349,6 +351,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
                 Secondment = instructor.Secondment,
                 LoanFromDepartmentId = loanInstructor.LoanFromDepartmentId,
                 LoanFromDepartmentName = loanInstructor.LoanFromDepartment?.DepartmentName,
+                LoanFromFacultyId = loanInstructor.LoanFromFacultyId,
                 LoanProfessorId = loanInstructor.LoanProfessorId,
                 Roles = instructor.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
             };

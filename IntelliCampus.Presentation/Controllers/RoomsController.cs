@@ -26,9 +26,17 @@ public class RoomsController : ControllerBase
     }
 
     [HttpGet("types")]
-    public ActionResult<IEnumerable<string>> GetTypes()
+    public ActionResult<IEnumerable<object>> GetTypes()
     {
-        var types = Enum.GetNames<RoomType>();
+        var types = new[]
+        {
+            new { value = "Hall", label = "Hall", labelAr = "قاعة" },
+            new { value = "Lab", label = "Lab", labelAr = "معمل" },
+            new { value = "Classroom", label = "Classroom", labelAr = "فصل دراسي" },
+            new { value = "Office", label = "Office", labelAr = "مكتب" },
+            new { value = "Conference", label = "Conference Room", labelAr = "قاعة مؤتمرات" },
+            new { value = "CommonRooms", label = "Common Rooms", labelAr = "غرف مشتركة" },
+        };
         return Ok(types);
     }
 

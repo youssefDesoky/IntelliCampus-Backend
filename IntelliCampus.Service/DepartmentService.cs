@@ -154,6 +154,25 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
         return true;
     }
 
+    public async Task<IEnumerable<DepartmentDto>> UpdateAllRegistrationSettingsAsync(DepartmentRegistrationSettingsDto dto)
+    {
+        var allDepts = await Departments.GetAllAsync();
+
+        foreach (var department in allDepts)
+        {
+            department.RegistrationSettings = new DepartmentRegistrationSettings
+            {
+                RegistrationStartDate = dto.RegistrationStartDate,
+                RegistrationEndDate = dto.RegistrationEndDate,
+                AllowedLevels = dto.AllowedLevels ?? new List<int>()
+            };
+        }
+
+        await _unitOfWork.SaveChangesAsync();
+
+        return allDepts.Select(MapToDto);
+    }
+
     public async Task<DepartmentDto?> UpdateRegistrationSettingsAsync(int departmentId, DepartmentRegistrationSettingsDto dto)
     {
         var spec = new DepartmentSpec(departmentId);
