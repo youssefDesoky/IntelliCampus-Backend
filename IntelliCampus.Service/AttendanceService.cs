@@ -16,9 +16,7 @@ public class AttendanceService : IAttendanceService
     private readonly INotificationService _notificationService;
 
     private const decimal AttendanceThreshold = 75m;
-    private const int QrValidSeconds = 15;
-    private const int MaxIterations = 4;
-    private const int IterationWindowSeconds = 60;
+    private const int QrValidSeconds = 45;
 
     public AttendanceService(
         IUnitOfWork unitOfWork,
@@ -51,14 +49,6 @@ public class AttendanceService : IAttendanceService
         var student = await Students.GetByIdAsync(studentId);
         if (student is null)
             throw new StudentNotFoundException(studentId);
-
-        var iterationSpec = new QrTokenSpec(studentId, countIterations: true);
-        var recentTokens = await QrTokens.GetAllAsync(iterationSpec);
-        var iteration = recentTokens.Count() + 1;
-
-        if (iteration > MaxIterations)
-            throw new InvalidOperationException(
-                "QR refresh limit reached. Please tap Reload.");
 
         var now = DateTime.UtcNow;
 
@@ -95,8 +85,7 @@ public class AttendanceService : IAttendanceService
             QrPayload = qrPayloadEncoded,
             ExpiresAt = qrToken.ExpiresAt,
             ExpiresInSeconds = QrValidSeconds,
-            Iteration = iteration,
-            IsFinal = iteration >= MaxIterations
+
         };
     }
 
