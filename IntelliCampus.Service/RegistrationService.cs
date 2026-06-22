@@ -146,7 +146,8 @@ public class RegistrationService : IRegistrationService
         await _notificationService.SendAsync(
             studentId,
             NotificationType.CourseRegistered,
-            $"You have successfully registered for {course.CourseName}.");
+            $"You have successfully registered for {course.CourseName}.",
+            clickUrl: $"/courses/{dto.CourseId}");
 
         // Sync schedule entry for the registered class
         await _scheduleService.SyncFromCourseRegistrationAsync(studentId, classEntity.ClassId);

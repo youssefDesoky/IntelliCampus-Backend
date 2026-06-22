@@ -156,7 +156,8 @@ public class MaterialService(
             await _notificationService.SendToManyAsync(
                 studentIds,
                 NotificationType.MaterialUploaded,
-                $"New material uploaded: '{dto.Title}' in {course.CourseName}.");
+                $"New material uploaded: '{dto.Title}' in {course.CourseName}.",
+                clickUrl: $"/courses/{dto.CourseId}/materials/{material.MaterialId}");
         }
 
         return new MaterialDto

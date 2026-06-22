@@ -243,7 +243,8 @@ public class ExamService : IExamService
             await _notificationService.SendToManyAsync(
                 studentIds,
                 NotificationType.ScheduleUpdated,
-                studentMessage);
+                studentMessage,
+                clickUrl: $"/courses/{exam.CourseId}/exams/{exam.ExamId}");
 
             // High-priority reminders
             foreach (var studentId in studentIds)
@@ -275,7 +276,8 @@ public class ExamService : IExamService
             await _notificationService.SendToManyAsync(
                 instructorIds,
                 NotificationType.ScheduleUpdated,
-                instructorMessage);
+                instructorMessage,
+                clickUrl: $"/courses/{exam.CourseId}/exams/{exam.ExamId}");
         }
     }
 

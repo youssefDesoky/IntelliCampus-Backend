@@ -493,7 +493,8 @@ public class QuizService : IQuizService
         await _notificationService.SendAsync(
             studentId,
             NotificationType.QuizSubmitted,
-            $"Your quiz '{quiz.Title}' was submitted successfully.");
+            $"Your quiz '{quiz.Title}' was submitted successfully.",
+            clickUrl: $"/courses/{courseId}/quizzes/{quiz.QuizId}");
 
         var maxS = allQ.Sum(q => q.Points);
         return new QuizSubmitResponseDto

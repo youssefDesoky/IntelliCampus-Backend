@@ -717,7 +717,8 @@ public class GradeService : IGradeService
         await _notificationService.SendAsync(
             complaint.StudentId,
             NotificationType.GradeComplaintReviewed,
-            $"Your grade complaint for '{assignment.Title}' has been reviewed by your instructor.");
+            $"Your grade complaint for '{assignment.Title}' has been reviewed by your instructor.",
+            clickUrl: $"/courses/{assignment.CourseId}/assignments/{submission.AssignmentId}");
 
         return MapComplaintToDto(complaint, assignment.Title);
     }

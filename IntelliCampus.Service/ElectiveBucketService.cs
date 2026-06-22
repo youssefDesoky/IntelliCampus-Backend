@@ -234,7 +234,8 @@ public class ElectiveBucketService : IElectiveBucketService
             await _notificationService.SendAsync(
                 studentId,
                 NotificationType.ElectiveBucketLocked,
-                $"Elective bucket \"{bucket.Name}\" requirements have been met and the bucket is now locked.");
+                $"Elective bucket \"{bucket.Name}\" requirements have been met and the bucket is now locked.",
+                clickUrl: "/electives");
         }
     }
 
