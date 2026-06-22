@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using IntelliCampus.Service_Abstraction;
 
 namespace IntelliCampus.Presentation.Hubs;
 
+[Authorize]
 public class ChatHub : Hub
 {
     private readonly IChatService _chatService;
