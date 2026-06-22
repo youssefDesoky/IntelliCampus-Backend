@@ -22,7 +22,7 @@ public class InternalMessageService : IInternalMessageService
         _inboxHub = inboxHub;
     }
 
-    public async Task<InternalMessageDto> SendMessageAsync(int senderId, string recipientEmail, string subject, string body)
+    public async Task<InternalMessageDto> SendMessageAsync(int senderId, string recipientEmail, string subject, string body, int? parentMessageId = null)
     {
         var recipient = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(
             new UserByEmailSpec(recipientEmail))
@@ -32,6 +32,7 @@ public class InternalMessageService : IInternalMessageService
         {
             SenderId = senderId,
             RecipientId = recipient.UserId,
+            ParentMessageId = parentMessageId,
             Subject = subject,
             Body = body,
             SentAt = DateTime.UtcNow
@@ -43,6 +44,8 @@ public class InternalMessageService : IInternalMessageService
 
         var dto = await MapToDtoAsync(message);
 
+        await _inboxHub.NotifyNewMessage(recipient.UserId, dto);
+
         try
         {
             var sender = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(senderId);
@@ -52,7 +55,6 @@ public class InternalMessageService : IInternalMessageService
                 $"New message: {subject}",
                 title: sender?.FullName ?? "Unknown",
                 clickUrl: "/messages/inbox");
-            await _inboxHub.NotifyNewMessage(recipient.UserId, dto);
         }
         catch
         {
@@ -63,16 +65,34 @@ public class InternalMessageService : IInternalMessageService
 
     public async Task<IEnumerable<InternalMessageDto>> GetInboxMessagesAsync(int userId)
     {
-        var spec = InternalMessageSpec.Inbox(userId, includeRead: true);
-        var messages = await _unitOfWork.GetRepository<InternalMessage, int>().GetAllAsync(spec);
-        return await MapToDtoListAsync(messages);
+        var repo = _unitOfWork.GetRepository<InternalMessage, int>();
+
+        // Get root messages where user is recipient
+        var roots = await repo.GetAllAsync(InternalMessageSpec.InboxRoots(userId));
+        var rootIds = roots.Select(r => r.MessageId).ToList();
+
+        // Get all replies to those roots that user can see
+        var replies = rootIds.Any()
+            ? await repo.GetAllAsync(InternalMessageSpec.RepliesToRoots(rootIds, userId))
+            : new List<InternalMessage>();
+
+        return await BuildThreadsAsync(roots, replies);
     }
 
     public async Task<IEnumerable<InternalMessageDto>> GetSentMessagesAsync(int userId)
     {
-        var spec = InternalMessageSpec.Sent(userId);
-        var messages = await _unitOfWork.GetRepository<InternalMessage, int>().GetAllAsync(spec);
-        return await MapToDtoListAsync(messages);
+        var repo = _unitOfWork.GetRepository<InternalMessage, int>();
+
+        // Get root messages where user is sender
+        var roots = await repo.GetAllAsync(InternalMessageSpec.SentRoots(userId));
+        var rootIds = roots.Select(r => r.MessageId).ToList();
+
+        // Get all replies to those roots that user can see
+        var replies = rootIds.Any()
+            ? await repo.GetAllAsync(InternalMessageSpec.RepliesToRoots(rootIds, userId))
+            : new List<InternalMessage>();
+
+        return await BuildThreadsAsync(roots, replies);
     }
 
     public async Task MarkAsReadAsync(int userId, int messageId)
@@ -108,12 +128,39 @@ public class InternalMessageService : IInternalMessageService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    private async Task<IEnumerable<InternalMessageDto>> MapToDtoListAsync(IEnumerable<InternalMessage> messages)
+    private async Task<IEnumerable<InternalMessageDto>> BuildThreadsAsync(
+        IEnumerable<InternalMessage> roots, IEnumerable<InternalMessage> replies)
     {
-        var results = new List<InternalMessageDto>();
-        foreach (var m in messages)
-            results.Add(await MapToDtoAsync(m));
-        return results;
+        var replyList = replies.ToList();
+        var rootDtos = new List<InternalMessageDto>();
+
+        foreach (var root in roots)
+        {
+            var rootDto = await MapToDtoAsync(root);
+            foreach (var reply in replyList.Where(r => r.ParentMessageId == root.MessageId))
+            {
+                rootDto.Replies.Add(await MapToDtoAsync(reply));
+            }
+            rootDtos.Add(rootDto);
+        }
+
+        // Sort by latest activity in thread (root SentAt or latest reply SentAt)
+        return rootDtos.OrderByDescending(d =>
+        {
+            var latest = d.Replies.Any()
+                ? d.Replies.Max(r => ParseSentAt(r.SentAt))
+                : ParseSentAt(d.SentAt);
+            return latest;
+        });
+    }
+
+    private static DateTime ParseSentAt(string sentAt)
+    {
+        if (DateTime.TryParseExact(sentAt, "dd MM yyyy hh:mm:ss",
+            System.Globalization.CultureInfo.InvariantCulture,
+            System.Globalization.DateTimeStyles.None, out var dt))
+            return dt;
+        return DateTime.MinValue;
     }
 
     private async Task<InternalMessageDto> MapToDtoAsync(InternalMessage m)
@@ -129,8 +176,11 @@ public class InternalMessageService : IInternalMessageService
             Body = m.Body,
             SenderId = m.SenderId,
             SenderName = sender?.FullName ?? "Unknown",
+            SenderEmail = sender?.Email ?? "",
             RecipientId = m.RecipientId,
             RecipientName = recipient?.FullName ?? "Unknown",
+            RecipientEmail = recipient?.Email ?? "",
+            ParentMessageId = m.ParentMessageId,
             SentAt = m.SentAt.ToString("dd MM yyyy hh:mm:ss"),
             IsRead = m.IsRead,
             ReadAt = m.ReadAt?.ToString("dd MM yyyy hh:mm:ss")

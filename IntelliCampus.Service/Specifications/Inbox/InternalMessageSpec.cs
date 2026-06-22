@@ -35,4 +35,44 @@ public sealed class InternalMessageSpec : BaseSpecifications<InternalMessage>
         spec.AddOrderByDescending(m => m.SentAt);
         return spec;
     }
+
+    /// <summary>
+    /// Root messages received by the user.
+    /// </summary>
+    public static InternalMessageSpec InboxRoots(int userId)
+    {
+        var spec = new InternalMessageSpec(m =>
+            m.RecipientId == userId &&
+            !m.IsDeletedByRecipient &&
+            m.ParentMessageId == null);
+        spec.AddOrderByDescending(m => m.SentAt);
+        return spec;
+    }
+
+    /// <summary>
+    /// Root messages sent by the user.
+    /// </summary>
+    public static InternalMessageSpec SentRoots(int userId)
+    {
+        var spec = new InternalMessageSpec(m =>
+            m.SenderId == userId &&
+            !m.IsDeletedBySender &&
+            m.ParentMessageId == null);
+        spec.AddOrderByDescending(m => m.SentAt);
+        return spec;
+    }
+
+    /// <summary>
+    /// All replies to the given root messages that the user can see.
+    /// </summary>
+    public static InternalMessageSpec RepliesToRoots(IEnumerable<int> rootIds, int userId)
+    {
+        var ids = rootIds.ToList();
+        var spec = new InternalMessageSpec(m =>
+            ids.Contains(m.ParentMessageId ?? 0) &&
+            ((m.SenderId == userId && !m.IsDeletedBySender) ||
+             (m.RecipientId == userId && !m.IsDeletedByRecipient)));
+        spec.AddOrderBy(m => m.SentAt);
+        return spec;
+    }
 }
