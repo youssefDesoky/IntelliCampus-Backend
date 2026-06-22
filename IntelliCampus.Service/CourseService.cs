@@ -210,6 +210,28 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         return true;
     }
 
+    public async Task<IEnumerable<CoursePrerequisiteDto>> GetAllWithPrerequisitesAsync()
+    {
+        var courses = await Courses.GetAllAsync(new CourseSpec());
+
+        return courses.Select(c => new CoursePrerequisiteDto
+        {
+            CourseId = c.CourseId,
+            CourseName = c.CourseName,
+            CourseCode = c.CourseCode,
+            CreditHours = c.CreditHours,
+            Prerequisites = c.Prerequisites?
+                .Select(p => p.PrerequisiteCourse)
+                .Where(p => p is not null)
+                .Select(p => new PrerequisiteItemDto
+                {
+                    Code = p!.CourseCode ?? p.CourseId.ToString(),
+                    Title = p.CourseName
+                })
+                .ToList() ?? []
+        });
+    }
+
     public async Task<IEnumerable<CoursePrerequisiteDto>?> GetPrerequisitesAsync(int courseId)
     {
         var course = await Courses.GetByIdAsync(new CourseSpec(courseId));

@@ -88,6 +88,14 @@ public class CoursesController : ControllerBase
         return Ok(courses);
     }
 
+    [HttpGet("prerequisites")]
+    [Authorize]
+    public async Task<ActionResult<IEnumerable<CoursePrerequisiteDto>>> GetAllWithPrerequisites()
+    {
+        var result = await _courseService.GetAllWithPrerequisitesAsync();
+        return Ok(result);
+    }
+
     [HttpGet("{courseId}/prerequisites")]
     [Authorize]
     public async Task<ActionResult<IEnumerable<CoursePrerequisiteDto>>> GetPrerequisites(int courseId)
