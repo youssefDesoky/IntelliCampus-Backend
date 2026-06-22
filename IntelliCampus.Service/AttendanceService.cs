@@ -418,7 +418,8 @@ public class AttendanceService : IAttendanceService
                 studentId,
                 NotificationType.AttendanceWarning,
                 $"Warning: Your attendance in {groupCode} dropped to {percentage}%. " +
-                $"Minimum required is {AttendanceThreshold}%.");
+                $"Minimum required is {AttendanceThreshold}%.",
+                clickUrl: $"/courses/{courseId}/attendance");
         }
     }
 }

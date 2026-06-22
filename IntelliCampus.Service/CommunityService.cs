@@ -156,7 +156,7 @@ public class CommunityService : ICommunityService
                 post.PostId, routingResponse.Branch, string.Join("; ", candidateDetails));
 
             var message = "You are qualified to answer this question";
-            await _notificationService.SendToManyAsync(userIds, NotificationType.QuestionRouting, message);
+            await _notificationService.SendToManyAsync(userIds, NotificationType.QuestionRouting, message, clickUrl: $"/community/questions/{post.PostId}");
 
             _logger.LogInformation(
                 "Notified {Count} candidates for post {PostId} (branch={Branch})",
