@@ -8,6 +8,8 @@ using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Settings;
 using IntelliCampus.Web.CustomMiddleWares;
+using IntelliCampus.Web.Modules.Inbox.Data;
+using IntelliCampus.Web.Modules.Inbox.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -48,8 +50,10 @@ builder.Services.AddControllers()
     }); builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add DbContext
+// Add DbContexts
 builder.Services.AddDbContext<IntelliCampusDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<InboxDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Configure JWT Settings
@@ -149,6 +153,7 @@ builder.Services.AddScoped<IElectiveBucketService, ElectiveBucketService>();
 builder.Services.AddScoped<IDataSeed, DataSeed>();
 builder.Services.AddScoped<IInstructorScheduleService, InstructorScheduleService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IInternalMessageService, InternalMessageService>();
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = actionContext =>
