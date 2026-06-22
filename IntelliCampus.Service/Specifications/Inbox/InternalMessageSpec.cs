@@ -1,9 +1,8 @@
 using System.Linq.Expressions;
-using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Domain.Entities;
 using IntelliCampus.Service.Specifications;
-using IntelliCampus.Web.Modules.Inbox.Models;
 
-namespace IntelliCampus.Web.Modules.Inbox.Specifications;
+namespace IntelliCampus.Service.Specifications;
 
 public sealed class InternalMessageSpec : BaseSpecifications<InternalMessage>
 {

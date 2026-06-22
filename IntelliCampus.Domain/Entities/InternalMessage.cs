@@ -1,15 +1,15 @@
-namespace IntelliCampus.Web.Modules.Inbox.Dtos;
+namespace IntelliCampus.Domain.Entities;
 
-public class InternalMessageDto
+public class InternalMessage
 {
     public int MessageId { get; set; }
     public string Subject { get; set; } = null!;
     public string Body { get; set; } = null!;
     public int SenderId { get; set; }
-    public string SenderName { get; set; } = null!;
     public int RecipientId { get; set; }
-    public string RecipientName { get; set; } = null!;
-    public DateTime SentAt { get; set; }
+    public DateTime SentAt { get; set; } = DateTime.UtcNow;
     public bool IsRead { get; set; }
     public DateTime? ReadAt { get; set; }
+    public bool IsDeletedBySender { get; set; }
+    public bool IsDeletedByRecipient { get; set; }
 }

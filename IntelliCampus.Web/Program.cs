@@ -8,8 +8,7 @@ using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Settings;
 using IntelliCampus.Web.CustomMiddleWares;
-using IntelliCampus.Web.Modules.Inbox.Data;
-using IntelliCampus.Web.Modules.Inbox.Services;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -53,9 +52,6 @@ builder.Services.AddSwaggerGen();
 // Add DbContexts
 builder.Services.AddDbContext<IntelliCampusDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddDbContext<InboxDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 // Configure JWT Settings
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 

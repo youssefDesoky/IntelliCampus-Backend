@@ -8,12 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
-    <Folder Include="Modules\Inbox\Controllers\" />
-    <Folder Include="Modules\Inbox\Data\" />
-    <Folder Include="Modules\Inbox\Dtos\" />
-    <Folder Include="Modules\Inbox\Models\" />
-    <Folder Include="Modules\Inbox\Services\" />
-    <Folder Include="Modules\Inbox\Specifications\" />
   </ItemGroup>
 
   <ItemGroup>

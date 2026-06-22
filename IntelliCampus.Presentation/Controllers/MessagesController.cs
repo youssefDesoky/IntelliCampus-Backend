@@ -1,9 +1,9 @@
 using System.Security.Claims;
-using IntelliCampus.Web.Modules.Inbox.Services;
+using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace IntelliCampus.Web.Modules.Inbox.Controllers;
+namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

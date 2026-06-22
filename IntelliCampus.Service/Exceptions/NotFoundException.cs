@@ -216,4 +216,14 @@
         public InstructorNotFoundException(int id) : base($"Instructor With Id {id} Is Not Found") { }
         public InstructorNotFoundException(string message) : base(message) { }
     }
+
+
+
+    public sealed class InternalMessageNotFoundException : NotFoundException
+    {
+        public InternalMessageNotFoundException(int id) : base($"Internal message With Id {id} Is Not Found") { }
+        public InternalMessageNotFoundException(string message) : base(message) { }
+    }
+
+
 }

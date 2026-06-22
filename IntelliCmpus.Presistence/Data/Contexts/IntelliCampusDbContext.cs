@@ -106,6 +106,9 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<ElectiveBucketCourse> ElectiveBucketCourses { get; set; }
     public DbSet<StudentElectiveBucketProgress> StudentElectiveBucketProgresses { get; set; }
 
+    // Inbox
+    public DbSet<InternalMessage> InternalMessages { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
