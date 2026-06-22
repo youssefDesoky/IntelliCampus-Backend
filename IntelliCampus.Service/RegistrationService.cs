@@ -52,10 +52,23 @@ public class RegistrationService : IRegistrationService
         if (course is null)
             throw new CourseNotFoundException($"Course with ID {dto.CourseId} not found.");
 
-        // Verify class exists and belongs to the course
-        var classEntity = await Classes.GetByIdAsync(new ClassByCourseSpec(dto.ClassId, dto.CourseId));
-        if (classEntity is null)
-            throw new ClassNotFoundException($"Class with ID {dto.ClassId} not found or does not belong to the specified course.");
+        // Determine the class to register into
+        Class classEntity;
+        if (dto.ClassId.HasValue && dto.ClassId > 0)
+        {
+            classEntity = await Classes.GetByIdAsync(new ClassByCourseSpec(dto.ClassId.Value, dto.CourseId));
+            if (classEntity is null)
+                throw new ClassNotFoundException($"Class with ID {dto.ClassId} not found or does not belong to the specified course.");
+        }
+        else
+        {
+            // No class specified — pick first available section, or fall back to the lecture
+            var allClasses = await Classes.GetAllAsync(new ClassByCourseSpec(dto.CourseId));
+            var matching = allClasses.FirstOrDefault(c => c.ClassType == ClassType.Lecture);
+            if (matching is null)
+                throw new ClassNotFoundException($"No class found for course with ID {dto.CourseId}.");
+            classEntity = matching;
+        }
 
         // Check if already registered
         var existingRegistration = await StudentCourses.GetByIdAsync(new StudentCourseSpec(studentId, dto.CourseId));
@@ -121,7 +134,7 @@ public class RegistrationService : IRegistrationService
         {
             StudentId = studentId,
             CourseId = dto.CourseId,
-            ClassId = dto.ClassId,
+            ClassId = classEntity.ClassId,
             Semester = semester,
             RegisteredAt = DateTime.UtcNow,
             Status = StudentCourseStatus.InProgress
@@ -136,7 +149,7 @@ public class RegistrationService : IRegistrationService
             $"You have successfully registered for {course.CourseName}.");
 
         // Sync schedule entry for the registered class
-        await _scheduleService.SyncFromCourseRegistrationAsync(studentId, dto.ClassId);
+        await _scheduleService.SyncFromCourseRegistrationAsync(studentId, classEntity.ClassId);
 
         // Auto-register the lecture in the schedule when registering for a section or lab
         if (classEntity.ClassType != ClassType.Lecture && lectureClass is not null)
@@ -147,7 +160,7 @@ public class RegistrationService : IRegistrationService
             StudentId = studentId,
             CourseId = dto.CourseId,
             CourseName = course.CourseName,
-            ClassId = dto.ClassId,
+            ClassId = classEntity.ClassId,
             ClassName = $"{classEntity.ClassType}",
             ProfessorName = lectureClass?.Instructor?.FullName,
             Semester = semester,

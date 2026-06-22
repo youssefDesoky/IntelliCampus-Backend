@@ -59,11 +59,11 @@ public class DepartmentsController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("{id}/registration-settings")]
+    [HttpPut("registration-settings")]
     [Authorize(Roles = "SuperAdmin")]
-    public async Task<ActionResult<DepartmentDto>> UpdateRegistrationSettings(int id, [FromBody] DepartmentRegistrationSettingsDto dto)
+    public async Task<ActionResult<IEnumerable<DepartmentDto>>> UpdateAllRegistrationSettings([FromBody] DepartmentRegistrationSettingsDto dto)
     {
-        var department = await _departmentService.UpdateRegistrationSettingsAsync(id, dto);
-        return Ok(department);
+        var departments = await _departmentService.UpdateAllRegistrationSettingsAsync(dto);
+        return Ok(departments);
     }
 }

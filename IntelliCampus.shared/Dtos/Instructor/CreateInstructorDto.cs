@@ -24,6 +24,7 @@ public class CreateInstructorDto
     public string? ContractStartDate { get; set; }
     public string? ContractEndDate { get; set; }
     public int? LoanFromDepartmentId { get; set; }
+    public int? LoanFromFacultyId { get; set; }
     public string? LoanProfessorId { get; set; }
     public string? Secondment { get; set; }
 }

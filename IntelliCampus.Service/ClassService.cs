@@ -464,6 +464,7 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
                 ContractEndDate = instructor.ContractEndDate?.ToString("dd MM yyyy"),
                 Secondment = instructor.Secondment,
                 LoanFromDepartmentId = loanInstructor.LoanFromDepartmentId,
+                LoanFromFacultyId = loanInstructor.LoanFromFacultyId,
                 LoanProfessorId = loanInstructor.LoanProfessorId,
                 Roles = instructor.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
             };

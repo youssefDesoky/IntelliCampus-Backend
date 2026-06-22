@@ -1,15 +1,33 @@
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace IntelliCampus.Presistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddSpecializationPrerequisites : Migration
+    public partial class FixMissingColumnsAndRelationships : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<int>(
+                name: "MaxCapacity",
+                table: "Specializations",
+                type: "int",
+                nullable: true);
+
+            migrationBuilder.AddColumn<int>(
+                name: "MaxCapacity",
+                table: "Departments",
+                type: "int",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "RegistrationSettings",
+                table: "Departments",
+                type: "nvarchar(max)",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "SpecializationPrerequisites",
                 columns: table => new
@@ -46,6 +64,18 @@ namespace IntelliCampus.Presistence.Migrations
         {
             migrationBuilder.DropTable(
                 name: "SpecializationPrerequisites");
+
+            migrationBuilder.DropColumn(
+                name: "MaxCapacity",
+                table: "Specializations");
+
+            migrationBuilder.DropColumn(
+                name: "MaxCapacity",
+                table: "Departments");
+
+            migrationBuilder.DropColumn(
+                name: "RegistrationSettings",
+                table: "Departments");
         }
     }
 }

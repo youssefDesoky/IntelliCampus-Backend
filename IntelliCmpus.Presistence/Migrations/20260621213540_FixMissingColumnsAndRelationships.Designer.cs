@@ -4,6 +4,7 @@ using IntelliCampus.Presistence.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260621213540_FixMissingColumnsAndRelationships")]
+    partial class FixMissingColumnsAndRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -727,7 +730,7 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Property<int>("BylawId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DepartmentId")
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
@@ -2269,9 +2272,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Property<int?>("LoanFromDepartmentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("LoanFromFacultyId")
-                        .HasColumnType("int");
-
                     b.Property<string>("LoanProfessorId")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -2711,7 +2711,8 @@ namespace IntelliCampus.Presistence.Migrations
                     b.HasOne("IntelliCampus.Domain.Entities.Department", "Department")
                         .WithMany("ElectiveBuckets")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Bylaw");
 

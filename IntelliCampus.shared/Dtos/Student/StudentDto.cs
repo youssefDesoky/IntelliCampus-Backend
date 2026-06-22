@@ -28,5 +28,6 @@ public class StudentDto
     public string? SpecializationName { get; set; }
     public StudentType StudentType { get; set; }
     public string? ProfileImage { get; set; }
+    public string? Section { get; set; }
     public List<string> Roles { get; set; } = [];
 }

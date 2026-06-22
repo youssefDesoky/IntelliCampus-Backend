@@ -324,7 +324,12 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
         var studentCourses = await StudentCourses.GetAllAsync(new CourseStudentsSpec(courseId));
 
-        return studentCourses.Select(sc => MapStudentToDto(sc.Student));
+        return studentCourses.Select(sc =>
+        {
+            var dto = MapStudentToDto(sc.Student);
+            dto.Section = sc.Class?.GroupCode;
+            return dto;
+        });
     }
 
     private StudentDto MapStudentToDto(Student student)

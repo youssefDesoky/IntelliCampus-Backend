@@ -7,7 +7,7 @@ public class ElectiveBucketDto
     public string? NameAr { get; set; }
     public int BylawId { get; set; }
     public string? BylawName { get; set; }
-    public int DepartmentId { get; set; }
+    public int? DepartmentId { get; set; }
     public string? DepartmentName { get; set; }
     public decimal RequiredCreditHours { get; set; }
     public int? RequiredCourseCount { get; set; }
