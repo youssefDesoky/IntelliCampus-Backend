@@ -17,5 +17,6 @@ public enum NotificationType
     Announcement                    = 12,
     Reminder                        = 13,
     QuestionRouting                 = 14,
-    ElectiveBucketLocked            = 15
+    ElectiveBucketLocked            = 15,
+    NewMessage                      = 16
 }

@@ -244,6 +244,8 @@ public class NotificationService : INotificationService
         NotificationType.Announcement => "Announcement",
         NotificationType.Reminder => "Reminder",
         NotificationType.QuestionRouting => "Question Routing",
+        NotificationType.ElectiveBucketLocked => "Elective Bucket Locked",
+        NotificationType.NewMessage => "New Message",
         _ => "Notification"
     };
 

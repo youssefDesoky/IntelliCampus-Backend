@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Shared.Dtos.Inbox;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,13 @@ namespace IntelliCampus.Web.Controllers;
 public class MessagesController(IInternalMessageService messageService) : ControllerBase
 {
     private int UserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+    [HttpPost]
+    public async Task<IActionResult> Send([FromBody] SendMessageDto dto)
+    {
+        var result = await messageService.SendMessageAsync(UserId, dto.RecipientId, dto.Subject, dto.Body);
+        return Ok(result);
+    }
 
     [HttpGet("inbox")]
     public async Task<IActionResult> GetInbox()

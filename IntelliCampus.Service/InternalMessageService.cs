@@ -1,22 +1,26 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Inbox;
 
+
 namespace IntelliCampus.Service;
 
 public class InternalMessageService : IInternalMessageService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly INotificationService _notificationService;
 
-    public InternalMessageService(IUnitOfWork unitOfWork)
+    public InternalMessageService(IUnitOfWork unitOfWork, INotificationService notificationService)
     {
         _unitOfWork = unitOfWork;
+        _notificationService = notificationService;
     }
 
-    public async Task SendMessageAsync(int senderId, int recipientId, string subject, string body)
+    public async Task<InternalMessageDto> SendMessageAsync(int senderId, int recipientId, string subject, string body)
     {
         var message = new InternalMessage
         {
@@ -30,6 +34,22 @@ public class InternalMessageService : IInternalMessageService
         var repo = _unitOfWork.GetRepository<InternalMessage, int>();
         repo.Add(message);
         await _unitOfWork.SaveChangesAsync();
+
+        try
+        {
+            var sender = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(senderId);
+            await _notificationService.SendAsync(
+                recipientId,
+                NotificationType.NewMessage,
+                $"New message: {subject}",
+                title: sender?.FullName ?? "Unknown",
+                clickUrl: "/messages/inbox");
+        }
+        catch
+        {
+        }
+
+        return await MapToDtoAsync(message);
     }
 
     public async Task<IEnumerable<InternalMessageDto>> GetInboxMessagesAsync(int userId)
