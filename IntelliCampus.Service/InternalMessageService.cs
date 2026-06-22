@@ -13,11 +13,13 @@ public class InternalMessageService : IInternalMessageService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly INotificationService _notificationService;
+    private readonly IInboxHubService _inboxHub;
 
-    public InternalMessageService(IUnitOfWork unitOfWork, INotificationService notificationService)
+    public InternalMessageService(IUnitOfWork unitOfWork, INotificationService notificationService, IInboxHubService inboxHub)
     {
         _unitOfWork = unitOfWork;
         _notificationService = notificationService;
+        _inboxHub = inboxHub;
     }
 
     public async Task<InternalMessageDto> SendMessageAsync(int senderId, string recipientEmail, string subject, string body)
@@ -39,6 +41,8 @@ public class InternalMessageService : IInternalMessageService
         repo.Add(message);
         await _unitOfWork.SaveChangesAsync();
 
+        var dto = await MapToDtoAsync(message);
+
         try
         {
             var sender = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(senderId);
@@ -48,12 +52,13 @@ public class InternalMessageService : IInternalMessageService
                 $"New message: {subject}",
                 title: sender?.FullName ?? "Unknown",
                 clickUrl: "/messages/inbox");
+            await _inboxHub.NotifyNewMessage(recipient.UserId, dto);
         }
         catch
         {
         }
 
-        return await MapToDtoAsync(message);
+        return dto;
     }
 
     public async Task<IEnumerable<InternalMessageDto>> GetInboxMessagesAsync(int userId)
@@ -126,9 +131,9 @@ public class InternalMessageService : IInternalMessageService
             SenderName = sender?.FullName ?? "Unknown",
             RecipientId = m.RecipientId,
             RecipientName = recipient?.FullName ?? "Unknown",
-            SentAt = m.SentAt,
+            SentAt = m.SentAt.ToString("dd MM yyyy hh:mm:ss"),
             IsRead = m.IsRead,
-            ReadAt = m.ReadAt
+            ReadAt = m.ReadAt?.ToString("dd MM yyyy hh:mm:ss")
         };
     }
 }

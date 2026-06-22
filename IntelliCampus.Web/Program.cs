@@ -150,6 +150,7 @@ builder.Services.AddScoped<IDataSeed, DataSeed>();
 builder.Services.AddScoped<IInstructorScheduleService, InstructorScheduleService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IInternalMessageService, InternalMessageService>();
+builder.Services.AddScoped<IInboxHubService, InboxHubService>();
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = actionContext =>
@@ -209,6 +210,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHub<ChatHub>("/hubs/chat");
+app.MapHub<InboxHub>("/hubs/inbox");
 app.MapControllers();
 
 app.Run();
