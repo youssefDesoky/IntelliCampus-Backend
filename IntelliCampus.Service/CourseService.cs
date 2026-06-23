@@ -68,9 +68,11 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
     public async Task<IEnumerable<CourseDto>> GetCoursesByStudentIdAsync(int studentId, List<StudentCourseStatus>? statuses = null)
     {
-        var student = await Students.GetByIdAsync(studentId);
+        var student = await Students.GetByIdAsync(new StudentSpec(studentId));
         if (student is null)
             throw new StudentNotFoundException(studentId);
+
+        var gradeScales = student.Bylaw?.GradeScales;
 
         var studentCourses = await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId));
 
@@ -81,7 +83,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
         var courses = await Courses.GetAllAsync(new CourseSpec(courseIds));
 
-        return courses.Select(c => MapToDto(c, studentId));
+        return courses.Select(c => MapToDto(c, studentId, gradeScales));
     }
 
     public async Task<IEnumerable<CourseDto>> GetCoursesByInstructorIdAsync(int instructorId)
@@ -422,7 +424,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         return string.Concat(parts.Select(p => char.ToUpperInvariant(p[0])));
     }
 
-    private static CourseDto MapToDto(Course course, int? studentId = null)
+    private static CourseDto MapToDto(Course course, int? studentId = null, List<GradeScaleItem>? gradeScales = null)
     {
         var currentSemester = SemesterHelper.GetCurrentSemester();
 
@@ -444,11 +446,21 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             courseGrades = courseGrades.Where(g => g.StudentId == studentId.Value).ToList();
 
         decimal? avgGrade;
+        string? gradeLetter = null;
         decimal? courseWork;
         if (studentId.HasValue && courseGrades.Count != 0)
         {
             var percentages = courseGrades.Select(g => g.MaxScore > 0 ? g.Score / g.MaxScore * 100 : 0).ToList();
             avgGrade = Math.Round(percentages.Average(), 0);
+
+            if (avgGrade.HasValue && gradeScales?.Count > 0)
+            {
+                var scale = gradeScales
+                    .OrderByDescending(s => s.MinPercentage)
+                    .FirstOrDefault(s => avgGrade.Value >= s.MinPercentage);
+                if (scale is not null)
+                    gradeLetter = scale.GradeLetter;
+            }
 
             var courseworkGrades = courseGrades
                 .Where(g => g.GradeType is GradeType.Assignment or GradeType.Quiz)
@@ -535,7 +547,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             WeeksCompleted = distinctSessionWeeks,
             Weeks = TotalSemesterWeeks,
             Attendance = attendancePercent,
-            Grade = avgGrade,
+            Grade = gradeLetter,
             CourseWork = courseWork,
             ClassId = classId,
             ClassName = className,
