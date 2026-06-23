@@ -28,7 +28,7 @@ public class CourseDto
     public int WeeksCompleted { get; set; }
     public int Weeks { get; set; }
     public decimal? Attendance { get; set; }
-    public decimal? Grade { get; set; }
+    public string? Grade { get; set; }
     public decimal? CourseWork { get; set; }
     public int? ClassId { get; set; }
     public string? ClassName { get; set; }
