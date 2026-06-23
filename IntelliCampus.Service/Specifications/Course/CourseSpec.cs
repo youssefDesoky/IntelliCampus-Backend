@@ -29,6 +29,7 @@ namespace IntelliCampus.Service.Specifications
             AddInclude("Classes.Instructor");
             AddInclude("Classes.Sessions.Attendances");
             AddInclude("Prerequisites.PrerequisiteCourse");
+            AddInclude(c => c.ElectiveBucketCourses!);
         }
     }
 }

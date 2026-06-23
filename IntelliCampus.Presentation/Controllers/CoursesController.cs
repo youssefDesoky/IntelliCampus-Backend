@@ -44,27 +44,34 @@ public class CoursesController : ControllerBase
     [Authorize]
     public async Task<ActionResult<IEnumerable<CourseDto>>> GetByStudentId(int studentId, [FromQuery] string? status = null)
     {
-        StudentCourseStatus? statusFilter = status?.ToLowerInvariant() switch
+        List<StudentCourseStatus>? statuses = status?.ToLowerInvariant() switch
         {
-            "completed" => StudentCourseStatus.Completed,
-            "inprogress" => StudentCourseStatus.InProgress,
-            "failed" => StudentCourseStatus.Failed,
+            "inprogress" => [StudentCourseStatus.Registered, StudentCourseStatus.InProgress],
+            "completed" => [StudentCourseStatus.Completed, StudentCourseStatus.Failed],
+            "failed" => [StudentCourseStatus.Failed],
             _ => null
         };
 
-        var courses = await _courseService.GetCoursesByStudentIdAsync(studentId, statusFilter);
+        var courses = await _courseService.GetCoursesByStudentIdAsync(studentId, statuses);
         return Ok(courses);
     }
 
     [HttpGet("my-courses")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
-    public async Task<ActionResult<IEnumerable<CourseDto>>> GetMyStudentCourses()
+    public async Task<ActionResult<IEnumerable<CourseDto>>> GetMyStudentCourses([FromQuery] string? status = null)
     {
         var userId = GetCurrentUserId();
         if (userId is null)
             return Unauthorized();
 
-        var courses = await _courseService.GetCoursesByStudentIdAsync(userId.Value);
+        List<StudentCourseStatus>? statuses = status?.ToLowerInvariant() switch
+        {
+            "inprogress" => [StudentCourseStatus.Registered, StudentCourseStatus.InProgress],
+            "completed" => [StudentCourseStatus.Completed, StudentCourseStatus.Failed],
+            _ => null
+        };
+
+        var courses = await _courseService.GetCoursesByStudentIdAsync(userId.Value, statuses);
         return Ok(courses);
     }
 

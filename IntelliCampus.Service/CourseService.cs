@@ -66,7 +66,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         return courses.Select(c => MapToDto(c));
     }
 
-    public async Task<IEnumerable<CourseDto>> GetCoursesByStudentIdAsync(int studentId, StudentCourseStatus? status = null)
+    public async Task<IEnumerable<CourseDto>> GetCoursesByStudentIdAsync(int studentId, List<StudentCourseStatus>? statuses = null)
     {
         var student = await Students.GetByIdAsync(studentId);
         if (student is null)
@@ -74,8 +74,8 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
         var studentCourses = await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId));
 
-        if (status.HasValue)
-            studentCourses = studentCourses.Where(sc => sc.Status == status.Value).ToList();
+        if (statuses?.Count > 0)
+            studentCourses = studentCourses.Where(sc => statuses.Contains(sc.Status)).ToList();
 
         var courseIds = studentCourses.Select(sc => sc.CourseId).ToList();
 
@@ -427,8 +427,15 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         var currentSemester = SemesterHelper.GetCurrentSemester();
 
         var allSessions = course.Classes?.SelectMany(cl => cl.Sessions) ?? [];
+
         var allAttendances = allSessions.SelectMany(s => s.Attendances);
-        var totalAttendances = allAttendances.Count();
+        if (studentId.HasValue)
+            allAttendances = allAttendances.Where(a => a.StudentId == studentId.Value);
+
+        var totalAttendances = studentId.HasValue
+            ? allSessions.Count()
+            : allAttendances.Count();
+
         var presentAttendances = allAttendances.Count(a => a.Status == AttendanceStatus.Present || a.Status == AttendanceStatus.Late);
         var attendancePercent = totalAttendances > 0 ? Math.Round((decimal)presentAttendances / totalAttendances * 100, 1) : (decimal?)null;
 
@@ -485,6 +492,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
         int? classId = null;
         string? className = null;
+        string? studentCourseStatusName = null;
         if (studentId.HasValue)
         {
             var studentCourse = course.StudentCourses?
@@ -493,6 +501,12 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             {
                 classId = studentCourse.ClassId;
                 className = studentCourse.Class?.GroupCode;
+                studentCourseStatusName = studentCourse.Status switch
+                {
+                    StudentCourseStatus.Registered or StudentCourseStatus.InProgress => "InProgress",
+                    StudentCourseStatus.Completed or StudentCourseStatus.Failed => "Completed",
+                    _ => null
+                };
             }
         }
 
@@ -525,7 +539,8 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             CourseWork = courseWork,
             ClassId = classId,
             ClassName = className,
-            IsElective = false,
+            IsElective = course.ElectiveBucketCourses?.Count > 0,
+            StudentCourseStatusName = studentCourseStatusName,
             ProfessorName = lectureClass?.Instructor?.FullName,
             RegistrationStartDate = course.RegistrationStartDate,
             RegistrationEndDate = course.RegistrationEndDate,
