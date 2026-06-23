@@ -99,15 +99,15 @@ public class AuthController : ControllerBase
 
     [Authorize]
     [HttpPut("profile/image")]
-    public async Task<IActionResult> UpdateProfileImage([FromBody] string imageUrl)
+    public async Task<ActionResult<UserProfileDto>> UpdateProfileImage(IFormFile file)
     {
         var userId = GetCurrentUserId();
         if (userId is null)
             return Unauthorized();
 
-        var result = await _authService.UpdateProfileImageAsync(userId.Value, imageUrl);
+        var profile = await _authService.UpdateProfileImageAsync(userId.Value, file);
 
-        return Ok(new { profileImage = result });
+        return Ok(profile);
     }
 
     [Authorize]

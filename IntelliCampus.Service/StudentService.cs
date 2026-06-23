@@ -387,6 +387,7 @@ public class StudentService : IStudentService
                 Id = sc.CourseId,
                 Title = sc.Course.CourseName,
                 CourseName = sc.Course.CourseName,
+                CreditHours = sc.Course.CreditHours,
                 Notes = sc.Course.Notes
                     .Where(n => n.StudentId == student.UserId)
                     .Select(n => new StudentCourseNoteDto
