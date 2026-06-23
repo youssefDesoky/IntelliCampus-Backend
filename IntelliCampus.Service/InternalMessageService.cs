@@ -28,6 +28,9 @@ public class InternalMessageService : IInternalMessageService
             new UserByEmailSpec(recipientEmail))
             ?? throw new UserNotFoundException($"User with email '{recipientEmail}' not found");
 
+        if (recipient.UserId == senderId)
+            throw new InvalidOperationException("You cannot send a message to yourself.");
+
         var message = new InternalMessage
         {
             SenderId = senderId,
@@ -102,7 +105,7 @@ public class InternalMessageService : IInternalMessageService
             ?? throw new InternalMessageNotFoundException(messageId);
 
         if (message.RecipientId != userId)
-            throw new UnauthorizedAccessException("Only the recipient can mark a message as read");
+            throw new ForbiddenException("Only the recipient can mark a message as read");
 
         message.IsRead = true;
         message.ReadAt = EgyptTime.Now;
@@ -120,7 +123,7 @@ public class InternalMessageService : IInternalMessageService
         else if (message.RecipientId == userId)
             message.IsDeletedByRecipient = true;
         else
-            throw new UnauthorizedAccessException("User cannot delete this message");
+            throw new ForbiddenException("User cannot delete this message");
 
         if (message.IsDeletedBySender && message.IsDeletedByRecipient)
             _unitOfWork.GetRepository<InternalMessage, int>().Delete(message);

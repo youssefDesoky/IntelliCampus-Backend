@@ -28,7 +28,6 @@ public class MessagesController(IInternalMessageService messageService) : Contro
     public async Task<IActionResult> GetSent()
         => Ok(await messageService.GetSentMessagesAsync(UserId));
 
-    [HttpPut("{id}/read")]
     public async Task<IActionResult> MarkAsRead(int id)
     {
         await messageService.MarkAsReadAsync(UserId, id);
@@ -41,4 +40,5 @@ public class MessagesController(IInternalMessageService messageService) : Contro
         await messageService.DeleteMessageAsync(UserId, id);
         return Ok();
     }
+
 }

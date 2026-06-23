@@ -38,6 +38,7 @@ namespace IntelliCampus.Web.CustomMiddleWares
                     Status = ex switch
                     {
                         NotFoundException => StatusCodes.Status404NotFound,
+                        ForbiddenException => StatusCodes.Status403Forbidden,
                         UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
                         InvalidOperationException => StatusCodes.Status400BadRequest,
                         _ => StatusCodes.Status500InternalServerError
