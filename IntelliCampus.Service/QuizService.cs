@@ -58,8 +58,8 @@ public class QuizService : IQuizService
             DurationMinutes = quiz.DurationMinutes,
             StartDate = quiz.StartDate,
             DueDate = quiz.DueDate,
-            Status = hasSubmission ? "Completed" : quiz.DueDate < DateTime.UtcNow ? "Overdue" :
-                     quiz.StartDate > DateTime.UtcNow ? "Upcoming" : "Active"
+            Status = hasSubmission ? "Completed" : quiz.DueDate < EgyptTime.Now ? "Overdue" :
+                     quiz.StartDate > EgyptTime.Now ? "Upcoming" : "Active"
         };
     }
 
@@ -92,8 +92,8 @@ public class QuizService : IQuizService
             DurationMinutes = quiz.DurationMinutes,
             StartDate = quiz.StartDate,
             DueDate = quiz.DueDate,
-            Status = hasSubmission ? "Completed" : quiz.DueDate < DateTime.UtcNow ? "Overdue" :
-                     quiz.StartDate > DateTime.UtcNow ? "Upcoming" : "Active"
+            Status = hasSubmission ? "Completed" : quiz.DueDate < EgyptTime.Now ? "Overdue" :
+                     quiz.StartDate > EgyptTime.Now ? "Upcoming" : "Active"
         };
     }
 
@@ -410,8 +410,8 @@ public class QuizService : IQuizService
         MaxScore = q.MaxGrade,
         CourseId = q.CourseId,
         CourseName = q.Course?.CourseName,
-        Status = q.DueDate < DateTime.UtcNow ? "Completed" :
-                 q.StartDate > DateTime.UtcNow ? "Upcoming" : "Active"
+        Status = q.DueDate < EgyptTime.Now ? "Completed" :
+                 q.StartDate > EgyptTime.Now ? "Upcoming" : "Active"
     };
 
     private static StudentQuizDto MapResultToDto(StudentQuiz sq) => new()
@@ -439,7 +439,7 @@ public class QuizService : IQuizService
         if (quiz is null)
             throw new QuizNotFoundException(dto.QuizId);
 
-        var now = DateTime.UtcNow;
+        var now = EgyptTime.Now;
         if (now < quiz.StartDate || now > quiz.DueDate)
             throw new InvalidOperationException("Quiz is not available for submission at this time.");
 
@@ -455,7 +455,7 @@ public class QuizService : IQuizService
         if (existing is not null)
         {
             existing.Score = finalScore;
-            existing.SubmittedAt = DateTime.UtcNow;
+            existing.SubmittedAt = EgyptTime.Now;
             existing.AnswersJson = answersJson;
             existing.QuestionResultsJson = resultsJson;
             StudentQuizzes.Update(existing);
@@ -482,7 +482,7 @@ public class QuizService : IQuizService
             StudentId = studentId,
             QuizId = quiz.QuizId,
             Score = finalScore,
-            SubmittedAt = DateTime.UtcNow,
+            SubmittedAt = EgyptTime.Now,
             IsLate = now > quiz.DueDate,
             AnswersJson = answersJson,
             QuestionResultsJson = resultsJson
@@ -546,7 +546,7 @@ public class QuizService : IQuizService
         if (quiz is null)
             throw new QuizNotFoundException(quizId!.Value);
 
-        var now = DateTime.UtcNow;
+        var now = EgyptTime.Now;
         var submission = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quiz.QuizId));
         var isWithinWindow = now >= quiz.StartDate && now <= quiz.DueDate;
 
@@ -654,7 +654,7 @@ public class QuizService : IQuizService
 
         var history = new List<QuizHistoryItemDto>();
         var upcoming = new List<QuizUpcomingItemDto>();
-        var now = DateTime.UtcNow;
+        var now = EgyptTime.Now;
 
         foreach (var quiz in quizzes)
         {

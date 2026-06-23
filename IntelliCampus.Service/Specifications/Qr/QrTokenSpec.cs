@@ -6,7 +6,7 @@ public class QrTokenSpec : BaseSpecifications<QrToken>
 {
     public QrTokenSpec(string token)
         : base(q => q.Token == token
-                 && q.ExpiresAt > DateTime.UtcNow)
+                 && q.ExpiresAt > EgyptTime.Now)
     {
         AddInclude(q => q.Student!);
     }

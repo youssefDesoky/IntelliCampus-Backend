@@ -8,7 +8,7 @@ public class QrToken
     public DateTime GeneratedAt { get; set; }
     public DateTime ExpiresAt { get; set; }
 
-    public bool IsExpired => DateTime.UtcNow > ExpiresAt;
+    public bool IsExpired => EgyptTime.Now > ExpiresAt;
 
     public Student Student { get; set; } = null!;
 }

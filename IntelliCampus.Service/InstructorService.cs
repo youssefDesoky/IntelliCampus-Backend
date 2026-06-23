@@ -61,7 +61,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             throw new InvalidOperationException("National ID already exists.");
 
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentName);
-        var hireDate = ParseDate(dto.HireDate) ?? DateTime.UtcNow;
+        var hireDate = ParseDate(dto.HireDate) ?? EgyptTime.Now;
         var password = string.IsNullOrWhiteSpace(dto.Password) ? dto.NationalId : dto.Password;
 
         var facultyId = dto.FacultyId;
@@ -153,7 +153,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             UserId = instructor.UserId,
             RoleId = role.RoleId,
             IsActive = true,
-            AssignedAt = DateTime.UtcNow
+            AssignedAt = EgyptTime.Now
         };
         _unitOfWork.GetRepository<UserRoleJunction, int>().Add(userRole);
         await _unitOfWork.SaveChangesAsync();

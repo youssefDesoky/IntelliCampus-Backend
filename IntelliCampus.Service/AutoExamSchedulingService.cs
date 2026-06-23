@@ -252,7 +252,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
                 MaxGrade = 100,
                 TotalMarks = 50,
                 CourseId = course.CourseId,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = EgyptTime.Now
             };
             ExamsRepo.Add(exam);
             await _unitOfWork.SaveChangesAsync();

@@ -305,7 +305,7 @@ public class ExcelImportService : IExcelImportService
             Weight = ParseDecimal(row.Cell(6).GetString()),
             GradeType = gradeType,
             Status = "Graded",
-            GradedAt = DateTime.UtcNow,
+            GradedAt = EgyptTime.Now,
             Notes = GetOptionalString(row, 8)
         };
 

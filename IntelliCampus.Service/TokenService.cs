@@ -34,7 +34,7 @@ public class TokenService : ITokenService
         foreach (var userRole in user.UserRoles.Where(ur => ur.IsActive))
             claims.Add(new Claim(ClaimTypes.Role, userRole.Role.RoleName));
 
-        var expiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationInMinutes);
+        var expiresAt = EgyptTime.Now.AddMinutes(_jwtSettings.ExpirationInMinutes);
 
         var token = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,

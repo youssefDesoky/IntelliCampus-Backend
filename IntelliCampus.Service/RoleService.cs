@@ -79,7 +79,7 @@ public class RoleService : IRoleService
             UserId = dto.UserId,
             RoleId = role.RoleId,
             IsActive = true,
-            AssignedAt = DateTime.UtcNow
+            AssignedAt = EgyptTime.Now
         };
 
         userRoleRepo.Add(userRole);

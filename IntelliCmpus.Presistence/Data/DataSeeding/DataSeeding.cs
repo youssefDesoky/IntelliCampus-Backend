@@ -253,7 +253,7 @@ public class DataSeed : IDataSeed
                 {
                     Role = role,
                     IsActive = true,
-                    AssignedAt = DateTime.UtcNow
+                    AssignedAt = EgyptTime.Now
                 });
             }
         }
@@ -280,7 +280,7 @@ public class DataSeed : IDataSeed
 
     private DateTime ParseDateOffset(string offset)
     {
-        var now = DateTime.UtcNow;
+        var now = EgyptTime.Now;
         var remaining = offset;
         var hours = 0;
         var plusIndex = offset.IndexOf(" +");
@@ -407,7 +407,7 @@ public class DataSeed : IDataSeed
                 Password = _passwordService.HashPassword(dto.Password),
                 FacultyId = _facultyId,
                 AdminCode = dto.AdminCode,
-                HireDate = DateTime.UtcNow
+                HireDate = EgyptTime.Now
             };
             _dbContext.Admins.Add(entity);
             created.Add((dto, entity));
@@ -445,7 +445,7 @@ public class DataSeed : IDataSeed
                 InstructorRole = Enum.Parse<InstructorRole>(dto.InstructorRole),
                 Specialization = dto.Specialization,
                 DepartmentId = _departmentIds.GetValueOrDefault(dto.DepartmentName),
-                HireDate = DateTime.UtcNow,
+                HireDate = EgyptTime.Now,
                 Status = !string.IsNullOrEmpty(dto.Status) && Enum.TryParse<InstructorStatus>(dto.Status, true, out var status) ? status : InstructorStatus.Employed
             };
             _dbContext.Instructors.Add(entity);
@@ -567,7 +567,7 @@ public class DataSeed : IDataSeed
                 Type = Enum.Parse<BylawType>(dto.Type, true),
                 Description = dto.Description,
                 IsActive = dto.IsActive,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = EgyptTime.Now,
                 GradeScales = dto.GradeScales.Select(gs => new GradeScaleItem
                 {
                     GradeLetter = gs.GradeLetter,
@@ -711,7 +711,7 @@ public class DataSeed : IDataSeed
         if (await _dbContext.Set<StudentCourse>().AnyAsync()) return;
         var items = await ReadJsonAsync<StudentCourseDto>("student-courses.json");
         var allStudents = await _dbContext.Students.ToListAsync();
-        var studentEnrollment = allStudents.ToDictionary(s => s.UserId, s => s.EnrollmentDate ?? DateTime.UtcNow.AddYears(-4));
+        var studentEnrollment = allStudents.ToDictionary(s => s.UserId, s => s.EnrollmentDate ?? EgyptTime.Now.AddYears(-4));
         var allCourses = await _dbContext.Courses.ToDictionaryAsync(c => c.CourseId);
         var allClasses = await _dbContext.Classes.ToListAsync();
 
@@ -725,8 +725,8 @@ public class DataSeed : IDataSeed
             var studentId = _userIds.GetValueOrDefault(group.Key);
             if (studentId == 0) continue;
 
-            var enrollmentDate = studentEnrollment.GetValueOrDefault(studentId, DateTime.UtcNow.AddYears(-4));
-            var studentSemesters = GenerateSemesterList(enrollmentDate, DateTime.UtcNow);
+            var enrollmentDate = studentEnrollment.GetValueOrDefault(studentId, EgyptTime.Now.AddYears(-4));
+            var studentSemesters = GenerateSemesterList(enrollmentDate, EgyptTime.Now);
             if (studentSemesters.Count == 0) studentSemesters.Add(currentSemester);
 
             // Track assigned classes per semester to avoid time-slot conflicts
@@ -772,7 +772,7 @@ public class DataSeed : IDataSeed
                     CourseId = courseId,
                     ClassId = classId != 0 ? classId : null,
                     Semester = sem,
-                    RegisteredAt = DateTime.UtcNow,
+                    RegisteredAt = EgyptTime.Now,
                     Status = status
                 });
             }
@@ -883,7 +883,7 @@ public class DataSeed : IDataSeed
                 Description = dto.Description,
                 CourseId = courseId,
                 CreatedByInstructorId = instructorId,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = EgyptTime.Now,
                 DisplayOrder = dto.DisplayOrder
             };
             _dbContext.MaterialFolders.Add(entity);
@@ -913,7 +913,7 @@ public class DataSeed : IDataSeed
                 FolderId = !string.IsNullOrEmpty(dto.FolderName) ? _folderIds.GetValueOrDefault(dto.FolderName) : null,
                 FileUrl = dto.FileUrl,
                 FileSize = dto.FileSize,
-                UploadDate = DateTime.UtcNow
+                UploadDate = EgyptTime.Now
             };
             _dbContext.Materials.Add(entity);
             created.Add((dto, entity));
@@ -967,7 +967,7 @@ public class DataSeed : IDataSeed
                 MaxScore = dto.MaxScore,
                 Weight = dto.Weight,
                 Status = dto.Status,
-                GradedAt = DateTime.UtcNow
+                GradedAt = EgyptTime.Now
             });
         }
     }
@@ -1083,7 +1083,7 @@ public class DataSeed : IDataSeed
                 TotalMarks = dto.TotalMarks,
                 RoomId = roomId != 0 ? roomId : null,
                 CourseId = courseId,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = EgyptTime.Now
             });
         }
     }

@@ -72,7 +72,7 @@ public class BylawService : IBylawService
             Description = dto.Description,
             DescriptionAr = dto.DescriptionAr,
             IsActive = true,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = EgyptTime.Now,
             UploadedByAdminId = adminId,
             GradeScales = dto.GradeScales?
                 .OrderBy(g => g.SortOrder)

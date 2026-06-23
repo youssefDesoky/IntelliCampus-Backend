@@ -28,7 +28,7 @@ public class ChatService : IChatService
             SenderId = senderId,
             RecipientId = recipientId,
             Content = content,
-            Timestamp = DateTime.UtcNow,
+            Timestamp = EgyptTime.Now,
             GroupName = groupName
         };
 

@@ -214,5 +214,5 @@ public class ScheduleService : IScheduleService
     };
 
     private static string FormatTime(TimeSpan time) =>
-        DateTime.Today.Add(time).ToString("hh:mm tt");
+        EgyptTime.Today.Add(time).ToString("hh:mm tt");
 }

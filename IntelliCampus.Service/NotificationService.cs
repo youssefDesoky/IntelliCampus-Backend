@@ -139,7 +139,7 @@ public class NotificationService : INotificationService
             Title = title,
             ClickUrl = clickUrl,
             ImageUrl = imageUrl,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = EgyptTime.Now
         };
 
         Notifications.Add(notification);
@@ -180,7 +180,7 @@ public class NotificationService : INotificationService
             Title = title,
             ClickUrl = clickUrl,
             ImageUrl = imageUrl,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = EgyptTime.Now
         };
 
         Notifications.Add(notification);
@@ -251,7 +251,7 @@ public class NotificationService : INotificationService
 
     private static string GetTimeAgo(DateTime createdAt)
     {
-        var diff = DateTime.UtcNow - createdAt;
+        var diff = EgyptTime.Now - createdAt;
 
         return diff.TotalMinutes < 1 ? "Just now"
              : diff.TotalMinutes < 60 ? $"{(int)diff.TotalMinutes} minutes ago"

@@ -34,7 +34,7 @@ public class InternalMessageService : IInternalMessageService
             RecipientId = recipient.UserId,
             Subject = subject,
             Body = body,
-            SentAt = DateTime.UtcNow
+            SentAt = EgyptTime.Now
         };
 
         var repo = _unitOfWork.GetRepository<InternalMessage, int>();
@@ -85,7 +85,7 @@ public class InternalMessageService : IInternalMessageService
             throw new UnauthorizedAccessException("Only the recipient can mark a message as read");
 
         message.IsRead = true;
-        message.ReadAt = DateTime.UtcNow;
+        message.ReadAt = EgyptTime.Now;
         await _unitOfWork.SaveChangesAsync();
     }
 

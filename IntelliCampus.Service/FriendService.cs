@@ -59,7 +59,7 @@ public class FriendService : IFriendService
             {
                 UserId1 = Math.Min(senderId, recipientId),
                 UserId2 = Math.Max(senderId, recipientId),
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = EgyptTime.Now
             };
             Friendships.Add(friendship);
             await _unitOfWork.SaveChangesAsync();
@@ -77,7 +77,7 @@ public class FriendService : IFriendService
             SenderId = senderId,
             RecipientId = recipientId,
             Status = FriendRequestStatus.Pending,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = EgyptTime.Now
         };
 
         FriendRequests.Add(request);
@@ -128,7 +128,7 @@ public class FriendService : IFriendService
         {
             UserId1 = Math.Min(request.SenderId, request.RecipientId),
             UserId2 = Math.Max(request.SenderId, request.RecipientId),
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = EgyptTime.Now
         };
         Friendships.Add(friendship);
         await _unitOfWork.SaveChangesAsync();

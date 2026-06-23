@@ -8,7 +8,7 @@ public class DeviceToken
     public string P256dh { get; set; } = null!;
     public string Auth { get; set; } = null!;
     public string? Platform { get; set; }
-    public DateTime RegisteredAt { get; set; } = DateTime.UtcNow;
+    public DateTime RegisteredAt { get; set; } = EgyptTime.Now;
     public DateTime LastSeenAt { get; set; }
     public bool IsActive { get; set; } = true;
 

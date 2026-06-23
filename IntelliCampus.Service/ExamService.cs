@@ -78,7 +78,7 @@ public class ExamService : IExamService
             Title = dto.Title,
             Description = dto.Description,
             ExamType = dto.ExamType,
-            Status = dto.Date > DateTime.UtcNow ? ExamStatus.Upcoming : ExamStatus.Completed,
+            Status = dto.Date > EgyptTime.Now ? ExamStatus.Upcoming : ExamStatus.Completed,
             Date = dto.Date,
             Time = dto.Time,
             DurationMinutes = dto.DurationMinutes,
@@ -86,7 +86,7 @@ public class ExamService : IExamService
             TotalMarks = dto.TotalMarks,
             RoomId = dto.RoomId,
             CourseId = dto.CourseId,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = EgyptTime.Now
         };
 
         Exams.Add(exam);
@@ -134,7 +134,7 @@ public class ExamService : IExamService
         if (dto.Date.HasValue)
         {
             exam.Date = dto.Date.Value;
-            exam.Status = exam.Date > DateTime.UtcNow ? ExamStatus.Upcoming : ExamStatus.Completed;
+            exam.Status = exam.Date > EgyptTime.Now ? ExamStatus.Upcoming : ExamStatus.Completed;
         }
 
         if (dto.Time.HasValue)

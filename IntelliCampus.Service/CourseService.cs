@@ -469,15 +469,15 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             room = scheduleClass.Room;
             if (scheduleClass.Day.HasValue && scheduleClass.StartTime.HasValue && scheduleClass.EndTime.HasValue)
             {
-                var startFormatted = DateTime.Today.Add(scheduleClass.StartTime.Value).ToString("h:mm tt");
-                var endFormatted = DateTime.Today.Add(scheduleClass.EndTime.Value).ToString("h:mm tt");
+                var startFormatted = EgyptTime.Today.Add(scheduleClass.StartTime.Value).ToString("h:mm tt");
+                var endFormatted = EgyptTime.Today.Add(scheduleClass.EndTime.Value).ToString("h:mm tt");
                 schedule = $"{scheduleClass.Day.Value} {startFormatted} - {endFormatted}";
             }
         }
 
         var distinctSessionWeeks = allSessions
             .Select(s => s.Date)
-            .Where(d => d <= DateTime.UtcNow)
+            .Where(d => d <= EgyptTime.Now)
             .Select(d => System.Globalization.CultureInfo.InvariantCulture.Calendar
                 .GetWeekOfYear(d, System.Globalization.CalendarWeekRule.FirstDay, DayOfWeek.Sunday))
             .Distinct()
