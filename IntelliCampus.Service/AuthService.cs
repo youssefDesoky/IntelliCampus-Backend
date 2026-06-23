@@ -5,6 +5,7 @@ using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Service.Specifications;
+using Microsoft.AspNetCore.Http;
 
 namespace IntelliCampus.Service;
 
@@ -13,11 +14,13 @@ public class AuthService(
     IPasswordService passwordService,
     ITokenService tokenService,
     INotificationService notificationService,
+    IFileStorageService fileStorageService,
     UrlResolver urlResolver) : IAuthService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IPasswordService _passwordService = passwordService;
     private readonly ITokenService _tokenService = tokenService;
+    private readonly IFileStorageService _fileStorageService = fileStorageService;
     private readonly UrlResolver _urlResolver = urlResolver;
 
     public async Task<AuthResponseDto?> LoginAsync(LoginDto dto)
@@ -95,14 +98,14 @@ public class AuthService(
         if (user is null)
             throw new UserNotFoundException(userId);
 
+        if (dto.FullName is not null)
+            user.FullName = dto.FullName;
+
         if (dto.Address is not null)
             user.Address = dto.Address;
 
         if (dto.PhoneNumber is not null)
             user.PhoneNumber = dto.PhoneNumber;
-
-        if (dto.FullNameAr is not null)
-            user.FullNameAr = dto.FullNameAr;
 
         _unitOfWork.GetRepository<User, int>().Update(user);
         await _unitOfWork.SaveChangesAsync();
@@ -121,18 +124,32 @@ public class AuthService(
         };
     }
 
-    public async Task<string?> UpdateProfileImageAsync(int userId, string imageUrl)
+    public async Task<UserProfileDto?> UpdateProfileImageAsync(int userId, IFormFile file)
     {
-        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
+        var spec = new UserByIdSpec(userId);
+        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(spec);
 
         if (user is null)
             throw new UserNotFoundException(userId);
 
-        user.ProfileImage = imageUrl;
+        var path = await _fileStorageService.SaveAsync(file, "profiles");
+        user.ProfileImage = path;
+
         _unitOfWork.GetRepository<User, int>().Update(user);
         await _unitOfWork.SaveChangesAsync();
 
-        return user.ProfileImage;
+        return new UserProfileDto
+        {
+            UserId = user.UserId,
+            NationalId = user.NationalId,
+            FullName = user.FullName,
+            FullNameAr = user.FullNameAr,
+            PhoneNumber = user.PhoneNumber,
+            Email = user.Email,
+            Address = user.Address,
+            Roles = user.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
+            ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage)
+        };
     }
 
     public async Task<bool> ChangePasswordAsync(int userId, ChangePasswordDto dto)

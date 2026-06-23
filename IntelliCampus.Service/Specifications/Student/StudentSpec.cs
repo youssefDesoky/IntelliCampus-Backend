@@ -6,6 +6,7 @@ namespace IntelliCampus.Service.Specifications
     {
         public StudentSpec()
         {
+            AddInclude(s => s.Faculty!);
             AddInclude(s => s.Department!);
             AddInclude(s => s.Bylaw!);
             AddInclude(s => s.Specialization!);
@@ -15,6 +16,7 @@ namespace IntelliCampus.Service.Specifications
         public StudentSpec(int studentId)
             : base(s => s.UserId == studentId)
         {
+            AddInclude(s => s.Faculty!);
             AddInclude(s => s.Department!);
             AddInclude(s => s.Bylaw!);
             AddInclude(s => s.Specialization!);
@@ -24,6 +26,7 @@ namespace IntelliCampus.Service.Specifications
         public StudentSpec(int studentId, bool includeCourses)
             : base(s => s.UserId == studentId)
         {
+            AddInclude(s => s.Faculty!);
             AddInclude(s => s.Department!);
             AddInclude(s => s.Bylaw!);
             AddInclude(s => s.Specialization!);
