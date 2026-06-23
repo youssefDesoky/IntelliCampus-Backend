@@ -5,4 +5,5 @@ namespace IntelliCampus.Service_Abstraction;
 public interface IDashboardService
 {
     Task<DashboardStatsDto> GetStatsAsync();
+    Task<StudentDashboardDto> GetStudentDashboardAsync(int studentId);
 }

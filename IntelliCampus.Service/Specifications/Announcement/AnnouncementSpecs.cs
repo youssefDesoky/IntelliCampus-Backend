@@ -19,6 +19,16 @@ internal sealed class AnnouncementsByCourseSpec : BaseSpecifications<Announcemen
     }
 }
 
+internal sealed class AnnouncementsByCoursesSpec : BaseSpecifications<Announcement>
+{
+    public AnnouncementsByCoursesSpec(List<int> courseIds)
+        : base(a => courseIds.Contains(a.CourseId))
+    {
+        AddInclude(a => a.Course!);
+        AddOrderByDescending(a => a.CreatedAt);
+    }
+}
+
 internal sealed class CommentByIdSpec : BaseSpecifications<AnnouncementComment>
 {
     public CommentByIdSpec(int commentId)

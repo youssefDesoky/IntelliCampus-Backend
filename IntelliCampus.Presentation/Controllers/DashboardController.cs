@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Dashboard;
 using Microsoft.AspNetCore.Authorization;
@@ -22,5 +23,13 @@ public class DashboardController : ControllerBase
     {
         var stats = await _dashboardService.GetStatsAsync();
         return Ok(stats);
+    }
+
+    [HttpGet("student")]
+    public async Task<ActionResult<StudentDashboardDto>> GetStudentDashboard()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var dashboard = await _dashboardService.GetStudentDashboardAsync(userId);
+        return Ok(dashboard);
     }
 }

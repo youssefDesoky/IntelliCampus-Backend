@@ -28,6 +28,7 @@ public class MessagesController(IInternalMessageService messageService) : Contro
     public async Task<IActionResult> GetSent()
         => Ok(await messageService.GetSentMessagesAsync(UserId));
 
+    [HttpPut("{id}")]
     public async Task<IActionResult> MarkAsRead(int id)
     {
         await messageService.MarkAsReadAsync(UserId, id);
