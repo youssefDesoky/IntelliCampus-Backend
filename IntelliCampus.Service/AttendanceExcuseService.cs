@@ -59,7 +59,7 @@ public class AttendanceExcuseService : IAttendanceExcuseService
             SessionId = dto.SessionId,
             Reason = dto.Reason,
             Status = ExcuseStatus.Pending,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = EgyptTime.Now,
             DocumentPath = documentPath,
             DocumentOriginalName = documentOriginalName,
             DocumentContentType = documentContentType

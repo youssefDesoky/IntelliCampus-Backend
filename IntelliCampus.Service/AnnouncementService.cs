@@ -58,8 +58,8 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
             CourseId = courseId,
             SenderId = senderId,
             Content = dto.Content,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            CreatedAt = EgyptTime.Now,
+            UpdatedAt = EgyptTime.Now
         };
 
         Announcements.Add(announcement);
@@ -95,7 +95,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
             throw new UnauthorizedAccessException("You are not authorized to update this announcement.");
 
         announcement.Content = content;
-        announcement.UpdatedAt = DateTime.UtcNow;
+        announcement.UpdatedAt = EgyptTime.Now;
 
         Announcements.Update(announcement);
         await _unitOfWork.SaveChangesAsync();
@@ -124,8 +124,8 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
             AnnouncementId = announcementId,
             UserId = userId,
             Content = content,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            CreatedAt = EgyptTime.Now,
+            UpdatedAt = EgyptTime.Now
         };
 
         Comments.Add(comment);
@@ -170,7 +170,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
             throw new UnauthorizedAccessException("You are not authorized to edit this comment.");
 
         comment.Content = content;
-        comment.UpdatedAt = DateTime.UtcNow;
+        comment.UpdatedAt = EgyptTime.Now;
 
         Comments.Update(comment);
         await _unitOfWork.SaveChangesAsync();

@@ -49,7 +49,7 @@ public class CommunityService : ICommunityService
         var post = new Post
         {
             Content = content,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = EgyptTime.Now,
             IsPinned = false,
             CommunityId = community.CommunityId,
             UserId = userId,
@@ -295,7 +295,7 @@ public class CommunityService : ICommunityService
             PostId = postId,
             UserId = userId,
             Content = content,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = EgyptTime.Now,
         };
 
         var comments = _unitOfWork.GetRepository<Comment, int>();
@@ -329,7 +329,7 @@ public class CommunityService : ICommunityService
         {
             PostId = postId,
             UserId = userId,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = EgyptTime.Now,
         });
         await _unitOfWork.SaveChangesAsync();
         return true;

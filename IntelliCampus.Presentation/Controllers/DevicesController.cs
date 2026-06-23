@@ -27,7 +27,7 @@ public class DevicesController(IUnitOfWork unitOfWork) : ControllerBase
             existing.IsActive = true;
             existing.P256dh = request.Keys.P256dh;
             existing.Auth = request.Keys.Auth;
-            existing.LastSeenAt = DateTime.UtcNow;
+            existing.LastSeenAt = EgyptTime.Now;
             repo.Update(existing);
             await unitOfWork.SaveChangesAsync();
         }
@@ -40,8 +40,8 @@ public class DevicesController(IUnitOfWork unitOfWork) : ControllerBase
                 P256dh = request.Keys.P256dh,
                 Auth = request.Keys.Auth,
                 Platform = request.Platform,
-                RegisteredAt = DateTime.UtcNow,
-                LastSeenAt = DateTime.UtcNow,
+                RegisteredAt = EgyptTime.Now,
+                LastSeenAt = EgyptTime.Now,
                 IsActive = true
             });
 

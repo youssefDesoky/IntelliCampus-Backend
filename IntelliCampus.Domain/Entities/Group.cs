@@ -7,7 +7,7 @@ public class Group
     public string? Description { get; set; }
     public string? ProfileImage { get; set; }
     public int CreatedById { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = EgyptTime.Now;
 
     public User CreatedBy { get; set; } = null!;
     public ICollection<GroupMember> Members { get; set; } = [];

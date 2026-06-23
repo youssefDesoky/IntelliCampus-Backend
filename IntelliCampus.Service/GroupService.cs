@@ -47,7 +47,7 @@ public class GroupService : IGroupService
             Description = description,
             ProfileImage = profileImage,
             CreatedById = createdById,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = EgyptTime.Now
         };
 
         Groups.Add(group);
@@ -63,7 +63,7 @@ public class GroupService : IGroupService
             {
                 GroupId = group.GroupId,
                 UserId = userId,
-                JoinedAt = DateTime.UtcNow
+                JoinedAt = EgyptTime.Now
             };
             GroupMembers.Add(member);
         }
@@ -152,7 +152,7 @@ public class GroupService : IGroupService
         {
             GroupId = groupId,
             UserId = userId,
-            JoinedAt = DateTime.UtcNow
+            JoinedAt = EgyptTime.Now
         };
         GroupMembers.Add(member);
         await _unitOfWork.SaveChangesAsync();

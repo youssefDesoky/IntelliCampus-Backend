@@ -51,7 +51,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         if (await Users.AnyAsync(u => u.NationalId == dto.NationalId))
             throw new InvalidOperationException("National ID already exists.");
 
-        var hireDate = ParseDate(dto.HireDate) ?? DateTime.UtcNow;
+        var hireDate = ParseDate(dto.HireDate) ?? EgyptTime.Now;
         var password = string.IsNullOrWhiteSpace(dto.Password) ? dto.NationalId : dto.Password;
 
         var facultyId = dto.FacultyId;
@@ -108,7 +108,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             {
                 Role = role,
                 IsActive = true,
-                AssignedAt = DateTime.UtcNow
+                AssignedAt = EgyptTime.Now
             }
         ];
 
@@ -153,13 +153,13 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             if (activeRole is not null)
             {
                 activeRole.IsActive = false;
-                activeRole.AssignedAt = DateTime.UtcNow;
+                activeRole.AssignedAt = EgyptTime.Now;
             }
             admin.UserRoles.Add(new UserRoleJunction
             {
                 Role = newRole,
                 IsActive = true,
-                AssignedAt = DateTime.UtcNow
+                AssignedAt = EgyptTime.Now
             });
         }
 

@@ -27,6 +27,6 @@ public static class SemesterHelper
     /// </summary>
     public static string GetCurrentSemester()
     {
-        return GetSemesterFromDate(DateTime.UtcNow);
+        return GetSemesterFromDate(EgyptTime.Now);
     }
 }

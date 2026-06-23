@@ -50,7 +50,7 @@ public class AttendanceService : IAttendanceService
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
-        var now = DateTime.UtcNow;
+        var now = EgyptTime.Now;
 
         var rawToken = Convert.ToBase64String(
             Encoding.UTF8.GetBytes(
@@ -128,7 +128,7 @@ public class AttendanceService : IAttendanceService
             throw new InvalidOperationException(
                 $"{payload.Name} is already recorded for this session.");
 
-        qrToken.ExpiresAt = DateTime.UtcNow.AddSeconds(-1);
+        qrToken.ExpiresAt = EgyptTime.Now.AddSeconds(-1);
         QrTokens.Update(qrToken);
 
         var student = await Students.GetByIdAsync(payload.UserId);
@@ -138,7 +138,7 @@ public class AttendanceService : IAttendanceService
             StudentId = payload.UserId,
             SessionId = dto.SessionId,
             Status = dto.Status,
-            Date = DateTime.UtcNow
+            Date = EgyptTime.Now
         };
 
         Attendances.Add(attendance);
@@ -188,7 +188,7 @@ public class AttendanceService : IAttendanceService
             StudentId = student.UserId,
             SessionId = dto.SessionId,
             Status = dto.Status,
-            Date = DateTime.UtcNow
+            Date = EgyptTime.Now
         };
 
         Attendances.Add(attendance);
@@ -237,7 +237,7 @@ public class AttendanceService : IAttendanceService
                 SessionId = dto.SessionId,
                 StudentId = student.UserId,
                 Status = record.Status,
-                Date = DateTime.UtcNow
+                Date = EgyptTime.Now
             });
         }
 

@@ -284,7 +284,7 @@ public class AssignmentService(
 
         var existingSpec = new StudentAssignmentSpec(studentId, assignmentId);
         var existing = await StudentAssignments.GetByIdAsync(existingSpec);
-        var now = DateTime.UtcNow;
+        var now = EgyptTime.Now;
         var isLate = now > assignment.DueDate;
 
         // Allow resubmission only if deadline hasn't passed; otherwise reject
@@ -366,7 +366,7 @@ public class AssignmentService(
         submission.Grade = dto.Score;
         submission.Feedback = dto.Feedback;
         submission.GradedByInstructorId = instructorId;
-        submission.GradedAt = DateTime.UtcNow;
+        submission.GradedAt = EgyptTime.Now;
 
         StudentAssignments.Update(submission);
         await _unitOfWork.SaveChangesAsync();

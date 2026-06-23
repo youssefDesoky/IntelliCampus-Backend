@@ -72,7 +72,7 @@ public class StudentService : IStudentService
 
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentId, dto.DepartmentName);
         var bylawId = await ResolveBylawIdAsync(dto.BylawId, dto.BylawName);
-        var enrollmentDate = ParseEnrollmentDate(dto.EnrollmentDate) ?? DateTime.UtcNow;
+        var enrollmentDate = ParseEnrollmentDate(dto.EnrollmentDate) ?? EgyptTime.Now;
         var password = string.IsNullOrWhiteSpace(dto.Password) ? dto.NationalId : dto.Password;
 
         var facultyId = dto.FacultyId;
@@ -146,7 +146,7 @@ public class StudentService : IStudentService
             UserId = student.UserId,
             RoleId = role.RoleId,
             IsActive = true,
-            AssignedAt = DateTime.UtcNow
+            AssignedAt = EgyptTime.Now
         };
         _unitOfWork.GetRepository<UserRoleJunction, int>().Add(userRole);
         await _unitOfWork.SaveChangesAsync();

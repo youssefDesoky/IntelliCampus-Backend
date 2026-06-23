@@ -7,8 +7,7 @@ public class InternalMessage
     public string Body { get; set; } = null!;
     public int SenderId { get; set; }
     public int RecipientId { get; set; }
-    public int? ParentMessageId { get; set; }
-    public DateTime SentAt { get; set; } = DateTime.UtcNow;
+    public DateTime SentAt { get; set; } = EgyptTime.Now;
     public bool IsRead { get; set; }
     public DateTime? ReadAt { get; set; }
     public bool IsDeletedBySender { get; set; }

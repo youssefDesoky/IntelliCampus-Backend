@@ -130,7 +130,7 @@ public class MaterialService(
             FolderId = dto.FolderId,
             FileUrl = fileUrl,
             FileSize = fileSize,
-            UploadDate = DateTime.UtcNow
+            UploadDate = EgyptTime.Now
         };
 
         // Create InstructorMaterial junction
@@ -254,7 +254,7 @@ public class MaterialService(
             Description = dto.Description,
             CourseId = dto.CourseId,
             CreatedByInstructorId = instructorId,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = EgyptTime.Now,
             DisplayOrder = dto.DisplayOrder ?? maxOrder + 1
         };
 

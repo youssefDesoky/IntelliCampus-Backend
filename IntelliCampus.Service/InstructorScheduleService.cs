@@ -130,5 +130,5 @@ public class InstructorScheduleService : IInstructorScheduleService
     };
 
     private static string FormatTime(TimeSpan? time) =>
-        time.HasValue ? DateTime.Today.Add(time.Value).ToString("hh:mm tt") : string.Empty;
+        time.HasValue ? EgyptTime.Today.Add(time.Value).ToString("hh:mm tt") : string.Empty;
 }

@@ -11,7 +11,7 @@ public class AttendanceExcuse
     public Session?     Session              { get; set; }
     public string?      Reason               { get; set; }
     public ExcuseStatus Status               { get; set; } = ExcuseStatus.Pending;
-    public DateTime     CreatedAt            { get; set; } = DateTime.UtcNow;
+    public DateTime     CreatedAt            { get; set; } = EgyptTime.Now;
 
     // ── Supporting document (optional) ──────────────────────────────────────
     public string?      DocumentPath         { get; set; }  // server-side storage path

@@ -136,7 +136,7 @@ public class RegistrationService : IRegistrationService
             CourseId = dto.CourseId,
             ClassId = classEntity.ClassId,
             Semester = semester,
-            RegisteredAt = DateTime.UtcNow,
+            RegisteredAt = EgyptTime.Now,
             Status = StudentCourseStatus.InProgress
         };
 

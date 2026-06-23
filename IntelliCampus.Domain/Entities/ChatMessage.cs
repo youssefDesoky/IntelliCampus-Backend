@@ -4,7 +4,7 @@ public class ChatMessage
 {
     public int MessageId { get; set; }
     public string Content { get; set; } = string.Empty;
-    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+    public DateTime Timestamp { get; set; } = EgyptTime.Now;
     public string SenderId { get; set; } = string.Empty;
     public string RecipientId { get; set; } = string.Empty;
     public string? GroupName { get; set; }

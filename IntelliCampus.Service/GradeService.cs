@@ -596,7 +596,7 @@ public class GradeService : IGradeService
                 Weight = assignment.MaxGrade,
                 GradeType = GradeType.Assignment,
                 Status = "Graded",
-                GradedAt = (sa.GradedAt ?? DateTime.UtcNow).ToString("dd MM yyyy HH:mm"),
+                GradedAt = (sa.GradedAt ?? EgyptTime.Now).ToString("dd MM yyyy HH:mm"),
                 Notes = sa.Feedback
             };
         }));
@@ -655,7 +655,7 @@ public class GradeService : IGradeService
             ComplaintType = dto.ComplaintType,
             Details = dto.Details,
             Status = "Pending",
-            SubmittedAt = DateTime.UtcNow
+            SubmittedAt = EgyptTime.Now
         };
 
         Complaints.Add(complaint);
