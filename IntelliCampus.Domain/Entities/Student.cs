@@ -30,4 +30,5 @@ public class Student : User
     public ICollection<StudentCourse> StudentCourses { get; set; } = [];
     public ICollection<ExamSeatAssignment> ExamSeatAssignments { get; set; } = [];
     public ICollection<StudentElectiveBucketProgress> ElectiveBucketProgresses { get; set; } = [];
+    public ICollection<SpecializationPreference> SpecializationPreferences { get; set; } = [];
 }

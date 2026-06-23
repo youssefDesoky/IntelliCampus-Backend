@@ -225,11 +225,17 @@
         public InternalMessageNotFoundException(string message) : base(message) { }
     }
 
-    public sealed class NoteNotFoundException : NotFoundException
-    {
-        public NoteNotFoundException(int id) : base($"Note With Id {id} Is Not Found") { }
-        public NoteNotFoundException(string message) : base(message) { }
-    }
+public sealed class NoteNotFoundException : NotFoundException
+{
+    public NoteNotFoundException(int id) : base($"Note With Id {id} Is Not Found") { }
+    public NoteNotFoundException(string message) : base(message) { }
+}
+
+public sealed class SpecializationPreferenceNotFoundException : NotFoundException
+{
+    public SpecializationPreferenceNotFoundException(int studentId) : base($"No specialization preferences found for student {studentId}") { }
+    public SpecializationPreferenceNotFoundException(string message) : base(message) { }
+}
 
 
 }
