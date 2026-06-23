@@ -34,4 +34,5 @@ public class Course
     public ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
     public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
     public ICollection<ElectiveBucketCourse> ElectiveBucketCourses { get; set; } = new List<ElectiveBucketCourse>();
+    public ICollection<Note> Notes { get; set; } = new List<Note>();
 }
