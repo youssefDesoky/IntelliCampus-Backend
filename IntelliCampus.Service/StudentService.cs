@@ -1,4 +1,5 @@
 using System.Globalization;
+using IntelliCampus.Shared.Dtos.Note;
 using IntelliCampus.Shared.Dtos.Student;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Entities;
@@ -48,7 +49,7 @@ public class StudentService : IStudentService
 
     public async Task<StudentDto> GetByIdAsync(int studentId)
     {
-        var spec = new StudentSpec(studentId);
+        var spec = new StudentSpec(studentId, includeCourses: true);
         var student = await Students.GetByIdAsync(spec);
 
         if (student is null)
@@ -380,7 +381,42 @@ public class StudentService : IStudentService
             SpecializationName = student.Specialization?.Name,
             StudentType = student.StudentType,
             ProfileImage = _urlResolver.ResolveProfile(student.ProfileImage),
-            Roles = student.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
+            Roles = student.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
+            Courses = student.StudentCourses?.Select(sc => new StudentCourseDto
+            {
+                Id = sc.CourseId,
+                Title = sc.Course.CourseName,
+                CourseName = sc.Course.CourseName,
+                Notes = sc.Course.Notes
+                    .Where(n => n.StudentId == student.UserId)
+                    .Select(n => new StudentCourseNoteDto
+                    {
+                        Id = n.NoteId,
+                        Title = n.Title,
+                        Content = n.Content,
+                        CreationDate = n.CreatedAt.ToString("MMM dd, yyyy"),
+                        Modified = n.ModifiedAt.HasValue
+                            ? n.ModifiedAt.Value.ToString("MMM dd, yyyy, h:mm tt")
+                            : n.CreatedAt.ToString("MMM dd, yyyy, h:mm tt"),
+                        LinkedLecture = n.MaterialFolder is not null
+                            ? MapLinkedLecture(n.MaterialFolder)
+                            : null
+                    }).ToList()
+            }).ToList()
+        };
+    }
+
+    private static LinkedLectureDto MapLinkedLecture(MaterialFolder folder)
+    {
+        return new LinkedLectureDto
+        {
+            Id = folder.MaterialFolderId,
+            Title = folder.Name,
+            ShortTitle = folder.Name,
+            WeekLabel = folder.Name + " Lecture",
+            Description = folder.Description,
+            CourseId = folder.CourseId,
+            MaterialFolderName = folder.Name
         };
     }
 }

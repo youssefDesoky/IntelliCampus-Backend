@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.Shared.Dtos.Note;
 
 namespace IntelliCampus.Shared.Dtos.Student;
 
@@ -30,4 +31,5 @@ public class StudentDto
     public string? ProfileImage { get; set; }
     public string? Section { get; set; }
     public List<string> Roles { get; set; } = [];
+    public List<StudentCourseDto>? Courses { get; set; }
 }

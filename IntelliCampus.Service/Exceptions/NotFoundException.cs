@@ -225,5 +225,11 @@
         public InternalMessageNotFoundException(string message) : base(message) { }
     }
 
+    public sealed class NoteNotFoundException : NotFoundException
+    {
+        public NoteNotFoundException(int id) : base($"Note With Id {id} Is Not Found") { }
+        public NoteNotFoundException(string message) : base(message) { }
+    }
+
 
 }

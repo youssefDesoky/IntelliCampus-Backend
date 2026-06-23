@@ -149,6 +149,7 @@ builder.Services.AddScoped<IElectiveBucketService, ElectiveBucketService>();
 builder.Services.AddScoped<IDataSeed, DataSeed>();
 builder.Services.AddScoped<IInstructorScheduleService, InstructorScheduleService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<IInternalMessageService, InternalMessageService>();
 builder.Services.AddScoped<IInboxHubService, InboxHubService>();
 builder.Services.Configure<ApiBehaviorOptions>(options =>

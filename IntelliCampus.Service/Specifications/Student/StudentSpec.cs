@@ -20,5 +20,19 @@ namespace IntelliCampus.Service.Specifications
             AddInclude(s => s.Specialization!);
             AddInclude("UserRoles.Role");
         }
+
+        public StudentSpec(int studentId, bool includeCourses)
+            : base(s => s.UserId == studentId)
+        {
+            AddInclude(s => s.Department!);
+            AddInclude(s => s.Bylaw!);
+            AddInclude(s => s.Specialization!);
+            AddInclude("UserRoles.Role");
+
+            if (includeCourses)
+            {
+                AddInclude("StudentCourses.Course.Notes.MaterialFolder");
+            }
+        }
     }
 }
