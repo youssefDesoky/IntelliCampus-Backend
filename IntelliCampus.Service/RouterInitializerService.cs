@@ -32,8 +32,31 @@ public class RouterInitializerService : IHostedService
             var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var routingClient = scope.ServiceProvider.GetRequiredService<IRoutingClientService>();
 
-            var courses = await uow.GetRepository<Course, int>().GetAllAsync(
-                new CourseSpec());
+            // Load each entity set separately to avoid cartesian-explosion joins
+            var courses = (await uow.GetRepository<Course, int>()
+                .GetAllAsync(new CourseRouterSpec())).ToList();
+
+            var allStudentCourses = (await uow.GetRepository<StudentCourse, int>()
+                .GetAllAsync(new StudentCourseWithStudentSpec())).ToList();
+
+            var allGrades = (await uow.GetRepository<Grade, int>()
+                .GetAllAsync()).ToList();
+
+            var allPrereqs = (await uow.GetRepository<CoursePrerequisite, int>()
+                .GetAllAsync(new CoursePrerequisiteWithCourseSpec())).ToList();
+
+            // Build in-memory lookups
+            var studentCourseLookup = allStudentCourses
+                .GroupBy(sc => sc.CourseId)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var gradeLookup = allGrades
+                .GroupBy(g => g.CourseId)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var prereqLookup = allPrereqs
+                .GroupBy(p => p.CourseId)
+                .ToDictionary(g => g.Key, g => g.ToList());
 
             var requests = new List<(string CourseCode, int CourseId, InitializeRequest Request)>();
 
@@ -41,12 +64,14 @@ public class RouterInitializerService : IHostedService
             {
                 if (cancellationToken.IsCancellationRequested) break;
 
-                if (course.StudentCourses.Count == 0)
+                var courseStudentCourses = studentCourseLookup.GetValueOrDefault(course.CourseId, []);
+                if (courseStudentCourses.Count == 0)
                     continue;
 
                 var courseCode = course.CourseCode ?? course.CourseId.ToString();
 
-                var prereqEdges = course.Prerequisites
+                var coursePrereqs = prereqLookup.GetValueOrDefault(course.CourseId, []);
+                var prereqEdges = coursePrereqs
                     .Select(p => new List<string>
                     {
                         p.PrerequisiteCourse.CourseCode ?? p.PrerequisiteCourseId.ToString(),
@@ -54,11 +79,12 @@ public class RouterInitializerService : IHostedService
                     })
                     .ToList();
 
-                var students = course.StudentCourses
+                var courseGrades = gradeLookup.GetValueOrDefault(course.CourseId, []);
+                var students = courseStudentCourses
                     .Select(sc => new StudentData(
                         StudentId: sc.Student.UserId.ToString(),
                         Name: sc.Student.FullName,
-                        Performance: CalculatePerformance(sc.Student, course, course.Grades),
+                        Performance: CalculatePerformance(sc.Student, courseGrades),
                         CompletedTopics: new List<string> {
                             courseCode
                         }
@@ -161,12 +187,11 @@ public class RouterInitializerService : IHostedService
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
-    private static double CalculatePerformance(Student student, Course course,
-        ICollection<Grade> allGrades)
+    private static double CalculatePerformance(Student student,
+        List<Grade> courseGrades)
     {
-        var studentGrades = allGrades
-            .Where(g => g.StudentId == student.UserId && g.CourseId == course.CourseId
-                        && g.Status == "Graded")
+        var studentGrades = courseGrades
+            .Where(g => g.StudentId == student.UserId && g.Status == "Graded")
             .ToList();
 
         if (studentGrades.Count == 0)

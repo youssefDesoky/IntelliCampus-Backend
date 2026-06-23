@@ -152,6 +152,9 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<IInternalMessageService, InternalMessageService>();
 builder.Services.AddScoped<IInboxHubService, InboxHubService>();
+builder.Services.AddScoped<ISpecializationPreferenceService, SpecializationPreferenceService>();
+builder.Services.AddScoped<ISpecializationAllocationService, SpecializationAllocationService>();
+builder.Services.AddHostedService<IntelliCampus.Service.SpecializationAllocationHostedService>();
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = actionContext =>
