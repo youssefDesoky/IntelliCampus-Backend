@@ -91,6 +91,11 @@ public class AttendanceController(
     public async Task<IActionResult> GetMyAttendance(int courseId)
         => Ok(await attendanceService.GetByStudentAndCourseAsync(UserId, courseId));
 
+    [HttpGet("my-attendance/course/{courseId}/percentage")]
+    [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
+    public async Task<IActionResult> GetMyAttendancePercentage(int courseId)
+        => Ok(await attendanceService.GetAttendancePercentageAsync(UserId, courseId));
+
     // ─── Instructor read ───────────────────────────────────────────────────────
 
     [HttpGet("report/class/{classId}")]

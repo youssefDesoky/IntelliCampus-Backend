@@ -35,6 +35,8 @@ public class CourseDto
     public bool IsElective { get; set; }
     public string? ProfessorName { get; set; }
 
+    public string? StudentCourseStatusName { get; set; }
+
     // Registration settings
     public DateTime? RegistrationStartDate { get; set; }
     public DateTime? RegistrationEndDate { get; set; }
