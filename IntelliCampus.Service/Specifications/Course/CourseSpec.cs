@@ -1,11 +1,17 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service.Specifications
 {
     internal class CourseSpec : BaseSpecifications<Course>
     {
+
+       
         public CourseSpec() { AddFullIncludes(); }
+
+        
+       
 
         public CourseSpec(int courseId)
             : base(c => c.CourseId == courseId)
@@ -18,6 +24,21 @@ namespace IntelliCampus.Service.Specifications
         public CourseSpec(List<int> courseIds)
             : base(c => courseIds.Contains(c.CourseId))
         { AddFullIncludes(); }
+
+        public CourseSpec(CourseQueryParams queryParams)
+            : base(c =>
+                (!queryParams.CourseId.HasValue || c.CourseId == queryParams.CourseId.Value)
+                && (!queryParams.DepartmentId.HasValue || c.DepartmentId == queryParams.DepartmentId.Value)
+                && (!queryParams.IsActiveOnly || c.Status == CourseStatus.Active)
+                && (string.IsNullOrEmpty(queryParams.Search)
+                    || c.CourseName.Contains(queryParams.Search)
+                    || (c.CourseCode != null && c.CourseCode.Contains(queryParams.Search)))
+                && (!queryParams.StudentId.HasValue
+                    || c.StudentCourses.Any(sc => sc.StudentId == queryParams.StudentId.Value
+                        && (queryParams.StudentStatuses == null || queryParams.StudentStatuses.Contains(sc.Status))))
+            )
+        { AddFullIncludes(); }
+
 
         private void AddFullIncludes()
         {

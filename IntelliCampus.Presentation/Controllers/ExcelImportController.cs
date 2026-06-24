@@ -2,6 +2,7 @@ using System.Security.Claims;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Bylaw;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,9 +25,9 @@ public class ExcelImportController : ControllerBase
 
     [HttpPost("students")]
     [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
-    public async Task<ActionResult<ExcelImportResultDto>> ImportStudents(IFormFile file, [FromQuery] int? bylawId = null)
+    public async Task<ActionResult<ExcelImportResultDto>> ImportStudents(IFormFile file, [FromQuery] ExcelImportQueryParams queryParams)
     {
-        return await Import(ImportEntityType.Students, file, bylawId);
+        return await Import(ImportEntityType.Students, file, queryParams);
     }
 
     [HttpPost("courses")]
@@ -72,15 +73,15 @@ public class ExcelImportController : ControllerBase
 
     [HttpPost("exams")]
     [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
-    public async Task<ActionResult<ExcelImportResultDto>> ImportExams(IFormFile file, [FromQuery] string? examType = null)
+    public async Task<ActionResult<ExcelImportResultDto>> ImportExams(IFormFile file, [FromQuery] ExcelImportQueryParams queryParams)
     {
-        return await Import(ImportEntityType.Exams, file, examType: examType);
+        return await Import(ImportEntityType.Exams, file, queryParams);
     }
 
     [HttpGet("students/template")]
-    public IActionResult GetStudentTemplate([FromQuery] int? bylawId = null)
+    public IActionResult GetStudentTemplate([FromQuery] ExcelImportQueryParams queryParams)
     {
-        if (bylawId.HasValue)
+        if (queryParams.BylawId.HasValue)
         {
             return Ok(new
             {
@@ -90,7 +91,7 @@ public class ExcelImportController : ControllerBase
                     "Address", "Nationality", "StudentCode", "StudentType (Bachelor/masters/phd/diploma)", "Level",
                     "DepartmentName", "EnrollmentDate"
                 },
-                bylawId
+                queryParams.BylawId
             });
         }
 
@@ -146,13 +147,13 @@ public class ExcelImportController : ControllerBase
         });
     }
 
-    private async Task<ActionResult<ExcelImportResultDto>> Import(ImportEntityType type, IFormFile file, int? bylawId = null, string? examType = null)
+    private async Task<ActionResult<ExcelImportResultDto>> Import(ImportEntityType type, IFormFile file, ExcelImportQueryParams? queryParams = null)
     {
         if (file is null || file.Length is 0)
             return BadRequest(new { message = "No file uploaded." });
 
         var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var result = await _excelImportService.ImportAsync(type, file, bylawId, creatorUserId is not null ? int.Parse(creatorUserId) : null);
+        var result = await _excelImportService.ImportAsync(type, file, queryParams?.BylawId, creatorUserId is not null ? int.Parse(creatorUserId) : null);
 
         if (result.FailCount > 0 && result.SuccessCount is 0)
             return BadRequest(result);

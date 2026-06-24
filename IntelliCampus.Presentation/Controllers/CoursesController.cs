@@ -4,6 +4,7 @@ using IntelliCampus.Shared.Dtos.Announcement;
 using IntelliCampus.Shared.Dtos.Course;
 using IntelliCampus.Shared.Dtos.Student;
 using IntelliCampus.Shared.Dtos.Bylaw;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -26,72 +27,61 @@ public class CoursesController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<CourseDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<CourseDto>>> GetAll([FromQuery] CourseQueryParams queryParams)
     {
-        var courses = await _courseService.GetAllAsync();
+        var courses = await _courseService.GetAllAsync(queryParams);
         return Ok(courses);
     }
 
     [HttpGet("active")]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<CourseDto>>> GetActive()
+    public async Task<ActionResult<IEnumerable<CourseDto>>> GetActive([FromQuery] CourseQueryParams queryParams)
     {
-        var courses = await _courseService.GetActiveCoursesAsync();
+        var courses = await _courseService.GetActiveCoursesAsync(queryParams);
         return Ok(courses);
     }
 
     [HttpGet("student/{studentId}")]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<CourseDto>>> GetByStudentId(int studentId, [FromQuery] string? status = null)
+    public async Task<ActionResult<IEnumerable<CourseDto>>> GetByStudentId(int studentId, [FromQuery] CourseQueryParams queryParams)
     {
-        List<StudentCourseStatus>? statuses = status?.ToLowerInvariant() switch
-        {
-            "inprogress" => [StudentCourseStatus.Registered, StudentCourseStatus.InProgress],
-            "completed" => [StudentCourseStatus.Completed, StudentCourseStatus.Failed],
-            "failed" => [StudentCourseStatus.Failed],
-            _ => null
-        };
-
-        var courses = await _courseService.GetCoursesByStudentIdAsync(studentId, statuses);
+        queryParams.StudentId = studentId;
+        var courses = await _courseService.GetCoursesByStudentIdAsync(queryParams);
         return Ok(courses);
     }
 
     [HttpGet("my-courses")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
-    public async Task<ActionResult<IEnumerable<CourseDto>>> GetMyStudentCourses([FromQuery] string? status = null)
+    public async Task<ActionResult<IEnumerable<CourseDto>>> GetMyStudentCourses([FromQuery] CourseQueryParams queryParams)
     {
         var userId = GetCurrentUserId();
         if (userId is null)
             return Unauthorized();
 
-        List<StudentCourseStatus>? statuses = status?.ToLowerInvariant() switch
-        {
-            "inprogress" => [StudentCourseStatus.Registered, StudentCourseStatus.InProgress],
-            "completed" => [StudentCourseStatus.Completed, StudentCourseStatus.Failed],
-            _ => null
-        };
-
-        var courses = await _courseService.GetCoursesByStudentIdAsync(userId.Value, statuses);
+        queryParams.StudentId = userId.Value;
+        var courses = await _courseService.GetCoursesByStudentIdAsync(queryParams);
         return Ok(courses);
     }
 
     [HttpGet("instructor/{instructorId}")]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<CourseDto>>> GetByInstructorId(int instructorId)
+    public async Task<ActionResult<IEnumerable<CourseDto>>> GetByInstructorId(int instructorId, [FromQuery] CourseQueryParams queryParams)
     {
-        var courses = await _courseService.GetCoursesByInstructorIdAsync(instructorId);
+        queryParams.InstructorId = instructorId;
+        var courses = await _courseService.GetCoursesByInstructorIdAsync(queryParams);
         return Ok(courses);
     }
 
     [HttpGet("my-teaching")]
     [Authorize(Roles = "Instructor")]
-    public async Task<ActionResult<IEnumerable<CourseDto>>> GetMyInstructorCourses()
+    public async Task<ActionResult<IEnumerable<CourseDto>>> GetMyInstructorCourses([FromQuery] CourseQueryParams queryParams)
     {
         var userId = GetCurrentUserId();
         if (userId is null)
             return Unauthorized();
 
-        var courses = await _courseService.GetCoursesByInstructorIdAsync(userId.Value);
+        queryParams.InstructorId = userId.Value;
+        var courses = await _courseService.GetCoursesByInstructorIdAsync(queryParams);
         return Ok(courses);
     }
 

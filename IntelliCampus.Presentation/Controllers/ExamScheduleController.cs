@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,9 +43,9 @@ public class ExamScheduleController(IExamScheduleService examScheduleService) : 
 
     [HttpGet("my-exams/export")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
-    public async Task<IActionResult> ExportMyExams([FromQuery] ExamType? type, [FromQuery] ExamStatus? status)
+    public async Task<IActionResult> ExportMyExams([FromQuery] ExamScheduleQueryParams queryParams)
     {
-        var pdf = await examScheduleService.ExportExamSchedulePdfAsync(UserId, type, status);
+        var pdf = await examScheduleService.ExportExamSchedulePdfAsync(UserId, queryParams);
         return File(pdf, "application/pdf", "ExamSchedule.pdf");
     }
 }

@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,9 +15,9 @@ public class InstructorScheduleController(IInstructorScheduleService instructorS
     private int UserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpGet("my-schedule")]
-    public async Task<IActionResult> GetMySchedule([FromQuery(Name = "type")] ScheduleType[]? types)
+    public async Task<IActionResult> GetMySchedule([FromQuery] ScheduleQueryParams queryParams)
     {
-        var result = await instructorScheduleService.GetMyScheduleAsync(UserId, types);
+        var result = await instructorScheduleService.GetMyScheduleAsync(UserId, queryParams);
         return Ok(result);
     }
 
@@ -28,9 +29,9 @@ public class InstructorScheduleController(IInstructorScheduleService instructorS
     }
 
     [HttpGet("my-schedule/export")]
-    public async Task<IActionResult> ExportSchedule([FromQuery(Name = "type")] ScheduleType[]? types)
+    public async Task<IActionResult> ExportSchedule([FromQuery] ScheduleQueryParams queryParams)
     {
-        var pdf = await instructorScheduleService.ExportSchedulePdfAsync(UserId, types);
+        var pdf = await instructorScheduleService.ExportSchedulePdfAsync(UserId, queryParams);
         return File(pdf, "application/pdf", "WeeklySchedule.pdf");
     }
 }

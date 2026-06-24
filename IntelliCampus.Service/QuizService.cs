@@ -6,6 +6,7 @@ using IntelliCampus.Service_Abstraction;
 using IntelliCampus.shared.Dtos.Quiz;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service.Exceptions;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service;
 
@@ -518,7 +519,7 @@ public class QuizService : IQuizService
         };
     }
 
-    public async Task<PracticeQuizDto?> GetPracticeQuizAsync(int studentId, string courseId, int? quizId = null)
+    public async Task<PracticeQuizDto?> GetPracticeQuizAsync(int studentId, string courseId, QuizQueryParams queryParams)
     {
         if (!int.TryParse(courseId, out var parsedCourseId))
             throw new CourseNotFoundException(courseId);
@@ -527,13 +528,13 @@ public class QuizService : IQuizService
         if (course is null)
             throw new CourseNotFoundException(parsedCourseId);
 
-        var quizSpec = new QuizzesByCourseSpec(parsedCourseId);
+        var quizSpec = new QuizSpec(queryParams, parsedCourseId);
         var quizzes = (await Quizzes.GetAllAsync(quizSpec)).ToList();
 
         Quiz? quiz;
-        if (quizId.HasValue)
+        if (queryParams.QuizId.HasValue)
         {
-            quiz = quizzes.FirstOrDefault(q => q.QuizId == quizId.Value);
+            quiz = quizzes.FirstOrDefault();
         }
         else
         {
@@ -550,7 +551,7 @@ public class QuizService : IQuizService
         }
 
         if (quiz is null)
-            throw new QuizNotFoundException(quizId!.Value);
+            throw new QuizNotFoundException(queryParams.QuizId ?? 0);
 
         var now = EgyptTime.Now;
         var submission = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quiz.QuizId));

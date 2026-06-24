@@ -5,6 +5,7 @@ using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.ExamScheduling;
+using IntelliCampus.Shared.Params;
 using Microsoft.EntityFrameworkCore;
 
 namespace IntelliCampus.Service;
@@ -63,8 +64,17 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
     // ─── Conflict Detection (SQL-style) ──────────────────────────────
 
     public async Task<List<ConflictInfoDto>> DetectConflictsAsync(
-        int courseId, string semester, DateTime date, TimeSpan startTime, TimeSpan endTime, int? excludeExamId = null)
+        string semester, ExamSchedulingQueryParams queryParams)
     {
+        if (!queryParams.CourseId.HasValue)
+            throw new InvalidOperationException("CourseId is required.");
+
+        var courseId = queryParams.CourseId.Value;
+        var date = queryParams.Date ?? throw new InvalidOperationException("Date is required.");
+        var startTime = queryParams.StartTime ?? throw new InvalidOperationException("StartTime is required.");
+        var endTime = queryParams.EndTime ?? throw new InvalidOperationException("EndTime is required.");
+        var excludeExamId = queryParams.ExcludeExamId;
+
         var course = await CoursesRepo.GetByIdAsync(courseId);
         if (course is null)
             throw new CourseNotFoundException(courseId);
@@ -128,7 +138,15 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
     public async Task<bool> HasConflictsAsync(
         int courseId, string semester, DateTime date, TimeSpan startTime, TimeSpan endTime, int? excludeExamId = null)
     {
-        var conflicts = await DetectConflictsAsync(courseId, semester, date, startTime, endTime, excludeExamId);
+        var queryParams = new ExamSchedulingQueryParams
+        {
+            CourseId = courseId,
+            Date = date,
+            StartTime = startTime,
+            EndTime = endTime,
+            ExcludeExamId = excludeExamId
+        };
+        var conflicts = await DetectConflictsAsync(semester, queryParams);
         return conflicts.Count > 0;
     }
 
@@ -145,11 +163,15 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             {
                 var examDate = day.ToDateTime(TimeOnly.FromTimeSpan(slot.StartTime));
                 var semester = SemesterHelper.GetSemesterFromDate(examDate);
-                var conflicts = await DetectConflictsAsync(
-                    request.CourseId, semester,
-                    examDate,
-                    slot.StartTime, slot.EndTime,
-                    request.ExcludeExamId);
+                var queryParams = new ExamSchedulingQueryParams
+                {
+                    CourseId = request.CourseId,
+                    Date = examDate,
+                    StartTime = slot.StartTime,
+                    EndTime = slot.EndTime,
+                    ExcludeExamId = request.ExcludeExamId
+                };
+                var conflicts = await DetectConflictsAsync(semester, queryParams);
 
                 result.Add(new AvailableSlotDto
                 {

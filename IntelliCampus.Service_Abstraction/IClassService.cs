@@ -1,6 +1,7 @@
 using IntelliCampus.Shared.Dtos.Class;
 using IntelliCampus.Shared.Dtos.Instructor;
 using IntelliCampus.Shared.Dtos.Room;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service_Abstraction;
 
@@ -20,5 +21,5 @@ public interface IClassService
     Task<IEnumerable<RoomDto>> GetLectureRoomsAsync();
     Task<IEnumerable<RoomDto>> GetSectionRoomsAsync();
     Task<IEnumerable<ClassDto>> GetProfessorLecturesAsync();
-    Task<IEnumerable<ClassDto>> GetTALecturerSectionsAsync(int? instructorId = null);
+    Task<IEnumerable<ClassDto>> GetTALecturerSectionsAsync(ClassQueryParams queryParams);
 }

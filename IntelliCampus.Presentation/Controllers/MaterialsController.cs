@@ -2,6 +2,7 @@ using System.Security.Claims;
 using IntelliCampus.Shared.Dtos.Material;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -34,9 +35,9 @@ public class MaterialsController(IMaterialService materialService) : ControllerB
 
     [Authorize]
     [HttpGet("course/{courseId}/organized")]
-    public async Task<ActionResult<CourseMaterialsDto>> GetCourseMaterialsOrganized(int courseId)
+    public async Task<ActionResult<CourseMaterialsDto>> GetCourseMaterialsOrganized(int courseId, [FromQuery] MaterialQueryParams queryParams)
     {
-        return Ok(await _materialService.GetCourseMaterialsOrganizedAsync(courseId));
+        return Ok(await _materialService.GetCourseMaterialsOrganizedAsync(courseId, queryParams));
     }
 
     [Authorize(Roles = "Instructor")]

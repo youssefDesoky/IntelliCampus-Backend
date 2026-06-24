@@ -1,5 +1,6 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service.Specifications;
 
@@ -16,6 +17,16 @@ public class ScheduleSpec : BaseSpecifications<Schedule>
     // Weekly entries filtered by ScheduleType
     public ScheduleSpec(int studentId, ScheduleType type)
         : base(s => s.StudentId == studentId && s.ScheduleType == type)
+    {
+        AddInclude(s => s.Course!);
+        AddOrderBy(s => s.Date);
+    }
+
+    // Weekly entries filtered by ScheduleQueryParams
+    public ScheduleSpec(int studentId, ScheduleQueryParams queryParams)
+        : base(s => s.StudentId == studentId
+            && (queryParams.Types == null || queryParams.Types.Length == 0
+                || queryParams.Types.Contains(s.ScheduleType)))
     {
         AddInclude(s => s.Course!);
         AddOrderBy(s => s.Date);

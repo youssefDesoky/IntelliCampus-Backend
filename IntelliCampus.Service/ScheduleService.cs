@@ -6,6 +6,7 @@ using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Export;
 using IntelliCampus.Shared.Dtos.Schedule;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service;
 
@@ -61,24 +62,16 @@ public class ScheduleService : IScheduleService
         return schedules.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<ScheduleDto>> GetByStudentIdAndTypesAsync(int studentId, IReadOnlyCollection<ScheduleType> types)
+    public async Task<IEnumerable<ScheduleDto>> GetByStudentIdAndTypesAsync(int studentId, ScheduleQueryParams queryParams)
     {
         var student = await Students.GetByIdAsync(studentId);
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
-        if (types is null || types.Count == 0)
-            return await GetByStudentIdAsync(studentId);
-
-        // Reuse existing spec and apply an IN filter in-memory.
-        // If you want this server-side, add a dedicated Specification that translates to SQL IN.
-        var spec = new ScheduleSpec(studentId);
+        var spec = new ScheduleSpec(studentId, queryParams);
         var schedules = await Schedules.GetAllAsync(spec);
 
-        var typeSet = types is HashSet<ScheduleType> hs ? hs : types.ToHashSet();
-        return schedules
-            .Where(s => typeSet.Contains(s.ScheduleType))
-            .Select(MapToDto);
+        return schedules.Select(MapToDto);
     }
 
     public async Task SyncFromCourseRegistrationAsync(int studentId, int classId)
@@ -148,15 +141,15 @@ public class ScheduleService : IScheduleService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<byte[]> ExportSchedulePdfAsync(int studentId, IReadOnlyCollection<ScheduleType>? types)
+    public async Task<byte[]> ExportSchedulePdfAsync(int studentId, ScheduleQueryParams queryParams)
     {
         var student = await _studentService.GetByIdAsync(studentId);
 
         IEnumerable<ScheduleDto> schedules;
-        if (types is null || types.Count == 0)
+        if (queryParams.Types is null || queryParams.Types.Length == 0)
             schedules = await GetByStudentIdAsync(studentId);
         else
-            schedules = await GetByStudentIdAndTypesAsync(studentId, types);
+            schedules = await GetByStudentIdAndTypesAsync(studentId, queryParams);
 
         var dto = new ScheduleExportDto
         {

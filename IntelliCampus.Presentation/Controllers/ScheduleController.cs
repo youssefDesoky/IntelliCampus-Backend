@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,19 +28,19 @@ public class ScheduleController(IScheduleService scheduleService) : ControllerBa
 
     [HttpGet("my-schedule")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
-    public async Task<IActionResult> GetMySchedule([FromQuery(Name = "type")] ScheduleType[]? types)
+    public async Task<IActionResult> GetMySchedule([FromQuery] ScheduleQueryParams queryParams)
     {
-        if (types is null || types.Length == 0)
+        if (queryParams.Types is null || queryParams.Types.Length == 0)
             return Ok(await scheduleService.GetByStudentIdAsync(UserId));
 
-        return Ok(await scheduleService.GetByStudentIdAndTypesAsync(UserId, types));
+        return Ok(await scheduleService.GetByStudentIdAndTypesAsync(UserId, queryParams));
     }
 
     [HttpGet("my-schedule/export")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
-    public async Task<IActionResult> ExportMySchedule([FromQuery(Name = "type")] ScheduleType[]? types)
+    public async Task<IActionResult> ExportMySchedule([FromQuery] ScheduleQueryParams queryParams)
     {
-        var pdf = await scheduleService.ExportSchedulePdfAsync(UserId, types);
+        var pdf = await scheduleService.ExportSchedulePdfAsync(UserId, queryParams);
         return File(pdf, "application/pdf", "WeeklySchedule.pdf");
     }
 }

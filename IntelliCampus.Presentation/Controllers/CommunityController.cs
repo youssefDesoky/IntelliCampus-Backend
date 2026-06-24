@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using IntelliCampus.Shared.Dtos.Routing;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -58,13 +59,13 @@ public class CommunityController(
     }
 
     [HttpGet("graph")]
-    public async Task<IActionResult> ExportGraph(int courseId, [FromQuery] string graphType = "interaction")
+    public async Task<IActionResult> ExportGraph(int courseId, [FromQuery] CommunityQueryParams queryParams)
     {
-        var gexf = await communityService.ExportCourseGraphAsync(courseId, graphType);
+        var gexf = await communityService.ExportCourseGraphAsync(courseId, queryParams.GraphType ?? "interaction");
         return File(
             System.Text.Encoding.UTF8.GetBytes(gexf),
             "application/xml",
-            fileDownloadName: $"{courseId}_{graphType}.gexf");
+            fileDownloadName: $"{courseId}_{queryParams.GraphType ?? "interaction"}.gexf");
     }
 
     [HttpPost("questions/{postId}")]

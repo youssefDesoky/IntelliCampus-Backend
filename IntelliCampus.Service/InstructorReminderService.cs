@@ -5,6 +5,7 @@ using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Reminder;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service;
 
@@ -18,13 +19,15 @@ public class InstructorReminderService(IUnitOfWork unitOfWork) : IInstructorRemi
     private IGenericRepository<Instructor, int> Instructors
         => _unitOfWork.GetRepository<Instructor, int>();
 
-    public async Task<RemindersGroupedDto> GetRemindersAsync(int instructorId, DateOnly selectedDay)
+    public async Task<RemindersGroupedDto> GetRemindersAsync(int instructorId, ReminderQueryParams queryParams)
     {
+        var selectedDay = queryParams.SelectedDay ?? DateOnly.FromDateTime(DateTime.UtcNow);
+
         var instructorExists = await Instructors.GetByIdAsync(instructorId) != null;
         if (!instructorExists)
             throw new InstructorNotFoundException(instructorId);
 
-        var spec = new RemindersByInstructorSpec(instructorId);
+        var spec = new RemindersByInstructorSpec(instructorId, queryParams);
         var reminders = await Reminders.GetAllAsync(spec);
 
         var nextDay = selectedDay.AddDays(1);

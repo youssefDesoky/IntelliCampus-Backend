@@ -2,6 +2,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Shared.Dtos.Bylaw;
 using IntelliCampus.Shared.Dtos.Course;
 using IntelliCampus.Shared.Dtos.Student;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Http;
 
 namespace IntelliCampus.Service_Abstraction;
@@ -9,10 +10,10 @@ namespace IntelliCampus.Service_Abstraction;
 public interface ICourseService
 {
     Task<CourseDto?> GetByIdAsync(int courseId);
-    Task<IEnumerable<CourseDto>> GetAllAsync();
-    Task<IEnumerable<CourseDto>> GetActiveCoursesAsync();
-    Task<IEnumerable<CourseDto>> GetCoursesByStudentIdAsync(int studentId, List<StudentCourseStatus>? statuses = null);
-    Task<IEnumerable<CourseDto>> GetCoursesByInstructorIdAsync(int instructorId);
+    Task<IEnumerable<CourseDto>> GetAllAsync(CourseQueryParams queryParams);
+    Task<IEnumerable<CourseDto>> GetActiveCoursesAsync(CourseQueryParams queryParams);
+    Task<IEnumerable<CourseDto>> GetCoursesByStudentIdAsync(CourseQueryParams queryParams);
+    Task<IEnumerable<CourseDto>> GetCoursesByInstructorIdAsync(CourseQueryParams queryParams);
     Task<CourseDto> CreateAsync(CreateCourseDto dto);
     Task<CourseDto?> UpdateAsync(int courseId, CreateCourseDto dto);
     Task<bool> ActivateAsync(int courseId);

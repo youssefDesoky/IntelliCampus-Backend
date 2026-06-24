@@ -3,6 +3,7 @@ using IntelliCampus.Shared.Dtos.Class;
 using IntelliCampus.Shared.Dtos.Instructor;
 using IntelliCampus.Shared.Dtos.Room;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
@@ -307,18 +308,11 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         return classes.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<ClassDto>> GetTALecturerSectionsAsync(int? instructorId = null)
+    public async Task<IEnumerable<ClassDto>> GetTALecturerSectionsAsync(ClassQueryParams queryParams)
     {
-        if (instructorId.HasValue)
-        {
-            var spec = new TALecturerSectionsSpec(instructorId.Value);
-            var classes = await Classes.GetAllAsync(spec);
-            return classes.Select(MapToDto);
-        }
-
-        var allSpec = new TALecturerSectionsSpec();
-        var allClasses = await Classes.GetAllAsync(allSpec);
-        return allClasses.Select(MapToDto);
+        var spec = new TALecturerSectionsSpec(queryParams);
+        var classes = await Classes.GetAllAsync(spec);
+        return classes.Select(MapToDto);
     }
 
     public async Task<IEnumerable<RoomDto>> GetLectureRoomsAsync()

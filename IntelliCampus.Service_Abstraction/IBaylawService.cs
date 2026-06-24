@@ -1,5 +1,6 @@
 using IntelliCampus.Shared.Dtos.Student;
 using IntelliCampus.Shared.Dtos.Bylaw;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Http;
 
 namespace IntelliCampus.Service_Abstraction;
@@ -7,7 +8,7 @@ namespace IntelliCampus.Service_Abstraction;
 public interface IBylawService
 {
     Task<BylawDto?> GetByIdAsync(int bylawId);
-    Task<IEnumerable<BylawDto>> GetAllAsync(string? type = null);
+    Task<IEnumerable<BylawDto>> GetAllAsync(BylawQueryParams queryParams);
     Task<BylawDto> CreateAsync(CreateBylawDto dto, int adminId);
     Task<BylawDto?> UploadDocumentAsync(int bylawId, IFormFile file);
     Task<bool> DeleteAsync(int bylawId);

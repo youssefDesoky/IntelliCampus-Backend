@@ -6,6 +6,7 @@ using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Export;
 using IntelliCampus.Shared.Dtos.Schedule;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service;
 
@@ -123,7 +124,7 @@ public class ExamScheduleService : IExamScheduleService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<byte[]> ExportExamSchedulePdfAsync(int studentId, ExamType? type, ExamStatus? status)
+    public async Task<byte[]> ExportExamSchedulePdfAsync(int studentId, ExamScheduleQueryParams queryParams)
     {
         var student = await Students.GetByIdAsync(studentId);
         if (student is null)
@@ -131,13 +132,8 @@ public class ExamScheduleService : IExamScheduleService
 
         var studentDto = await _studentService.GetByIdAsync(studentId);
 
-        IEnumerable<ExamScheduleDto> exams;
-        if (type.HasValue)
-            exams = await GetByTypeAsync(studentId, type.Value);
-        else if (status.HasValue)
-            exams = await GetByStatusAsync(studentId, status.Value);
-        else
-            exams = await GetByStudentIdAsync(studentId);
+        var spec = new ExamScheduleSpec(studentId, queryParams);
+        var exams = (await ExamSchedules.GetAllAsync(spec)).Select(MapToDto);
 
         var dto = new ExamScheduleExportDto
         {

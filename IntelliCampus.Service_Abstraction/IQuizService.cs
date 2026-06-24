@@ -1,4 +1,5 @@
 using IntelliCampus.shared.Dtos.Quiz;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service_Abstraction;
 
@@ -22,6 +23,6 @@ public interface IQuizService
 
     // Advanced JSON matching endpoints (using courseId as a string to match the frontend expectations)
     Task<QuizSubmitResponseDto?> SubmitPracticeQuizAsync(int studentId, string courseId, SubmitQuizDto dto);
-    Task<PracticeQuizDto?> GetPracticeQuizAsync(int studentId, string courseId , int? quizId=null);
+    Task<PracticeQuizDto?> GetPracticeQuizAsync(int studentId, string courseId, QuizQueryParams queryParams);
     Task<CourseQuizzesDto?> GetQuizzesOverviewAsync(int studentId, string courseId);
 }

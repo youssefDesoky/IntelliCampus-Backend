@@ -1,6 +1,7 @@
 using System.Globalization;
 using IntelliCampus.Shared.Dtos.Note;
 using IntelliCampus.Shared.Dtos.Student;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
@@ -49,7 +50,7 @@ public class StudentService : IStudentService
 
     public async Task<StudentDto> GetByIdAsync(int studentId)
     {
-        var spec = new StudentSpec(studentId, includeCourses: true);
+        var spec = new StudentSpec(new CourseQueryParams { StudentId = studentId, IncludeCourses = true });
         var student = await Students.GetByIdAsync(spec);
 
         if (student is null)
@@ -60,7 +61,7 @@ public class StudentService : IStudentService
 
     public async Task<IEnumerable<StudentDto>> GetAllAsync()
     {
-        var spec = new StudentSpec();
+        var spec = new StudentSpec(new CourseQueryParams());
         var students = await Students.GetAllAsync(spec);
 
         return students.Select(MapToDto);
@@ -154,7 +155,7 @@ public class StudentService : IStudentService
 
         if (student.DepartmentId.HasValue)
         {
-            var spec = new StudentSpec(student.UserId);
+            var spec = new StudentSpec(new CourseQueryParams { StudentId = student.UserId });
             var result = await Students.GetByIdAsync(spec);
             return MapToDto(result!);
         }
@@ -164,7 +165,7 @@ public class StudentService : IStudentService
 
     public async Task<StudentDto> UpdateAsync(int studentId, UpdateStudentDto dto)
     {
-        var spec = new StudentSpec(studentId);
+        var spec = new StudentSpec(new CourseQueryParams { StudentId = studentId });
         var student = await Students.GetByIdAsync(spec);
 
         if (student is null)
@@ -208,7 +209,7 @@ public class StudentService : IStudentService
 
         if (student.DepartmentId.HasValue)
         {
-            var updatedSpec = new StudentSpec(student.UserId);
+            var updatedSpec = new StudentSpec(new CourseQueryParams { StudentId = student.UserId });
             var result = await Students.GetByIdAsync(updatedSpec);
             return MapToDto(result!);
         }
@@ -229,7 +230,7 @@ public class StudentService : IStudentService
 
     public async Task DeleteAsync(int studentId)
     {
-        var spec = new StudentSpec(studentId);
+        var spec = new StudentSpec(new CourseQueryParams { StudentId = studentId });
         var student = await Students.GetByIdAsync(spec);
 
         if (student is null)

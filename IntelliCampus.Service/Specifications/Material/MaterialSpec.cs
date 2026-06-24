@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service.Specifications
 {
@@ -13,6 +14,15 @@ namespace IntelliCampus.Service.Specifications
 
         public MaterialSpec(int courseId, bool byCourse)
             : base(m => m.CourseId == courseId)
+        {
+            AddInclude(m => m.Course!);
+            AddInclude(m => m.Folder!);
+            AddOrderByDescending(m => m.UploadDate);
+        }
+
+        public MaterialSpec(int courseId, bool byCourse, MaterialQueryParams queryParams)
+            : base(m => m.CourseId == courseId
+                && (!queryParams.FolderId.HasValue || m.FolderId == queryParams.FolderId.Value))
         {
             AddInclude(m => m.Course!);
             AddInclude(m => m.Folder!);

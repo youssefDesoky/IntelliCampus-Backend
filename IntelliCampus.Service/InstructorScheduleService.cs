@@ -6,6 +6,7 @@ using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Export;
 using IntelliCampus.Shared.Dtos.Schedule;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service;
 
@@ -28,17 +29,19 @@ public class InstructorScheduleService : IInstructorScheduleService
     private IGenericRepository<Instructor, int> Instructors
         => _unitOfWork.GetRepository<Instructor, int>();
 
-    public async Task<IEnumerable<ScheduleDto>> GetMyScheduleAsync(int userId, IReadOnlyCollection<ScheduleType>? types)
+    public async Task<IEnumerable<ScheduleDto>> GetMyScheduleAsync(int userId, ScheduleQueryParams queryParams)
     {
+        var types = queryParams.Types;
+
         var instructor = await FindInstructorByUserIdAsync(userId);
         var spec = new ClassByInstructorSpec(instructor.InstructorId);
         var classes = await Classes.GetAllAsync(spec);
 
         var schedules = classes.Select(MapToDto);
 
-        if (types is not null && types.Count > 0)
+        if (types is not null && types.Length > 0)
         {
-            var typeSet = types is HashSet<ScheduleType> hs ? hs : types.ToHashSet();
+            var typeSet = types.ToHashSet();
             schedules = schedules.Where(s => typeSet.Contains(ParseScheduleType(s.Type)));
         }
 
@@ -55,9 +58,9 @@ public class InstructorScheduleService : IInstructorScheduleService
         return MapToDto(cls);
     }
 
-    public async Task<byte[]> ExportSchedulePdfAsync(int userId, IReadOnlyCollection<ScheduleType>? types)
+    public async Task<byte[]> ExportSchedulePdfAsync(int userId, ScheduleQueryParams queryParams)
     {
-        var schedules = await GetMyScheduleAsync(userId, types);
+        var schedules = await GetMyScheduleAsync(userId, queryParams);
         var instructorDto = await _instructorService.GetByIdAsync(userId);
 
         var dto = new ScheduleExportDto
