@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.InstructorAnalytics;
 using Microsoft.AspNetCore.Authorization;
@@ -16,33 +18,44 @@ public class InstructorAnalyticsController : ControllerBase
     private readonly IAssignmentService _assignmentService;
     private readonly ISessionService _sessionService;
     private readonly IClassService _classService;
+    private readonly IUnitOfWork _unitOfWork;
 
     public InstructorAnalyticsController(
         ICourseService courseService,
         IQuizService quizService,
         IAssignmentService assignmentService,
         ISessionService sessionService,
-        IClassService classService)
+        IClassService classService,
+        IUnitOfWork unitOfWork)
     {
         _courseService = courseService;
         _quizService = quizService;
         _assignmentService = assignmentService;
         _sessionService = sessionService;
         _classService = classService;
+        _unitOfWork = unitOfWork;
     }
 
     [HttpGet("instructor/course/{courseId}")]
     public async Task<ActionResult<CourseAnalyticsDto>> GetCourseAnalytics(int courseId)
     {
-        var instructorId = GetCurrentUserId();
-        if (instructorId is null)
+        var userId = GetCurrentUserId();
+        if (userId is null)
             return Unauthorized();
 
         var course = await _courseService.GetByIdAsync(courseId);
         if (course is null)
             return NotFound(new { message = "Course not found" });
 
-        var instructorCourses = await _courseService.GetCoursesByInstructorIdAsync(instructorId.Value);
+        var instructorRepo = _unitOfWork.GetRepository<Instructor, int>();
+        var instructors = await instructorRepo.GetAllAsync();
+        var instructor = instructors.FirstOrDefault(i => i.UserId == userId.Value);
+        if (instructor is null)
+            return Forbid();
+
+        var instructorId = instructor.InstructorId;
+
+        var instructorCourses = await _courseService.GetCoursesByInstructorIdAsync(instructorId);
         if (!instructorCourses.Any(c => c.CourseId == courseId))
             return Forbid();
 
@@ -51,8 +64,8 @@ public class InstructorAnalyticsController : ControllerBase
 
         return Ok(new CourseAnalyticsDto
         {
-            AssessmentPerformance = await BuildAssessmentPerformanceAsync(courseId, instructorId.Value),
-            SubmissionRate = BuildSubmissionRate(totalStudents),
+            AssessmentPerformance = await BuildAssessmentPerformanceAsync(courseId, instructorId),
+            SubmissionRate = await BuildSubmissionRateAsync(courseId, instructorId, totalStudents),
             WeeklyAttendance = await BuildWeeklyAttendanceAsync(courseId)
         });
     }
@@ -98,21 +111,43 @@ public class InstructorAnalyticsController : ControllerBase
         return items;
     }
 
-    private static List<SubmissionRateItemDto> BuildSubmissionRate(int totalStudents)
+    private async Task<List<SubmissionRateItemDto>> BuildSubmissionRateAsync(int courseId, int instructorId, int totalStudents)
     {
         if (totalStudents == 0)
-        {
             return
             [
                 new SubmissionRateItemDto { Name = "Submitted", Value = 0, Color = "var(--color-bg-fill-success-default-light)" },
                 new SubmissionRateItemDto { Name = "Not Submitted", Value = 100, Color = "var(--color-bg-fill-danger-default-light)" }
             ];
+
+        var submittedStudentIds = new HashSet<int>();
+
+        foreach (var quiz in await _quizService.GetByCourseIdAsync(courseId))
+        {
+            try
+            {
+                foreach (var r in await _quizService.GetAllResultsAsync(quiz.Id, instructorId))
+                    submittedStudentIds.Add(r.StudentId);
+            }
+            catch { }
         }
+
+        foreach (var assignment in await _assignmentService.GetByCourseIdAsync(courseId))
+        {
+            try
+            {
+                foreach (var s in await _assignmentService.GetAllSubmissionsAsync(int.Parse(assignment.Id), instructorId))
+                    submittedStudentIds.Add(s.StudentId);
+            }
+            catch { }
+        }
+
+        var submittedPct = (int)Math.Round((double)submittedStudentIds.Count / totalStudents * 100);
 
         return
         [
-            new SubmissionRateItemDto { Name = "Submitted", Value = 85, Color = "var(--color-bg-fill-success-default-light)" },
-            new SubmissionRateItemDto { Name = "Not Submitted", Value = 15, Color = "var(--color-bg-fill-danger-default-light)" }
+            new SubmissionRateItemDto { Name = "Submitted", Value = submittedPct, Color = "var(--color-bg-fill-success-default-light)" },
+            new SubmissionRateItemDto { Name = "Not Submitted", Value = 100 - submittedPct, Color = "var(--color-bg-fill-danger-default-light)" }
         ];
     }
 

@@ -417,6 +417,7 @@ public class AssignmentService(
     private SubmissionDto MapSubmissionToDto(StudentAssignment sa) => new()
     {
         Id = sa.StudentAssignmentId.ToString(),
+        StudentId = sa.StudentId,
         StudentName = sa.Student?.FullName,
         Status = "successful",
         SubmittedAt = sa.SubmittedAt.ToString("dd MM yyyy HH:mm"),
