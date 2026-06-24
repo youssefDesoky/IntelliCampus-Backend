@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Inbox;
 using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +23,7 @@ public class MessagesController(IInternalMessageService messageService) : Contro
     }
 
     [HttpGet("inbox")]
-    public async Task<IActionResult> GetInbox([FromQuery] MessageQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<InternalMessageDto>>> GetInbox([FromQuery] MessageQueryParams queryParams)
         => Ok(await messageService.GetInboxMessagesAsync(UserId, queryParams));
 
     [HttpGet("sent")]

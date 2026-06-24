@@ -19,6 +19,7 @@ public sealed class ExamWithCourseSpec : BaseSpecifications<Exam>
     {
         AddInclude(e => e.Course!);
         AddInclude("Course.StudentCourses");
+        ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 
     public ExamWithCourseSpec(int examId)

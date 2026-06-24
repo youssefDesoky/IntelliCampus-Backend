@@ -1,4 +1,5 @@
 using IntelliCampus.shared.Dtos.Quiz;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service_Abstraction;
@@ -25,4 +26,5 @@ public interface IQuizService
     Task<QuizSubmitResponseDto?> SubmitPracticeQuizAsync(int studentId, string courseId, SubmitQuizDto dto);
     Task<PracticeQuizDto?> GetPracticeQuizAsync(int studentId, string courseId, QuizQueryParams queryParams);
     Task<CourseQuizzesDto?> GetQuizzesOverviewAsync(int studentId, string courseId);
+    Task<PaginatedResult<CourseQuizzesDto>> GetQuizzesOverviewAsync(int studentId, string courseId, QuizQueryParams queryParams);
 }

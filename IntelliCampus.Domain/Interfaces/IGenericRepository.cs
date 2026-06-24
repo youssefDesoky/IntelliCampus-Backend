@@ -15,6 +15,7 @@ namespace IntelliCampus.Domain.Interfaces
         Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate);
         Task<TResult?> MaxAsync<TResult>(Expression<Func<TEntity, TResult?>> selector);
         void DeleteRange(IEnumerable<TEntity> entities);
+        Task<int> CountAsync(ISpecifications<TEntity> specifications);
 
     }
 }

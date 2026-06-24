@@ -3,6 +3,7 @@ using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Announcement;
 using IntelliCampus.Shared.Params;
 using IntelliCampus.Service.Exceptions;
@@ -26,7 +27,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
 
-    public async Task<List<AnnouncementDto>> GetCourseAnnouncementsAsync(int courseId, AnnouncementQueryParams queryParams)
+    public async Task<PaginatedResult<AnnouncementDto>> GetCourseAnnouncementsAsync(int courseId, AnnouncementQueryParams queryParams)
     {
         var course = await Courses.GetByIdAsync(courseId);
         if (course is null)
@@ -34,7 +35,12 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
 
         var spec = new AnnouncementsByCourseSpec(courseId, queryParams);
         var announcements = await Announcements.GetAllAsync(spec);
-        return announcements.Select(MapToDto).ToList();
+        var dataToReturn = announcements.Select(MapToDto);
+
+        var countSpec = new AnnouncementCountSpec(courseId, queryParams);
+        var totalCount = await Announcements.CountAsync(countSpec);
+
+        return new PaginatedResult<AnnouncementDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
     }
 
     public async Task<AnnouncementDto> GetByIdAsync(int announcementId)

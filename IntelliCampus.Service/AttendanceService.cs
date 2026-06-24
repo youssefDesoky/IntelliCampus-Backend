@@ -7,6 +7,8 @@ using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.shared.Dtos.Attendance;
+using IntelliCampus.shared.Pagination;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service;
 
@@ -296,6 +298,46 @@ public class AttendanceService : IAttendanceService
         });
     }
 
+    public async Task<PaginatedResult<SessionDto>> GetByStudentAndCourseAsync(
+        int studentId, int courseId, SessionQueryParams queryParams)
+    {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
+        var classes = await Classes.GetAllAsync();
+        var classIds = classes
+            .Where(c => c.CourseId == courseId)
+            .Select(c => c.ClassId)
+            .ToHashSet();
+
+        var spec = new SessionSpec(classIds, queryParams);
+        var sessions = await Sessions.GetAllAsync(spec);
+        var dataToReturn = sessions.Select(s => new SessionDto
+        {
+            SessionId = s.SessionId,
+            Date = s.Date,
+            StartTime = s.StartTime?.ToString("hh:mm tt"),
+            EndTime = s.EndTime?.ToString("hh:mm tt"),
+            Topic = s.Topic,
+            ClassId = s.ClassId,
+            ClassName = s.Class?.GroupCode,
+            SessionType = s.SessionType,
+            TotalStudents = s.Attendances?.Count ?? 0,
+            PresentCount = s.Attendances?
+                .Count(a => a.StudentId == studentId
+                         && (a.Status == AttendanceStatus.Present
+                          || a.Status == AttendanceStatus.Late)) ?? 0
+        });
+        var countSpec = new SessionCountSpec(classIds);
+        var totalCount = await Sessions.CountAsync(countSpec);
+        return new PaginatedResult<SessionDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+    }
+
     public async Task<AttendanceReportDto> GenerateReportAsync(
         int classId, int instructorId)
     {
@@ -366,6 +408,13 @@ public class AttendanceService : IAttendanceService
             BelowThresholdCount = summaries.Count(s => s.BelowThreshold),
             Students = summaries
         };
+    }
+
+    public async Task<PaginatedResult<AttendanceReportDto>> GenerateReportAsync(int classId, int instructorId, SessionQueryParams queryParams)
+    {
+        var report = await GenerateReportAsync(classId, instructorId);
+        var wrapped = new List<AttendanceReportDto> { report };
+        return new PaginatedResult<AttendanceReportDto>(queryParams.PageIndex, wrapped.Count, wrapped.Count, wrapped);
     }
 
     public async Task<decimal> GetAttendancePercentageAsync(

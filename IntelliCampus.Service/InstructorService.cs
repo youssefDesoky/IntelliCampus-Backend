@@ -2,6 +2,7 @@ using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Instructor;
 using IntelliCampus.Shared.Params;
 using System.Globalization;
@@ -41,12 +42,16 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         return MapToDto(instructor);
     }
 
-    public async Task<IEnumerable<InstructorDto>> GetAllAsync(InstructorQueryParams queryParams)
+    public async Task<PaginatedResult<InstructorDto>> GetAllAsync(InstructorQueryParams queryParams)
     {
         var spec = new InstructorSpec(queryParams);
         var instructors = await Instructors.GetAllAsync(spec);
+        var dataToReturn = instructors.Select(MapToDto);
 
-        return instructors.Select(MapToDto);
+        var countSpec = new InstructorCountSpec(queryParams);
+        var totalCount = await Instructors.CountAsync(countSpec);
+
+        return new PaginatedResult<InstructorDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
     }
 
     public async Task<IEnumerable<InstructorDto>> GetProfessorsAsync(InstructorQueryParams queryParams)
@@ -326,7 +331,6 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         {
             return new LoanInstructorDto
             {
-                InstructorId = instructor.InstructorId,
                 UserId = instructor.UserId,
                 NationalId = instructor.NationalId,
                 FullName = instructor.FullName,
@@ -360,7 +364,6 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
 
         return new InstructorDto
         {
-            InstructorId = instructor.InstructorId,
             UserId = instructor.UserId,
             NationalId = instructor.NationalId,
             FullName = instructor.FullName,

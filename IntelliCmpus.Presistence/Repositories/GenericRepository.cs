@@ -33,5 +33,8 @@ namespace IntelliCmpus.Presistence.Repositories
 
         public void DeleteRange(IEnumerable<TEntity> entities)
             => _dbContext.Set<TEntity>().RemoveRange(entities);
+
+        public async Task<int> CountAsync(ISpecifications<TEntity> specifications)
+            => await SpecificationBuilder.BuildQuery(_dbContext.Set<TEntity>(), specifications).CountAsync();
     }
 }

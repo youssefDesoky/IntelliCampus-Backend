@@ -25,6 +25,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(b => b.UploadedBy!);
             AddInclude(b => b.Students!);
+            ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
     }
 }

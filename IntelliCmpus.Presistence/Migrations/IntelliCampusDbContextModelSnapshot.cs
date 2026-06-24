@@ -2326,12 +2326,6 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("InstructorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InstructorId"));
-
                     b.Property<string>("InstructorRole")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");

@@ -18,6 +18,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(a => a.Faculty!);
             AddInclude("UserRoles.Role");
+            ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
 
         public AdminSpec(int adminId)

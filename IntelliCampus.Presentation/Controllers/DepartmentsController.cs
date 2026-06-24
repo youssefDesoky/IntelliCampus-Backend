@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Department;
 using IntelliCampus.Shared.Params;
 using IntelliCampus.Service_Abstraction;
@@ -20,7 +21,7 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetAll([FromQuery] DepartmentQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<DepartmentDto>>> GetAll([FromQuery] DepartmentQueryParams queryParams)
     {
         var departments = await _departmentService.GetAllAsync(queryParams);
         return Ok(departments);

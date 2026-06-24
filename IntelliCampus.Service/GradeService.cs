@@ -3,6 +3,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Export;
 using IntelliCampus.Shared.Dtos.Grade;
 using IntelliCampus.Shared.Params;
@@ -268,6 +269,13 @@ public class GradeService : IGradeService
             AssessmentBreakdown = breakdown,
             History = history
         };
+    }
+
+    public async Task<PaginatedResult<CourseGradeDto>> GetCourseGradeAsync(int studentId, int courseId, GradeQueryParams queryParams)
+    {
+        var result = await GetCourseGradeAsync(studentId, courseId);
+        var wrapped = new List<CourseGradeDto> { result };
+        return new PaginatedResult<CourseGradeDto>(queryParams.PageIndex, wrapped.Count, wrapped.Count, wrapped);
     }
 
     public async Task<IEnumerable<GradeHistoryItemDto>> GetAllGradesAsync(int studentId)

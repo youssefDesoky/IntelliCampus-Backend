@@ -4,6 +4,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.shared.Dtos.Quiz;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Shared.Params;
@@ -740,6 +741,13 @@ public class QuizService : IQuizService
             History = history,
             Upcoming = upcoming
         };
+    }
+
+    public async Task<PaginatedResult<CourseQuizzesDto>> GetQuizzesOverviewAsync(int studentId, string courseId, QuizQueryParams queryParams)
+    {
+        var result = await GetQuizzesOverviewAsync(studentId, courseId);
+        var wrapped = result is not null ? new List<CourseQuizzesDto> { result } : [];
+        return new PaginatedResult<CourseQuizzesDto>(queryParams.PageIndex, wrapped.Count, wrapped.Count, wrapped);
     }
 
     private static (List<QuestionResultDto> Results, Dictionary<string, (int Answered, int Total, decimal Score)> ByType, decimal TotalScore) GradeAnswers(

@@ -25,6 +25,7 @@ internal sealed class NotificationSpec : BaseSpecifications<UserNotification>
     {
         AddInclude(n => n.Notification!);
         AddOrderByDescending(n => n.Notification.CreatedAt);
+        ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 
     private static System.Linq.Expressions.Expression<Func<UserNotification, bool>> BuildNotificationExpression(int userId, NotificationQueryParams queryParams)

@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Assignment;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,8 +20,8 @@ public class AssignmentsController(IAssignmentService assignmentService) : Contr
 
     [HttpGet("{courseId}")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
-    public async Task<IActionResult> GetByCourse(int courseId)
-        => Ok(await assignmentService.GetByStudentAndCourseAsync(UserId, courseId));
+    public async Task<ActionResult<PaginatedResult<AssignmentDto>>> GetByCourse(int courseId, [FromQuery] AssignmentQueryParams queryParams)
+        => Ok(await assignmentService.GetByStudentAndCourseAsync(UserId, courseId, queryParams));
 
     [HttpGet("instructor/course/{courseId}")]
     [Authorize(Roles = "Instructor")]

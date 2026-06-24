@@ -434,7 +434,6 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         {
             return new LoanInstructorDto
             {
-                InstructorId = instructor.InstructorId,
                 UserId = instructor.UserId,
                 NationalId = instructor.NationalId,
                 FullName = instructor.FullName,
@@ -466,7 +465,6 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
 
         return new InstructorDto
         {
-            InstructorId = instructor.InstructorId,
             UserId = instructor.UserId,
             NationalId = instructor.NationalId,
             FullName = instructor.FullName,

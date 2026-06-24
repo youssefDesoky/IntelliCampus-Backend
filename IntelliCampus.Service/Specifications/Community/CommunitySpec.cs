@@ -38,6 +38,19 @@ internal sealed class CommunityPostSpec : BaseSpecifications<Post>
         AddInclude("Votes.User");
         AddInclude(p => p.Candidates);
     }
+
+    public CommunityPostSpec(int communityId, CommunityQueryParams queryParams)
+        : base(p => p.CommunityId == communityId)
+    {
+        AddOrderByDescending(p => p.CreatedAt);
+        AddInclude(p => p.User);
+        AddInclude(p => p.Comments);
+        AddInclude("Comments.User");
+        AddInclude(p => p.Votes);
+        AddInclude("Votes.User");
+        AddInclude(p => p.Candidates);
+        ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
+    }
 }
 
 internal sealed class PostVoteByUserSpec : BaseSpecifications<PostVote>

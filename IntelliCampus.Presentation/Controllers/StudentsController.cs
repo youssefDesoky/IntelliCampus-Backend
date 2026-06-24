@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Registration;
 using IntelliCampus.Shared.Dtos.Student;
 using IntelliCampus.Shared.Params;
@@ -26,7 +27,7 @@ public class StudentsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<StudentDto>>> GetAll([FromQuery] StudentQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<StudentDto>>> GetAll([FromQuery] StudentQueryParams queryParams)
     {
         var students = await _studentService.GetAllAsync(queryParams);
         return Ok(students);
