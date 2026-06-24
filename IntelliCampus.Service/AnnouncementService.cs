@@ -53,13 +53,14 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
+        var now = EgyptTime.Now;
         var announcement = new Announcement
         {
             CourseId = courseId,
             SenderId = senderId,
             Content = dto.Content,
-            CreatedAt = EgyptTime.Now,
-            UpdatedAt = EgyptTime.Now
+            CreatedAt = now,
+            UpdatedAt = now
         };
 
         Announcements.Add(announcement);
@@ -119,13 +120,14 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
         if (announcement is null)
             throw new AnnouncementNotFoundException(announcementId);
 
+        var now = EgyptTime.Now;
         var comment = new AnnouncementComment
         {
             AnnouncementId = announcementId,
             UserId = userId,
             Content = content,
-            CreatedAt = EgyptTime.Now,
-            UpdatedAt = EgyptTime.Now
+            CreatedAt = now,
+            UpdatedAt = now
         };
 
         Comments.Add(comment);

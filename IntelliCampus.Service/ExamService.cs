@@ -73,12 +73,13 @@ public class ExamService : IExamService
         if (conflicts.Count > 0)
             throw new InvalidOperationException($"Schedule conflict detected: {conflicts.Count} student(s) have overlapping exams.");
 
+        var now = EgyptTime.Now;
         var exam = new Exam
         {
             Title = dto.Title,
             Description = dto.Description,
             ExamType = dto.ExamType,
-            Status = dto.Date > EgyptTime.Now ? ExamStatus.Upcoming : ExamStatus.Completed,
+            Status = dto.Date > now ? ExamStatus.Upcoming : ExamStatus.Completed,
             Date = dto.Date,
             Time = dto.Time,
             DurationMinutes = dto.DurationMinutes,
@@ -86,7 +87,7 @@ public class ExamService : IExamService
             TotalMarks = dto.TotalMarks,
             RoomId = dto.RoomId,
             CourseId = dto.CourseId,
-            CreatedAt = EgyptTime.Now
+            CreatedAt = now
         };
 
         Exams.Add(exam);
@@ -134,7 +135,8 @@ public class ExamService : IExamService
         if (dto.Date.HasValue)
         {
             exam.Date = dto.Date.Value;
-            exam.Status = exam.Date > EgyptTime.Now ? ExamStatus.Upcoming : ExamStatus.Completed;
+            var now = EgyptTime.Now;
+            exam.Status = exam.Date > now ? ExamStatus.Upcoming : ExamStatus.Completed;
         }
 
         if (dto.Time.HasValue)

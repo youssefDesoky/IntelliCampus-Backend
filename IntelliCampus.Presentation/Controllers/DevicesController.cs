@@ -33,6 +33,7 @@ public class DevicesController(IUnitOfWork unitOfWork) : ControllerBase
         }
         else
         {
+            var now = EgyptTime.Now;
             repo.Add(new DeviceToken
             {
                 UserId = UserId,
@@ -40,8 +41,8 @@ public class DevicesController(IUnitOfWork unitOfWork) : ControllerBase
                 P256dh = request.Keys.P256dh,
                 Auth = request.Keys.Auth,
                 Platform = request.Platform,
-                RegisteredAt = EgyptTime.Now,
-                LastSeenAt = EgyptTime.Now,
+                RegisteredAt = now,
+                LastSeenAt = now,
                 IsActive = true
             });
 

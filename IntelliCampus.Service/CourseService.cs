@@ -483,20 +483,23 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         string? schedule = null;
         string? room = null;
 
+        var today = EgyptTime.Today;
+        var now = EgyptTime.Now;
+
         if (scheduleClass is not null)
         {
             room = scheduleClass.Room;
             if (scheduleClass.Day.HasValue && scheduleClass.StartTime.HasValue && scheduleClass.EndTime.HasValue)
             {
-                var startFormatted = EgyptTime.Today.Add(scheduleClass.StartTime.Value).ToString("h:mm tt");
-                var endFormatted = EgyptTime.Today.Add(scheduleClass.EndTime.Value).ToString("h:mm tt");
+                var startFormatted = today.Add(scheduleClass.StartTime.Value).ToString("h:mm tt");
+                var endFormatted = today.Add(scheduleClass.EndTime.Value).ToString("h:mm tt");
                 schedule = $"{scheduleClass.Day.Value} {startFormatted} - {endFormatted}";
             }
         }
 
         var distinctSessionWeeks = allSessions
             .Select(s => s.Date)
-            .Where(d => d <= EgyptTime.Now)
+            .Where(d => d <= now)
             .Select(d => System.Globalization.CultureInfo.InvariantCulture.Calendar
                 .GetWeekOfYear(d, System.Globalization.CalendarWeekRule.FirstDay, DayOfWeek.Sunday))
             .Distinct()

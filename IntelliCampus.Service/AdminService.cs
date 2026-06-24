@@ -150,16 +150,17 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             var roleName = ResolveAdminRoleName(dto.AdminRole);
             var newRole = (await RolesRepo.GetAllAsync()).First(r => r.RoleName == roleName);
             var activeRole = admin.UserRoles.FirstOrDefault(ur => ur.IsActive);
+            var now = EgyptTime.Now;
             if (activeRole is not null)
             {
                 activeRole.IsActive = false;
-                activeRole.AssignedAt = EgyptTime.Now;
+                activeRole.AssignedAt = now;
             }
             admin.UserRoles.Add(new UserRoleJunction
             {
                 Role = newRole,
                 IsActive = true,
-                AssignedAt = EgyptTime.Now
+                AssignedAt = now
             });
         }
 
