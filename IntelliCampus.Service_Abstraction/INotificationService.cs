@@ -1,13 +1,14 @@
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Shared.Dtos.Notification;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service_Abstraction;
 
 public interface INotificationService
 {
-    Task<IEnumerable<NotificationDto>> GetByUserIdAsync(int userId);
-    Task<IEnumerable<NotificationDto>> GetUnreadAsync(int userId);
-    Task<NotificationSummaryDto> GetSummaryAsync(int userId);
+    Task<IEnumerable<NotificationDto>> GetByUserIdAsync(int userId, NotificationQueryParams queryParams);
+    Task<IEnumerable<NotificationDto>> GetUnreadAsync(int userId, NotificationQueryParams queryParams);
+    Task<NotificationSummaryDto> GetSummaryAsync(int userId, NotificationQueryParams queryParams);
     Task<int> GetUnreadCountAsync(int userId);
     Task<bool> MarkAsReadAsync(int notificationId, int userId);
     Task MarkAllAsReadAsync(int userId);

@@ -4,6 +4,7 @@ using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Announcement;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
@@ -25,13 +26,13 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
 
-    public async Task<List<AnnouncementDto>> GetCourseAnnouncementsAsync(int courseId)
+    public async Task<List<AnnouncementDto>> GetCourseAnnouncementsAsync(int courseId, AnnouncementQueryParams queryParams)
     {
         var course = await Courses.GetByIdAsync(courseId);
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
-        var spec = new AnnouncementsByCourseSpec(courseId);
+        var spec = new AnnouncementsByCourseSpec(courseId, queryParams);
         var announcements = await Announcements.GetAllAsync(spec);
         return announcements.Select(MapToDto).ToList();
     }

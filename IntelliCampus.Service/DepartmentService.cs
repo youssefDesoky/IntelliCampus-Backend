@@ -3,6 +3,7 @@ using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Department;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
@@ -31,9 +32,9 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
         return MapToDto(department);
     }
 
-    public async Task<IEnumerable<DepartmentDto>> GetAllAsync()
+    public async Task<IEnumerable<DepartmentDto>> GetAllAsync(DepartmentQueryParams queryParams)
     {
-        var spec = new DepartmentSpec();
+        var spec = new DepartmentSpec(queryParams);
         var departments = await Departments.GetAllAsync(spec);
 
         return departments.Select(MapToDto);

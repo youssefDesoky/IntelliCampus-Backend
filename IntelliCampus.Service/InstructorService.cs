@@ -41,9 +41,9 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         return MapToDto(instructor);
     }
 
-    public async Task<IEnumerable<InstructorDto>> GetAllAsync()
+    public async Task<IEnumerable<InstructorDto>> GetAllAsync(InstructorQueryParams queryParams)
     {
-        var spec = new InstructorSpec();
+        var spec = new InstructorSpec(queryParams);
         var instructors = await Instructors.GetAllAsync(spec);
 
         return instructors.Select(MapToDto);

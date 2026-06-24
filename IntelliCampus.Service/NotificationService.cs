@@ -5,6 +5,7 @@ using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Shared.Dtos.Notification;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service;
 
@@ -30,35 +31,35 @@ public class NotificationService : INotificationService
     private IGenericRepository<User, int> Users
         => _unitOfWork.GetRepository<User, int>();
 
-    public async Task<IEnumerable<NotificationDto>> GetByUserIdAsync(int userId)
+    public async Task<IEnumerable<NotificationDto>> GetByUserIdAsync(int userId, NotificationQueryParams queryParams)
     {
         var user = await Users.GetByIdAsync(userId);
         if (user is null)
             throw new UserNotFoundException(userId);
 
-        var spec = new NotificationSpec(userId);
+        var spec = new NotificationSpec(userId, queryParams);
         var userNotifications = await UserNotifications.GetAllAsync(spec);
         return userNotifications.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<NotificationDto>> GetUnreadAsync(int userId)
+    public async Task<IEnumerable<NotificationDto>> GetUnreadAsync(int userId, NotificationQueryParams queryParams)
     {
         var user = await Users.GetByIdAsync(userId);
         if (user is null)
             throw new UserNotFoundException(userId);
 
-        var spec = new NotificationSpec(userId, unreadOnly: true);
+        var spec = new NotificationSpec(userId, queryParams);
         var userNotifications = await UserNotifications.GetAllAsync(spec);
-        return userNotifications.Select(MapToDto);
+        return userNotifications.Where(n => !n.IsRead).Select(MapToDto);
     }
 
-    public async Task<NotificationSummaryDto> GetSummaryAsync(int userId)
+    public async Task<NotificationSummaryDto> GetSummaryAsync(int userId, NotificationQueryParams queryParams)
     {
         var user = await Users.GetByIdAsync(userId);
         if (user is null)
             throw new UserNotFoundException(userId);
 
-        var spec = new NotificationSpec(userId);
+        var spec = new NotificationSpec(userId, queryParams);
         var all = (await UserNotifications.GetAllAsync(spec)).ToList();
 
         return new NotificationSummaryDto

@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service.Specifications;
 
 namespace IntelliCampus.Service.Specifications;
@@ -49,6 +50,19 @@ public sealed class InternalMessageSpec : BaseSpecifications<InternalMessage>
         return spec;
     }
 
+    public static InternalMessageSpec InboxRoots(int userId, MessageQueryParams queryParams)
+    {
+        var spec = new InternalMessageSpec(m =>
+            m.RecipientId == userId &&
+            !m.IsDeletedByRecipient &&
+            m.ParentMessageId == null &&
+            (string.IsNullOrEmpty(queryParams.Search) || m.Subject.Contains(queryParams.Search) || m.Body.Contains(queryParams.Search)) &&
+            (!queryParams.DateFrom.HasValue || m.SentAt >= queryParams.DateFrom.Value) &&
+            (!queryParams.DateTo.HasValue || m.SentAt <= queryParams.DateTo.Value));
+        spec.AddOrderByDescending(m => m.SentAt);
+        return spec;
+    }
+
     /// <summary>
     /// Root messages sent by the user.
     /// </summary>
@@ -58,6 +72,19 @@ public sealed class InternalMessageSpec : BaseSpecifications<InternalMessage>
             m.SenderId == userId &&
             !m.IsDeletedBySender &&
             m.ParentMessageId == null);
+        spec.AddOrderByDescending(m => m.SentAt);
+        return spec;
+    }
+
+    public static InternalMessageSpec SentRoots(int userId, MessageQueryParams queryParams)
+    {
+        var spec = new InternalMessageSpec(m =>
+            m.SenderId == userId &&
+            !m.IsDeletedBySender &&
+            m.ParentMessageId == null &&
+            (string.IsNullOrEmpty(queryParams.Search) || m.Subject.Contains(queryParams.Search) || m.Body.Contains(queryParams.Search)) &&
+            (!queryParams.DateFrom.HasValue || m.SentAt >= queryParams.DateFrom.Value) &&
+            (!queryParams.DateTo.HasValue || m.SentAt <= queryParams.DateTo.Value));
         spec.AddOrderByDescending(m => m.SentAt);
         return spec;
     }

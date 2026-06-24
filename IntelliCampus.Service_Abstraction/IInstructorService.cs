@@ -6,7 +6,7 @@ namespace IntelliCampus.Service_Abstraction;
 public interface IInstructorService
 {
     Task<InstructorDto> GetByIdAsync(int instructorId);
-    Task<IEnumerable<InstructorDto>> GetAllAsync();
+    Task<IEnumerable<InstructorDto>> GetAllAsync(InstructorQueryParams queryParams);
     Task<IEnumerable<InstructorDto>> GetProfessorsAsync(InstructorQueryParams queryParams);
     Task<InstructorDto> CreateAsync(CreateInstructorDto dto, int? creatorUserId = null);
     Task<InstructorDto> UpdateAsync(int instructorId, UpdateInstructorDto dto);

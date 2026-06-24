@@ -4,6 +4,7 @@ using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Export;
 using IntelliCampus.Shared.Dtos.InstructorAnalytics;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service;
 
@@ -89,7 +90,7 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
         var instructor = instructors.FirstOrDefault(i => i.UserId == userId)
             ?? throw new InstructorNotFoundException($"Instructor with user id {userId} not found");
 
-        var instructorCourses = await _courseService.GetCoursesByInstructorIdAsync(instructor.InstructorId);
+        var instructorCourses = await _courseService.GetCoursesByInstructorIdAsync(new CourseQueryParams { InstructorId = instructor.InstructorId });
         if (!instructorCourses.Any(c => c.CourseId == courseId))
             throw new ForbiddenException("Instructor is not assigned to this course");
 
@@ -179,7 +180,7 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
 
     private async Task<List<WeeklyAttendanceItemDto>> BuildWeeklyAttendanceAsync(int courseId)
     {
-        var classes = await _classService.GetByCourseIdAsync(courseId);
+        var classes = await _classService.GetByCourseIdAsync(courseId, new ClassQueryParams());
 
         var allSessions = new List<IntelliCampus.shared.Dtos.Attendance.SessionDto>();
         foreach (var cls in classes)

@@ -5,6 +5,7 @@ using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Exam;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
@@ -45,9 +46,9 @@ public class ExamService : IExamService
         return MapToDto(exam);
     }
 
-    public async Task<IEnumerable<ExamDto>> GetAllAsync()
+    public async Task<IEnumerable<ExamDto>> GetAllAsync(ExamQueryParams queryParams)
     {
-        var spec = new ExamWithDetailsSpec();
+        var spec = new ExamWithCourseSpec(queryParams);
         var exams = await Exams.GetAllAsync(spec);
         return exams.Select(MapToDto);
     }

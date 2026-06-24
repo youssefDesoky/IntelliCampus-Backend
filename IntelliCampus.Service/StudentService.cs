@@ -59,9 +59,9 @@ public class StudentService : IStudentService
         return MapToDto(student);
     }
 
-    public async Task<IEnumerable<StudentDto>> GetAllAsync()
+    public async Task<IEnumerable<StudentDto>> GetAllAsync(StudentQueryParams queryParams)
     {
-        var spec = new StudentSpec(new CourseQueryParams());
+        var spec = new StudentSpec(queryParams);
         var students = await Students.GetAllAsync(spec);
 
         return students.Select(MapToDto);

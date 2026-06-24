@@ -21,9 +21,9 @@ public class InstructorsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<InstructorDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<InstructorDto>>> GetAll([FromQuery] InstructorQueryParams queryParams)
     {
-        var instructors = await _instructorService.GetAllAsync();
+        var instructors = await _instructorService.GetAllAsync(queryParams);
         return Ok(instructors);
     }
 

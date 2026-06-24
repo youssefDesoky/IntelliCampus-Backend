@@ -1,8 +1,10 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Exceptions;
+using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Room;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service;
 
@@ -23,9 +25,10 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
         return MapToDto(room);
     }
 
-    public async Task<IEnumerable<RoomDto>> GetAllAsync()
+    public async Task<IEnumerable<RoomDto>> GetAllAsync(RoomQueryParams queryParams)
     {
-        var rooms = await Rooms.GetAllAsync();
+        var spec = new RoomSpec(queryParams);
+        var rooms = await Rooms.GetAllAsync(spec);
         return rooms.Select(MapToDto);
     }
 

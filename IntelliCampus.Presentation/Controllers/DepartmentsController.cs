@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using IntelliCampus.Shared.Dtos.Department;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +20,9 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetAll([FromQuery] DepartmentQueryParams queryParams)
     {
-        var departments = await _departmentService.GetAllAsync();
+        var departments = await _departmentService.GetAllAsync(queryParams);
         return Ok(departments);
     }
 

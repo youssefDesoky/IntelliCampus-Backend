@@ -1,4 +1,5 @@
 using IntelliCampus.Shared.Dtos.Room;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Entities.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -19,9 +20,9 @@ public class RoomsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RoomDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<RoomDto>>> GetAll([FromQuery] RoomQueryParams queryParams)
     {
-        var rooms = await _roomService.GetAllAsync();
+        var rooms = await _roomService.GetAllAsync(queryParams);
         return Ok(rooms);
     }
 

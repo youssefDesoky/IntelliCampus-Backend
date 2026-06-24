@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using IntelliCampus.Shared.Dtos.Admin;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +20,9 @@ public class AdminsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AdminDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<AdminDto>>> GetAll([FromQuery] AdminQueryParams queryParams)
     {
-        var admins = await _adminService.GetAllAsync();
+        var admins = await _adminService.GetAllAsync(queryParams);
         return Ok(admins);
     }
 

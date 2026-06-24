@@ -1,5 +1,6 @@
 using System.Globalization;
 using IntelliCampus.Shared.Dtos.Admin;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
@@ -39,9 +40,9 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         return MapToDto(admin);
     }
 
-    public async Task<IEnumerable<AdminDto>> GetAllAsync()
+    public async Task<IEnumerable<AdminDto>> GetAllAsync(AdminQueryParams queryParams)
     {
-        var spec = new AdminSpec();
+        var spec = new AdminSpec(queryParams);
         var admins = await Admins.GetAllAsync(spec);
         return admins.Select(MapToDto);
     }

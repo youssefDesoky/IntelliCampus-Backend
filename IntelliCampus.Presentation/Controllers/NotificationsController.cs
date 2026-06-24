@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Notification;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,16 +19,16 @@ public class NotificationsController(INotificationService notificationService, I
         => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
-        => Ok(await notificationService.GetByUserIdAsync(UserId));
+    public async Task<IActionResult> GetAll([FromQuery] NotificationQueryParams queryParams)
+        => Ok(await notificationService.GetByUserIdAsync(UserId, queryParams));
 
     [HttpGet("unread")]
-    public async Task<IActionResult> GetUnread()
-        => Ok(await notificationService.GetUnreadAsync(UserId));
+    public async Task<IActionResult> GetUnread([FromQuery] NotificationQueryParams queryParams)
+        => Ok(await notificationService.GetUnreadAsync(UserId, queryParams));
 
     [HttpGet("summary")]
-    public async Task<IActionResult> GetSummary()
-        => Ok(await notificationService.GetSummaryAsync(UserId));
+    public async Task<IActionResult> GetSummary([FromQuery] NotificationQueryParams queryParams)
+        => Ok(await notificationService.GetSummaryAsync(UserId, queryParams));
 
     [HttpGet("unread/count")]
     public async Task<IActionResult> GetUnreadCount()
@@ -76,7 +77,7 @@ public class NotificationsController(INotificationService notificationService, I
         var subscription = notificationStreamService.Subscribe(UserId);
         try
         {
-            var unreadNotifications = await notificationService.GetUnreadAsync(UserId);
+            var unreadNotifications = await notificationService.GetUnreadAsync(UserId, new NotificationQueryParams());
             foreach (var notification in unreadNotifications)
             {
                 await WriteEventAsync(notification, cancellationToken);

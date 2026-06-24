@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Inbox;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,12 +22,12 @@ public class MessagesController(IInternalMessageService messageService) : Contro
     }
 
     [HttpGet("inbox")]
-    public async Task<IActionResult> GetInbox()
-        => Ok(await messageService.GetInboxMessagesAsync(UserId));
+    public async Task<IActionResult> GetInbox([FromQuery] MessageQueryParams queryParams)
+        => Ok(await messageService.GetInboxMessagesAsync(UserId, queryParams));
 
     [HttpGet("sent")]
-    public async Task<IActionResult> GetSent()
-        => Ok(await messageService.GetSentMessagesAsync(UserId));
+    public async Task<IActionResult> GetSent([FromQuery] MessageQueryParams queryParams)
+        => Ok(await messageService.GetSentMessagesAsync(UserId, queryParams));
 
     [HttpPut("{id}")]
     public async Task<IActionResult> MarkAsRead(int id)

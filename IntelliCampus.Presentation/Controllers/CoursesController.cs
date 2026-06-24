@@ -191,9 +191,9 @@ public class CoursesController : ControllerBase
 
     [HttpGet("{courseId}/announcements")]
     [Authorize]
-    public async Task<ActionResult<List<AnnouncementDto>>> GetAnnouncements(int courseId)
+    public async Task<ActionResult<List<AnnouncementDto>>> GetAnnouncements(int courseId, [FromQuery] AnnouncementQueryParams queryParams)
     {
-        var announcements = await _announcementService.GetCourseAnnouncementsAsync(courseId);
+        var announcements = await _announcementService.GetCourseAnnouncementsAsync(courseId, queryParams);
         return Ok(announcements);
     }
 

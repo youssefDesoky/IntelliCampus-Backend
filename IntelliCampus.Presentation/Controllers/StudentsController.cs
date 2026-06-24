@@ -2,6 +2,7 @@ using System.Security.Claims;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Shared.Dtos.Registration;
 using IntelliCampus.Shared.Dtos.Student;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +26,9 @@ public class StudentsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<StudentDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<StudentDto>>> GetAll([FromQuery] StudentQueryParams queryParams)
     {
-        var students = await _studentService.GetAllAsync();
+        var students = await _studentService.GetAllAsync(queryParams);
         return Ok(students);
     }
 
