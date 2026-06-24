@@ -1,5 +1,6 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service.Specifications;
 
@@ -29,4 +30,12 @@ public class ExamScheduleSpec : BaseSpecifications<ExamSchedule>
     // Single exam entry by id
     public ExamScheduleSpec(int examScheduleId, bool byId)
         : base(e => e.ExamScheduleId == examScheduleId) { }
+
+    public ExamScheduleSpec(int studentId, ExamScheduleQueryParams queryParams)
+        : base(e => e.StudentId == studentId
+            && (!queryParams.Type.HasValue || e.ExamType == queryParams.Type.Value)
+            && (!queryParams.Status.HasValue || e.Status == queryParams.Status.Value))
+    {
+        AddOrderBy(e => e.Date);
+    }
 }

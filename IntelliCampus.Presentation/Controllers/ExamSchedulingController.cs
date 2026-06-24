@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Helpers;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.ExamScheduling;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,12 +32,10 @@ public class ExamSchedulingController : ControllerBase
 
     [HttpPost("detect-conflicts")]
     public async Task<ActionResult<List<ConflictInfoDto>>> DetectConflicts(
-        [FromQuery] int courseId,
-        [FromQuery] DateTime date, [FromQuery] TimeSpan startTime, [FromQuery] TimeSpan endTime,
-        [FromQuery] int? excludeExamId = null)
+        [FromQuery] ExamSchedulingQueryParams queryParams)
     {
         var semester = SemesterHelper.GetCurrentSemester();
-        var conflicts = await _schedulingService.DetectConflictsAsync(courseId, semester, date, startTime, endTime, excludeExamId);
+        var conflicts = await _schedulingService.DetectConflictsAsync(semester, queryParams);
         return Ok(conflicts);
     }
 

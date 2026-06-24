@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Reminder;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,13 +20,13 @@ public class RemindersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<RemindersGroupedDto>> Get([FromQuery] DateOnly selectedDay)
+    public async Task<ActionResult<RemindersGroupedDto>> Get([FromQuery] ReminderQueryParams queryParams)
     {
         var studentId = GetCurrentStudentId();
         if (studentId is null)
             return Unauthorized();
 
-        var result = await _reminderService.GetRemindersAsync(studentId.Value, selectedDay);
+        var result = await _reminderService.GetRemindersAsync(studentId.Value, queryParams);
         return Ok(result);
     }
 

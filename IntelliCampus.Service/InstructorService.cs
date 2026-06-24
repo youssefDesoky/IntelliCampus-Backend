@@ -3,6 +3,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Instructor;
+using IntelliCampus.Shared.Params;
 using System.Globalization;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service.Exceptions;
@@ -48,9 +49,9 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         return instructors.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<InstructorDto>> GetProfessorsAsync(int? departmentId = null, int? facultyId = null)
+    public async Task<IEnumerable<InstructorDto>> GetProfessorsAsync(InstructorQueryParams queryParams)
     {
-        var spec = new ProfessorsSpec(departmentId, facultyId);
+        var spec = new ProfessorsSpec(queryParams);
         var professors = await Instructors.GetAllAsync(spec);
         return professors.Select(MapToDto);
     }

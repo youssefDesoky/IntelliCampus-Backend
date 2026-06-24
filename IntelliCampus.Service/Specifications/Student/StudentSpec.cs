@@ -1,30 +1,12 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service.Specifications
 {
     internal class StudentSpec : BaseSpecifications<Student>
     {
-        public StudentSpec()
-        {
-            AddInclude(s => s.Faculty!);
-            AddInclude(s => s.Department!);
-            AddInclude(s => s.Bylaw!);
-            AddInclude(s => s.Specialization!);
-            AddInclude("UserRoles.Role");
-        }
-
-        public StudentSpec(int studentId)
-            : base(s => s.UserId == studentId)
-        {
-            AddInclude(s => s.Faculty!);
-            AddInclude(s => s.Department!);
-            AddInclude(s => s.Bylaw!);
-            AddInclude(s => s.Specialization!);
-            AddInclude("UserRoles.Role");
-        }
-
-        public StudentSpec(int studentId, bool includeCourses)
-            : base(s => s.UserId == studentId)
+        public StudentSpec(CourseQueryParams queryParams)
+            : base(queryParams.StudentId.HasValue ? s => s.UserId == queryParams.StudentId.Value : null)
         {
             AddInclude(s => s.Faculty!);
             AddInclude(s => s.Department!);
@@ -32,7 +14,7 @@ namespace IntelliCampus.Service.Specifications
             AddInclude(s => s.Specialization!);
             AddInclude("UserRoles.Role");
 
-            if (includeCourses)
+            if (queryParams.IncludeCourses)
             {
                 AddInclude("StudentCourses.Course.Notes.MaterialFolder");
             }

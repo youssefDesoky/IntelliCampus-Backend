@@ -1,4 +1,5 @@
 using IntelliCampus.Shared.Dtos.Material;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service_Abstraction;
 
@@ -7,7 +8,7 @@ public interface IMaterialService
     // Materials
     Task<MaterialDto?> GetByIdAsync(int materialId);
     Task<IEnumerable<MaterialDto>> GetByCourseIdAsync(int courseId);
-    Task<CourseMaterialsDto?> GetCourseMaterialsOrganizedAsync(int courseId);
+    Task<CourseMaterialsDto?> GetCourseMaterialsOrganizedAsync(int courseId, MaterialQueryParams queryParams);
     Task<MaterialDto> CreateAsync(int instructorId, CreateMaterialDto dto, string? fileUrl, long? fileSize);
     Task<bool> DeleteAsync(int materialId, int instructorId);
     Task<(string? FileUrl, string? FileName)?> GetDownloadInfoAsync(int materialId);

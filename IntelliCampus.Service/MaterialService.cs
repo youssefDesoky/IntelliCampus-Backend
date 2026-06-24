@@ -6,6 +6,7 @@ using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service;
 
@@ -59,7 +60,7 @@ public class MaterialService(
         return materials.Select(MapToDto);
     }
 
-    public async Task<CourseMaterialsDto?> GetCourseMaterialsOrganizedAsync(int courseId)
+    public async Task<CourseMaterialsDto?> GetCourseMaterialsOrganizedAsync(int courseId, MaterialQueryParams queryParams)
     {
         var course = await Courses.GetByIdAsync(courseId);
 
@@ -68,7 +69,7 @@ public class MaterialService(
 
         var folders = await Folders.GetAllAsync(new MaterialFolderSpec(courseId, byCourse: true));
 
-        var unorganizedMaterials = await Materials.GetAllAsync(new MaterialSpec(courseId, byCourse: true, unorganizedOnly: true));
+        var unorganizedMaterials = await Materials.GetAllAsync(new MaterialSpec(courseId, byCourse: true, queryParams));
 
         return new CourseMaterialsDto
         {

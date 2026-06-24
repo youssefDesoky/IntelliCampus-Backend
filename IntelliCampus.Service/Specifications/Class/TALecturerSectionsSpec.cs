@@ -1,5 +1,6 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service.Specifications;
 
@@ -21,6 +22,17 @@ internal class TALecturerSectionsSpec : BaseSpecifications<Class>
             && c.Instructor != null
             && (c.Instructor.InstructorRole == InstructorRole.TeachingAssistant
                 || c.Instructor.InstructorRole == InstructorRole.AssistantLecturer))
+    {
+        AddInclude(c => c.Course!);
+        AddInclude(c => c.Instructor!);
+    }
+
+    public TALecturerSectionsSpec(ClassQueryParams queryParams)
+        : base(c => c.ClassType == ClassType.Section
+            && c.Instructor != null
+            && (c.Instructor.InstructorRole == InstructorRole.TeachingAssistant
+                || c.Instructor.InstructorRole == InstructorRole.AssistantLecturer)
+            && (!queryParams.InstructorId.HasValue || c.InstructorId == queryParams.InstructorId.Value))
     {
         AddInclude(c => c.Course!);
         AddInclude(c => c.Instructor!);

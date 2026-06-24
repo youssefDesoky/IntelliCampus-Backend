@@ -1,11 +1,12 @@
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Shared.Dtos.Schedule;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service_Abstraction;
 
 public interface IInstructorScheduleService
 {
-    Task<IEnumerable<ScheduleDto>> GetMyScheduleAsync(int userId, IReadOnlyCollection<ScheduleType>? types);
+    Task<IEnumerable<ScheduleDto>> GetMyScheduleAsync(int userId, ScheduleQueryParams queryParams);
     Task<ScheduleDto> GetScheduleByIdAsync(int classId);
-    Task<byte[]> ExportSchedulePdfAsync(int userId, IReadOnlyCollection<ScheduleType>? types);
+    Task<byte[]> ExportSchedulePdfAsync(int userId, ScheduleQueryParams queryParams);
 }

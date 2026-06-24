@@ -5,6 +5,7 @@ using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Export;
 using IntelliCampus.Shared.Dtos.Grade;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
@@ -420,7 +421,7 @@ public class GradeService : IGradeService
             Letter = c.Letter
         }).ToList();
 
-        var spec = new StudentSpec(studentId);
+        var spec = new StudentSpec(new CourseQueryParams { StudentId = studentId });
         var studentEntity = await Students.GetByIdAsync(spec);
         return CalculateGpa(courseItemList, studentEntity?.Bylaw?.GradeScales);
     }
@@ -428,7 +429,7 @@ public class GradeService : IGradeService
     public async Task<double?> UpdateStudentGpaIfCompleteAsync(int studentId)
     {
         var studentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId))).ToList();
-        var student = await Students.GetByIdAsync(new StudentSpec(studentId));
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
         if (studentCourses.Count == 0 || student is null) return student?.Gpa;
 
         foreach (var sc in studentCourses)
@@ -450,7 +451,7 @@ public class GradeService : IGradeService
     public async Task<int> GetCompletedHoursAsync(int studentId)
     {
         var studentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId))).ToList();
-        var student = await Students.GetByIdAsync(new StudentSpec(studentId));
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
         if (studentCourses.Count == 0 || student is null) return 0;
 
         var courseIds = studentCourses.Select(sc => sc.CourseId).ToList();
@@ -471,7 +472,7 @@ public class GradeService : IGradeService
 
     public async Task<int?> UpdateStudentLevelIfPromotedAsync(int studentId)
     {
-        var student = await Students.GetByIdAsync(new StudentSpec(studentId));
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
         if (student is null || student.Bylaw is null) throw new BylawNotFoundException(studentId);
 
         var scales = student.Bylaw.Settings.LevelScales;
@@ -521,7 +522,7 @@ public class GradeService : IGradeService
             c.CourseId
         )).ToList();
 
-        var spec = new StudentSpec(studentId);
+        var spec = new StudentSpec(new CourseQueryParams { StudentId = studentId });
         var studentEntity = await Students.GetByIdAsync(spec);
 
         int totalCredits = courseItemList.Sum(c => c.Item.CreditHours);
@@ -779,7 +780,7 @@ public class GradeService : IGradeService
 
     private async Task<(string Letter, decimal Gpa)> ResolveGradeScaleAsync(int studentId, decimal percent)
     {
-        var spec = new StudentSpec(studentId);
+        var spec = new StudentSpec(new CourseQueryParams { StudentId = studentId });
         var student = await Students.GetByIdAsync(spec);
 
         var scales = student?.Bylaw?.GradeScales;

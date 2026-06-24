@@ -11,6 +11,7 @@ using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
@@ -53,41 +54,37 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         return MapToDto(course);
     }
 
-    public async Task<IEnumerable<CourseDto>> GetAllAsync()
+    public async Task<IEnumerable<CourseDto>> GetAllAsync(CourseQueryParams queryParams)
     {
-        var courses = await Courses.GetAllAsync(new CourseSpec());
+        var spec = BuildCourseSpec(queryParams);
+        var courses = await Courses.GetAllAsync(spec);
         return courses.Select(c => MapToDto(c));
     }
 
-    public async Task<IEnumerable<CourseDto>> GetActiveCoursesAsync()
+    public async Task<IEnumerable<CourseDto>> GetActiveCoursesAsync(CourseQueryParams queryParams)
     {
-        var courses = await Courses.GetAllAsync(new CourseSpec(CourseStatus.Active));
-
+        queryParams.IsActiveOnly = true;
+        var spec = BuildCourseSpec(queryParams);
+        var courses = await Courses.GetAllAsync(spec);
         return courses.Select(c => MapToDto(c));
     }
 
-    public async Task<IEnumerable<CourseDto>> GetCoursesByStudentIdAsync(int studentId, List<StudentCourseStatus>? statuses = null)
+    public async Task<IEnumerable<CourseDto>> GetCoursesByStudentIdAsync(CourseQueryParams queryParams)
     {
-        var student = await Students.GetByIdAsync(new StudentSpec(studentId));
+        var studentId = queryParams.StudentId ?? throw new ArgumentNullException(nameof(queryParams.StudentId));
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
         var gradeScales = student.Bylaw?.GradeScales;
-
-        var studentCourses = await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId));
-
-        if (statuses?.Count > 0)
-            studentCourses = studentCourses.Where(sc => statuses.Contains(sc.Status)).ToList();
-
-        var courseIds = studentCourses.Select(sc => sc.CourseId).ToList();
-
-        var courses = await Courses.GetAllAsync(new CourseSpec(courseIds));
+        var courses = await Courses.GetAllAsync(new CourseSpec(queryParams));
 
         return courses.Select(c => MapToDto(c, studentId, gradeScales));
     }
 
-    public async Task<IEnumerable<CourseDto>> GetCoursesByInstructorIdAsync(int instructorId)
+    public async Task<IEnumerable<CourseDto>> GetCoursesByInstructorIdAsync(CourseQueryParams queryParams)
     {
+        var instructorId = queryParams.InstructorId ?? throw new ArgumentNullException(nameof(queryParams.InstructorId));
         var instructor = await Instructors.GetByIdAsync(instructorId);
         if (instructor is null)
             throw new InstructorNotFoundException(instructorId);
@@ -98,6 +95,11 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         var courses = await Courses.GetAllAsync(new CourseSpec(courseIds));
 
         return courses.Select(c => MapToDto(c));
+    }
+
+    private static CourseSpec BuildCourseSpec(CourseQueryParams queryParams)
+    {
+        return new CourseSpec(queryParams);
     }
 
     public async Task<CourseDto> CreateAsync(CreateCourseDto dto)

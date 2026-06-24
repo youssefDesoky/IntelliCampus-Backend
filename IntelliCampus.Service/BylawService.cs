@@ -6,6 +6,7 @@ using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Bylaw;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 
@@ -47,13 +48,10 @@ public class BylawService : IBylawService
         return MapToDto(bylaw);
     }
 
-    public async Task<IEnumerable<BylawDto>> GetAllAsync(string? type = null)
+    public async Task<IEnumerable<BylawDto>> GetAllAsync(BylawQueryParams queryParams)
     {
-        var spec = new BylawSpec();
+        var spec = new BylawSpec(queryParams);
         var bylaws = await Bylaws.GetAllAsync(spec);
-
-        if (type is not null && Enum.TryParse<BylawType>(type, true, out var bylawType))
-            bylaws = bylaws.Where(b => b.Type == bylawType);
 
         return bylaws.Select(MapToDto);
     }

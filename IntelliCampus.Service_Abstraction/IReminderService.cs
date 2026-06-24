@@ -1,10 +1,11 @@
 using IntelliCampus.Shared.Dtos.Reminder;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service_Abstraction;
 
 public interface IReminderService
 {
-    Task<RemindersGroupedDto> GetRemindersAsync(int studentId, DateOnly selectedDay);
+    Task<RemindersGroupedDto> GetRemindersAsync(int studentId, ReminderQueryParams queryParams);
 
     Task<ReminderDto> CreatePersonalReminderAsync(int studentId, CreateReminderDto dto);
 

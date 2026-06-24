@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service.Specifications;
 
@@ -14,6 +15,11 @@ internal sealed class CourseInstructorsSpec : BaseSpecifications<Class>
 internal sealed class CommunityByCourseSpec : BaseSpecifications<Community>
 {
     public CommunityByCourseSpec(int courseId)
+        : base(c => c.CourseId == courseId)
+    {
+    }
+
+    public CommunityByCourseSpec(int courseId, CommunityQueryParams queryParams)
         : base(c => c.CourseId == courseId)
     {
     }

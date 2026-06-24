@@ -2,6 +2,7 @@ using IntelliCampus.Shared.Dtos.Class;
 using IntelliCampus.Shared.Dtos.Instructor;
 using IntelliCampus.Shared.Dtos.Room;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,9 +41,9 @@ public class ClassesController : ControllerBase
     }
 
     [HttpGet("ta-sections")]
-    public async Task<ActionResult<IEnumerable<ClassDto>>> GetTALecturerSections([FromQuery] int? instructorId = null)
+    public async Task<ActionResult<IEnumerable<ClassDto>>> GetTALecturerSections([FromQuery] ClassQueryParams queryParams)
     {
-        var classes = await _classService.GetTALecturerSectionsAsync(instructorId);
+        var classes = await _classService.GetTALecturerSectionsAsync(queryParams);
         return Ok(classes);
     }
 

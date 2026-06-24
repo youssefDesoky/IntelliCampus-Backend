@@ -1,4 +1,5 @@
 using IntelliCampus.Shared.Dtos.ExamScheduling;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service_Abstraction;
 
@@ -6,7 +7,7 @@ public interface IAutoExamSchedulingService
 {
     Task<ConflictGraph> BuildConflictGraphAsync(string semester);
 
-    Task<List<ConflictInfoDto>> DetectConflictsAsync(int courseId, string semester, DateTime date, TimeSpan startTime, TimeSpan endTime, int? excludeExamId = null);
+    Task<List<ConflictInfoDto>> DetectConflictsAsync(string semester, ExamSchedulingQueryParams queryParams);
 
     Task<bool> HasConflictsAsync(int courseId, string semester, DateTime date, TimeSpan startTime, TimeSpan endTime, int? excludeExamId = null);
 
