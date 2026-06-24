@@ -220,6 +220,7 @@ public class AttendanceService : IAttendanceService
             throw new InvalidOperationException("Not authorized.");
 
         var allStudents = await Students.GetAllAsync();
+        var now = EgyptTime.Now;
 
         foreach (var record in dto.Records)
         {
@@ -237,7 +238,7 @@ public class AttendanceService : IAttendanceService
                 SessionId = dto.SessionId,
                 StudentId = student.UserId,
                 Status = record.Status,
-                Date = EgyptTime.Now
+                Date = now
             });
         }
 

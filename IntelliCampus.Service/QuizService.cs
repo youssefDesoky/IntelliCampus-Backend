@@ -48,6 +48,7 @@ public class QuizService : IQuizService
 
         var submission = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quizId));
         var hasSubmission = submission is not null;
+        var now = EgyptTime.Now;
 
         return new QuizHistoryItemDto
         {
@@ -58,8 +59,8 @@ public class QuizService : IQuizService
             DurationMinutes = quiz.DurationMinutes,
             StartDate = quiz.StartDate,
             DueDate = quiz.DueDate,
-            Status = hasSubmission ? "Completed" : quiz.DueDate < EgyptTime.Now ? "Overdue" :
-                     quiz.StartDate > EgyptTime.Now ? "Upcoming" : "Active"
+            Status = hasSubmission ? "Completed" : quiz.DueDate < now ? "Overdue" :
+                     quiz.StartDate > now ? "Upcoming" : "Active"
         };
     }
 
@@ -82,6 +83,7 @@ public class QuizService : IQuizService
 
         var submission = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quizId));
         var hasSubmission = submission is not null;
+        var now = EgyptTime.Now;
 
         return new QuizHistoryItemDto
         {
@@ -92,8 +94,8 @@ public class QuizService : IQuizService
             DurationMinutes = quiz.DurationMinutes,
             StartDate = quiz.StartDate,
             DueDate = quiz.DueDate,
-            Status = hasSubmission ? "Completed" : quiz.DueDate < EgyptTime.Now ? "Overdue" :
-                     quiz.StartDate > EgyptTime.Now ? "Upcoming" : "Active"
+            Status = hasSubmission ? "Completed" : quiz.DueDate < now ? "Overdue" :
+                     quiz.StartDate > now ? "Upcoming" : "Active"
         };
     }
 
@@ -399,20 +401,24 @@ public class QuizService : IQuizService
         return results.Select(MapResultToDto);
     }
 
-    private static QuizDto MapToDto(Quiz q) => new()
+    private static QuizDto MapToDto(Quiz q)
     {
-        Id = q.QuizId,
-        Title = q.Title,
-        Description = q.Description,
-        StartDate = q.StartDate,
-        DueDate = q.DueDate,
-        DurationMinutes = q.DurationMinutes,
-        MaxScore = q.MaxGrade,
-        CourseId = q.CourseId,
-        CourseName = q.Course?.CourseName,
-        Status = q.DueDate < EgyptTime.Now ? "Completed" :
-                 q.StartDate > EgyptTime.Now ? "Upcoming" : "Active"
-    };
+        var now = EgyptTime.Now;
+        return new QuizDto
+        {
+            Id = q.QuizId,
+            Title = q.Title,
+            Description = q.Description,
+            StartDate = q.StartDate,
+            DueDate = q.DueDate,
+            DurationMinutes = q.DurationMinutes,
+            MaxScore = q.MaxGrade,
+            CourseId = q.CourseId,
+            CourseName = q.Course?.CourseName,
+            Status = q.DueDate < now ? "Completed" :
+                     q.StartDate > now ? "Upcoming" : "Active"
+        };
+    }
 
     private static StudentQuizDto MapResultToDto(StudentQuiz sq) => new()
     {
@@ -455,7 +461,7 @@ public class QuizService : IQuizService
         if (existing is not null)
         {
             existing.Score = finalScore;
-            existing.SubmittedAt = EgyptTime.Now;
+            existing.SubmittedAt = now;
             existing.AnswersJson = answersJson;
             existing.QuestionResultsJson = resultsJson;
             StudentQuizzes.Update(existing);
@@ -482,7 +488,7 @@ public class QuizService : IQuizService
             StudentId = studentId,
             QuizId = quiz.QuizId,
             Score = finalScore,
-            SubmittedAt = EgyptTime.Now,
+            SubmittedAt = now,
             IsLate = now > quiz.DueDate,
             AnswersJson = answersJson,
             QuestionResultsJson = resultsJson
