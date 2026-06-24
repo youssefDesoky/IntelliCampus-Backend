@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Admin;
 using IntelliCampus.Shared.Params;
 using IntelliCampus.Service_Abstraction;
@@ -20,7 +21,7 @@ public class AdminsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AdminDto>>> GetAll([FromQuery] AdminQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<AdminDto>>> GetAll([FromQuery] AdminQueryParams queryParams)
     {
         var admins = await _adminService.GetAllAsync(queryParams);
         return Ok(admins);

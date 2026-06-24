@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Grade;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,9 +19,9 @@ public class GradesController(IGradeService gradeService) : ControllerBase
 
     [HttpGet("course/{courseId}")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
-    public async Task<IActionResult> GetCourseGrade(int courseId)
+    public async Task<ActionResult<PaginatedResult<CourseGradeDto>>> GetCourseGrade(int courseId, [FromQuery] GradeQueryParams queryParams)
     {
-        var result = await gradeService.GetCourseGradeAsync(UserId, courseId);
+        var result = await gradeService.GetCourseGradeAsync(UserId, courseId, queryParams);
         return Ok(result);
     }
 

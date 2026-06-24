@@ -4,6 +4,7 @@ using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Service.Exceptions;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Notification;
 using IntelliCampus.Shared.Params;
 
@@ -31,7 +32,7 @@ public class NotificationService : INotificationService
     private IGenericRepository<User, int> Users
         => _unitOfWork.GetRepository<User, int>();
 
-    public async Task<IEnumerable<NotificationDto>> GetByUserIdAsync(int userId, NotificationQueryParams queryParams)
+    public async Task<PaginatedResult<NotificationDto>> GetByUserIdAsync(int userId, NotificationQueryParams queryParams)
     {
         var user = await Users.GetByIdAsync(userId);
         if (user is null)
@@ -39,7 +40,12 @@ public class NotificationService : INotificationService
 
         var spec = new NotificationSpec(userId, queryParams);
         var userNotifications = await UserNotifications.GetAllAsync(spec);
-        return userNotifications.Select(MapToDto);
+        var dataToReturn = userNotifications.Select(MapToDto);
+
+        var countSpec = new NotificationCountSpec(userId, queryParams);
+        var totalCount = await UserNotifications.CountAsync(countSpec);
+
+        return new PaginatedResult<NotificationDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
     }
 
     public async Task<IEnumerable<NotificationDto>> GetUnreadAsync(int userId, NotificationQueryParams queryParams)

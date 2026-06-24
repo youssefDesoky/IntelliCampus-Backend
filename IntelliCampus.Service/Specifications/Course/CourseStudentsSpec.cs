@@ -9,7 +9,7 @@ internal sealed class CourseStudentsSpec : BaseSpecifications<StudentCourse>
         : base(sc => sc.CourseId == courseId)
     {
         AddInclude(sc => sc.Student);
-        AddInclude(sc => sc.Class);
+        AddInclude(sc => sc.Class!);
         AddInclude("Student.Department");
         AddInclude("Student.Bylaw");
         AddInclude("Student.Specialization");

@@ -1,3 +1,4 @@
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Room;
 using IntelliCampus.Shared.Params;
 using IntelliCampus.Service_Abstraction;
@@ -20,7 +21,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RoomDto>>> GetAll([FromQuery] RoomQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<RoomDto>>> GetAll([FromQuery] RoomQueryParams queryParams)
     {
         var rooms = await _roomService.GetAllAsync(queryParams);
         return Ok(rooms);

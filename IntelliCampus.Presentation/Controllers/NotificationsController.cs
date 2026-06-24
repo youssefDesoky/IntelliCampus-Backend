@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Notification;
 using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +20,7 @@ public class NotificationsController(INotificationService notificationService, I
         => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] NotificationQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<NotificationDto>>> GetAll([FromQuery] NotificationQueryParams queryParams)
         => Ok(await notificationService.GetByUserIdAsync(UserId, queryParams));
 
     [HttpGet("unread")]

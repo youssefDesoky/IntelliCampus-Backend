@@ -1,6 +1,7 @@
 using System.Security.Claims;
-using IntelliCampus.Shared.Dtos.Routing;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
+using IntelliCampus.Shared.Dtos.Routing;
 using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,14 +35,15 @@ public class CommunityController(
     }
 
     [HttpGet("questions")]
-    public async Task<IActionResult> GetQuestions(int courseId)
+    public async Task<ActionResult<PaginatedResult<object>>> GetQuestions(int courseId, [FromQuery] CommunityQueryParams queryParams)
     {
-        var posts = (await communityService.GetCoursePostsAsync(courseId)).ToList();
+        var paginatedPosts = await communityService.GetCoursePostsAsync(courseId, queryParams);
+        var posts = paginatedPosts.Data.ToList();
 
         var allCommenterIds = posts.SelectMany(p => p.Comments).Select(c => c.UserId).Distinct().ToList();
         var instructorRoles = await communityService.GetCourseInstructorRolesAsync(courseId, allCommenterIds);
 
-        return Ok(posts.Select(p =>
+        var projectedData = posts.Select(p =>
         {
             var candidateMap = p.Candidates.ToDictionary(c => c.UserId, c => c.Rank);
             return new
@@ -66,7 +68,13 @@ public class CommunityController(
                     instructorRole = instructorRoles.TryGetValue(c.UserId, out var role) ? role : null,
                 }),
             };
-        }));
+        });
+
+        return Ok(new PaginatedResult<object>(
+            paginatedPosts.PageIndex,
+            paginatedPosts.PageSize,
+            paginatedPosts.TotalCount,
+            projectedData));
     }
 
     [HttpGet("questions/{postId}")]

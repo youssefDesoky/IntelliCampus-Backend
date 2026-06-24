@@ -28,6 +28,7 @@ namespace IntelliCampus.Service.Specifications
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
         AddInclude("UserRoles.Role");
+        ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
     }
 }

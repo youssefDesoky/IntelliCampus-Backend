@@ -60,6 +60,7 @@ public sealed class InternalMessageSpec : BaseSpecifications<InternalMessage>
             (!queryParams.DateFrom.HasValue || m.SentAt >= queryParams.DateFrom.Value) &&
             (!queryParams.DateTo.HasValue || m.SentAt <= queryParams.DateTo.Value));
         spec.AddOrderByDescending(m => m.SentAt);
+        spec.ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         return spec;
     }
 

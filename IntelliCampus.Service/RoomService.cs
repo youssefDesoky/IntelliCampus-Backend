@@ -3,6 +3,7 @@ using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Room;
 using IntelliCampus.Shared.Params;
 
@@ -25,11 +26,16 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
         return MapToDto(room);
     }
 
-    public async Task<IEnumerable<RoomDto>> GetAllAsync(RoomQueryParams queryParams)
+    public async Task<PaginatedResult<RoomDto>> GetAllAsync(RoomQueryParams queryParams)
     {
         var spec = new RoomSpec(queryParams);
         var rooms = await Rooms.GetAllAsync(spec);
-        return rooms.Select(MapToDto);
+        var dataToReturn = rooms.Select(MapToDto);
+
+        var countSpec = new RoomCountSpec(queryParams);
+        var totalCount = await Rooms.CountAsync(countSpec);
+
+        return new PaginatedResult<RoomDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
     }
 
     public async Task<RoomDto> CreateAsync(CreateRoomDto dto)

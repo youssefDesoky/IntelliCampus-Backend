@@ -1,14 +1,15 @@
-using System.Security.Claims;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Announcement;
+using IntelliCampus.Shared.Dtos.Bylaw;
 using IntelliCampus.Shared.Dtos.Course;
 using IntelliCampus.Shared.Dtos.Student;
-using IntelliCampus.Shared.Dtos.Bylaw;
 using IntelliCampus.Shared.Params;
-using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace IntelliCampus.Web.Controllers;
 
@@ -27,7 +28,7 @@ public class CoursesController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<CourseDto>>> GetAll([FromQuery] CourseQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<CourseDto>>> GetAll([FromQuery] CourseQueryParams queryParams)
     {
         var courses = await _courseService.GetAllAsync(queryParams);
         return Ok(courses);
@@ -35,7 +36,7 @@ public class CoursesController : ControllerBase
 
     [HttpGet("active")]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<CourseDto>>> GetActive([FromQuery] CourseQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<CourseDto>>> GetActive([FromQuery] CourseQueryParams queryParams)
     {
         var courses = await _courseService.GetActiveCoursesAsync(queryParams);
         return Ok(courses);
@@ -43,7 +44,7 @@ public class CoursesController : ControllerBase
 
     [HttpGet("student/{studentId}")]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<CourseDto>>> GetByStudentId(int studentId, [FromQuery] CourseQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<CourseDto>>> GetByStudentId(int studentId, [FromQuery] CourseQueryParams queryParams)
     {
         queryParams.StudentId = studentId;
         var courses = await _courseService.GetCoursesByStudentIdAsync(queryParams);
@@ -52,7 +53,7 @@ public class CoursesController : ControllerBase
 
     [HttpGet("my-courses")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
-    public async Task<ActionResult<IEnumerable<CourseDto>>> GetMyStudentCourses([FromQuery] CourseQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<CourseDto>>> GetMyStudentCourses([FromQuery] CourseQueryParams queryParams)
     {
         var userId = GetCurrentUserId();
         if (userId is null)
@@ -65,7 +66,7 @@ public class CoursesController : ControllerBase
 
     [HttpGet("instructor/{instructorId}")]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<CourseDto>>> GetByInstructorId(int instructorId, [FromQuery] CourseQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<CourseDto>>> GetByInstructorId(int instructorId, [FromQuery] CourseQueryParams queryParams)
     {
         queryParams.InstructorId = instructorId;
         var courses = await _courseService.GetCoursesByInstructorIdAsync(queryParams);
@@ -74,7 +75,7 @@ public class CoursesController : ControllerBase
 
     [HttpGet("my-teaching")]
     [Authorize(Roles = "Instructor")]
-    public async Task<ActionResult<IEnumerable<CourseDto>>> GetMyInstructorCourses([FromQuery] CourseQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<CourseDto>>> GetMyInstructorCourses([FromQuery] CourseQueryParams queryParams)
     {
         var userId = GetCurrentUserId();
         if (userId is null)
@@ -87,9 +88,9 @@ public class CoursesController : ControllerBase
 
     [HttpGet("prerequisites")]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<CoursePrerequisiteDto>>> GetAllWithPrerequisites()
+    public async Task<ActionResult<PaginatedResult<CoursePrerequisiteDto>>> GetAllWithPrerequisites([FromQuery] CourseQueryParams queryParams)
     {
-        var result = await _courseService.GetAllWithPrerequisitesAsync();
+        var result = await _courseService.GetAllWithPrerequisitesAsync(queryParams);
         return Ok(result);
     }
 
@@ -191,7 +192,7 @@ public class CoursesController : ControllerBase
 
     [HttpGet("{courseId}/announcements")]
     [Authorize]
-    public async Task<ActionResult<List<AnnouncementDto>>> GetAnnouncements(int courseId, [FromQuery] AnnouncementQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<AnnouncementDto>>> GetAnnouncements(int courseId, [FromQuery] AnnouncementQueryParams queryParams)
     {
         var announcements = await _announcementService.GetCourseAnnouncementsAsync(courseId, queryParams);
         return Ok(announcements);

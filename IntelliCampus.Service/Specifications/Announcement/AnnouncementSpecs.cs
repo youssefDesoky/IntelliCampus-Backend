@@ -18,6 +18,7 @@ internal sealed class AnnouncementsByCourseSpec : BaseSpecifications<Announcemen
     {
         AddIncludes();
         AddOrderByDescending(a => a.CreatedAt);
+        ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 
     private void AddIncludes()

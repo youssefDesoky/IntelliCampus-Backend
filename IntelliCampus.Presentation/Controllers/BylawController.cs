@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Bylaw;
 using IntelliCampus.Shared.Params;
@@ -22,7 +23,7 @@ public class BylawController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BylawDto>>> GetAll([FromQuery] BylawQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<BylawDto>>> GetAll([FromQuery] BylawQueryParams queryParams)
     {
         var bylaws = await _bylawService.GetAllAsync(queryParams);
         return Ok(bylaws);

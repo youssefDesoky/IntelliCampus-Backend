@@ -2,6 +2,8 @@ using System.Security.Claims;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.shared.Dtos.Attendance;
+using IntelliCampus.shared.Pagination;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -88,8 +90,8 @@ public class AttendanceController(
 
     [HttpGet("my-attendance/course/{courseId}")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
-    public async Task<IActionResult> GetMyAttendance(int courseId)
-        => Ok(await attendanceService.GetByStudentAndCourseAsync(UserId, courseId));
+    public async Task<ActionResult<PaginatedResult<SessionDto>>> GetMyAttendance(int courseId, [FromQuery] SessionQueryParams queryParams)
+        => Ok(await attendanceService.GetByStudentAndCourseAsync(UserId, courseId, queryParams));
 
     [HttpGet("my-attendance/course/{courseId}/percentage")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
@@ -100,8 +102,8 @@ public class AttendanceController(
 
     [HttpGet("report/class/{classId}")]
     [Authorize(Roles = "Instructor")]
-    public async Task<IActionResult> GetReport(int classId)
-        => Ok(await attendanceService.GenerateReportAsync(classId, UserId));
+    public async Task<ActionResult<PaginatedResult<AttendanceReportDto>>> GetReport(int classId, [FromQuery] SessionQueryParams queryParams)
+        => Ok(await attendanceService.GenerateReportAsync(classId, UserId, queryParams));
 
     [HttpGet("percentage/student/{studentId}/course/{courseId}")]
     [Authorize(Roles = "Instructor")]

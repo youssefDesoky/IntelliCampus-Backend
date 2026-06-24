@@ -1,7 +1,8 @@
 using System.Security.Claims;
 using IntelliCampus.Service_Abstraction;
-using IntelliCampus.Shared.Params;
 using IntelliCampus.shared.Dtos.Quiz;
+using IntelliCampus.shared.Pagination;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,9 +31,9 @@ public class QuizzesController : ControllerBase
 
     [HttpGet("/api/courses/{courseId}/quizzes")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma,Instructor")]
-    public async Task<IActionResult> GetQuizzesOverview(string courseId)
+    public async Task<ActionResult<PaginatedResult<CourseQuizzesDto>>> GetQuizzesOverview(string courseId, [FromQuery] QuizQueryParams queryParams)
     {
-        var result = await _quizService.GetQuizzesOverviewAsync(UserId, courseId);
+        var result = await _quizService.GetQuizzesOverviewAsync(UserId, courseId, queryParams);
         return Ok(result);
     }
 

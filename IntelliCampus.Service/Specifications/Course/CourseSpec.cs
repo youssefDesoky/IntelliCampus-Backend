@@ -26,18 +26,23 @@ namespace IntelliCampus.Service.Specifications
         { AddFullIncludes(); }
 
         public CourseSpec(CourseQueryParams queryParams)
-            : base(c =>
-                (!queryParams.CourseId.HasValue || c.CourseId == queryParams.CourseId.Value)
-                && (!queryParams.DepartmentId.HasValue || c.DepartmentId == queryParams.DepartmentId.Value)
-                && (!queryParams.IsActiveOnly || c.Status == CourseStatus.Active)
-                && (string.IsNullOrEmpty(queryParams.Search)
-                    || c.CourseName.Contains(queryParams.Search)
-                    || (c.CourseCode != null && c.CourseCode.Contains(queryParams.Search)))
-                && (!queryParams.StudentId.HasValue
-                    || c.StudentCourses.Any(sc => sc.StudentId == queryParams.StudentId.Value
-                        && (queryParams.StudentStatuses == null || queryParams.StudentStatuses.Contains(sc.Status))))
-            )
-        { AddFullIncludes(); }
+            : base(CourseSpecHelper.GetCourseCriteria(queryParams))
+        {
+            AddFullIncludes();
+            ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
+        }
+
+        public CourseSpec(List<int> courseIds, CourseQueryParams queryParams)
+            : base(c => courseIds.Contains(c.CourseId))
+        {
+            AddFullIncludes();
+            ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
+        }
+
+        public CourseSpec(List<int> courseIds, CourseQueryParams queryParams, bool forCount)
+            : base(c => courseIds.Contains(c.CourseId))
+        {
+        }
 
 
         private void AddFullIncludes()

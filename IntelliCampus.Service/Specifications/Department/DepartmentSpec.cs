@@ -18,6 +18,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(d => d.HeadInstructor!);
             AddInclude(d => d.Faculty!);
+            ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
 
         public DepartmentSpec(int departmentId)

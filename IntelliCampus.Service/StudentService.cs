@@ -1,4 +1,5 @@
 using System.Globalization;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Note;
 using IntelliCampus.Shared.Dtos.Student;
 using IntelliCampus.Shared.Params;
@@ -59,12 +60,16 @@ public class StudentService : IStudentService
         return MapToDto(student);
     }
 
-    public async Task<IEnumerable<StudentDto>> GetAllAsync(StudentQueryParams queryParams)
+    public async Task<PaginatedResult<StudentDto>> GetAllAsync(StudentQueryParams queryParams)
     {
         var spec = new StudentSpec(queryParams);
         var students = await Students.GetAllAsync(spec);
+        var dataToReturn = students.Select(MapToDto);
 
-        return students.Select(MapToDto);
+        var countSpec = new StudentCountSpec(queryParams);
+        var totalCount = await Students.CountAsync(countSpec);
+
+        return new PaginatedResult<StudentDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
     }
 
     public async Task<StudentDto> CreateAsync(CreateStudentDto dto, int? creatorUserId = null)

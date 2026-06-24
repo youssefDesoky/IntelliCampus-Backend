@@ -87,14 +87,14 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
     {
         var instructorRepo = _unitOfWork.GetRepository<Instructor, int>();
         var instructors = await instructorRepo.GetAllAsync();
-        var instructor = instructors.FirstOrDefault(i => i.UserId == userId)
-            ?? throw new InstructorNotFoundException($"Instructor with user id {userId} not found");
+        if (!instructors.Any(i => i.UserId == userId))
+            throw new InstructorNotFoundException($"Instructor with user id {userId} not found");
 
-        var instructorCourses = await _courseService.GetCoursesByInstructorIdAsync(new CourseQueryParams { InstructorId = instructor.InstructorId });
-        if (!instructorCourses.Any(c => c.CourseId == courseId))
+        var instructorCourses = await _courseService.GetCoursesByInstructorIdAsync(new CourseQueryParams { InstructorId = userId });
+        if (!instructorCourses.Data.Any(c => c.CourseId == courseId))
             throw new ForbiddenException("Instructor is not assigned to this course");
 
-        return instructor.InstructorId;
+        return userId;
     }
 
     private async Task<List<AssessmentPerformanceItemDto>> BuildAssessmentPerformanceAsync(int courseId, int instructorId)

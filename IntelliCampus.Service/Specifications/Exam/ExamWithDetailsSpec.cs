@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service.Specifications;
 
@@ -17,5 +18,17 @@ public sealed class ExamWithDetailsSpec : BaseSpecifications<Exam>
         AddInclude(e => e.Course!);
         AddInclude(e => e.Room!);
         AddInclude("Course.StudentCourses");
+    }
+
+    public ExamWithDetailsSpec(ExamQueryParams queryParams)
+        : base(e =>
+            (!queryParams.CourseId.HasValue || e.CourseId == queryParams.CourseId.Value) &&
+            (!queryParams.ExamType.HasValue || e.ExamType == queryParams.ExamType.Value) &&
+            (!queryParams.Status.HasValue || e.Status == queryParams.Status.Value))
+    {
+        AddInclude(e => e.Course!);
+        AddInclude(e => e.Room!);
+        AddOrderByDescending(e => e.Date);
+        ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 }

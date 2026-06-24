@@ -1,4 +1,5 @@
 using System.Globalization;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Admin;
 using IntelliCampus.Shared.Params;
 using IntelliCampus.Service_Abstraction;
@@ -40,11 +41,16 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         return MapToDto(admin);
     }
 
-    public async Task<IEnumerable<AdminDto>> GetAllAsync(AdminQueryParams queryParams)
+    public async Task<PaginatedResult<AdminDto>> GetAllAsync(AdminQueryParams queryParams)
     {
         var spec = new AdminSpec(queryParams);
         var admins = await Admins.GetAllAsync(spec);
-        return admins.Select(MapToDto);
+        var dataToReturn = admins.Select(MapToDto);
+
+        var countSpec = new AdminCountSpec(queryParams);
+        var totalCount = await Admins.CountAsync(countSpec);
+
+        return new PaginatedResult<AdminDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
     }
 
     public async Task<AdminDto> CreateAsync(CreateAdminDto dto, int? creatorUserId = null)

@@ -4,6 +4,7 @@ using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Inbox;
 using IntelliCampus.Shared.Params;
 
@@ -67,11 +68,11 @@ public class InternalMessageService : IInternalMessageService
         return dto;
     }
 
-    public async Task<IEnumerable<InternalMessageDto>> GetInboxMessagesAsync(int userId, MessageQueryParams queryParams)
+    public async Task<PaginatedResult<InternalMessageDto>> GetInboxMessagesAsync(int userId, MessageQueryParams queryParams)
     {
         var repo = _unitOfWork.GetRepository<InternalMessage, int>();
 
-        // Get root messages where user is recipient
+        // Get root messages where user is recipient (paginated)
         var roots = await repo.GetAllAsync(InternalMessageSpec.InboxRoots(userId, queryParams));
         var rootIds = roots.Select(r => r.MessageId).ToList();
 
@@ -80,7 +81,12 @@ public class InternalMessageService : IInternalMessageService
             ? await repo.GetAllAsync(InternalMessageSpec.RepliesToRoots(rootIds, userId))
             : new List<InternalMessage>();
 
-        return await BuildThreadsAsync(roots, replies);
+        var dataToReturn = await BuildThreadsAsync(roots, replies);
+
+        var countSpec = InternalMessageCountSpec.InboxRoots(userId, queryParams);
+        var totalCount = await repo.CountAsync(countSpec);
+
+        return new PaginatedResult<InternalMessageDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
     }
 
     public async Task<IEnumerable<InternalMessageDto>> GetSentMessagesAsync(int userId, MessageQueryParams queryParams)

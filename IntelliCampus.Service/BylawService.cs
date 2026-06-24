@@ -5,6 +5,7 @@ using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Bylaw;
 using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Http;
@@ -48,12 +49,16 @@ public class BylawService : IBylawService
         return MapToDto(bylaw);
     }
 
-    public async Task<IEnumerable<BylawDto>> GetAllAsync(BylawQueryParams queryParams)
+    public async Task<PaginatedResult<BylawDto>> GetAllAsync(BylawQueryParams queryParams)
     {
         var spec = new BylawSpec(queryParams);
         var bylaws = await Bylaws.GetAllAsync(spec);
+        var dataToReturn = bylaws.Select(MapToDto);
 
-        return bylaws.Select(MapToDto);
+        var countSpec = new BylawCountSpec(queryParams);
+        var totalCount = await Bylaws.CountAsync(countSpec);
+
+        return new PaginatedResult<BylawDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
     }
 
     public async Task<BylawDto> CreateAsync(CreateBylawDto dto, int adminId)
