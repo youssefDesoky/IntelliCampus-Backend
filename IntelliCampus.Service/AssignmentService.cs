@@ -417,6 +417,7 @@ public class AssignmentService(
     private SubmissionDto MapSubmissionToDto(StudentAssignment sa) => new()
     {
         Id = sa.StudentAssignmentId.ToString(),
+        StudentId = sa.StudentId,
         StudentName = sa.Student?.FullName,
         Status = "successful",
         SubmittedAt = sa.SubmittedAt.ToString("dd MM yyyy HH:mm"),
@@ -428,6 +429,14 @@ public class AssignmentService(
             Name = f.Name,
             Size = f.Size,
             Url = _urlResolver.Resolve(f.Url)
-        }).ToList() ?? []
+        }).ToList() ?? [],
+        Grade = sa.Grade.HasValue ? new GradeInfoDto
+        {
+            Score = sa.Grade.Value,
+            TotalPoints = sa.Assignment.MaxGrade,
+            Feedback = sa.Feedback,
+            GradedBy = sa.GradedByInstructor?.FullName,
+            GradedAt = sa.GradedAt?.ToString("dd MM yyyy HH:mm")
+        } : null
     };
 }

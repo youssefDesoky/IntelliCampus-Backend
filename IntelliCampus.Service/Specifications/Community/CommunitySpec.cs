@@ -3,6 +3,15 @@ using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service.Specifications;
 
+internal sealed class CourseInstructorsSpec : BaseSpecifications<Class>
+{
+    public CourseInstructorsSpec(int courseId, List<int> instructorIds)
+        : base(c => c.CourseId == courseId && instructorIds.Contains(c.InstructorId!.Value))
+    {
+        AddInclude(c => c.Instructor!);
+    }
+}
+
 internal sealed class CommunityByCourseSpec : BaseSpecifications<Community>
 {
     public CommunityByCourseSpec(int courseId)
@@ -27,6 +36,7 @@ internal sealed class CommunityPostSpec : BaseSpecifications<Post>
         AddInclude("Comments.User");
         AddInclude(p => p.Votes);
         AddInclude("Votes.User");
+        AddInclude(p => p.Candidates);
     }
 }
 
@@ -48,5 +58,6 @@ internal sealed class PostWithDetailsSpec : BaseSpecifications<Post>
         AddInclude("Comments.User");
         AddInclude(p => p.Votes);
         AddInclude("Votes.User");
+        AddInclude(p => p.Candidates);
     }
 }
