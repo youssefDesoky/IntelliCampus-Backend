@@ -48,6 +48,76 @@ public class PdfExportService : IPdfExportService
             return doc.GetBytes();
         }
 
+        public byte[] ExportCourseAnalytics(CourseAnalyticsExportDto data)
+        {
+            var doc = new PdfDoc();
+            doc.AddHeader("IntelliCampus", $"Course Analytics");
+            doc.AddInfoLine($"Course: {data.CourseName} ({data.CourseCode})");
+            doc.AddInfoLine($"Instructor: {data.InstructorName}");
+
+            if (data.AssessmentPerformance.Count > 0)
+            {
+                doc.AddTable(
+                    ["Assessment", "Average", "Max Score"],
+                    data.AssessmentPerformance.Select(a => new[] { a.Name, a.Average.ToString("F1"), a.MaxScore.ToString("F1") }),
+                    (0.18f, 0.35f, 0.55f),
+                    centredHeaders: ["Average", "Max Score"]);
+            }
+
+            if (data.SubmissionRate.Count > 0)
+            {
+                doc.AddTable(
+                    ["Status", "Percentage"],
+                    data.SubmissionRate.Select(s => new[] { s.Name, $"{s.Value}%" }),
+                    (0.18f, 0.35f, 0.55f),
+                    centredHeaders: ["Percentage"]);
+            }
+
+            if (data.WeeklyAttendance.Count > 0)
+            {
+                doc.AddTable(
+                    ["Week", "Present", "Absent", "Excused"],
+                    data.WeeklyAttendance.Select(w => new[] { w.Week, w.Present.ToString(), w.Absent.ToString(), w.Excused.ToString() }),
+                    (0.18f, 0.35f, 0.55f),
+                    centredHeaders: ["Present", "Absent", "Excused"]);
+            }
+
+            return doc.GetBytes();
+        }
+
+        public byte[] ExportAdminAnalysis(AdminAnalysisExportDto data)
+        {
+            var doc = new PdfDoc();
+            doc.AddHeader("IntelliCampus", "Admin Analysis Report");
+            doc.AddInfoLine($"Generated: {data.GeneratedAt:yyyy-MM-dd HH:mm} UTC");
+
+            doc.AddTable(
+                ["Metric", "Value"],
+                new[]
+                {
+                    new[] { "Total Students",      data.TotalStudents.ToString("N0") },
+                    new[] { "Total Instructors",    data.TotalInstructors.ToString("N0") },
+                    new[] { "Total Courses",        data.TotalCourses.ToString("N0") },
+                    new[] { "Total Departments",    data.TotalDepartments.ToString("N0") },
+                    new[] { "Total Rooms",          data.TotalRooms.ToString("N0") },
+                    new[] { "Total Exams",          data.TotalExams.ToString("N0") },
+                    new[] { "Active Bylaws",        data.ActiveBylaws.ToString("N0") },
+                },
+                (0.18f, 0.35f, 0.55f),
+                centredHeaders: ["Value"]);
+
+            if (data.DepartmentBreakdown.Count > 0)
+            {
+                doc.AddTable(
+                    ["Department", "Students", "Instructors", "Courses"],
+                    data.DepartmentBreakdown.Select(d => new[] { d.DepartmentName, d.StudentCount.ToString(), d.InstructorCount.ToString(), d.CourseCount.ToString() }),
+                    (0.18f, 0.35f, 0.55f),
+                    centredHeaders: ["Students", "Instructors", "Courses"]);
+            }
+
+            return doc.GetBytes();
+        }
+
     // ── Merge consecutive lectures for the same course ──────────────────
     private IEnumerable<ScheduleItemExportDto> MergeContinuousLectures(
         IEnumerable<ScheduleItemExportDto> items)
@@ -228,6 +298,14 @@ public class PdfExportService : IPdfExportService
                 WriteRaw($"0 0 0 RG 1 w {Margin} {lineY:F1} m {Margin + dividerWidth} {lineY:F1} l S");
             }
             _layoutY += 10f;
+        }
+
+        // ── Info line (gray, small) ───────────────────────────────────────
+        public void AddInfoLine(string text)
+        {
+            float sz = 9f;
+            WriteRaw($"0.4 0.4 0.4 rg BT /F1 {sz} Tf {Margin} {ToY(_layoutY + sz):F1} Td ({Escape(text)}) Tj ET 0 0 0 rg");
+            _layoutY += sz + 12f;
         }
 
         // ── Student info ──────────────────────────────────────────────────

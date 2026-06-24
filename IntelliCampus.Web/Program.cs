@@ -149,6 +149,8 @@ builder.Services.AddScoped<IElectiveBucketService, ElectiveBucketService>();
 builder.Services.AddScoped<IDataSeed, DataSeed>();
 builder.Services.AddScoped<IInstructorScheduleService, InstructorScheduleService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IAdminAnalysisService, AdminAnalysisService>();
+builder.Services.AddScoped<IInstructorAnalyticsService, InstructorAnalyticsService>();
 builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<IInternalMessageService, InternalMessageService>();
 builder.Services.AddScoped<IInboxHubService, InboxHubService>();
