@@ -9,4 +9,5 @@ public class SubmissionDto
     public bool IsLate { get; set; }
     public string? Note { get; set; }
     public List<SubmissionFileDto> Files { get; set; } = [];
+    public GradeInfoDto? Grade { get; set; }
 }
