@@ -35,26 +35,70 @@ public class CommunityController(
     [HttpGet("questions")]
     public async Task<IActionResult> GetQuestions(int courseId)
     {
-        var posts = await communityService.GetCoursePostsAsync(courseId);
-        return Ok(posts.Select(p => new
+        var posts = (await communityService.GetCoursePostsAsync(courseId)).ToList();
+
+        var allCommenterIds = posts.SelectMany(p => p.Comments).Select(c => c.UserId).Distinct().ToList();
+        var instructorRoles = await communityService.GetCourseInstructorRolesAsync(courseId, allCommenterIds);
+
+        return Ok(posts.Select(p =>
         {
-            p.PostId,
-            p.Content,
-            p.CreatedAt,
-            p.IsPinned,
-            userId = p.UserId,
-            authorName = p.User.FullName,
-            commentCount = p.Comments.Count,
-            upvoteCount = p.Votes.Count,
-            comments = p.Comments.Select(c => new
+            var candidateMap = p.Candidates.ToDictionary(c => c.UserId, c => c.Rank);
+            return new
+            {
+                p.PostId,
+                p.Content,
+                p.CreatedAt,
+                p.IsPinned,
+                userId = p.UserId,
+                authorName = p.User.FullName,
+                commentCount = p.Comments.Count,
+                upvoteCount = p.Votes.Count,
+                comments = p.Comments.Select(c => new
+                {
+                    c.CommentId,
+                    c.Content,
+                    c.CreatedAt,
+                    userId = c.UserId,
+                    authorName = c.User.FullName,
+                    isRecommended = candidateMap.ContainsKey(c.UserId),
+                    recommendationRank = candidateMap.TryGetValue(c.UserId, out var rank) ? rank : (int?)null,
+                    instructorRole = instructorRoles.TryGetValue(c.UserId, out var role) ? role : null,
+                }),
+            };
+        }));
+    }
+
+    [HttpGet("questions/{postId}")]
+    public async Task<IActionResult> GetQuestion(int courseId, int postId)
+    {
+        var post = await communityService.GetQuestionPostAsync(courseId, postId);
+
+        var commenterIds = post.Comments.Select(c => c.UserId).Distinct().ToList();
+        var instructorRoles = await communityService.GetCourseInstructorRolesAsync(courseId, commenterIds);
+        var candidateMap = post.Candidates.ToDictionary(c => c.UserId, c => c.Rank);
+
+        return Ok(new
+        {
+            post.PostId,
+            post.Content,
+            post.CreatedAt,
+            post.IsPinned,
+            userId = post.UserId,
+            authorName = post.User.FullName,
+            commentCount = post.Comments.Count,
+            upvoteCount = post.Votes.Count,
+            comments = post.Comments.Select(c => new
             {
                 c.CommentId,
                 c.Content,
                 c.CreatedAt,
                 userId = c.UserId,
                 authorName = c.User.FullName,
+                isRecommended = candidateMap.ContainsKey(c.UserId),
+                recommendationRank = candidateMap.TryGetValue(c.UserId, out var rank) ? rank : (int?)null,
+                instructorRole = instructorRoles.TryGetValue(c.UserId, out var role) ? role : null,
             }),
-        }));
+        });
     }
 
     [HttpGet("graph")]

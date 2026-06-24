@@ -14,4 +14,5 @@ public class Post
     public User User { get; set; } = null!;
     public ICollection<Comment> Comments { get; set; } = [];
     public ICollection<PostVote> Votes { get; set; } = [];
+    public ICollection<PostCandidate> Candidates { get; set; } = [];
 }

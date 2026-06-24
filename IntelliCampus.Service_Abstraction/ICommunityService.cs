@@ -14,4 +14,6 @@ public interface ICommunityService
     Task<Comment> AddCommentAsync(int postId, int userId, string content);
     Task<bool> ToggleUpvoteAsync(int postId, int userId);
     Task DeleteCommentAsync(int commentId, int userId);
+    Task<Post> GetQuestionPostAsync(int courseId, int postId);
+    Task<Dictionary<int, string>> GetCourseInstructorRolesAsync(int courseId, IEnumerable<int> userIds);
 }

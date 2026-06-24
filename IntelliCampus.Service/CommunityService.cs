@@ -155,8 +155,23 @@ public class CommunityService : ICommunityService
                 "Top candidates for post {PostId} (branch={Branch}): {Candidates}",
                 post.PostId, routingResponse.Branch, string.Join("; ", candidateDetails));
 
+            var postCandidatesRepo = _unitOfWork.GetRepository<PostCandidate, int>();
+            for (int i = 0; i < topCandidates.Count; i++)
+            {
+                if (!int.TryParse(topCandidates[i].StudentId, out var uid)) continue;
+                postCandidatesRepo.Add(new PostCandidate
+                {
+                    PostId = post.PostId,
+                    UserId = uid,
+                    Score = topCandidates[i].Score,
+                    Rank = i + 1,
+                    CreatedAt = EgyptTime.Now,
+                });
+            }
+            await _unitOfWork.SaveChangesAsync();
+
             var message = "You are qualified to answer this question";
-            await _notificationService.SendToManyAsync(userIds, NotificationType.QuestionRouting, message, clickUrl: $"/community/questions/{post.PostId}");
+            await _notificationService.SendToManyAsync(userIds, NotificationType.QuestionRouting, message, clickUrl: $"/courses/{courseId}/community/questions/{post.PostId}");
 
             _logger.LogInformation(
                 "Notified {Count} candidates for post {PostId} (branch={Branch})",
@@ -257,6 +272,14 @@ public class CommunityService : ICommunityService
         return await _routingClient.ExportGraphAsync(courseCode, graphType);
     }
 
+    public async Task<Post> GetQuestionPostAsync(int courseId, int postId)
+    {
+        var spec = new PostWithDetailsSpec(postId);
+        var post = await Posts.GetByIdAsync(spec);
+        if (post is null) throw new PostNotFoundException($"Post {postId} not found.");
+        return post;
+    }
+
     public async Task<Post> UpdatePostAsync(int postId, int userId, string newContent)
     {
         var spec = new PostWithDetailsSpec(postId);
@@ -345,6 +368,36 @@ public class CommunityService : ICommunityService
 
         comments.Delete(comment);
         await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<Dictionary<int, string>> GetCourseInstructorRolesAsync(int courseId, IEnumerable<int> userIds)
+    {
+        var userIdsList = userIds.ToList();
+        if (userIdsList.Count == 0) return new Dictionary<int, string>();
+
+        var classes = _unitOfWork.GetRepository<Class, int>();
+        var spec = new CourseInstructorsSpec(courseId, userIdsList);
+        var courseClasses = await classes.GetAllAsync(spec);
+
+        var result = new Dictionary<int, string>();
+        foreach (var c in courseClasses)
+        {
+            if (c.InstructorId is null || c.Instructor is null) continue;
+            if (result.ContainsKey(c.InstructorId.Value)) continue;
+
+            var label = c.Instructor.InstructorRole switch
+            {
+                InstructorRole.TeachingAssistant => "TA",
+                InstructorRole.Lecturer => "Lecturer",
+                InstructorRole.AssistantLecturer => "Asst. Lecturer",
+                InstructorRole.AssociateProfessor => "Assoc. Professor",
+                InstructorRole.Professor => "Professor",
+                _ => null
+            };
+            if (label is not null)
+                result[c.InstructorId.Value] = label;
+        }
+        return result;
     }
 
     private async Task<bool> IsUserCourseInstructor(int userId, int courseId)

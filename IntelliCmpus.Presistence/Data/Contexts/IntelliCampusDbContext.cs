@@ -55,6 +55,7 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<Post> Posts { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<PostVote> PostVotes { get; set; }
+    public DbSet<PostCandidate> PostCandidates { get; set; }
 
     // Notifications
     public DbSet<Notification> Notifications { get; set; }
