@@ -100,6 +100,14 @@ public class AttendanceController(
 
     // ─── Instructor read ───────────────────────────────────────────────────────
 
+    [HttpGet("sessions/{sessionId}/students")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> GetSessionAttendance(int sessionId)
+    {
+        var result = await attendanceService.GetSessionAttendanceAsync(sessionId, UserId);
+        return Ok(result);
+    }
+
     [HttpGet("report/class/{classId}")]
     [Authorize(Roles = "Instructor")]
     public async Task<ActionResult<PaginatedResult<AttendanceReportDto>>> GetReport(int classId, [FromQuery] SessionQueryParams queryParams)

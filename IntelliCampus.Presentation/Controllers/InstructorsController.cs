@@ -40,7 +40,7 @@ public class InstructorsController : ControllerBase
     {
         var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var instructor = await _instructorService.CreateAsync(dto, creatorUserId is not null ? int.Parse(creatorUserId) : null);
-        return CreatedAtAction(nameof(GetById), new { id = instructor.UserId }, instructor);
+        return CreatedAtAction(nameof(GetById), new { id = instructor.InstructorId }, instructor);
     }
 
     [HttpPut("{id}")]

@@ -60,6 +60,14 @@ public class GradesController(IGradeService gradeService) : ControllerBase
 
     // Instructor endpoints
 
+    [HttpGet("course/{courseId}/overview")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> GetCourseGradesOverview(int courseId)
+    {
+        var result = await gradeService.GetCourseGradesOverviewAsync(courseId, UserId);
+        return Ok(result);
+    }
+
     [HttpGet("student/{studentId}/course/{courseId}")]
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> GetStudentGrades(int studentId, int courseId)
