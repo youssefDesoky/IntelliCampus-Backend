@@ -252,7 +252,11 @@ public class QuizService : IQuizService
             var existingQuestions = await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quizId));
             var existingPoints = existingQuestions.Sum(q => q.Points);
             if (dto.MaxGrade.Value != existingPoints)
-                throw new InvalidOperationException($"Max grade must equal the total question points ({existingPoints}). Got: {dto.MaxGrade.Value}.");
+            {
+                var diff = existingPoints - dto.MaxGrade.Value;
+                var direction = diff > 0 ? "more" : "less";
+                throw new InvalidOperationException($"Quiz max grade is {dto.MaxGrade.Value} but questions total {existingPoints} ({Math.Abs(diff)} points {direction}).");
+            }
             quiz.MaxGrade = dto.MaxGrade.Value;
             quiz.TotalMarks = (int)dto.MaxGrade.Value;
         }
@@ -285,13 +289,14 @@ public class QuizService : IQuizService
         if (!teachesCourse)
             throw new InvalidOperationException("Not authorized.");
 
-        var existingQuestions = await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quizId));
-        var existingPoints = existingQuestions.Sum(q => q.Points);
         var newPoints = questions.Sum(q => q.Points);
-        var totalAfterAdd = existingPoints + newPoints;
 
-        if (totalAfterAdd != quiz.MaxGrade)
-            throw new InvalidOperationException($"Question points must equal the quiz max grade of {quiz.MaxGrade}. Current total: {existingPoints}, new total would be: {totalAfterAdd}.");
+        if (newPoints != quiz.MaxGrade)
+        {
+            var diff = newPoints - quiz.MaxGrade;
+            var direction = diff > 0 ? "more" : "less";
+            throw new InvalidOperationException($"Quiz max grade is {quiz.MaxGrade} but questions total {newPoints} ({Math.Abs(diff)} points {direction}).");
+        }
 
         foreach (var q in questions)
         {
