@@ -56,6 +56,7 @@ public class QuizService : IQuizService
         {
             Id = quiz.QuizId.ToString(),
             Title = quiz.Title,
+            Description = quiz.Description,
             Score = submission?.Score,
             MaxScore = quiz.MaxGrade,
             DurationMinutes = quiz.DurationMinutes,
@@ -87,11 +88,12 @@ public class QuizService : IQuizService
         var hasSubmission = submission is not null;
         var now = EgyptTime.Now;
 
-        return new QuizHistoryItemDto
-        {
-            Id = quiz.QuizId.ToString(),
-            Title = quiz.Title,
-            Score = submission?.Score,
+    return new QuizHistoryItemDto
+    {
+        Id = quiz.QuizId.ToString(),
+        Title = quiz.Title,
+        Description = quiz.Description,
+        Score = submission?.Score,
             MaxScore = quiz.MaxGrade,
             DurationMinutes = quiz.DurationMinutes,
             StartDate = quiz.StartDate,
@@ -175,7 +177,7 @@ public class QuizService : IQuizService
             Title = dto.Title,
             Description = dto.Description,
             StartDate = dto.StartDate,
-            DueDate = dto.DueDate,
+            DueDate = dto.StartDate.AddMinutes(dto.DurationMinutes),
             DurationMinutes = dto.DurationMinutes,
             MaxGrade = dto.MaxGrade,
             TotalMarks = (int)dto.MaxGrade,
@@ -240,14 +242,17 @@ public class QuizService : IQuizService
         if (dto.Title is not null) quiz.Title = dto.Title;
         if (dto.Description is not null) quiz.Description = dto.Description;
         if (dto.StartDate.HasValue) quiz.StartDate = dto.StartDate.Value;
-        if (dto.DueDate.HasValue) quiz.DueDate = dto.DueDate.Value;
         if (dto.DurationMinutes.HasValue) quiz.DurationMinutes = dto.DurationMinutes.Value;
+
+        quiz.DueDate = dto.StartDate.HasValue || dto.DurationMinutes.HasValue
+            ? quiz.StartDate.AddMinutes(quiz.DurationMinutes)
+            : quiz.DueDate;
         if (dto.MaxGrade.HasValue)
         {
             var existingQuestions = await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quizId));
             var existingPoints = existingQuestions.Sum(q => q.Points);
-            if (dto.MaxGrade.Value < existingPoints)
-                throw new InvalidOperationException($"Cannot reduce max grade to {dto.MaxGrade.Value}. Existing questions total {existingPoints} points.");
+            if (dto.MaxGrade.Value != existingPoints)
+                throw new InvalidOperationException($"Max grade must equal the total question points ({existingPoints}). Got: {dto.MaxGrade.Value}.");
             quiz.MaxGrade = dto.MaxGrade.Value;
             quiz.TotalMarks = (int)dto.MaxGrade.Value;
         }
@@ -283,9 +288,10 @@ public class QuizService : IQuizService
         var existingQuestions = await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quizId));
         var existingPoints = existingQuestions.Sum(q => q.Points);
         var newPoints = questions.Sum(q => q.Points);
+        var totalAfterAdd = existingPoints + newPoints;
 
-        if (existingPoints + newPoints > quiz.MaxGrade)
-            throw new InvalidOperationException($"Adding these questions would exceed the quiz max grade of {quiz.MaxGrade}. Current total: {existingPoints}, adding: {newPoints}.");
+        if (totalAfterAdd != quiz.MaxGrade)
+            throw new InvalidOperationException($"Question points must equal the quiz max grade of {quiz.MaxGrade}. Current total: {existingPoints}, new total would be: {totalAfterAdd}.");
 
         foreach (var q in questions)
         {
@@ -758,6 +764,7 @@ public class QuizService : IQuizService
                 {
                     Id = quiz.QuizId.ToString(),
                     Title = quiz.Title,
+                    Description = quiz.Description,
                     Score = submission.Score,
                     MaxScore = quiz.MaxGrade,
                     DurationMinutes = quiz.DurationMinutes,
@@ -772,6 +779,7 @@ public class QuizService : IQuizService
                 {
                     Id = quiz.QuizId.ToString(),
                     Title = quiz.Title,
+                    Description = quiz.Description,
                     MaxScore = quiz.MaxGrade,
                     DurationMinutes = quiz.DurationMinutes,
                     StartDate = quiz.StartDate,
@@ -785,6 +793,7 @@ public class QuizService : IQuizService
                 {
                     Id = quiz.QuizId.ToString(),
                     Title = quiz.Title,
+                    Description = quiz.Description,
                     MaxScore = quiz.MaxGrade,
                     DurationMinutes = quiz.DurationMinutes,
                     StartDate = quiz.StartDate,
@@ -798,6 +807,7 @@ public class QuizService : IQuizService
                 {
                     Id = quiz.QuizId.ToString(),
                     Title = quiz.Title,
+                    Description = quiz.Description,
                     MaxScore = quiz.MaxGrade,
                     DurationMinutes = quiz.DurationMinutes,
                     StartDate = quiz.StartDate,
