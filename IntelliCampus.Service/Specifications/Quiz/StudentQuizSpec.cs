@@ -20,9 +20,9 @@ public class StudentQuizSpec : BaseSpecifications<StudentQuiz>
         AddInclude(sq => sq.Quiz!);
     }
 
-    // GetByStudentIdAsync
+    // GetByStudentIdAsync — only submitted records
     public StudentQuizSpec(int studentId, bool byStudent, bool dummy)
-        : base(sq => sq.StudentId == studentId)
+        : base(sq => sq.StudentId == studentId && sq.SubmittedAt != default)
     {
         AddInclude(sq => sq.Quiz!);
         AddOrderByDescending(sq => sq.SubmittedAt);
