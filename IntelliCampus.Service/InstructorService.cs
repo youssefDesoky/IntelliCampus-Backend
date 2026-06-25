@@ -331,7 +331,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         {
             return new LoanInstructorDto
             {
-                UserId = instructor.UserId,
+                InstructorId = instructor.UserId,
                 NationalId = instructor.NationalId,
                 FullName = instructor.FullName,
                 FullNameAr = instructor.FullNameAr,
@@ -364,7 +364,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
 
         return new InstructorDto
         {
-            UserId = instructor.UserId,
+            InstructorId = instructor.UserId,
             NationalId = instructor.NationalId,
             FullName = instructor.FullName,
             FullNameAr = instructor.FullNameAr,

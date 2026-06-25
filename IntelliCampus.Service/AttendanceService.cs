@@ -40,6 +40,9 @@ public class AttendanceService : IAttendanceService
     private IGenericRepository<Student, int> Students
         => _unitOfWork.GetRepository<Student, int>();
 
+    private IGenericRepository<StudentCourse, (int, int)> StudentCourses
+        => _unitOfWork.GetRepository<StudentCourse, (int, int)>();
+
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
 
@@ -293,8 +296,7 @@ public class AttendanceService : IAttendanceService
             TotalStudents = s.Attendances?.Count ?? 0,
             PresentCount = s.Attendances?
                 .Count(a => a.StudentId == studentId
-                         && (a.Status == AttendanceStatus.Present
-                          || a.Status == AttendanceStatus.Late)) ?? 0
+                         && (a.Status == AttendanceStatus.Present)) ?? 0
         });
     }
 
@@ -330,8 +332,7 @@ public class AttendanceService : IAttendanceService
             TotalStudents = s.Attendances?.Count ?? 0,
             PresentCount = s.Attendances?
                 .Count(a => a.StudentId == studentId
-                         && (a.Status == AttendanceStatus.Present
-                          || a.Status == AttendanceStatus.Late)) ?? 0
+                         && (a.Status == AttendanceStatus.Present)) ?? 0
         });
         var countSpec = new SessionCountSpec(classIds);
         var totalCount = await Sessions.CountAsync(countSpec);
@@ -367,10 +368,9 @@ public class AttendanceService : IAttendanceService
                 .ToList();
 
             var present = sa.Count(a => a.Status == AttendanceStatus.Present);
-            var late = sa.Count(a => a.Status == AttendanceStatus.Late);
             var absent = sa.Count(a => a.Status == AttendanceStatus.Absent);
             var pct = totalSessions > 0
-                ? Math.Round((decimal)(present + late) / totalSessions * 100, 1)
+                ? Math.Round((decimal)present / totalSessions * 100, 1)
                 : 0;
 
             return new StudentAttendanceSummary
@@ -392,19 +392,13 @@ public class AttendanceService : IAttendanceService
                 / totalEntries * 100, 1)
             : 0;
 
-        var latePct = totalEntries > 0
-            ? Math.Round((decimal)allAttendances
-                .Count(a => a.Status == AttendanceStatus.Late)
-                / totalEntries * 100, 1)
-            : 0;
-
         return new AttendanceReportDto
         {
             ClassId = classId,
             ClassName = classEntity.GroupCode,
             TotalSessions = totalSessions,
             OnTimePercentage = onTimePct,
-            NeedsImprovementPercentage = latePct,
+            NeedsImprovementPercentage = 0,
             BelowThresholdCount = summaries.Count(s => s.BelowThreshold),
             Students = summaries
         };
@@ -452,9 +446,63 @@ public class AttendanceService : IAttendanceService
 
         var present = attendanceRecords.Count(a =>
             a.Status == AttendanceStatus.Present ||
-            a.Status == AttendanceStatus.Late);
+            a.Status == AttendanceStatus.Present);
 
         return Math.Round((decimal)present / totalSessions * 100, 1);
+    }
+
+    public async Task<SessionAttendanceDto> GetSessionAttendanceAsync(int sessionId, int instructorId)
+    {
+        var session = await Sessions.GetByIdAsync(sessionId);
+        if (session is null)
+            throw new SessionNotFoundException("Session not found.");
+
+        var classEntity = await Classes.GetByIdAsync(session.ClassId);
+        if (classEntity?.InstructorId != instructorId)
+            throw new InvalidOperationException("Not authorized.");
+
+        var studentCourses = await StudentCourses.GetAllAsync();
+        var enrolledStudentIds = studentCourses
+            .Where(sc => sc.ClassId == session.ClassId)
+            .Select(sc => sc.StudentId)
+            .ToHashSet();
+
+        var allStudents = await Students.GetAllAsync();
+        var enrolledStudents = allStudents
+            .Where(s => enrolledStudentIds.Contains(s.UserId))
+            .OrderBy(s => s.FullName)
+            .ToList();
+
+        var attendanceRecords = await Attendances.GetAllAsync();
+        var sessionAttendance = attendanceRecords.Where(a => a.SessionId == sessionId).ToList();
+        var attendanceByStudent = sessionAttendance.ToDictionary(a => a.StudentId);
+
+        var students = enrolledStudents.Select(s =>
+        {
+            var record = attendanceByStudent.GetValueOrDefault(s.UserId);
+            return new SessionAttendanceStudentDto
+            {
+                StudentId = s.UserId,
+                StudentCode = s.StudentCode ?? "",
+                FullName = s.FullName,
+                Status = record is not null ? AttendanceStatus.Present : AttendanceStatus.Absent,
+                CheckInTime = record?.Date
+            };
+        }).ToList();
+
+        return new SessionAttendanceDto
+        {
+            SessionId = session.SessionId,
+            Topic = session.Topic,
+            Date = session.Date,
+            StartTime = session.StartTime?.ToString("hh:mm tt"),
+            EndTime = session.EndTime?.ToString("hh:mm tt"),
+            SessionType = session.SessionType.ToString(),
+            ClassName = classEntity.GroupCode,
+            TotalStudents = students.Count,
+            PresentCount = students.Count(s => s.Status == AttendanceStatus.Present),
+            Students = students
+        };
     }
 
     private async Task CheckAndNotifyThresholdAsync(

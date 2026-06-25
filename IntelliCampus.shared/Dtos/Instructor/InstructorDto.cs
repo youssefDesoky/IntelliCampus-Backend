@@ -2,7 +2,7 @@ namespace IntelliCampus.Shared.Dtos.Instructor;
 
 public class InstructorDto
 {
-    public int UserId { get; set; }
+    public int InstructorId { get; set; }
     public string NationalId { get; set; } = null!;
     public string FullName { get; set; } = null!;
     public string? FullNameAr { get; set; }

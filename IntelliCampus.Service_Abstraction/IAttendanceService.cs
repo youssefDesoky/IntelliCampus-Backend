@@ -6,6 +6,7 @@ namespace IntelliCampus.Service_Abstraction;
 
 public interface IAttendanceService
 {
+    Task<SessionAttendanceDto> GetSessionAttendanceAsync(int sessionId, int instructorId);
     Task<QrTokenDto> GenerateQrAsync(int studentId);
 
     Task<AttendanceResultDto> ScanQrAsync(int instructorId, ScanQrDto dto);

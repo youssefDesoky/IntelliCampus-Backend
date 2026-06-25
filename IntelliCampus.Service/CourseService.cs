@@ -461,7 +461,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             ? allSessions.Count()
             : allAttendances.Count();
 
-        var presentAttendances = allAttendances.Count(a => a.Status == AttendanceStatus.Present || a.Status == AttendanceStatus.Late);
+        var presentAttendances = allAttendances.Count(a => a.Status == AttendanceStatus.Present);
         var attendancePercent = totalAttendances > 0 ? Math.Round((decimal)presentAttendances / totalAttendances * 100, 1) : (decimal?)null;
 
         var courseGrades = course.Grades ?? [];

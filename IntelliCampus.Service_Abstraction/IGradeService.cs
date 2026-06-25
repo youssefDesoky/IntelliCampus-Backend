@@ -6,6 +6,7 @@ namespace IntelliCampus.Service_Abstraction;
 
 public interface IGradeService
 {
+    Task<InstructorCourseGradesDto> GetCourseGradesOverviewAsync(int courseId, int instructorId);
     // Student
     Task<CourseGradeDto?> GetCourseGradeAsync(int studentId, int courseId);
     Task<PaginatedResult<CourseGradeDto>> GetCourseGradeAsync(int studentId, int courseId, GradeQueryParams queryParams);
