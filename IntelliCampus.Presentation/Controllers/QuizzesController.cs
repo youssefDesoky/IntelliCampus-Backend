@@ -107,4 +107,12 @@ public class QuizzesController : ControllerBase
         await _quizService.DeleteInCourseAsync(quizId, UserId, courseId);
         return Ok();
     }
+
+    [HttpPut("/api/courses/{courseId}/quizzes/{quizId}")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> UpdateInCourse(string courseId, int quizId, [FromBody] UpdateQuizDto dto)
+    {
+        var result = await _quizService.UpdateInCourseAsync(quizId, UserId, courseId, dto);
+        return Ok(result);
+    }
 }

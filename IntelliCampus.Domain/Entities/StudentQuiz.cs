@@ -5,6 +5,7 @@ public class StudentQuiz
     public int StudentId { get; set; }
     public int QuizId { get; set; }
     public decimal? Score { get; set; }
+    public DateTime? StartedAt { get; set; }
     public DateTime SubmittedAt { get; set; }
     public bool IsLate { get; set; }
     public string? AnswersJson { get; set; }

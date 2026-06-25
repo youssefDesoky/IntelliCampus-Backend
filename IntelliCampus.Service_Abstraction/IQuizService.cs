@@ -12,6 +12,7 @@ public interface IQuizService
     Task<IEnumerable<QuizDto>> GetByCourseIdAsync(int courseId);
     Task<QuizDto> CreateInCourseAsync(int instructorId, string courseId, CreateQuizDto dto);
     Task<bool> DeleteInCourseAsync(int quizId, int instructorId, string courseId);
+    Task<QuizDto> UpdateInCourseAsync(int quizId, int instructorId, string courseId, UpdateQuizDto dto);
     Task AddQuestionsAsync(int quizId, int instructorId, string courseId, List<CreateQuestionDto> questions);
     Task DeleteQuestionAsync(int questionId, int instructorId, string courseId);
     Task<List<StudentSubmissionDto>> GetSubmissionsAsync(int quizId, int instructorId, string courseId);
