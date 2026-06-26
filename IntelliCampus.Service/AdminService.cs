@@ -45,12 +45,12 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
     {
         var spec = new AdminSpec(queryParams);
         var admins = await Admins.GetAllAsync(spec);
-        var dataToReturn = admins.Select(MapToDto);
+        var dataToReturn = admins.Select(MapToDto).ToList();
 
         var countSpec = new AdminCountSpec(queryParams);
         var totalCount = await Admins.CountAsync(countSpec);
 
-        return new PaginatedResult<AdminDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<AdminDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     public async Task<AdminDto> CreateAsync(CreateAdminDto dto, int? creatorUserId = null)

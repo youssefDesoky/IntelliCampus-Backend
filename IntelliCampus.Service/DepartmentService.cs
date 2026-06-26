@@ -37,12 +37,12 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
     {
         var spec = new DepartmentSpec(queryParams);
         var departments = await Departments.GetAllAsync(spec);
-        var dataToReturn = departments.Select(MapToDto);
+        var dataToReturn = departments.Select(MapToDto).ToList();
 
         var countSpec = new DepartmentCountSpec(queryParams);
         var totalCount = await Departments.CountAsync(countSpec);
 
-        return new PaginatedResult<DepartmentDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<DepartmentDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     private IGenericRepository<User, int> Users

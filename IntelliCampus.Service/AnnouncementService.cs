@@ -35,12 +35,12 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
 
         var spec = new AnnouncementsByCourseSpec(courseId, queryParams);
         var announcements = await Announcements.GetAllAsync(spec);
-        var dataToReturn = announcements.Select(MapToDto);
+        var dataToReturn = announcements.Select(MapToDto).ToList();
 
         var countSpec = new AnnouncementCountSpec(courseId, queryParams);
         var totalCount = await Announcements.CountAsync(countSpec);
 
-        return new PaginatedResult<AnnouncementDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<AnnouncementDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     public async Task<AnnouncementDto> GetByIdAsync(int announcementId)

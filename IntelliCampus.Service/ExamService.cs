@@ -51,12 +51,12 @@ public class ExamService : IExamService
     {
         var spec = new ExamWithCourseSpec(queryParams);
         var exams = await Exams.GetAllAsync(spec);
-        var dataToReturn = exams.Select(MapToDto);
+        var dataToReturn = exams.Select(MapToDto).ToList();
 
         var countSpec = new ExamCountSpec(queryParams);
         var totalCount = await Exams.CountAsync(countSpec);
 
-        return new PaginatedResult<ExamDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<ExamDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     public async Task<IEnumerable<ExamDto>> GetByCourseIdAsync(int courseId)
