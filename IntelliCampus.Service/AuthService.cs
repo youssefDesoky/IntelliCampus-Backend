@@ -65,6 +65,7 @@ public class AuthService(
             Email = user.Email,
             Roles = user.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage),
+            MustChangePassword = user.MustChangePassword,
             Notifications = (await _notificationService.GetUnreadAsync(userId, new NotificationQueryParams())).ToList()
         };
     }
@@ -164,6 +165,24 @@ public class AuthService(
             throw new InvalidOperationException("Current password is incorrect.");
 
         user.Password = _passwordService.HashPassword(dto.NewPassword);
+        _unitOfWork.GetRepository<User, int>().Update(user);
+        await _unitOfWork.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task<bool> ChangeRecoveryEmailAsync(int userId, ChangeRecoveryEmailDto dto)
+    {
+        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
+
+        if (user is null)
+            throw new UserNotFoundException(userId);
+
+        if (!_passwordService.VerifyPassword(dto.CurrentPassword, user.Password))
+            throw new InvalidOperationException("Current password is incorrect.");
+
+        user.RecoveryEmail = dto.NewEmail;
+        user.RecoveryEmailVerified = true;
         _unitOfWork.GetRepository<User, int>().Update(user);
         await _unitOfWork.SaveChangesAsync();
 

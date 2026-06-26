@@ -12,9 +12,11 @@ using IntelliCampus.Web.CustomMiddleWares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +56,8 @@ builder.Services.AddDbContext<IntelliCampusDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 // Configure JWT Settings
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
+builder.Services.Configure<TurnstileSettings>(builder.Configuration.GetSection("Turnstile"));
 
 // Configure Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()!;
@@ -91,10 +95,39 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// Rate limiting
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = 429;
+
+    options.AddFixedWindowLimiter("GetCredentials", config =>
+    {
+        config.PermitLimit = 5;
+        config.Window = TimeSpan.FromMinutes(15);
+        config.QueueLimit = 0;
+    });
+
+    options.AddFixedWindowLimiter("ForgotPassword", config =>
+    {
+        config.PermitLimit = 3;
+        config.Window = TimeSpan.FromMinutes(15);
+        config.QueueLimit = 0;
+    });
+
+    options.AddFixedWindowLimiter("SendVerificationCode", config =>
+    {
+        config.PermitLimit = 3;
+        config.Window = TimeSpan.FromMinutes(15);
+        config.QueueLimit = 0;
+    });
+});
+
 // VAPID settings for Native Web Push
 builder.Services.Configure<VapidSettings>(builder.Configuration.GetSection("Vapid"));
 
 builder.Services.AddSingleton<IPushSender, WebPushSender>();
+
+builder.Services.AddHttpClient<ITurnstileVerifier, TurnstileVerifier>();
 
 // Register services
 builder.Services.AddScoped<IPasswordService, PasswordService>();
@@ -107,6 +140,9 @@ builder.Services.AddHttpClient<IRoutingClientService, RoutingClientService>(clie
 });
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
+builder.Services.AddScoped<ICredentialRetrievalService, CredentialRetrievalService>();
+builder.Services.AddScoped<IAccountRecoveryService, AccountRecoveryService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IInstructorService, InstructorService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
@@ -188,7 +224,6 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlerMiddleWare>();
 
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -212,8 +247,12 @@ app.UseStaticFiles(); // Enable serving static files (for material downloads)
 
 app.UseCors();
 
+app.UseRateLimiter();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<MustChangePasswordMiddleware>();
 
 app.MapHub<ChatHub>("/hubs/chat");
 app.MapHub<InboxHub>("/hubs/inbox");

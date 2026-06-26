@@ -4,6 +4,7 @@ using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
 
@@ -14,11 +15,22 @@ namespace IntelliCampus.Web.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly ICredentialRetrievalService _credentialRetrievalService;
+    private readonly IAccountRecoveryService _accountRecoveryService;
+    private readonly ITurnstileVerifier _turnstileVerifier;
     private readonly JwtSettings _jwtSettings;
 
-    public AuthController(IAuthService authService, IOptions<JwtSettings> jwtSettings)
+    public AuthController(
+        IAuthService authService,
+        ICredentialRetrievalService credentialRetrievalService,
+        IAccountRecoveryService accountRecoveryService,
+        ITurnstileVerifier turnstileVerifier,
+        IOptions<JwtSettings> jwtSettings)
     {
         _authService = authService;
+        _credentialRetrievalService = credentialRetrievalService;
+        _accountRecoveryService = accountRecoveryService;
+        _turnstileVerifier = turnstileVerifier;
         _jwtSettings = jwtSettings.Value;
     }
 
@@ -27,7 +39,6 @@ public class AuthController : ControllerBase
     {
         var result = await _authService.LoginAsync(dto);
 
-        // Set token in HttpOnly cookie
         Response.Cookies.Append("token", result.Token, new CookieOptions
         {
             HttpOnly = true,
@@ -121,6 +132,94 @@ public class AuthController : ControllerBase
         await _authService.ChangePasswordAsync(userId.Value, dto);
 
         return Ok(new { message = "Password changed successfully." });
+    }
+
+    [Authorize]
+    [HttpPost("change-recovery-email")]
+    public async Task<IActionResult> ChangeRecoveryEmail(ChangeRecoveryEmailDto dto)
+    {
+        var userId = GetCurrentUserId();
+        if (userId is null)
+            return Unauthorized();
+
+        await _authService.ChangeRecoveryEmailAsync(userId.Value, dto);
+
+        return Ok(new { message = "Recovery email changed successfully." });
+    }
+
+    [AllowAnonymous]
+    [HttpPost("get-credentials")]
+    [EnableRateLimiting("GetCredentials")]
+    public async Task<ActionResult<GetCredentialsResponseDto>> GetCredentials([FromBody] GetCredentialsDto dto)
+    {
+        if (!await _turnstileVerifier.VerifyAsync(dto.TurnstileToken))
+            return BadRequest(new { message = "Verification failed. Please try again." });
+
+        var result = await _credentialRetrievalService.GetCredentialsAsync(
+            dto, HttpContext.Connection.RemoteIpAddress?.ToString(), Request.Headers.UserAgent.ToString());
+
+        return Ok(result);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("forgot-password")]
+    [EnableRateLimiting("ForgotPassword")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+    {
+        if (!await _turnstileVerifier.VerifyAsync(dto.TurnstileToken))
+            return BadRequest(new { message = "Verification failed. Please try again." });
+
+        await _accountRecoveryService.ForgotPasswordAsync(
+            dto, HttpContext.Connection.RemoteIpAddress?.ToString(), Request.Headers.UserAgent.ToString());
+
+        return Ok(new { message = "If the email exists, a reset link has been sent to your recovery email." });
+    }
+
+    [AllowAnonymous]
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+    {
+        await _accountRecoveryService.ResetPasswordAsync(dto);
+        return Ok(new { message = "Password has been reset successfully. You can now login." });
+    }
+
+    [Authorize]
+    [HttpPost("first-time-setup/send-code")]
+    public async Task<IActionResult> SendVerificationCode([FromBody] SendVerificationCodeDto dto)
+    {
+        var userId = GetCurrentUserId();
+        if (userId is null)
+            return Unauthorized();
+
+        await _accountRecoveryService.SendVerificationCodeAsync(userId.Value, dto.RecoveryEmail);
+        return Ok(new { message = "Verification code sent to your email." });
+    }
+
+    [Authorize]
+    [HttpPost("first-time-setup")]
+    public async Task<ActionResult<LoginResponseDto>> FirstTimeSetup([FromBody] FirstTimeSetupDto dto)
+    {
+        var userId = GetCurrentUserId();
+        if (userId is null)
+            return Unauthorized();
+
+        var result = await _accountRecoveryService.FirstTimeSetupAsync(userId.Value, dto);
+
+        Response.Cookies.Append("token", result.Token, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = false,
+            SameSite = SameSiteMode.Lax,
+            Expires = result.ExpiresAt
+        });
+
+        return Ok(new LoginResponseDto
+        {
+            UserId = result.UserId,
+            Email = result.Email,
+            FullName = result.FullName,
+            Roles = result.Roles
+        });
     }
 
     private int? GetCurrentUserId()

@@ -102,6 +102,11 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<UserRoleJunction> UserRoleJunctions { get; set; }
 
+    // Security / Auth
+    public DbSet<SecurityAuditLog> SecurityAuditLogs { get; set; }
+    public DbSet<EmailVerificationCode> EmailVerificationCodes { get; set; }
+    public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+
     // Elective Buckets
     public DbSet<ElectiveBucket> ElectiveBuckets { get; set; }
     public DbSet<ElectiveBucketCourse> ElectiveBucketCourses { get; set; }
