@@ -11,4 +11,5 @@ public interface IAuthService
     Task<UserProfileDto?> UpdateProfileAsync(int userId, UpdateProfileDto dto);
     Task<UserProfileDto?> UpdateProfileImageAsync(int userId, IFormFile file);
     Task<bool> ChangePasswordAsync(int userId, ChangePasswordDto dto);
+    Task<bool> ChangeRecoveryEmailAsync(int userId, ChangeRecoveryEmailDto dto);
 }

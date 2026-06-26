@@ -57,7 +57,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
     public async Task<PaginatedResult<CourseDto>> GetAllAsync(CourseQueryParams queryParams)
     {
-        var spec = BuildCourseSpec(queryParams);
+        var spec = new CourseSpec(queryParams, CourseIncludeLevel.Light);
         var courses = await Courses.GetAllAsync(spec);
         var dataToReturn = courses.Select(c => MapToDto(c));
         var countSpec = new CourseCountSpec(queryParams);
@@ -69,7 +69,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     public async Task<PaginatedResult<CourseDto>> GetActiveCoursesAsync(CourseQueryParams queryParams)
     {
         queryParams.IsActiveOnly = true;
-        var spec = BuildCourseSpec(queryParams);
+        var spec = new CourseSpec(queryParams, CourseIncludeLevel.Light);
         var courses = await Courses.GetAllAsync(spec);
         var dataToReturn = courses.Select(c => MapToDto(c));
 
@@ -87,7 +87,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             throw new StudentNotFoundException(studentId);
 
         var gradeScales = student.Bylaw?.GradeScales;
-        var courses = await Courses.GetAllAsync(new CourseSpec(queryParams));
+        var courses = await Courses.GetAllAsync(new CourseSpec(queryParams, CourseIncludeLevel.Student));
         var dataToReturn = courses.Select(c => MapToDto(c, studentId, gradeScales));
 
         var countSpec = new CourseCountSpec(queryParams);
@@ -113,11 +113,6 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         var totalCount = await Courses.CountAsync(countSpec);
 
         return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
-    }
-
-    private static CourseSpec BuildCourseSpec(CourseQueryParams queryParams)
-    {
-        return new CourseSpec(queryParams);
     }
 
     public async Task<CourseDto> CreateAsync(CreateCourseDto dto)
@@ -234,7 +229,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
     public async Task<PaginatedResult<CoursePrerequisiteDto>> GetAllWithPrerequisitesAsync(CourseQueryParams queryParams)
     {
-        var spec = BuildCourseSpec(queryParams);
+        var spec = new CourseSpec(queryParams, CourseIncludeLevel.Light);
         var courses = await Courses.GetAllAsync(spec);
         var dataToReturn = courses.Select(c => new CoursePrerequisiteDto
         {
@@ -574,6 +569,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             Weeks = TotalSemesterWeeks,
             Attendance = attendancePercent,
             Grade = gradeLetter,
+            TotalGrade = avgGrade,
             CourseWork = courseWork,
             ClassId = classId,
             ClassName = className,

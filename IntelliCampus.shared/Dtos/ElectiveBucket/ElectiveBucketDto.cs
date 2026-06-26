@@ -10,7 +10,6 @@ public class ElectiveBucketDto
     public int? DepartmentId { get; set; }
     public string? DepartmentName { get; set; }
     public decimal RequiredCreditHours { get; set; }
-    public int? RequiredCourseCount { get; set; }
     public bool IsActive { get; set; }
     public List<ElectiveBucketCourseDto> Courses { get; set; } = new();
 }
@@ -21,4 +20,5 @@ public class ElectiveBucketCourseDto
     public string? CourseCode { get; set; }
     public string CourseName { get; set; } = null!;
     public int CreditHours { get; set; }
+    public int? BylawCourseId { get; set; }
 }

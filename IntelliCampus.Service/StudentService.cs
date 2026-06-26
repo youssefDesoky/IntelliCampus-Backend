@@ -19,13 +19,15 @@ public class StudentService : IStudentService
     private readonly IPasswordService _passwordService;
     private readonly ICodeGenerationService _codeGeneration;
     private readonly UrlResolver _urlResolver;
+    private readonly IBylawService _bylawService;
 
-    public StudentService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration, UrlResolver urlResolver)
+    public StudentService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration, UrlResolver urlResolver, IBylawService bylawService)
     {
         _unitOfWork = unitOfWork;
         _passwordService = passwordService;
         _codeGeneration = codeGeneration;
         _urlResolver = urlResolver;
+        _bylawService = bylawService;
     }
 
     private IGenericRepository<Student, int> Students
@@ -57,14 +59,18 @@ public class StudentService : IStudentService
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
-        return MapToDto(student);
+        var effectiveCredits = student.BylawId is not null
+            ? await _bylawService.GetEffectiveCreditHoursAsync(student.BylawId.Value, student.DepartmentId)
+            : new Dictionary<int, int>();
+
+        return MapToDto(student, effectiveCredits);
     }
 
     public async Task<PaginatedResult<StudentDto>> GetAllAsync(StudentQueryParams queryParams)
     {
         var spec = new StudentSpec(queryParams);
         var students = await Students.GetAllAsync(spec);
-        var dataToReturn = students.Select(MapToDto);
+        var dataToReturn = students.Select(s => MapToDto(s));
 
         var countSpec = new StudentCountSpec(queryParams);
         var totalCount = await Students.CountAsync(countSpec);
@@ -110,7 +116,7 @@ public class StudentService : IStudentService
         var email = dto.Email;
 
         if (string.IsNullOrWhiteSpace(code) && facultyId.HasValue)
-            code = await _codeGeneration.GenerateStudentCodeAsync(facultyId.Value, enrollmentDate);
+            code = await _codeGeneration.GenerateStudentCodeAsync(facultyId.Value, enrollmentDate, studentType);
 
         if (string.IsNullOrWhiteSpace(email))
             email = !string.IsNullOrWhiteSpace(code) ? code + "@intellicampus.online" : dto.Email;
@@ -131,6 +137,7 @@ public class StudentService : IStudentService
             Address = dto.Address,
             Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
+            MustChangePassword = true,
             StudentCode = code,
             FacultyId = facultyId,
             StudentType = studentType,
@@ -138,7 +145,7 @@ public class StudentService : IStudentService
             DepartmentId = departmentId,
             BylawId = bylawId,
             EnrollmentDate = enrollmentDate,
-            Program = studentType is StudentType.Bachelor ? dto.Program : StudentProgram.General,
+            Program = dto.Program,
             SpecializationId = dto.SpecializationId,
             ProfileImage = dto.ProfileImage
         };
@@ -201,10 +208,10 @@ public class StudentService : IStudentService
             student.BylawId = dto.BylawId;
         }
 
-        if (dto.Program.HasValue && student.StudentType is StudentType.Bachelor)
+        if (dto.Program.HasValue)
             student.Program = dto.Program;
         if (dto.SpecializationId.HasValue) student.SpecializationId = dto.SpecializationId.Value;
-        if (dto.ProfileImage is not null) student.ProfileImage = dto.ProfileImage;
+        if (dto.ProfileImage is not null) student.ProfileImage = dto.ProfileImage == "" ? null : dto.ProfileImage;
 
         var enrollmentDate = ParseEnrollmentDate(dto.EnrollmentDate);
         if (enrollmentDate.HasValue) student.EnrollmentDate = enrollmentDate.Value;
@@ -359,7 +366,7 @@ public class StudentService : IStudentService
         throw new InvalidOperationException("Invalid enrollment date format.");
     }
 
-    private StudentDto MapToDto(Student student)
+    private StudentDto MapToDto(Student student, Dictionary<int, int>? effectiveCredits = null)
     {
         return new StudentDto
         {
@@ -393,7 +400,7 @@ public class StudentService : IStudentService
                 Id = sc.CourseId,
                 Title = sc.Course.CourseName,
                 CourseName = sc.Course.CourseName,
-                CreditHours = sc.Course.CreditHours,
+                CreditHours = effectiveCredits?.GetValueOrDefault(sc.CourseId, sc.Course.CreditHours) ?? sc.Course.CreditHours,
                 Notes = sc.Course.Notes
                     .Where(n => n.StudentId == student.UserId)
                     .Select(n => new StudentCourseNoteDto

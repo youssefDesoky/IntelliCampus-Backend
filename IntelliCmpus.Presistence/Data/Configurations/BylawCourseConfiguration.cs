@@ -17,6 +17,11 @@ public class BylawCourseConfiguration : IEntityTypeConfiguration<BylawCourse>
             .HasConversion<string>()
             .HasMaxLength(50);
 
+        builder.Property(bc => bc.CreditHours);
+
+        builder.Property(bc => bc.AllowedDepartmentIds)
+            .HasColumnType("nvarchar(max)");
+
         builder.HasOne(bc => bc.Bylaw)
             .WithMany(b => b.BylawCourses)
             .HasForeignKey(bc => bc.BylawId)

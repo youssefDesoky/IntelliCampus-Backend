@@ -86,5 +86,34 @@
     "minCreditHoursForGraduationProject": 30,
     "courseWorkGrade": 25,
     "finalExamGrade": 75
+  },
+  {
+    "name": "FCIAI Grading Policy - Diploma",
+    "nameAr": "سياسة تقييم كلية الحاسبات والذكاء الاصطناعي - دبلوم",
+    "type": "Diploma",
+    "description": "Grading policy for Diploma programs",
+    "isActive": true,
+    "gradeScales": [
+      { "gradeLetter": "A+", "minPercentage": 95, "gpaValue": 4, "sortOrder": 1 },
+      { "gradeLetter": "A", "minPercentage": 90, "gpaValue": 3.7, "sortOrder": 2 },
+      { "gradeLetter": "B+", "minPercentage": 85, "gpaValue": 3.3, "sortOrder": 3 },
+      { "gradeLetter": "B", "minPercentage": 80, "gpaValue": 3, "sortOrder": 4 },
+      { "gradeLetter": "C+", "minPercentage": 75, "gpaValue": 2.7, "sortOrder": 5 },
+      { "gradeLetter": "C", "minPercentage": 70, "gpaValue": 2.4, "sortOrder": 6 },
+      { "gradeLetter": "D+", "minPercentage": 65, "gpaValue": 2.1, "sortOrder": 7 },
+      { "gradeLetter": "D", "minPercentage": 60, "gpaValue": 1.8, "sortOrder": 8 },
+      { "gradeLetter": "F", "minPercentage": 0, "gpaValue": 0, "sortOrder": 9 }
+    ],
+    "totalHoursToCompleteDegree": 30,
+    "minCreditHoursPerSemester": 6,
+    "maxCreditHoursPerSemester": 15,
+    "summerMaxCreditHours": 9,
+    "minPassingGpa": 2.0,
+    "minPassingGradeLetter": "D",
+    "minPassingGradeSortOrder": 8,
+    "probationThreshold": 2.0,
+    "probationRegistrationLimit": 12,
+    "courseWorkGrade": 30,
+    "finalExamGrade": 70
   }
 ]

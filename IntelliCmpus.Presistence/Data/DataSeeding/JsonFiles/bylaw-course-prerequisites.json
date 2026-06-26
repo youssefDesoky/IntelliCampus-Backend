@@ -1,12 +1,12 @@
 [
-  { "courseCode": "CS213", "prerequisiteCourseCode": "CS112" },
-  { "courseCode": "CS214", "prerequisiteCourseCode": "CS112" },
-  { "courseCode": "CS321", "prerequisiteCourseCode": "CS214" },
-  { "courseCode": "CS341", "prerequisiteCourseCode": "CS214" },
-  { "courseCode": "CS361", "prerequisiteCourseCode": "CS214" },
-  { "courseCode": "CS352", "prerequisiteCourseCode": "CS251" },
-  { "courseCode": "IS211", "prerequisiteCourseCode": "CS112" },
-  { "courseCode": "IS231", "prerequisiteCourseCode": "CS112" },
-  { "courseCode": "IS312", "prerequisiteCourseCode": "IS211" },
-  { "courseCode": "IS321", "prerequisiteCourseCode": "CS214" }
+  { "courseCode": "CS213", "prerequisiteCourseCode": "CS112", "bylawType": "Bachelor" },
+  { "courseCode": "CS214", "prerequisiteCourseCode": "CS112", "bylawType": "Bachelor" },
+  { "courseCode": "CS321", "prerequisiteCourseCode": "CS214", "bylawType": "Bachelor" },
+  { "courseCode": "CS341", "prerequisiteCourseCode": "CS214", "bylawType": "Bachelor" },
+  { "courseCode": "CS361", "prerequisiteCourseCode": "CS214", "bylawType": "Bachelor" },
+  { "courseCode": "CS352", "prerequisiteCourseCode": "CS251", "bylawType": "Bachelor" },
+  { "courseCode": "IS211", "prerequisiteCourseCode": "CS112", "bylawType": "Bachelor" },
+  { "courseCode": "IS231", "prerequisiteCourseCode": "CS112", "bylawType": "Bachelor" },
+  { "courseCode": "IS312", "prerequisiteCourseCode": "IS211", "bylawType": "Bachelor" },
+  { "courseCode": "IS321", "prerequisiteCourseCode": "CS214", "bylawType": "Bachelor" }
 ]

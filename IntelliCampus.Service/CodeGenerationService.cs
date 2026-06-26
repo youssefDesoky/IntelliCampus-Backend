@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
 
@@ -13,11 +14,12 @@ public class CodeGenerationService : ICodeGenerationService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<string> GenerateStudentCodeAsync(int facultyId, DateTime date)
+    public async Task<string> GenerateStudentCodeAsync(int facultyId, DateTime date, StudentType studentType)
     {
         var facultyCode = await GetFacultyCodeAsync(facultyId);
         var year = date.Year.ToString();
-        var prefix = year + facultyCode;
+        var degreeDigit = ((int)studentType).ToString();
+        var prefix = year + facultyCode + degreeDigit;
 
         var existing = await _unitOfWork.GetRepository<Student, int>()
             .CountAsync(s => s.StudentCode != null && s.StudentCode.StartsWith(prefix));

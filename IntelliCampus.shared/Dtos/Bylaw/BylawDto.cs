@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.Shared.Dtos.ElectiveBucket;
 
 namespace IntelliCampus.Shared.Dtos.Bylaw;
 
@@ -32,10 +33,14 @@ public class BylawDto
     public int? MinCreditHoursForGraduationProject { get; set; }
     public decimal? CourseWorkGrade { get; set; }
     public decimal? FinalExamGrade { get; set; }
+    public decimal? MinPassingCourseworkGrade { get; set; }
+    public decimal? MinPassingFinalExamGrade { get; set; }
+    public string? MaxGradeOnRetake { get; set; }
     public int? ThesisCreditHours { get; set; }
     public bool? HasComprehensiveExam { get; set; }
     public string Type { get; set; } = null!;
     public List<BylawCourseDto>? BylawCourses { get; set; }
+    public List<ElectiveBucketDto>? ElectiveBuckets { get; set; }
 }
 
 public class GradeScaleItemDto
@@ -60,6 +65,8 @@ public class BylawCourseDto
     public string? CourseCode { get; set; }
     public string? CourseName { get; set; }
     public string CourseType { get; set; } = null!;
+    public int? CreditHours { get; set; }
+    public List<int>? AllowedDepartments { get; set; }
     public List<BylawCoursePrerequisiteDto>? Prerequisites { get; set; }
 }
 

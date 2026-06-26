@@ -11,11 +11,11 @@ namespace IntelliCampus.Web.Controllers;
 [Authorize(Roles = "Instructor")]
 public class InstructorAnalyticsController : ControllerBase
 {
-    private readonly IInstructorAnalyticsService _instructorAnalyticsService;
+    private readonly IInstructorAnalyticsService _analyticsService;
 
-    public InstructorAnalyticsController(IInstructorAnalyticsService instructorAnalyticsService)
+    public InstructorAnalyticsController(IInstructorAnalyticsService analyticsService)
     {
-        _instructorAnalyticsService = instructorAnalyticsService;
+        _analyticsService = analyticsService;
     }
 
     [HttpGet("instructor/course/{courseId}")]
@@ -25,8 +25,8 @@ public class InstructorAnalyticsController : ControllerBase
         if (userId is null)
             return Unauthorized();
 
-        var course = await _instructorAnalyticsService.GetCourseAnalyticsAsync(courseId, userId.Value);
-        return Ok(course);
+        var result = await _analyticsService.GetCourseAnalyticsAsync(courseId, userId.Value);
+        return Ok(result);
     }
 
     [HttpGet("instructor/course/{courseId}/export")]
@@ -36,7 +36,7 @@ public class InstructorAnalyticsController : ControllerBase
         if (userId is null)
             return Unauthorized();
 
-        var pdf = await _instructorAnalyticsService.ExportCourseAnalyticsPdfAsync(courseId, userId.Value);
+        var pdf = await _analyticsService.ExportCourseAnalyticsPdfAsync(courseId, userId.Value);
         return File(pdf, "application/pdf", $"CourseAnalytics_{courseId}.pdf");
     }
 

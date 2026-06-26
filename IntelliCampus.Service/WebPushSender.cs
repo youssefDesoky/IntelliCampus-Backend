@@ -42,10 +42,7 @@ public class WebPushSender : IPushSender
             var pushSubscription = new PushSubscription(sub.Endpoint, sub.P256dh, sub.Auth);
             try
             {
-                await pushClient.SendNotificationAsync(pushSubscription, payload, new Dictionary<string, object?>
-                {
-                    ["vapidDetails"] = vapidDetails
-                });
+                await SendOneAsync(pushClient, pushSubscription, payload, vapidDetails);
                 successCount++;
             }
             catch (Exception ex)
@@ -67,5 +64,13 @@ public class WebPushSender : IPushSender
             FailureCount = failureCount,
             InvalidTokens = invalidTokens
         };
+    }
+
+    protected virtual Task SendOneAsync(WebPushClient client, PushSubscription subscription, string payload, VapidDetails vapidDetails)
+    {
+        return client.SendNotificationAsync(subscription, payload, new Dictionary<string, object?>
+        {
+            ["vapidDetails"] = vapidDetails
+        });
     }
 }
