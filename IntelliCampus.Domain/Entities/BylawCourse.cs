@@ -8,6 +8,8 @@ public class BylawCourse
     public int BylawId { get; set; }
     public int CourseId { get; set; }
     public CourseType CourseType { get; set; }
+    public int? CreditHours { get; set; }
+    public string? AllowedDepartmentIds { get; set; }
     public Bylaw Bylaw { get; set; } = null!;
     public Course Course { get; set; } = null!;
     public ICollection<BylawCoursePrerequisite> Prerequisites { get; set; } = new List<BylawCoursePrerequisite>();

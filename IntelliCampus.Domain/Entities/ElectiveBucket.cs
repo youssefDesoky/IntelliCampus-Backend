@@ -8,7 +8,6 @@ public class ElectiveBucket
     public int BylawId { get; set; }
     public int? DepartmentId { get; set; }
     public decimal RequiredCreditHours { get; set; }
-    public int? RequiredCourseCount { get; set; }
     public bool IsActive { get; set; } = true;
 
     public Bylaw Bylaw { get; set; } = null!;
