@@ -64,7 +64,6 @@ public class AttendanceService : IAttendanceService
         var payload = new QrPayload
         {
             UserId = studentId,
-            StudentCode = student.StudentCode ?? studentId.ToString(),
             Timestamp = new DateTimeOffset(now).ToUnixTimeMilliseconds(),
             Token = rawToken
         };
@@ -128,14 +127,16 @@ public class AttendanceService : IAttendanceService
             a => a.StudentId == payload.UserId
               && a.SessionId == dto.SessionId);
 
+        var student = await Students.GetByIdAsync(payload.UserId);
+        var studentName = student?.FullName ?? "Student";
+        var studentCode = student?.StudentCode ?? payload.UserId.ToString();
+
         if (alreadyRecorded)
             throw new InvalidOperationException(
-                $"{payload.Name} is already recorded for this session.");
+                $"{studentName} is already recorded for this session.");
 
         qrToken.ExpiresAt = EgyptTime.Now.AddSeconds(-1);
         QrTokens.Update(qrToken);
-
-        var student = await Students.GetByIdAsync(payload.UserId);
 
         var attendance = new Attendance
         {
@@ -155,8 +156,8 @@ public class AttendanceService : IAttendanceService
 
         return new AttendanceResultDto
         {
-            StudentName = student?.FullName ?? payload.Name,
-            StudentCode = payload.StudentCode,
+            StudentName = studentName,
+            StudentCode = studentCode,
             Status = dto.Status,
             RecordedAt = attendance.Date,
             Method = "QR"
@@ -476,18 +477,18 @@ public class AttendanceService : IAttendanceService
         var sessionAttendance = attendanceRecords.Where(a => a.SessionId == sessionId).ToList();
         var attendanceByStudent = sessionAttendance.ToDictionary(a => a.StudentId);
 
-        var students = enrolledStudents.Select(s =>
-        {
-            var record = attendanceByStudent.GetValueOrDefault(s.UserId);
-            return new SessionAttendanceStudentDto
+            var students = enrolledStudents.Select(s =>
             {
-                StudentId = s.UserId,
-                StudentCode = s.StudentCode ?? "",
-                FullName = s.FullName,
-                Status = record is not null ? AttendanceStatus.Present : AttendanceStatus.Absent,
-                CheckInTime = record?.Date
-            };
-        }).ToList();
+                var record = attendanceByStudent.GetValueOrDefault(s.UserId);
+                return new SessionAttendanceStudentDto
+                {
+                    StudentId = s.UserId,
+                    StudentCode = s.StudentCode ?? "",
+                    FullName = s.FullName,
+                    Status = record is not null ? record.Status : AttendanceStatus.NotRecorded,
+                    CheckInTime = record?.Date
+                };
+            }).ToList();
 
         return new SessionAttendanceDto
         {
