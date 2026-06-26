@@ -30,12 +30,12 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
     {
         var spec = new RoomSpec(queryParams);
         var rooms = await Rooms.GetAllAsync(spec);
-        var dataToReturn = rooms.Select(MapToDto);
+        var dataToReturn = rooms.Select(MapToDto).ToList();
 
         var countSpec = new RoomCountSpec(queryParams);
         var totalCount = await Rooms.CountAsync(countSpec);
 
-        return new PaginatedResult<RoomDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<RoomDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     public async Task<RoomDto> CreateAsync(CreateRoomDto dto)

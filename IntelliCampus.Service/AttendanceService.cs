@@ -333,10 +333,10 @@ public class AttendanceService : IAttendanceService
             PresentCount = s.Attendances?
                 .Count(a => a.StudentId == studentId
                          && (a.Status == AttendanceStatus.Present)) ?? 0
-        });
+        }).ToList();
         var countSpec = new SessionCountSpec(classIds);
         var totalCount = await Sessions.CountAsync(countSpec);
-        return new PaginatedResult<SessionDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<SessionDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     public async Task<AttendanceReportDto> GenerateReportAsync(

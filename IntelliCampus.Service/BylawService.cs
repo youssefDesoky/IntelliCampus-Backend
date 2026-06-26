@@ -55,12 +55,12 @@ public class BylawService : IBylawService
     {
         var spec = new BylawSpec(queryParams);
         var bylaws = await Bylaws.GetAllAsync(spec);
-        var dataToReturn = bylaws.Select(MapToDto);
+        var dataToReturn = bylaws.Select(MapToDto).ToList();
 
         var countSpec = new BylawCountSpec(queryParams);
         var totalCount = await Bylaws.CountAsync(countSpec);
 
-        return new PaginatedResult<BylawDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<BylawDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     public async Task<BylawDto> CreateAsync(CreateBylawDto dto, int adminId)

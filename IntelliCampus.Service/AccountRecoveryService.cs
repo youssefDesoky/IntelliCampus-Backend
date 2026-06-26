@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Helpers;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Auth;
 using Microsoft.Extensions.Logging;
@@ -80,7 +81,7 @@ public class AccountRecoveryService : IAccountRecoveryService
         if (dto.NewPassword.Length < 6)
             throw new InvalidOperationException("Password must be at least 6 characters.");
 
-        var user = await Users.GetByIdAsync(userId);
+        var user = await Users.GetByIdAsync(new UserByIdSpec(userId));
         if (user is null)
             throw new InvalidOperationException("User not found.");
 

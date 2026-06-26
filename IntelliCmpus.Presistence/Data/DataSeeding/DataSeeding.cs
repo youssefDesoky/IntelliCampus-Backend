@@ -405,6 +405,7 @@ public class DataSeed : IDataSeed
                 Address = dto.Address,
                 Nationality = dto.Nationality,
                 Password = _passwordService.HashPassword(dto.Password),
+                MustChangePassword = true,
                 FacultyId = _facultyId,
                 AdminCode = dto.AdminCode,
                 HireDate = EgyptTime.Now
@@ -440,6 +441,7 @@ public class DataSeed : IDataSeed
                 Address = dto.Address,
                 Nationality = dto.Nationality,
                 Password = _passwordService.HashPassword(dto.Password),
+                MustChangePassword = true,
                 FacultyId = _facultyId,
                 InstructorCode = dto.InstructorCode,
                 InstructorRole = Enum.Parse<InstructorRole>(dto.InstructorRole),
@@ -686,6 +688,7 @@ public class DataSeed : IDataSeed
                 Address = dto.Address,
                 Nationality = dto.Nationality,
                 Password = _passwordService.HashPassword(dto.Password),
+                MustChangePassword = true,
                 FacultyId = _facultyId,
                 Level = dto.Level,
                 DepartmentId = dto.DepartmentName != null ? _departmentIds.GetValueOrDefault(dto.DepartmentName) : null,

@@ -81,12 +81,12 @@ public class InternalMessageService : IInternalMessageService
             ? await repo.GetAllAsync(InternalMessageSpec.RepliesToRoots(rootIds, userId))
             : new List<InternalMessage>();
 
-        var dataToReturn = await BuildThreadsAsync(roots, replies);
+        var dataToReturn = (await BuildThreadsAsync(roots, replies)).ToList();
 
         var countSpec = InternalMessageCountSpec.InboxRoots(userId, queryParams);
         var totalCount = await repo.CountAsync(countSpec);
 
-        return new PaginatedResult<InternalMessageDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<InternalMessageDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     public async Task<IEnumerable<InternalMessageDto>> GetSentMessagesAsync(int userId, MessageQueryParams queryParams)

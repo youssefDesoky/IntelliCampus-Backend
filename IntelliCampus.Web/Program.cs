@@ -223,6 +223,7 @@ var app = builder.Build();
 
 
 app.UseMiddleware<ExceptionHandlerMiddleWare>();
+app.UseMiddleware<LogoutCookieMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

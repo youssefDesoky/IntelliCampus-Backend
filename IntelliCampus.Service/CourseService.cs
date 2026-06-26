@@ -59,10 +59,10 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     {
         var spec = new CourseSpec(queryParams, CourseIncludeLevel.Light);
         var courses = await Courses.GetAllAsync(spec);
-        var dataToReturn = courses.Select(c => MapToDto(c));
+        var dataToReturn = courses.Select(c => MapToDto(c)).ToList();
         var countSpec = new CourseCountSpec(queryParams);
         var totalCount = await Courses.CountAsync(countSpec);
-        return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
 
     }
 
@@ -71,12 +71,12 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         queryParams.IsActiveOnly = true;
         var spec = new CourseSpec(queryParams, CourseIncludeLevel.Light);
         var courses = await Courses.GetAllAsync(spec);
-        var dataToReturn = courses.Select(c => MapToDto(c));
+        var dataToReturn = courses.Select(c => MapToDto(c)).ToList();
 
         var countSpec = new CourseCountSpec(queryParams);
         var totalCount = await Courses.CountAsync(countSpec);
 
-        return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     public async Task<PaginatedResult<CourseDto>> GetCoursesByStudentIdAsync(CourseQueryParams queryParams)
@@ -88,12 +88,12 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
         var gradeScales = student.Bylaw?.GradeScales;
         var courses = await Courses.GetAllAsync(new CourseSpec(queryParams, CourseIncludeLevel.Student));
-        var dataToReturn = courses.Select(c => MapToDto(c, studentId, gradeScales));
+        var dataToReturn = courses.Select(c => MapToDto(c, studentId, gradeScales)).ToList();
 
         var countSpec = new CourseCountSpec(queryParams);
         var totalCount = await Courses.CountAsync(countSpec);
 
-        return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     public async Task<PaginatedResult<CourseDto>> GetCoursesByInstructorIdAsync(CourseQueryParams queryParams)
@@ -107,12 +107,12 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         var courseIds = classes.Select(c => c.CourseId).Distinct().ToList();
 
         var courses = await Courses.GetAllAsync(new CourseSpec(courseIds, queryParams));
-        var dataToReturn = courses.Select(c => MapToDto(c));
+        var dataToReturn = courses.Select(c => MapToDto(c)).ToList();
 
         var countSpec = new CourseSpec(courseIds, queryParams, forCount: true);
         var totalCount = await Courses.CountAsync(countSpec);
 
-        return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     public async Task<CourseDto> CreateAsync(CreateCourseDto dto)
@@ -249,7 +249,8 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         });
         var countSpec = new CourseCountSpec(queryParams);
         var totalCount = await Courses.CountAsync(countSpec);
-        return new PaginatedResult<CoursePrerequisiteDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        var items = dataToReturn.ToList();
+        return new PaginatedResult<CoursePrerequisiteDto>(queryParams.PageIndex, items.Count, totalCount, items);
     }
 
     public async Task<IEnumerable<CoursePrerequisiteDto>?> GetPrerequisitesAsync(int courseId)

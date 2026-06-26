@@ -40,12 +40,12 @@ public class NotificationService : INotificationService
 
         var spec = new NotificationSpec(userId, queryParams);
         var userNotifications = await UserNotifications.GetAllAsync(spec);
-        var dataToReturn = userNotifications.Select(MapToDto);
+        var dataToReturn = userNotifications.Select(MapToDto).ToList();
 
         var countSpec = new NotificationCountSpec(userId, queryParams);
         var totalCount = await UserNotifications.CountAsync(countSpec);
 
-        return new PaginatedResult<NotificationDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<NotificationDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     public async Task<IEnumerable<NotificationDto>> GetUnreadAsync(int userId, NotificationQueryParams queryParams)
