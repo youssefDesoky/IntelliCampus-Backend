@@ -28,7 +28,8 @@ public class TokenService : ITokenService
             new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
             new(ClaimTypes.Email, user.Email),
             new(ClaimTypes.Name, user.FullName),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new("must_change_password", user.MustChangePassword.ToString().ToLower())
         };
 
         foreach (var userRole in user.UserRoles.Where(ur => ur.IsActive))

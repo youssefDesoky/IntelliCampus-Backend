@@ -13,6 +13,9 @@ public abstract class User
     public string Password { get; set; } = null!;
     public string? ProfileImage { get; set; }
     public int? FacultyId { get; set; }
+    public bool MustChangePassword { get; set; }
+    public string? RecoveryEmail { get; set; }
+    public bool RecoveryEmailVerified { get; set; }
 
     // Navigation properties
     public Faculty? Faculty { get; set; }

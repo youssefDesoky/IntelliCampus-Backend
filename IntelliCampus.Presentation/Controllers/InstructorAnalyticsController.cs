@@ -3,6 +3,7 @@ using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.InstructorAnalytics;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -55,7 +56,7 @@ public class InstructorAnalyticsController : ControllerBase
 
         var instructorId = instructor.InstructorId;
 
-        var instructorCourses = await _courseService.GetCoursesByInstructorIdAsync(instructorId);
+        var instructorCourses = await _courseService.GetCoursesByInstructorIdAsync(new CourseQueryParams { InstructorId = instructorId });
         if (!instructorCourses.Any(c => c.CourseId == courseId))
             return Forbid();
 

@@ -59,7 +59,6 @@ public class AttendanceService : IAttendanceService
         var payload = new QrPayload
         {
             UserId = studentId,
-            Name = student.FullName,
             StudentCode = student.StudentCode ?? studentId.ToString(),
             Timestamp = new DateTimeOffset(now).ToUnixTimeMilliseconds(),
             Token = rawToken

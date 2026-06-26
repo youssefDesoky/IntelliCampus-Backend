@@ -126,6 +126,7 @@ public class StudentService : IStudentService
             Address = dto.Address,
             Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
+            MustChangePassword = true,
             StudentCode = code,
             FacultyId = facultyId,
             StudentType = studentType,

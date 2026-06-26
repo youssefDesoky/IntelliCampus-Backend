@@ -49,6 +49,17 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.ProfileImage);
 
+        builder.Property(u => u.MustChangePassword)
+            .IsRequired()
+            .HasDefaultValue(true);
+
+        builder.Property(u => u.RecoveryEmail)
+            .HasMaxLength(100);
+
+        builder.Property(u => u.RecoveryEmailVerified)
+            .IsRequired()
+            .HasDefaultValue(false);
+
         builder.Property(u => u.FacultyId);
         builder.HasOne(u => u.Faculty)
             .WithMany(f => f.Users)
