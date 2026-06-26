@@ -3,5 +3,6 @@ namespace IntelliCampus.Domain.Entities.Enums;
 public enum AttendanceStatus
 {
     Present,
-    Absent
+    Absent,
+    NotRecorded
 }
