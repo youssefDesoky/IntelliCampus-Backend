@@ -23,6 +23,7 @@ public class MustChangePasswordMiddleware
                 var isAllowed = path.Contains("/api/auth/first-time-setup")
                     || path.Contains("/api/auth/logout")
                     || path.Contains("/api/auth/me")
+                    || path.Contains("/api/auth/login")
                     || path.Contains("/api/auth/get-credentials")
                     || path.Contains("/api/auth/forgot-password")
                     || path.Contains("/api/auth/reset-password")

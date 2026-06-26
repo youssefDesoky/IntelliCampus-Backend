@@ -81,10 +81,10 @@ public class CommunityService : ICommunityService
     {
         var community = await GetOrCreateCommunityAsync(courseId);
         var spec = new CommunityPostSpec(community.CommunityId, queryParams);
-        var posts = await Posts.GetAllAsync(spec);
+        var posts = (await Posts.GetAllAsync(spec)).ToList();
         var countSpec = new CommunityPostSpec(community.CommunityId);
         var totalCount = await Posts.CountAsync(countSpec);
-        return new PaginatedResult<Post>(queryParams.PageIndex, posts.Count(), totalCount, posts);
+        return new PaginatedResult<Post>(queryParams.PageIndex, posts.Count, totalCount, posts);
     }
 
     public async Task<RoutingResponse?> RouteQuestionAsync(int courseId, int postId, int topN = 3)

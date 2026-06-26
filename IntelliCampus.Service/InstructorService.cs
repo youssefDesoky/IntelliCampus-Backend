@@ -46,12 +46,12 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
     {
         var spec = new InstructorSpec(queryParams);
         var instructors = await Instructors.GetAllAsync(spec);
-        var dataToReturn = instructors.Select(MapToDto);
+        var dataToReturn = instructors.Select(MapToDto).ToList();
 
         var countSpec = new InstructorCountSpec(queryParams);
         var totalCount = await Instructors.CountAsync(countSpec);
 
-        return new PaginatedResult<InstructorDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<InstructorDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     public async Task<IEnumerable<InstructorDto>> GetProfessorsAsync(InstructorQueryParams queryParams)

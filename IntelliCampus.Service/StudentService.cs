@@ -70,12 +70,12 @@ public class StudentService : IStudentService
     {
         var spec = new StudentSpec(queryParams);
         var students = await Students.GetAllAsync(spec);
-        var dataToReturn = students.Select(s => MapToDto(s));
+        var dataToReturn = students.Select(s => MapToDto(s)).ToList();
 
         var countSpec = new StudentCountSpec(queryParams);
         var totalCount = await Students.CountAsync(countSpec);
 
-        return new PaginatedResult<StudentDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
+        return new PaginatedResult<StudentDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     public async Task<StudentDto> CreateAsync(CreateStudentDto dto, int? creatorUserId = null)
