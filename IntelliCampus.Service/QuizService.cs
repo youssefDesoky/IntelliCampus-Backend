@@ -4,6 +4,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.shared.Dtos.Quiz;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Shared.Params;
@@ -55,6 +56,7 @@ public class QuizService : IQuizService
         {
             Id = quiz.QuizId.ToString(),
             Title = quiz.Title,
+            Description = quiz.Description,
             Score = submission?.Score,
             MaxScore = quiz.MaxGrade,
             DurationMinutes = quiz.DurationMinutes,
@@ -86,11 +88,12 @@ public class QuizService : IQuizService
         var hasSubmission = submission is not null;
         var now = EgyptTime.Now;
 
-        return new QuizHistoryItemDto
-        {
-            Id = quiz.QuizId.ToString(),
-            Title = quiz.Title,
-            Score = submission?.Score,
+    return new QuizHistoryItemDto
+    {
+        Id = quiz.QuizId.ToString(),
+        Title = quiz.Title,
+        Description = quiz.Description,
+        Score = submission?.Score,
             MaxScore = quiz.MaxGrade,
             DurationMinutes = quiz.DurationMinutes,
             StartDate = quiz.StartDate,
@@ -174,7 +177,7 @@ public class QuizService : IQuizService
             Title = dto.Title,
             Description = dto.Description,
             StartDate = dto.StartDate,
-            DueDate = dto.DueDate,
+            DueDate = dto.StartDate.AddMinutes(dto.DurationMinutes),
             DurationMinutes = dto.DurationMinutes,
             MaxGrade = dto.MaxGrade,
             TotalMarks = (int)dto.MaxGrade,
@@ -215,6 +218,52 @@ public class QuizService : IQuizService
         return true;
     }
 
+    public async Task<QuizDto> UpdateInCourseAsync(int quizId, int instructorId, string courseId, UpdateQuizDto dto)
+    {
+        if (!int.TryParse(courseId, out var parsedCourseId))
+            throw new CourseNotFoundException(courseId);
+
+        var course = await Courses.GetByIdAsync(parsedCourseId);
+        if (course is null)
+            throw new CourseNotFoundException(parsedCourseId);
+
+        var spec = new QuizSpec(quizId);
+        var quiz = await Quizzes.GetByIdAsync(spec);
+        if (quiz is null)
+            throw new QuizNotFoundException(quizId);
+
+        if (quiz.CourseId != parsedCourseId)
+            throw new QuizNotFoundException(quizId);
+
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
+        if (!teachesCourse)
+            throw new InvalidOperationException("Not authorized.");
+
+        if (dto.Title is not null) quiz.Title = dto.Title;
+        if (dto.Description is not null) quiz.Description = dto.Description;
+        if (dto.StartDate.HasValue) quiz.StartDate = dto.StartDate.Value;
+        if (dto.DurationMinutes.HasValue) quiz.DurationMinutes = dto.DurationMinutes.Value;
+
+        quiz.DueDate = dto.StartDate.HasValue || dto.DurationMinutes.HasValue
+            ? quiz.StartDate.AddMinutes(quiz.DurationMinutes)
+            : quiz.DueDate;
+        if (dto.MaxGrade.HasValue)
+        {
+            var existingQuestions = await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quizId));
+            var existingPoints = existingQuestions.Sum(q => q.Points);
+            if (dto.MaxGrade.Value != existingPoints)
+                throw new InvalidOperationException($"Max grade must equal the total question points ({existingPoints}). Got: {dto.MaxGrade.Value}.");
+            quiz.MaxGrade = dto.MaxGrade.Value;
+            quiz.TotalMarks = (int)dto.MaxGrade.Value;
+        }
+
+        Quizzes.Update(quiz);
+        await _unitOfWork.SaveChangesAsync();
+
+        var reloaded = await Quizzes.GetByIdAsync(spec);
+        return MapToDto(reloaded!);
+    }
+
     public async Task AddQuestionsAsync(int quizId, int instructorId, string courseId, List<CreateQuestionDto> questions)
     {
         if (!int.TryParse(courseId, out var parsedCourseId))
@@ -235,6 +284,15 @@ public class QuizService : IQuizService
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
             throw new InvalidOperationException("Not authorized.");
+
+        var newPoints = questions.Sum(q => q.Points);
+
+        if (newPoints != quiz.MaxGrade)
+        {
+            var diff = newPoints - quiz.MaxGrade;
+            var direction = diff > 0 ? "more" : "less";
+            throw new InvalidOperationException($"Quiz max grade is {quiz.MaxGrade} but questions total {newPoints} ({Math.Abs(diff)} points {direction}).");
+        }
 
         foreach (var q in questions)
         {
@@ -447,10 +505,18 @@ public class QuizService : IQuizService
             throw new QuizNotFoundException(dto.QuizId);
 
         var now = EgyptTime.Now;
-        if (now < quiz.StartDate || now > quiz.DueDate)
+        var quizEndTime = quiz.StartDate.AddMinutes(quiz.DurationMinutes);
+        if (now < quiz.StartDate || now > quizEndTime)
             throw new InvalidOperationException("Quiz is not available for submission at this time.");
 
         var existing = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quiz.QuizId));
+        if (existing is not null && existing.StartedAt.HasValue)
+        {
+            var timeLimit = existing.StartedAt.Value.AddMinutes(quiz.DurationMinutes);
+            if (now > timeLimit)
+                throw new InvalidOperationException("Quiz time has expired.");
+        }
+
         var allQ = (await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quiz.QuizId))).ToList();
         var (qResults, bType, _) = GradeAnswers(allQ, dto.Answers);
 
@@ -462,6 +528,7 @@ public class QuizService : IQuizService
         if (existing is not null)
         {
             existing.Score = finalScore;
+            existing.StartedAt ??= now;
             existing.SubmittedAt = now;
             existing.AnswersJson = answersJson;
             existing.QuestionResultsJson = resultsJson;
@@ -489,6 +556,7 @@ public class QuizService : IQuizService
             StudentId = studentId,
             QuizId = quiz.QuizId,
             Score = finalScore,
+            StartedAt = now,
             SubmittedAt = now,
             IsLate = now > quiz.DueDate,
             AnswersJson = answersJson,
@@ -554,11 +622,31 @@ public class QuizService : IQuizService
             throw new QuizNotFoundException(queryParams.QuizId ?? 0);
 
         var now = EgyptTime.Now;
-        var submission = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quiz.QuizId));
-        var isWithinWindow = now >= quiz.StartDate && now <= quiz.DueDate;
+        var quizEndTime = quiz.StartDate.AddMinutes(quiz.DurationMinutes);
+        var isWithinWindow = now >= quiz.StartDate && now <= quizEndTime;
 
-        if (submission is null && !isWithinWindow)
-            throw new InvalidOperationException("Quiz is not available at this time.");
+        var submission = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quiz.QuizId));
+
+        if (submission is null)
+        {
+            if (!isWithinWindow)
+                throw new InvalidOperationException("Quiz is not available at this time.");
+
+            submission = new StudentQuiz
+            {
+                StudentId = studentId,
+                QuizId = quiz.QuizId,
+                StartedAt = now
+            };
+            StudentQuizzes.Add(submission);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        else if (submission.StartedAt.HasValue && submission.Score is null)
+        {
+            var timeLimit = submission.StartedAt.Value.AddMinutes(quiz.DurationMinutes);
+            if (now > timeLimit)
+                throw new InvalidOperationException("Quiz time has expired.");
+        }
 
         var questions = (await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quiz.QuizId))).ToList();
 
@@ -567,7 +655,7 @@ public class QuizService : IQuizService
         var writtenCount = questions.Count(q => q.Type == "Written");
 
         QuizSubmitResponseDto? previousSubmission = null;
-        if (submission is not null)
+        if (submission is not null && submission.SubmittedAt != default)
         {
             var maxScore = questions.Sum(q => q.Points);
             var deserializedAnswers = submission.AnswersJson is null
@@ -615,13 +703,17 @@ public class QuizService : IQuizService
             };
         }
 
+        var remainingSeconds = submission.SubmittedAt != default
+            ? 0
+            : Math.Max(0, (int)((submission.StartedAt ?? now).AddMinutes(quiz.DurationMinutes) - now).TotalSeconds);
+
         return new PracticeQuizDto
         {
             QuizId = quiz.QuizId,
             CourseId = courseId,
             CourseName = course.CourseName,
             Title = quiz.Title,
-            DurationSeconds = quiz.DurationMinutes * 60,
+            DurationSeconds = remainingSeconds,
             PageSize = 5,
             MaxAttempts = 1,
             QuestionsSummary = new QuizQuestionsSummaryDto
@@ -673,6 +765,7 @@ public class QuizService : IQuizService
                 {
                     Id = quiz.QuizId.ToString(),
                     Title = quiz.Title,
+                    Description = quiz.Description,
                     Score = submission.Score,
                     MaxScore = quiz.MaxGrade,
                     DurationMinutes = quiz.DurationMinutes,
@@ -687,6 +780,7 @@ public class QuizService : IQuizService
                 {
                     Id = quiz.QuizId.ToString(),
                     Title = quiz.Title,
+                    Description = quiz.Description,
                     MaxScore = quiz.MaxGrade,
                     DurationMinutes = quiz.DurationMinutes,
                     StartDate = quiz.StartDate,
@@ -700,6 +794,7 @@ public class QuizService : IQuizService
                 {
                     Id = quiz.QuizId.ToString(),
                     Title = quiz.Title,
+                    Description = quiz.Description,
                     MaxScore = quiz.MaxGrade,
                     DurationMinutes = quiz.DurationMinutes,
                     StartDate = quiz.StartDate,
@@ -713,6 +808,7 @@ public class QuizService : IQuizService
                 {
                     Id = quiz.QuizId.ToString(),
                     Title = quiz.Title,
+                    Description = quiz.Description,
                     MaxScore = quiz.MaxGrade,
                     DurationMinutes = quiz.DurationMinutes,
                     StartDate = quiz.StartDate,
@@ -740,6 +836,13 @@ public class QuizService : IQuizService
             History = history,
             Upcoming = upcoming
         };
+    }
+
+    public async Task<PaginatedResult<CourseQuizzesDto>> GetQuizzesOverviewAsync(int studentId, string courseId, QuizQueryParams queryParams)
+    {
+        var result = await GetQuizzesOverviewAsync(studentId, courseId);
+        var wrapped = result is not null ? new List<CourseQuizzesDto> { result } : [];
+        return new PaginatedResult<CourseQuizzesDto>(queryParams.PageIndex, wrapped.Count, wrapped.Count, wrapped);
     }
 
     private static (List<QuestionResultDto> Results, Dictionary<string, (int Answered, int Total, decimal Score)> ByType, decimal TotalScore) GradeAnswers(

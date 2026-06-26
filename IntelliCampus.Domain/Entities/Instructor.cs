@@ -4,7 +4,6 @@ namespace IntelliCampus.Domain.Entities;
 
 public class Instructor : User
 {
-    public int InstructorId { get; set; }
     public string? InstructorCode { get; set; }
     public InstructorRole? InstructorRole { get; set; }
     public string? Specialization { get; set; }

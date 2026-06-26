@@ -6,6 +6,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service.Exceptions;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service;
 
@@ -14,15 +15,18 @@ public class RegistrationService : IRegistrationService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IScheduleService _scheduleService;
     private readonly INotificationService _notificationService;
+    private readonly IBylawService _bylawService;
 
     public RegistrationService(
         IUnitOfWork unitOfWork,
         IScheduleService scheduleService,
-        INotificationService notificationService)
+        INotificationService notificationService,
+        IBylawService bylawService)
     {
         _unitOfWork = unitOfWork;
         _scheduleService = scheduleService;
         _notificationService = notificationService;
+        _bylawService = bylawService;
     }
 
     private IGenericRepository<StudentCourse, int> StudentCourses
@@ -112,8 +116,12 @@ public class RegistrationService : IRegistrationService
             var bylaw = await Bylaws.GetByIdAsync(student.BylawId.Value);
             if (bylaw is not null)
             {
-                var existingHours = existingSemesterCourses.Sum(sc => sc.Course.CreditHours);
-                var totalAfterRegistration = existingHours + course.CreditHours;
+                var effectiveCredits = await _bylawService.GetEffectiveCreditHoursAsync(
+                    student.BylawId.Value, student.DepartmentId);
+                var existingHours = existingSemesterCourses.Sum(sc =>
+                    effectiveCredits.GetValueOrDefault(sc.CourseId, sc.Course.CreditHours));
+                var newCourseHours = effectiveCredits.GetValueOrDefault(course.CourseId, course.CreditHours);
+                var totalAfterRegistration = existingHours + newCourseHours;
 
                 var isSummer = semester.StartsWith("Summer", StringComparison.OrdinalIgnoreCase);
                 var maxHours = isSummer && bylaw.Settings.SummerMaxCreditHours.HasValue
@@ -122,7 +130,7 @@ public class RegistrationService : IRegistrationService
 
                 if (maxHours.HasValue && totalAfterRegistration > maxHours.Value)
                     throw new InvalidOperationException(
-                        $"Cannot register for \"{course.CourseName}\". Adding {course.CreditHours} credit hours would bring your semester total to {totalAfterRegistration}, exceeding the maximum of {maxHours.Value} credit hours{(isSummer ? " for summer" : "")}.");
+                        $"Cannot register for \"{course.CourseName}\". Adding {newCourseHours} credit hours would bring your semester total to {totalAfterRegistration}, exceeding the maximum of {maxHours.Value} credit hours{(isSummer ? " for summer" : "")}.");
 
                 if (!isSummer && bylaw.Settings.MinCreditHoursPerSemester.HasValue && totalAfterRegistration < bylaw.Settings.MinCreditHoursPerSemester.Value)
                     throw new InvalidOperationException(
@@ -237,8 +245,13 @@ public class RegistrationService : IRegistrationService
     private async Task<int> GetTotalEarnedCreditHoursAsync(int studentId)
     {
         var spec = new StudentCompletedCoursesSpec(studentId);
-        var courses = await StudentCourses.GetAllAsync(spec);
-        return courses.Sum(sc => sc.Course.CreditHours);
+        var completed = await StudentCourses.GetAllAsync(spec);
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
+        if (student?.BylawId is null) return completed.Sum(sc => sc.Course.CreditHours);
+
+        var effectiveCredits = await _bylawService.GetEffectiveCreditHoursAsync(
+            student.BylawId.Value, student.DepartmentId);
+        return completed.Sum(sc => effectiveCredits.GetValueOrDefault(sc.CourseId, sc.Course.CreditHours));
     }
 
 }

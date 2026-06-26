@@ -1,10 +1,12 @@
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Announcement;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service_Abstraction;
 
 public interface IAnnouncementService
 {
-    Task<List<AnnouncementDto>> GetCourseAnnouncementsAsync(int courseId);
+    Task<PaginatedResult<AnnouncementDto>> GetCourseAnnouncementsAsync(int courseId, AnnouncementQueryParams queryParams);
     Task<AnnouncementDto> GetByIdAsync(int announcementId);
     Task<AnnouncementDto> CreateAsync(int courseId, int senderId, AnnouncementContentDto dto, string? fileUrl, long? fileSize);
     Task<AnnouncementDto> UpdateAsync(int announcementId, int senderId, string content);

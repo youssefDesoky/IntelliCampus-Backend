@@ -1,11 +1,15 @@
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Grade;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service_Abstraction;
 
 public interface IGradeService
 {
+    Task<InstructorCourseGradesDto> GetCourseGradesOverviewAsync(int courseId, int instructorId);
     // Student
     Task<CourseGradeDto?> GetCourseGradeAsync(int studentId, int courseId);
+    Task<PaginatedResult<CourseGradeDto>> GetCourseGradeAsync(int studentId, int courseId, GradeQueryParams queryParams);
     Task<int> GetCourseWorkAsync(int studentId, int courseId);
     Task<IEnumerable<GradeHistoryItemDto>> GetAllGradesAsync(int studentId);
     Task<IEnumerable<TranscriptCourseDto>> GetTranscriptAsync(int studentId);

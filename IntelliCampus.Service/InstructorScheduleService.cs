@@ -34,7 +34,7 @@ public class InstructorScheduleService : IInstructorScheduleService
         var types = queryParams.Types;
 
         var instructor = await FindInstructorByUserIdAsync(userId);
-        var spec = new ClassByInstructorSpec(instructor.InstructorId);
+        var spec = new ClassByInstructorSpec(instructor.UserId);
         var classes = await Classes.GetAllAsync(spec);
 
         var schedules = classes.Select(MapToDto);

@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service.Specifications
 {
@@ -17,6 +18,17 @@ namespace IntelliCampus.Service.Specifications
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
         AddInclude("UserRoles.Role");
+    }
+
+    public InstructorSpec(InstructorQueryParams queryParams)
+        : base(i =>
+            (!queryParams.DepartmentId.HasValue || i.DepartmentId == queryParams.DepartmentId.Value) &&
+            (!queryParams.FacultyId.HasValue || i.FacultyId == queryParams.FacultyId.Value))
+    {
+        AddInclude(i => i.Department!);
+        AddInclude(i => i.OfficeHoursRoom!);
+        AddInclude("UserRoles.Role");
+        ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
     }
 }

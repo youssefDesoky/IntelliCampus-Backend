@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service.Specifications
 {
@@ -8,6 +9,16 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(d => d.HeadInstructor!);
             AddInclude(d => d.Faculty!);
+        }
+
+        public DepartmentSpec(DepartmentQueryParams queryParams)
+            : base(d =>
+                (!queryParams.FacultyId.HasValue || d.FacultyId == queryParams.FacultyId.Value) &&
+                (string.IsNullOrEmpty(queryParams.Search) || d.DepartmentName.Contains(queryParams.Search)))
+        {
+            AddInclude(d => d.HeadInstructor!);
+            AddInclude(d => d.Faculty!);
+            ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
 
         public DepartmentSpec(int departmentId)

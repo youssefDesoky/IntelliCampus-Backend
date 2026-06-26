@@ -5,14 +5,20 @@ using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.shared.Dtos.Attendance;
+using Microsoft.Extensions.Logging;
 
 namespace IntelliCampus.Service;
 
 public class SessionService : ISessionService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<SessionService> _logger;
 
-    public SessionService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
+    public SessionService(IUnitOfWork unitOfWork, ILogger<SessionService> logger)
+    {
+        _unitOfWork = unitOfWork;
+        _logger = logger;
+    }
 
     private IGenericRepository<Session, int> Sessions => _unitOfWork.GetRepository<Session, int>();
     private IGenericRepository<Class, int> Classes => _unitOfWork.GetRepository<Class, int>();
@@ -37,28 +43,36 @@ public class SessionService : ISessionService
 
     public async Task<SessionDto> CreateAsync(int instructorId, CreateSessionDto dto)
     {
-        var classEntity = await Classes.GetByIdAsync(dto.ClassId);
-        if (classEntity is null)
-            throw new ClassNotFoundException(dto.ClassId);
-        if (classEntity.InstructorId != instructorId)
-            throw new InvalidOperationException("Not authorized.");
-
-        var session = new Session
+        try
         {
-            ClassId = dto.ClassId,
-            Date = dto.Date,
-            StartTime = dto.StartTime,
-            EndTime = dto.EndTime,
-            Topic = dto.Topic,
-            SessionType = dto.SessionType
-        };
+            var classEntity = await Classes.GetByIdAsync(dto.ClassId);
+            if (classEntity is null)
+                throw new ClassNotFoundException(dto.ClassId);
+            if (classEntity.InstructorId != instructorId)
+                throw new InvalidOperationException("Not authorized.");
 
-        Sessions.Add(session);
-        await _unitOfWork.SaveChangesAsync();
+            var session = new Session
+            {
+                ClassId = dto.ClassId,
+                Date = dto.Date,
+                StartTime = dto.StartTime,
+                EndTime = dto.EndTime,
+                Topic = dto.Topic,
+                SessionType = dto.SessionType
+            };
 
-        var spec = new SessionSpec(session.SessionId);
-        var result = await Sessions.GetByIdAsync(spec);
-        return MapToDto(result!);
+            Sessions.Add(session);
+            await _unitOfWork.SaveChangesAsync();
+
+            var spec = new SessionSpec(session.SessionId);
+            var result = await Sessions.GetByIdAsync(spec);
+            return MapToDto(result!);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to create session for class {ClassId} by instructor {InstructorId}", dto.ClassId, instructorId);
+            throw;
+        }
     }
 
     public async Task DeleteAsync(int sessionId, int instructorId)
@@ -84,6 +98,6 @@ public class SessionService : ISessionService
         ClassName = s.Class?.GroupCode,
         SessionType = s.SessionType,
         TotalStudents = s.Attendances?.Count ?? 0,
-        PresentCount = s.Attendances?.Count(a => a.Status == AttendanceStatus.Present || a.Status == AttendanceStatus.Late) ?? 0
+        PresentCount = s.Attendances?.Count(a => a.Status == AttendanceStatus.Present) ?? 0
     };
 }

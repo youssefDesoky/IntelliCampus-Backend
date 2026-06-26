@@ -1,5 +1,7 @@
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Exam;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +20,9 @@ public class ExamsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ExamDto>>> GetAll()
+    public async Task<ActionResult<PaginatedResult<ExamDto>>> GetAll([FromQuery] ExamQueryParams queryParams)
     {
-        var exams = await _examService.GetAllAsync();
+        var exams = await _examService.GetAllAsync(queryParams);
         return Ok(exams);
     }
 

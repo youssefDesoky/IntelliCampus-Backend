@@ -4,7 +4,9 @@ using IntelliCampus.Domain.Helpers;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Exam;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
@@ -45,11 +47,16 @@ public class ExamService : IExamService
         return MapToDto(exam);
     }
 
-    public async Task<IEnumerable<ExamDto>> GetAllAsync()
+    public async Task<PaginatedResult<ExamDto>> GetAllAsync(ExamQueryParams queryParams)
     {
-        var spec = new ExamWithDetailsSpec();
+        var spec = new ExamWithCourseSpec(queryParams);
         var exams = await Exams.GetAllAsync(spec);
-        return exams.Select(MapToDto);
+        var dataToReturn = exams.Select(MapToDto);
+
+        var countSpec = new ExamCountSpec(queryParams);
+        var totalCount = await Exams.CountAsync(countSpec);
+
+        return new PaginatedResult<ExamDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
     }
 
     public async Task<IEnumerable<ExamDto>> GetByCourseIdAsync(int courseId)

@@ -1,4 +1,6 @@
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Assignment;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Http;
 
 namespace IntelliCampus.Service_Abstraction;
@@ -18,4 +20,5 @@ public interface IAssignmentService
     // Student
     Task<SubmissionDto> SubmitAsync(int studentId, int assignmentId, SubmitAssignmentDto dto, IFormFileCollection? files);
     Task<IEnumerable<AssignmentDto>> GetByStudentAndCourseAsync(int studentId, int courseId);
+    Task<PaginatedResult<AssignmentDto>> GetByStudentAndCourseAsync(int studentId, int courseId, AssignmentQueryParams queryParams);
 }

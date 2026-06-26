@@ -1,6 +1,4 @@
 using System.Security.Claims;
-using IntelliCampus.Domain.Entities;
-using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.InstructorAnalytics;
 using IntelliCampus.Shared.Params;
@@ -14,27 +12,11 @@ namespace IntelliCampus.Web.Controllers;
 [Authorize(Roles = "Instructor")]
 public class InstructorAnalyticsController : ControllerBase
 {
-    private readonly ICourseService _courseService;
-    private readonly IQuizService _quizService;
-    private readonly IAssignmentService _assignmentService;
-    private readonly ISessionService _sessionService;
-    private readonly IClassService _classService;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IInstructorAnalyticsService _instructorAnalyticsService;
 
-    public InstructorAnalyticsController(
-        ICourseService courseService,
-        IQuizService quizService,
-        IAssignmentService assignmentService,
-        ISessionService sessionService,
-        IClassService classService,
-        IUnitOfWork unitOfWork)
+    public InstructorAnalyticsController(IInstructorAnalyticsService instructorAnalyticsService)
     {
-        _courseService = courseService;
-        _quizService = quizService;
-        _assignmentService = assignmentService;
-        _sessionService = sessionService;
-        _classService = classService;
-        _unitOfWork = unitOfWork;
+        _instructorAnalyticsService = instructorAnalyticsService;
     }
 
     [HttpGet("instructor/course/{courseId}")]
@@ -150,43 +132,19 @@ public class InstructorAnalyticsController : ControllerBase
             new SubmissionRateItemDto { Name = "Submitted", Value = submittedPct, Color = "var(--color-bg-fill-success-default-light)" },
             new SubmissionRateItemDto { Name = "Not Submitted", Value = 100 - submittedPct, Color = "var(--color-bg-fill-danger-default-light)" }
         ];
+        var course = await _instructorAnalyticsService.GetCourseAnalyticsAsync(courseId, userId.Value);
+        return Ok(course);
     }
 
-    private async Task<List<WeeklyAttendanceItemDto>> BuildWeeklyAttendanceAsync(int courseId)
+    [HttpGet("instructor/course/{courseId}/export")]
+    public async Task<IActionResult> ExportCourseAnalytics(int courseId)
     {
-        var classes = await _classService.GetByCourseIdAsync(courseId);
+        var userId = GetCurrentUserId();
+        if (userId is null)
+            return Unauthorized();
 
-        var allSessions = new List<IntelliCampus.shared.Dtos.Attendance.SessionDto>();
-        foreach (var cls in classes)
-        {
-            var sessions = await _sessionService.GetByClassIdAsync(cls.ClassId);
-            allSessions.AddRange(sessions);
-        }
-
-        if (allSessions.Count == 0)
-            return [];
-
-        var ordered = allSessions.OrderBy(s => s.Date).ToList();
-        var earliest = ordered.First().Date;
-
-        return ordered
-            .GroupBy(s => GetWeekLabel(s.Date, earliest))
-            .Select(g => new WeeklyAttendanceItemDto
-            {
-                Week = g.Key,
-                Present = g.Sum(s => s.PresentCount),
-                Absent = g.Sum(s => s.TotalStudents - s.PresentCount),
-                Excused = 0
-            })
-            .OrderBy(w => w.Week)
-            .ToList();
-    }
-
-    private static string GetWeekLabel(DateTime date, DateTime earliest)
-    {
-        var diff = (date.Date - earliest.Date).Days;
-        var weekNumber = (diff / 7) + 1;
-        return $"W{weekNumber}";
+        var pdf = await _instructorAnalyticsService.ExportCourseAnalyticsPdfAsync(courseId, userId.Value);
+        return File(pdf, "application/pdf", $"CourseAnalytics_{courseId}.pdf");
     }
 
     private int? GetCurrentUserId()

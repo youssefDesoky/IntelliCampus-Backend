@@ -47,13 +47,13 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         return classes.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<ClassDto>> GetByCourseIdAsync(int courseId, string? classType = null)
+    public async Task<IEnumerable<ClassDto>> GetByCourseIdAsync(int courseId, ClassQueryParams queryParams)
     {
         var course = await Courses.GetByIdAsync(courseId);
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
-        var spec = new ClassSpec(courseId, byCourse: true, classType: classType);
+        var spec = new ClassSpec(courseId, byCourse: true, queryParams);
         var classes = await Classes.GetAllAsync(spec);
 
         return classes.Select(MapToDto);
@@ -359,13 +359,16 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         switch (classType)
         {
             case ClassType.Lecture:
-                if (instructor.InstructorRole != InstructorRole.Professor)
-                    throw new InvalidOperationException("Only a Professor can be assigned to a Lecture class.");
+                if (instructor.InstructorRole != InstructorRole.Professor
+                    && instructor.InstructorRole != InstructorRole.Lecturer
+                    && instructor.InstructorRole != InstructorRole.AssociateProfessor)
+                    throw new InvalidOperationException("Only a Professor, Lecturer, or AssociateProfessor can be assigned to a Lecture class.");
                 break;
 
             case ClassType.Section:
-                if (instructor.InstructorRole != InstructorRole.TeachingAssistant)
-                    throw new InvalidOperationException("Only a TA can be assigned to a Section class.");
+                if (instructor.InstructorRole != InstructorRole.TeachingAssistant
+                    && instructor.InstructorRole != InstructorRole.AssistantLecturer)
+                    throw new InvalidOperationException("Only a TA or AssistantLecturer can be assigned to a Section class.");
                 break;
         }
     }
@@ -434,8 +437,7 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         {
             return new LoanInstructorDto
             {
-                InstructorId = instructor.InstructorId,
-                UserId = instructor.UserId,
+                InstructorId = instructor.UserId,
                 NationalId = instructor.NationalId,
                 FullName = instructor.FullName,
                 FullNameAr = instructor.FullNameAr,
@@ -466,8 +468,7 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
 
         return new InstructorDto
         {
-            InstructorId = instructor.InstructorId,
-            UserId = instructor.UserId,
+            InstructorId = instructor.UserId,
             NationalId = instructor.NationalId,
             FullName = instructor.FullName,
             FullNameAr = instructor.FullNameAr,

@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Instructor;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Params;
@@ -21,9 +22,9 @@ public class InstructorsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<InstructorDto>>> GetAll()
+    public async Task<ActionResult<PaginatedResult<InstructorDto>>> GetAll([FromQuery] InstructorQueryParams queryParams)
     {
-        var instructors = await _instructorService.GetAllAsync();
+        var instructors = await _instructorService.GetAllAsync(queryParams);
         return Ok(instructors);
     }
 
@@ -39,7 +40,7 @@ public class InstructorsController : ControllerBase
     {
         var creatorUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var instructor = await _instructorService.CreateAsync(dto, creatorUserId is not null ? int.Parse(creatorUserId) : null);
-        return CreatedAtAction(nameof(GetById), new { id = instructor.UserId }, instructor);
+        return CreatedAtAction(nameof(GetById), new { id = instructor.InstructorId }, instructor);
     }
 
     [HttpPut("{id}")]

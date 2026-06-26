@@ -29,6 +29,9 @@ public class BylawSettings
     public int? ProbationRegistrationLimit { get; set; }
     public decimal? CourseWorkGrade { get; set; }
     public decimal? FinalExamGrade { get; set; }
+    public decimal? MinPassingCourseworkGrade { get; set; }
+    public decimal? MinPassingFinalExamGrade { get; set; }
+    public string? MaxGradeOnRetake { get; set; }
     public int? TotalHoursToCompleteDegree { get; set; }
     public int? ThesisCreditHours { get; set; }
     public bool? HasComprehensiveExam { get; set; }

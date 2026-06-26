@@ -5,7 +5,9 @@ using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Assignment;
+using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Http;
 
 namespace IntelliCampus.Service;
@@ -83,6 +85,18 @@ public class AssignmentService(
     // Student view with status
     public Task<IEnumerable<AssignmentDto>> GetByStudentAndCourseAsync(int studentId, int courseId)
         => GetByCourseIdAsync(courseId, studentId);
+
+    public async Task<PaginatedResult<AssignmentDto>> GetByStudentAndCourseAsync(int studentId, int courseId, AssignmentQueryParams queryParams)
+    {
+        var all = await GetByCourseIdAsync(courseId, studentId);
+        var list = all.ToList();
+        var totalCount = list.Count;
+        var paged = list
+            .Skip((queryParams.PageIndex - 1) * queryParams.PageSize)
+            .Take(queryParams.PageSize)
+            .ToList();
+        return new PaginatedResult<AssignmentDto>(queryParams.PageIndex, paged.Count, totalCount, paged);
+    }
 
     public async Task<AssignmentDto> CreateAsync(int instructorId, CreateAssignmentDto dto)
     {

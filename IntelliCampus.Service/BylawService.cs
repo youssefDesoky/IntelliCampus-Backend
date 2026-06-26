@@ -1,3 +1,4 @@
+using System.Text.Json;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
@@ -5,7 +6,9 @@ using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Bylaw;
+using IntelliCampus.Shared.Dtos.ElectiveBucket;
 using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
@@ -48,12 +51,16 @@ public class BylawService : IBylawService
         return MapToDto(bylaw);
     }
 
-    public async Task<IEnumerable<BylawDto>> GetAllAsync(BylawQueryParams queryParams)
+    public async Task<PaginatedResult<BylawDto>> GetAllAsync(BylawQueryParams queryParams)
     {
         var spec = new BylawSpec(queryParams);
         var bylaws = await Bylaws.GetAllAsync(spec);
+        var dataToReturn = bylaws.Select(MapToDto);
 
-        return bylaws.Select(MapToDto);
+        var countSpec = new BylawCountSpec(queryParams);
+        var totalCount = await Bylaws.CountAsync(countSpec);
+
+        return new PaginatedResult<BylawDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
     }
 
     public async Task<BylawDto> CreateAsync(CreateBylawDto dto, int adminId)
@@ -420,7 +427,11 @@ public class BylawService : IBylawService
         {
             BylawId = bylawId,
             CourseId = dto.CourseId,
-            CourseType = courseType
+            CourseType = courseType,
+            CreditHours = dto.CreditHours,
+            AllowedDepartmentIds = dto.AllowedDepartmentIds?.Count > 0
+                ? JsonSerializer.Serialize(dto.AllowedDepartmentIds)
+                : null
         };
 
         BylawCourses.Add(bylawCourse);
@@ -505,8 +516,49 @@ public class BylawService : IBylawService
         return MapToBylawCourseDto(refreshedBc ?? bylawCourse, course, prereqDtos);
     }
 
+    public async Task<BylawCourseDto> UpdateBylawCourseAllowedDepartmentsAsync(int bylawCourseId, UpdateBylawCourseAllowedDepartmentsDto dto)
+    {
+        var bcSpec = new BylawCourseSpec(bylawCourseId);
+        var bylawCourse = await BylawCourses.GetByIdAsync(bcSpec);
+        if (bylawCourse is null)
+            throw new BylawCourseNotFoundException(bylawCourseId);
+
+        bylawCourse.AllowedDepartmentIds = dto.AllowedDepartmentIds.Count > 0
+            ? JsonSerializer.Serialize(dto.AllowedDepartmentIds)
+            : null;
+
+        BylawCourses.Update(bylawCourse);
+        await _unitOfWork.SaveChangesAsync();
+
+        var course = await Courses.GetByIdAsync(bylawCourse.CourseId);
+        return MapToBylawCourseDto(bylawCourse, course, null);
+    }
+
+    public async Task<BylawCourseDto> UpdateBylawCourseCreditHoursAsync(int bylawCourseId, UpdateBylawCourseCreditHoursDto dto)
+    {
+        var bcSpec = new BylawCourseSpec(bylawCourseId);
+        var bylawCourse = await BylawCourses.GetByIdAsync(bcSpec);
+        if (bylawCourse is null)
+            throw new BylawCourseNotFoundException(bylawCourseId);
+
+        bylawCourse.CreditHours = dto.CreditHours;
+
+        BylawCourses.Update(bylawCourse);
+        await _unitOfWork.SaveChangesAsync();
+
+        var course = await Courses.GetByIdAsync(bylawCourse.CourseId);
+        return MapToBylawCourseDto(bylawCourse, course, null);
+    }
+
     private BylawCourseDto MapToBylawCourseDto(BylawCourse bc, Course? course, List<BylawCoursePrerequisiteDto>? prereqs)
     {
+        List<int>? allowedDepts = null;
+        if (!string.IsNullOrWhiteSpace(bc.AllowedDepartmentIds))
+        {
+            try { allowedDepts = JsonSerializer.Deserialize<List<int>>(bc.AllowedDepartmentIds); }
+            catch { allowedDepts = null; }
+        }
+
         return new BylawCourseDto
         {
             BylawCourseId = bc.BylawCourseId,
@@ -515,6 +567,8 @@ public class BylawService : IBylawService
             CourseCode = course?.CourseCode,
             CourseName = course?.CourseName,
             CourseType = bc.CourseType.ToString(),
+            CreditHours = bc.CreditHours,
+            AllowedDepartments = allowedDepts,
             Prerequisites = prereqs
         };
     }
@@ -567,9 +621,144 @@ public class BylawService : IBylawService
             MinCreditHoursForGraduationProject = bylaw.Settings.MinCreditHoursForGraduationProject,
             CourseWorkGrade = bylaw.Settings.CourseWorkGrade,
             FinalExamGrade = bylaw.Settings.FinalExamGrade,
+            MinPassingCourseworkGrade = bylaw.Settings.MinPassingCourseworkGrade,
+            MinPassingFinalExamGrade = bylaw.Settings.MinPassingFinalExamGrade,
+            MaxGradeOnRetake = bylaw.Settings.MaxGradeOnRetake,
             ThesisCreditHours = bylaw.Settings.ThesisCreditHours,
             HasComprehensiveExam = bylaw.Settings.HasComprehensiveExam,
-            Type = bylaw.Type.ToString()
+            Type = bylaw.Type.ToString(),
+            ElectiveBuckets = bylaw.ElectiveBuckets?.Select(eb =>
+            {
+                var bcLookup = (bylaw.BylawCourses ?? [])
+                    .GroupBy(bc => bc.CourseId)
+                    .ToDictionary(g => g.Key, g => g.First().BylawCourseId);
+
+                return new ElectiveBucketDto
+                {
+                    ElectiveBucketId = eb.ElectiveBucketId,
+                    Name = eb.Name,
+                    NameAr = eb.NameAr,
+                    BylawId = eb.BylawId,
+                    BylawName = bylaw.Name,
+                    DepartmentId = eb.DepartmentId,
+                    DepartmentName = eb.Department?.DepartmentName,
+                    RequiredCreditHours = eb.RequiredCreditHours,
+                    IsActive = eb.IsActive,
+                    Courses = (eb.ElectiveBucketCourses ?? [])
+                        .Select(ebc => new ElectiveBucketCourseDto
+                    {
+                        CourseId = ebc.CourseId,
+                        CourseCode = ebc.Course?.CourseCode,
+                        CourseName = ebc.Course?.CourseName ?? "Unknown",
+                        CreditHours = ebc.Course?.CreditHours ?? 0,
+                        BylawCourseId = bcLookup.GetValueOrDefault(ebc.CourseId)
+                    }).ToList()
+                };
+            }).ToList(),
+            BylawCourses = bylaw.BylawCourses?.Select(bc =>
+            {
+                List<int>? allowedDepts = null;
+                if (!string.IsNullOrWhiteSpace(bc.AllowedDepartmentIds))
+                {
+                    try { allowedDepts = JsonSerializer.Deserialize<List<int>>(bc.AllowedDepartmentIds); }
+                    catch { allowedDepts = null; }
+                }
+
+                var prereqs = bc.Prerequisites?
+                    .Where(p => p.PrerequisiteCourse?.Course != null)
+                    .Select(p => new BylawCoursePrerequisiteDto
+                    {
+                        BylawCourseId = p.BylawCourseId,
+                        PrerequisiteBylawCourseId = p.PrerequisiteBylawCourseId,
+                        PrerequisiteCourseCode = p.PrerequisiteCourse.Course.CourseCode,
+                        PrerequisiteCourseName = p.PrerequisiteCourse.Course.CourseName
+                    })
+                    .ToList();
+
+                return new BylawCourseDto
+                {
+                    BylawCourseId = bc.BylawCourseId,
+                    BylawId = bc.BylawId,
+                    CourseId = bc.CourseId,
+                    CourseCode = bc.Course?.CourseCode,
+                    CourseName = bc.Course?.CourseName,
+                    CourseType = bc.CourseType.ToString(),
+                    CreditHours = bc.CreditHours,
+                    AllowedDepartments = allowedDepts,
+                    Prerequisites = prereqs
+                };
+            }).ToList()
         };
+    }
+
+    public async Task<BylawDto> UpdatePassingCourseGradesAsync(int bylawId, UpdateBylawPassingCourseGradesDto dto)
+    {
+        var bylaw = await Bylaws.GetByIdAsync(bylawId);
+        if (bylaw is null)
+            throw new BylawNotFoundException(bylawId);
+
+        if (dto.MinPassingCourseworkGrade.HasValue)
+            bylaw.Settings.MinPassingCourseworkGrade = dto.MinPassingCourseworkGrade.Value;
+        if (dto.MinPassingFinalExamGrade.HasValue)
+            bylaw.Settings.MinPassingFinalExamGrade = dto.MinPassingFinalExamGrade.Value;
+        if (dto.MaxGradeOnRetake is not null)
+            bylaw.Settings.MaxGradeOnRetake = dto.MaxGradeOnRetake;
+
+        await _unitOfWork.SaveChangesAsync();
+
+        return MapToDto(bylaw);
+    }
+
+    public async Task<Dictionary<int, int>> GetEffectiveCreditHoursAsync(int bylawId, int? studentDepartmentId)
+    {
+        var spec = new BylawSpec(bylawId);
+        var bylaw = await Bylaws.GetByIdAsync(spec);
+        if (bylaw?.BylawCourses is null)
+            return new Dictionary<int, int>();
+
+        var result = new Dictionary<int, int>();
+        foreach (var bc in bylaw.BylawCourses)
+        {
+            if (result.ContainsKey(bc.CourseId)) continue;
+
+            var courseCredit = bc.Course?.CreditHours ?? 0;
+
+            if (bc.CreditHours.HasValue)
+            {
+                if (bc.CourseType == CourseType.GeneralUniversity || bc.CourseType == CourseType.Faculty)
+                {
+                    result[bc.CourseId] = bc.CreditHours.Value;
+                }
+                else if (bc.CourseType == CourseType.Department)
+                {
+                    if (studentDepartmentId.HasValue && !string.IsNullOrWhiteSpace(bc.AllowedDepartmentIds))
+                    {
+                        try
+                        {
+                            var allowed = JsonSerializer.Deserialize<List<int>>(bc.AllowedDepartmentIds);
+                            if (allowed?.Contains(studentDepartmentId.Value) == true)
+                                result[bc.CourseId] = bc.CreditHours.Value;
+                            else
+                                result[bc.CourseId] = courseCredit;
+                        }
+                        catch { result[bc.CourseId] = courseCredit; }
+                    }
+                    else
+                    {
+                        result[bc.CourseId] = courseCredit;
+                    }
+                }
+                else
+                {
+                    result[bc.CourseId] = courseCredit;
+                }
+            }
+            else
+            {
+                result[bc.CourseId] = courseCredit;
+            }
+        }
+
+        return result;
     }
 }

@@ -13,6 +13,8 @@ public class StudentQuizConfiguration : IEntityTypeConfiguration<StudentQuiz>
         builder.Property(sq => sq.Score)
             .HasPrecision(5, 2);
 
+        builder.Property(sq => sq.StartedAt);
+
         builder.Property(sq => sq.AnswersJson)
             .HasColumnType("nvarchar(max)");
 

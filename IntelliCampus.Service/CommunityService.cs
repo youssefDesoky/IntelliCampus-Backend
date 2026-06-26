@@ -4,7 +4,9 @@ using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Service.Exceptions;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Routing;
+using IntelliCampus.Shared.Params;
 using Microsoft.Extensions.Logging;
 
 namespace IntelliCampus.Service;
@@ -73,6 +75,16 @@ public class CommunityService : ICommunityService
         var community = await GetOrCreateCommunityAsync(courseId);
         var spec = new CommunityPostSpec(community.CommunityId);
         return await Posts.GetAllAsync(spec);
+    }
+
+    public async Task<PaginatedResult<Post>> GetCoursePostsAsync(int courseId, CommunityQueryParams queryParams)
+    {
+        var community = await GetOrCreateCommunityAsync(courseId);
+        var spec = new CommunityPostSpec(community.CommunityId, queryParams);
+        var posts = await Posts.GetAllAsync(spec);
+        var countSpec = new CommunityPostSpec(community.CommunityId);
+        var totalCount = await Posts.CountAsync(countSpec);
+        return new PaginatedResult<Post>(queryParams.PageIndex, posts.Count(), totalCount, posts);
     }
 
     public async Task<RoutingResponse?> RouteQuestionAsync(int courseId, int postId, int topN = 3)

@@ -2,7 +2,9 @@ using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Department;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
@@ -31,12 +33,16 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
         return MapToDto(department);
     }
 
-    public async Task<IEnumerable<DepartmentDto>> GetAllAsync()
+    public async Task<PaginatedResult<DepartmentDto>> GetAllAsync(DepartmentQueryParams queryParams)
     {
-        var spec = new DepartmentSpec();
+        var spec = new DepartmentSpec(queryParams);
         var departments = await Departments.GetAllAsync(spec);
+        var dataToReturn = departments.Select(MapToDto);
 
-        return departments.Select(MapToDto);
+        var countSpec = new DepartmentCountSpec(queryParams);
+        var totalCount = await Departments.CountAsync(countSpec);
+
+        return new PaginatedResult<DepartmentDto>(queryParams.PageIndex, dataToReturn.Count(), totalCount, dataToReturn);
     }
 
     private IGenericRepository<User, int> Users

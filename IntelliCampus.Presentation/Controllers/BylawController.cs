@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.shared.Pagination;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Bylaw;
 using IntelliCampus.Shared.Params;
@@ -22,7 +23,7 @@ public class BylawController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BylawDto>>> GetAll([FromQuery] BylawQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<BylawDto>>> GetAll([FromQuery] BylawQueryParams queryParams)
     {
         var bylaws = await _bylawService.GetAllAsync(queryParams);
         return Ok(bylaws);
@@ -65,6 +66,14 @@ public class BylawController : ControllerBase
     {
         var (stream, fileName, contentType) = await _bylawService.DownloadDocumentAsync(id);
         return File(stream, contentType, fileName);
+    }
+
+    [HttpGet("{id}/view")]
+    public async Task<IActionResult> ViewDocument(int id)
+    {
+        var (stream, fileName, contentType) = await _bylawService.DownloadDocumentAsync(id);
+        Response.Headers["Content-Disposition"] = $"inline; filename=\"{fileName}\"";
+        return File(stream, contentType);
     }
 
     [HttpDelete("{id}")]
@@ -151,6 +160,13 @@ public class BylawController : ControllerBase
         return Ok(bylaw);
     }
 
+    [HttpPut("{id}/passing-course-grades")]
+    public async Task<ActionResult<BylawDto>> UpdatePassingCourseGrades(int id, [FromBody] UpdateBylawPassingCourseGradesDto dto)
+    {
+        var bylaw = await _bylawService.UpdatePassingCourseGradesAsync(id, dto);
+        return Ok(bylaw);
+    }
+
     [HttpPost("{id}/courses")]
     public async Task<ActionResult<BylawCourseDto>> MapCourse(int id, [FromBody] MapBylawCourseDto dto)
     {
@@ -169,6 +185,20 @@ public class BylawController : ControllerBase
     public async Task<ActionResult<BylawCourseDto>> SetCoursePrerequisites(int bylawCourseId, [FromBody] SetBylawCoursePrerequisitesDto dto)
     {
         var result = await _bylawService.SetCoursePrerequisitesAsync(bylawCourseId, dto);
+        return Ok(result);
+    }
+
+    [HttpPut("courses/{bylawCourseId}/allowed-departments")]
+    public async Task<ActionResult<BylawCourseDto>> UpdateBylawCourseAllowedDepartments(int bylawCourseId, [FromBody] UpdateBylawCourseAllowedDepartmentsDto dto)
+    {
+        var result = await _bylawService.UpdateBylawCourseAllowedDepartmentsAsync(bylawCourseId, dto);
+        return Ok(result);
+    }
+
+    [HttpPut("courses/{bylawCourseId}/credit-hours")]
+    public async Task<ActionResult<BylawCourseDto>> UpdateBylawCourseCreditHours(int bylawCourseId, [FromBody] UpdateBylawCourseCreditHoursDto dto)
+    {
+        var result = await _bylawService.UpdateBylawCourseCreditHoursAsync(bylawCourseId, dto);
         return Ok(result);
     }
 

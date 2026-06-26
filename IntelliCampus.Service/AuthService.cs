@@ -1,6 +1,7 @@
 using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Shared.Dtos.Auth;
+using IntelliCampus.Shared.Params;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Domain.Entities;
@@ -65,7 +66,7 @@ public class AuthService(
             Roles = user.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage),
             MustChangePassword = user.MustChangePassword,
-            Notifications = (await _notificationService.GetUnreadAsync(userId)).ToList()
+            Notifications = (await _notificationService.GetUnreadAsync(userId, new NotificationQueryParams())).ToList()
         };
     }
 

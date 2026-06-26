@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service.Specifications;
 
@@ -9,6 +10,15 @@ internal sealed class AnnouncementsByCourseSpec : BaseSpecifications<Announcemen
     {
         AddIncludes();
         AddOrderByDescending(a => a.CreatedAt);
+    }
+
+    public AnnouncementsByCourseSpec(int courseId, AnnouncementQueryParams queryParams)
+        : base(a => a.CourseId == courseId &&
+            (string.IsNullOrEmpty(queryParams.Search) || a.Content.Contains(queryParams.Search)))
+    {
+        AddIncludes();
+        AddOrderByDescending(a => a.CreatedAt);
+        ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 
     private void AddIncludes()

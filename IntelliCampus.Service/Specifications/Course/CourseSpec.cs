@@ -4,14 +4,18 @@ using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service.Specifications
 {
+    internal enum CourseIncludeLevel
+    {
+        Full,
+        Student,
+        Light
+    }
+
     internal class CourseSpec : BaseSpecifications<Course>
     {
 
-       
-        public CourseSpec() { AddFullIncludes(); }
-
         
-       
+        public CourseSpec() { AddFullIncludes(); }
 
         public CourseSpec(int courseId)
             : base(c => c.CourseId == courseId)
@@ -25,19 +29,35 @@ namespace IntelliCampus.Service.Specifications
             : base(c => courseIds.Contains(c.CourseId))
         { AddFullIncludes(); }
 
-        public CourseSpec(CourseQueryParams queryParams)
-            : base(c =>
-                (!queryParams.CourseId.HasValue || c.CourseId == queryParams.CourseId.Value)
-                && (!queryParams.DepartmentId.HasValue || c.DepartmentId == queryParams.DepartmentId.Value)
-                && (!queryParams.IsActiveOnly || c.Status == CourseStatus.Active)
-                && (string.IsNullOrEmpty(queryParams.Search)
-                    || c.CourseName.Contains(queryParams.Search)
-                    || (c.CourseCode != null && c.CourseCode.Contains(queryParams.Search)))
-                && (!queryParams.StudentId.HasValue
-                    || c.StudentCourses.Any(sc => sc.StudentId == queryParams.StudentId.Value
-                        && (queryParams.StudentStatuses == null || queryParams.StudentStatuses.Contains(sc.Status))))
-            )
-        { AddFullIncludes(); }
+        public CourseSpec(CourseQueryParams queryParams, CourseIncludeLevel includeLevel = CourseIncludeLevel.Full)
+            : base(CourseSpecHelper.GetCourseCriteria(queryParams))
+        {
+            switch (includeLevel)
+            {
+                case CourseIncludeLevel.Light:
+                    AddLightIncludes();
+                    break;
+                case CourseIncludeLevel.Student:
+                    AddStudentIncludes();
+                    break;
+                default:
+                    AddFullIncludes();
+                    break;
+            }
+            ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
+        }
+
+        public CourseSpec(List<int> courseIds, CourseQueryParams queryParams)
+            : base(c => courseIds.Contains(c.CourseId))
+        {
+            AddFullIncludes();
+            ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
+        }
+
+        public CourseSpec(List<int> courseIds, CourseQueryParams queryParams, bool forCount)
+            : base(c => courseIds.Contains(c.CourseId))
+        {
+        }
 
 
         private void AddFullIncludes()
@@ -49,6 +69,25 @@ namespace IntelliCampus.Service.Specifications
             AddInclude("StudentCourses.Class");
             AddInclude("Classes.Instructor");
             AddInclude("Classes.Sessions.Attendances");
+            AddInclude("Prerequisites.PrerequisiteCourse");
+            AddInclude(c => c.ElectiveBucketCourses!);
+        }
+
+        private void AddStudentIncludes()
+        {
+            AddInclude(c => c.Department!);
+            AddInclude(c => c.StudentCourses!);
+            AddInclude(c => c.Grades!);
+            AddInclude("StudentCourses.Class");
+            AddInclude(c => c.Classes!);
+            AddInclude("Classes.Instructor");
+        }
+
+        private void AddLightIncludes()
+        {
+            AddInclude(c => c.Department!);
+            AddInclude(c => c.Classes!);
+            AddInclude("Classes.Instructor");
             AddInclude("Prerequisites.PrerequisiteCourse");
             AddInclude(c => c.ElectiveBucketCourses!);
         }

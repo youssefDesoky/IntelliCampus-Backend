@@ -5,6 +5,7 @@ using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.ElectiveBucket;
+using IntelliCampus.Shared.Params;
 using Microsoft.EntityFrameworkCore;
 
 namespace IntelliCampus.Service;
@@ -13,11 +14,13 @@ public class ElectiveBucketService : IElectiveBucketService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly INotificationService _notificationService;
+    private readonly IBylawService _bylawService;
 
-    public ElectiveBucketService(IUnitOfWork unitOfWork, INotificationService notificationService)
+    public ElectiveBucketService(IUnitOfWork unitOfWork, INotificationService notificationService, IBylawService bylawService)
     {
         _unitOfWork = unitOfWork;
         _notificationService = notificationService;
+        _bylawService = bylawService;
     }
 
     private IGenericRepository<ElectiveBucket, int> Buckets => _unitOfWork.GetRepository<ElectiveBucket, int>();
@@ -28,9 +31,12 @@ public class ElectiveBucketService : IElectiveBucketService
     private IGenericRepository<StudentCourse, int> StudentCourses => _unitOfWork.GetRepository<StudentCourse, int>();
     private IGenericRepository<Bylaw, int> Bylaws => _unitOfWork.GetRepository<Bylaw, int>();
     private IGenericRepository<Department, int> Departments => _unitOfWork.GetRepository<Department, int>();
+    private IGenericRepository<BylawCourse, int> BylawCourses => _unitOfWork.GetRepository<BylawCourse, int>();
 
     public async Task<ElectiveBucketDto> CreateAsync(CreateElectiveBucketDto dto)
     {
+        await ValidateBucketCreditHoursAsync(dto.BylawId, dto.CourseIds, dto.RequiredCreditHours);
+
         var bucket = new ElectiveBucket
         {
             Name = dto.Name,
@@ -38,7 +44,6 @@ public class ElectiveBucketService : IElectiveBucketService
             BylawId = dto.BylawId,
             DepartmentId = dto.DepartmentId,
             RequiredCreditHours = dto.RequiredCreditHours,
-            RequiredCourseCount = dto.RequiredCourseCount,
             IsActive = true
         };
 
@@ -54,6 +59,18 @@ public class ElectiveBucketService : IElectiveBucketService
                     ElectiveBucketId = bucket.ElectiveBucketId,
                     CourseId = courseId
                 });
+
+                // Create BylawCourse record for prerequisite support
+                var existingBc = await BylawCourses.GetByIdAsync(new BylawCourseSpec(dto.BylawId, courseId));
+                if (existingBc is null)
+                {
+                    BylawCourses.Add(new BylawCourse
+                    {
+                        BylawId = dto.BylawId,
+                        CourseId = courseId,
+                        CourseType = CourseType.Elective
+                    });
+                }
             }
             await _unitOfWork.SaveChangesAsync();
         }
@@ -79,10 +96,15 @@ public class ElectiveBucketService : IElectiveBucketService
         var bucket = await Buckets.GetByIdAsync(bucketId);
         if (bucket is null) throw new ElectiveBucketNotFoundException(bucketId);
 
+        var finalRequiredHours = dto.RequiredCreditHours ?? bucket.RequiredCreditHours;
+        var finalCourseIds = dto.CourseIds ?? (await BucketCourses.GetAllAsync(new ElectiveBucketCourseSpec(bucketId)))
+            .Select(ec => ec.CourseId).ToList();
+
+        await ValidateBucketCreditHoursAsync(bucket.BylawId, finalCourseIds, finalRequiredHours);
+
         if (dto.Name is not null) bucket.Name = dto.Name;
         if (dto.NameAr is not null) bucket.NameAr = dto.NameAr;
         if (dto.RequiredCreditHours.HasValue) bucket.RequiredCreditHours = dto.RequiredCreditHours.Value;
-        if (dto.RequiredCourseCount.HasValue) bucket.RequiredCourseCount = dto.RequiredCourseCount;
         if (dto.IsActive.HasValue) bucket.IsActive = dto.IsActive.Value;
 
         Buckets.Update(bucket);
@@ -101,6 +123,18 @@ public class ElectiveBucketService : IElectiveBucketService
                     ElectiveBucketId = bucketId,
                     CourseId = courseId
                 });
+
+                // Create BylawCourse record for prerequisite support
+                var existingBc = await BylawCourses.GetByIdAsync(new BylawCourseSpec(bucket.BylawId, courseId));
+                if (existingBc is null)
+                {
+                    BylawCourses.Add(new BylawCourse
+                    {
+                        BylawId = bucket.BylawId,
+                        CourseId = courseId,
+                        CourseType = CourseType.Elective
+                    });
+                }
             }
             await _unitOfWork.SaveChangesAsync();
         }
@@ -124,7 +158,7 @@ public class ElectiveBucketService : IElectiveBucketService
         var bucket = await Buckets.GetByIdAsync(spec);
         if (bucket is null) throw new ElectiveBucketNotFoundException(bucketId);
 
-        return MapToDto(bucket);
+        return await MapToDtoAsync(bucket);
     }
 
     public async Task<IEnumerable<ElectiveBucketDto>> GetByBylawAsync(int bylawId)
@@ -135,7 +169,10 @@ public class ElectiveBucketService : IElectiveBucketService
 
         var spec = new ElectiveBucketsByBylawSpec(bylawId);
         var buckets = await Buckets.GetAllAsync(spec);
-        return buckets.Select(MapToDto);
+        var results = new List<ElectiveBucketDto>();
+        foreach (var bucket in buckets)
+            results.Add(await MapToDtoAsync(bucket));
+        return results;
     }
 
     public async Task<IEnumerable<ElectiveBucketDto>> GetByDepartmentAsync(int departmentId)
@@ -146,7 +183,10 @@ public class ElectiveBucketService : IElectiveBucketService
 
         var spec = new ElectiveBucketsByDepartmentSpec(departmentId);
         var buckets = await Buckets.GetAllAsync(spec);
-        return buckets.Select(MapToDto);
+        var results = new List<ElectiveBucketDto>();
+        foreach (var bucket in buckets)
+            results.Add(await MapToDtoAsync(bucket));
+        return results;
     }
 
     public async Task<IEnumerable<ElectiveBucketProgressDto>> GetStudentProgressAsync(int studentId)
@@ -170,13 +210,8 @@ public class ElectiveBucketService : IElectiveBucketService
                 ElectiveBucketId = p.ElectiveBucketId,
                 BucketName = bucket.Name,
                 RequiredCreditHours = bucket.RequiredCreditHours,
-                RequiredCourseCount = bucket.RequiredCourseCount,
                 CompletedCreditHours = p.CompletedCreditHours,
-                CompletedCourseCount = p.CompletedCourseCount,
                 RemainingCreditHours = Math.Max(0, bucket.RequiredCreditHours - p.CompletedCreditHours),
-                RemainingCourseCount = bucket.RequiredCourseCount.HasValue
-                    ? Math.Max(0, bucket.RequiredCourseCount.Value - p.CompletedCourseCount)
-                    : 0,
                 IsLocked = p.IsLocked,
                 IsRequirementMet = p.CompletedCreditHours >= bucket.RequiredCreditHours
             });
@@ -196,8 +231,13 @@ public class ElectiveBucketService : IElectiveBucketService
         var studentCourseSpec = new StudentCompletedCoursesInBucketSpec(studentId, courseIds);
         var completedCourses = await StudentCourses.GetAllAsync(studentCourseSpec);
 
-        var totalHours = completedCourses.Sum(sc => sc.Course.CreditHours);
-        var totalCount = completedCourses.Count();
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
+        var effectiveCredits = student?.BylawId is not null
+            ? await _bylawService.GetEffectiveCreditHoursAsync(student.BylawId.Value, student.DepartmentId)
+            : new Dictionary<int, int>();
+
+        var totalHours = completedCourses.Sum(sc =>
+            effectiveCredits.GetValueOrDefault(sc.CourseId, sc.Course.CreditHours));
 
         var progressEntity = await Progress.GetByIdAsync(new StudentBucketProgressByIdSpec(studentId, bucketId));
         if (progressEntity is null)
@@ -207,7 +247,7 @@ public class ElectiveBucketService : IElectiveBucketService
                 StudentId = studentId,
                 ElectiveBucketId = bucketId,
                 CompletedCreditHours = totalHours,
-                CompletedCourseCount = totalCount,
+                CompletedCourseCount = completedCourses.Count(),
                 IsLocked = false
             };
             Progress.Add(progressEntity);
@@ -215,15 +255,13 @@ public class ElectiveBucketService : IElectiveBucketService
         else
         {
             progressEntity.CompletedCreditHours = totalHours;
-            progressEntity.CompletedCourseCount = totalCount;
+            progressEntity.CompletedCourseCount = completedCourses.Count();
             Progress.Update(progressEntity);
         }
 
         await _unitOfWork.SaveChangesAsync();
 
         var isRequirementMet = totalHours >= bucket.RequiredCreditHours;
-        if (bucket.RequiredCourseCount.HasValue)
-            isRequirementMet = isRequirementMet && totalCount >= bucket.RequiredCourseCount.Value;
 
         if (isRequirementMet && !progressEntity.IsLocked)
         {
@@ -251,8 +289,24 @@ public class ElectiveBucketService : IElectiveBucketService
         }
     }
 
-    private static ElectiveBucketDto MapToDto(ElectiveBucket bucket)
+    private async Task ValidateBucketCreditHoursAsync(int bylawId, List<int> courseIds, decimal requiredCreditHours)
     {
+        if (requiredCreditHours <= 0 || courseIds.Count == 0) return;
+
+        var courses = await Courses.GetAllAsync(new CourseSpec(courseIds));
+        var totalAvailable = courses.Sum(c => c.CreditHours);
+
+        if (totalAvailable < requiredCreditHours)
+            throw new InvalidOperationException(
+                $"Total available credit hours ({totalAvailable}) from the selected courses is less than the required minimum ({requiredCreditHours}). Add more courses or reduce the minimum credit hours.");
+    }
+
+    private async Task<ElectiveBucketDto> MapToDtoAsync(ElectiveBucket bucket)
+    {
+        var bcLookup = (await BylawCourses.GetAllAsync(new BylawCourseSpec(bucket.BylawId, false)))
+            .GroupBy(bc => bc.CourseId)
+            .ToDictionary(g => g.Key, g => g.First().BylawCourseId);
+
         return new ElectiveBucketDto
         {
             ElectiveBucketId = bucket.ElectiveBucketId,
@@ -263,14 +317,15 @@ public class ElectiveBucketService : IElectiveBucketService
             DepartmentId = bucket.DepartmentId,
             DepartmentName = bucket.Department?.DepartmentName,
             RequiredCreditHours = bucket.RequiredCreditHours,
-            RequiredCourseCount = bucket.RequiredCourseCount,
             IsActive = bucket.IsActive,
-            Courses = bucket.ElectiveBucketCourses.Select(ebc => new ElectiveBucketCourseDto
+            Courses = (bucket.ElectiveBucketCourses ?? [])
+                .Select(ebc => new ElectiveBucketCourseDto
             {
                 CourseId = ebc.CourseId,
-                CourseCode = ebc.Course.CourseCode,
-                CourseName = ebc.Course.CourseName,
-                CreditHours = ebc.Course.CreditHours
+                CourseCode = ebc.Course?.CourseCode,
+                CourseName = ebc.Course?.CourseName ?? "Unknown",
+                CreditHours = ebc.Course?.CreditHours ?? 0,
+                BylawCourseId = bcLookup.GetValueOrDefault(ebc.CourseId)
             }).ToList()
         };
     }
