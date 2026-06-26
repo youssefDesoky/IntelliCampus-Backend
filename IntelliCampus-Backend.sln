@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntelliCampus.Presentation"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntelliCampus.Presistence", "IntelliCmpus.Presistence\IntelliCampus.Presistence.csproj", "{B99D56B5-1D94-4388-BFAB-FC562A8DFBBC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntelliCampus.UnitTests", "IntelliCampus.UnitTests\IntelliCampus.UnitTests.csproj", "{0F36A3C5-E94C-4EE4-943A-C6D1A97F08ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +119,18 @@ Global
 		{B99D56B5-1D94-4388-BFAB-FC562A8DFBBC}.Release|x64.Build.0 = Release|Any CPU
 		{B99D56B5-1D94-4388-BFAB-FC562A8DFBBC}.Release|x86.ActiveCfg = Release|Any CPU
 		{B99D56B5-1D94-4388-BFAB-FC562A8DFBBC}.Release|x86.Build.0 = Release|Any CPU
+		{0F36A3C5-E94C-4EE4-943A-C6D1A97F08ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F36A3C5-E94C-4EE4-943A-C6D1A97F08ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F36A3C5-E94C-4EE4-943A-C6D1A97F08ED}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0F36A3C5-E94C-4EE4-943A-C6D1A97F08ED}.Debug|x64.Build.0 = Debug|Any CPU
+		{0F36A3C5-E94C-4EE4-943A-C6D1A97F08ED}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0F36A3C5-E94C-4EE4-943A-C6D1A97F08ED}.Debug|x86.Build.0 = Debug|Any CPU
+		{0F36A3C5-E94C-4EE4-943A-C6D1A97F08ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F36A3C5-E94C-4EE4-943A-C6D1A97F08ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F36A3C5-E94C-4EE4-943A-C6D1A97F08ED}.Release|x64.ActiveCfg = Release|Any CPU
+		{0F36A3C5-E94C-4EE4-943A-C6D1A97F08ED}.Release|x64.Build.0 = Release|Any CPU
+		{0F36A3C5-E94C-4EE4-943A-C6D1A97F08ED}.Release|x86.ActiveCfg = Release|Any CPU
+		{0F36A3C5-E94C-4EE4-943A-C6D1A97F08ED}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
