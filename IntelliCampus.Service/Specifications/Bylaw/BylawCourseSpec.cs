@@ -24,4 +24,7 @@ internal class BylawCourseSpec : BaseSpecifications<BylawCourse>
     {
         AddInclude(bc => bc.Course);
     }
+
+    public BylawCourseSpec(int bylawId, bool _ = false)
+        : base(bc => bc.BylawId == bylawId) { }
 }

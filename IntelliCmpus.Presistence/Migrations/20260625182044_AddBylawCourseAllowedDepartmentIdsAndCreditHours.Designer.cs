@@ -4,6 +4,7 @@ using IntelliCampus.Presistence.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260625182044_AddBylawCourseAllowedDepartmentIdsAndCreditHours")]
+    partial class AddBylawCourseAllowedDepartmentIdsAndCreditHours
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -746,6 +749,9 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.Property<string>("NameAr")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RequiredCourseCount")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("RequiredCreditHours")
                         .HasColumnType("decimal(5,2)");
@@ -2551,9 +2557,6 @@ namespace IntelliCampus.Presistence.Migrations
                             b1.Property<int?>("MaxCreditHoursPerSemester")
                                 .HasColumnType("int");
 
-                            b1.Property<string>("MaxGradeOnRetake")
-                                .HasColumnType("nvarchar(max)");
-
                             b1.Property<int?>("MinCreditHoursForGraduationProject")
                                 .HasColumnType("int");
 
@@ -2565,12 +2568,6 @@ namespace IntelliCampus.Presistence.Migrations
 
                             b1.Property<int?>("MinHoursToChooseSpecialization")
                                 .HasColumnType("int");
-
-                            b1.Property<decimal?>("MinPassingCourseworkGrade")
-                                .HasColumnType("decimal(18,2)");
-
-                            b1.Property<decimal?>("MinPassingFinalExamGrade")
-                                .HasColumnType("decimal(18,2)");
 
                             b1.Property<int?>("ProbationRegistrationLimit")
                                 .HasColumnType("int");

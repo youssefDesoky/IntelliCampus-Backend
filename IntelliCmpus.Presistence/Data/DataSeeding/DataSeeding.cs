@@ -620,9 +620,11 @@ public class DataSeed : IDataSeed
         {
             var courseId = _courseIds.GetValueOrDefault(dto.CourseCode);
             if (courseId == 0) continue;
+            var bylawId = _bylawIdsByType.GetValueOrDefault(dto.BylawType, _bylawId);
+            if (bylawId == 0) continue;
             var entity = new BylawCourse
             {
-                BylawId = _bylawId,
+                BylawId = bylawId,
                 CourseId = courseId,
                 CourseType = Enum.Parse<CourseType>(dto.CourseType)
             };
@@ -631,7 +633,7 @@ public class DataSeed : IDataSeed
         }
         await _dbContext.SaveChangesAsync();
         foreach (var (dto, entity) in created)
-            _bylawCourseIds[dto.CourseCode] = entity.BylawCourseId;
+            _bylawCourseIds[$"{dto.BylawType}:{dto.CourseCode}"] = entity.BylawCourseId;
     }
 
     // ---- Bylaw Course Prerequisites ----
@@ -642,8 +644,10 @@ public class DataSeed : IDataSeed
         var items = await ReadJsonAsync<BylawCoursePrerequisiteSeedDto>("bylaw-course-prerequisites.json");
         foreach (var dto in items)
         {
-            var bylawCourseId = _bylawCourseIds.GetValueOrDefault(dto.CourseCode);
-            var prereqBylawCourseId = _bylawCourseIds.GetValueOrDefault(dto.PrerequisiteCourseCode);
+            var key = $"{dto.BylawType}:{dto.CourseCode}";
+            var prereqKey = $"{dto.BylawType}:{dto.PrerequisiteCourseCode}";
+            var bylawCourseId = _bylawCourseIds.GetValueOrDefault(key);
+            var prereqBylawCourseId = _bylawCourseIds.GetValueOrDefault(prereqKey);
             if (bylawCourseId == 0 || prereqBylawCourseId == 0) continue;
             _dbContext.Set<BylawCoursePrerequisite>().Add(new BylawCoursePrerequisite
             {
@@ -690,7 +694,7 @@ public class DataSeed : IDataSeed
                 Gpa = dto.Gpa,
                 SpecializationId = dto.SpecializationId,
                 StudentType = studentType,
-                Program = studentType is StudentType.Masters or StudentType.PhD or StudentType.Diploma ? StudentProgram.General : Enum.TryParse<StudentProgram>(dto.Program, out var prog) ? prog : null
+                Program = Enum.TryParse<StudentProgram>(dto.Program, out var prog) ? prog : null
             };
             _dbContext.Students.Add(entity);
             created.Add((dto, entity));
@@ -1463,12 +1467,14 @@ public class DataSeed : IDataSeed
     {
         public string CourseCode { get; init; } = "";
         public string CourseType { get; init; } = "";
+        public string BylawType { get; init; } = "Bachelor";
     }
 
     private record BylawCoursePrerequisiteSeedDto
     {
         public string CourseCode { get; init; } = "";
         public string PrerequisiteCourseCode { get; init; } = "";
+        public string BylawType { get; init; } = "Bachelor";
     }
 
     private record GradeScaleDto

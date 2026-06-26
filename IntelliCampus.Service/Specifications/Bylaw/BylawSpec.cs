@@ -17,6 +17,14 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(b => b.UploadedBy!);
             AddInclude(b => b.Students!);
+            AddInclude("BylawCourses");
+            AddInclude("BylawCourses.Course");
+            AddInclude("BylawCourses.Prerequisites");
+            AddInclude("BylawCourses.PrerequisiteFor");
+            AddInclude("ElectiveBuckets");
+            AddInclude("ElectiveBuckets.ElectiveBucketCourses");
+            AddInclude("ElectiveBuckets.ElectiveBucketCourses.Course");
+            AddInclude("ElectiveBuckets.Department");
         }
 
         public BylawSpec(BylawQueryParams queryParams)
