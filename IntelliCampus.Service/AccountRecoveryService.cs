@@ -100,13 +100,11 @@ public class AccountRecoveryService : IAccountRecoveryService
             throw new InvalidOperationException("Invalid or expired verification code.");
 
         matchedCode.ConsumedAt = EgyptTime.Now;
-        VerificationCodes.Update(matchedCode);
 
         user.Password = _passwordService.HashPassword(dto.NewPassword);
         user.RecoveryEmail = dto.RecoveryEmail;
         user.RecoveryEmailVerified = true;
         user.MustChangePassword = false;
-        Users.Update(user);
 
         await _unitOfWork.SaveChangesAsync();
 

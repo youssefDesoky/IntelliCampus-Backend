@@ -165,7 +165,6 @@ public class AuthService(
             throw new InvalidOperationException("Current password is incorrect.");
 
         user.Password = _passwordService.HashPassword(dto.NewPassword);
-        _unitOfWork.GetRepository<User, int>().Update(user);
         await _unitOfWork.SaveChangesAsync();
 
         return true;
@@ -183,7 +182,6 @@ public class AuthService(
 
         user.RecoveryEmail = dto.NewEmail;
         user.RecoveryEmailVerified = true;
-        _unitOfWork.GetRepository<User, int>().Update(user);
         await _unitOfWork.SaveChangesAsync();
 
         return true;
