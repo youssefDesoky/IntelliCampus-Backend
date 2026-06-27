@@ -140,11 +140,26 @@ public class AttendanceController(
     public async Task<IActionResult> GetSessionExcuses(int sessionId)
         => Ok(await excuseService.GetBySessionAsync(sessionId, UserId));
 
+    [HttpGet("/api/courses/{courseId}/attendance/excuses")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> GetCourseExcuses(int courseId)
+        => Ok(await excuseService.GetByCourseAsync(courseId, UserId));
+
     [HttpPatch("excuses/{excuseId}/status")]
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> UpdateExcuseStatus(
         int excuseId, [FromBody] ExcuseStatus status)
     {
+        var result = await excuseService.UpdateStatusAsync(excuseId, status, UserId);
+        return Ok(result);
+    }
+
+    [HttpPatch("excuses/{excuseId}")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> UpdateExcuseStatusByDto(
+        int excuseId, [FromBody] UpdateExcuseStatusDto dto)
+    {
+        var status = Enum.Parse<ExcuseStatus>(dto.Status, ignoreCase: true);
         var result = await excuseService.UpdateStatusAsync(excuseId, status, UserId);
         return Ok(result);
     }

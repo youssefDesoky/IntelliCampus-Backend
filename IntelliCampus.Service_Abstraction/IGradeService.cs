@@ -43,4 +43,6 @@ public interface IGradeService
     Task<GradeComplaintResponseDto> FileComplaintAsync(int studentId, GradeComplaintDto dto);
     Task<IEnumerable<GradeComplaintResponseDto>> GetComplaintsAsync(int studentId);
     Task<GradeComplaintResponseDto?> ReviewComplaintAsync(int complaintId, int instructorId);
+    Task<IEnumerable<InstructorGradeComplaintDto>> GetCourseComplaintsAsync(int courseId, int instructorId);
+    Task<GradeComplaintResponseDto?> UpdateComplaintStatusAsync(int complaintId, int instructorId, ReviewComplaintDto dto);
 }

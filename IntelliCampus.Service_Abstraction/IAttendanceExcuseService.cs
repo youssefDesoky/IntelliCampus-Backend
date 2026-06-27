@@ -11,5 +11,7 @@ public interface IAttendanceExcuseService
 
     Task<IEnumerable<AttendanceExcuseDto>> GetBySessionAsync(int sessionId, int instructorId);
 
+    Task<IEnumerable<AttendanceExcuseDto>> GetByCourseAsync(int courseId, int instructorId);
+
     Task<AttendanceExcuseDto> UpdateStatusAsync(int excuseId, ExcuseStatus status, int instructorId);
 }

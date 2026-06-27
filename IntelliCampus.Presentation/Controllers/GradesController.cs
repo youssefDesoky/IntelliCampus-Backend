@@ -68,6 +68,11 @@ public class GradesController(IGradeService gradeService) : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("course/{courseId}/complaints")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> GetCourseComplaints(int courseId)
+        => Ok(await gradeService.GetCourseComplaintsAsync(courseId, UserId));
+
     [HttpGet("student/{studentId}/course/{courseId}")]
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> GetStudentGrades(int studentId, int courseId)
@@ -80,4 +85,9 @@ public class GradesController(IGradeService gradeService) : ControllerBase
         var result = await gradeService.ReviewComplaintAsync(complaintId, UserId);
         return Ok(result);
     }
+
+    [HttpPatch("complaint/{complaintId}")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> UpdateComplaintStatus(int complaintId, [FromBody] ReviewComplaintDto dto)
+        => Ok(await gradeService.UpdateComplaintStatusAsync(complaintId, UserId, dto));
 }

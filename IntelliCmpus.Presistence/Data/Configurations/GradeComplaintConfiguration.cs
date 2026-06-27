@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,8 +20,12 @@ public class GradeComplaintConfiguration : IEntityTypeConfiguration<GradeComplai
             .IsRequired();
 
         builder.Property(c => c.Status)
+            .HasConversion<string>()
             .HasMaxLength(20)
             .IsRequired();
+
+        builder.Property(c => c.InstructorResponse)
+            .HasMaxLength(2000);
 
         builder.HasOne(c => c.Grade)
             .WithMany()

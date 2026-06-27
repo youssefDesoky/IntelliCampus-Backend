@@ -79,7 +79,7 @@ public class AttendanceExcuseService : IAttendanceExcuseService
 
         var spec = new AttendanceExcuseSpec(studentId);
         var excuses = await Excuses.GetAllAsync(spec);
-        return excuses.Select(MapToDto);
+        return excuses.Select(e => MapToDto(e));
     }
 
     public async Task<IEnumerable<AttendanceExcuseDto>> GetBySessionAsync(int sessionId, int instructorId)
@@ -94,7 +94,37 @@ public class AttendanceExcuseService : IAttendanceExcuseService
 
         var spec = new AttendanceExcuseSpec(sessionId, bySession: true);
         var excuses = await Excuses.GetAllAsync(spec);
-        return excuses.Select(MapToDto);
+        return excuses.Select(e => MapToDto(e, session));
+    }
+
+    public async Task<IEnumerable<AttendanceExcuseDto>> GetByCourseAsync(int courseId, int instructorId)
+    {
+        var teaches = await Classes.AnyAsync(c => c.CourseId == courseId && c.InstructorId == instructorId);
+        if (!teaches)
+            throw new InvalidOperationException("Not authorized.");
+
+        var classIds = (await Classes.GetAllAsync())
+            .Where(c => c.CourseId == courseId)
+            .Select(c => c.ClassId)
+            .ToHashSet();
+
+        var sessions = await Sessions.GetAllAsync();
+        var sessionIds = sessions.Where(s => classIds.Contains(s.ClassId))
+            .Select(s => s.SessionId)
+            .ToHashSet();
+
+        var spec = new AttendanceExcuseForSessionsSpec(sessionIds);
+        var excuses = (await Excuses.GetAllAsync(spec)).ToList();
+
+        var studentIds = excuses.Select(e => e.StudentId).Distinct().ToHashSet();
+        var students = (await Students.GetAllAsync())
+            .Where(s => studentIds.Contains(s.UserId))
+            .ToDictionary(s => s.UserId);
+
+        var sessionsDict = sessions.ToDictionary(s => s.SessionId);
+
+        return excuses.Select(e =>
+            MapToDtoWithDetails(e, students.GetValueOrDefault(e.StudentId), sessionsDict.GetValueOrDefault(e.SessionId)));
     }
 
     public async Task<AttendanceExcuseDto> UpdateStatusAsync(int excuseId, ExcuseStatus status, int instructorId)
@@ -131,7 +161,7 @@ public class AttendanceExcuseService : IAttendanceExcuseService
                 $"Content type '{file.ContentType}' is not allowed.");
     }
 
-    private AttendanceExcuseDto MapToDto(AttendanceExcuse e) => new()
+    private AttendanceExcuseDto MapToDto(AttendanceExcuse e, Session? session = null) => new()
     {
         ExcuseId = e.ExcuseId,
         StudentCode = e.Student?.StudentCode ?? "",
@@ -141,6 +171,23 @@ public class AttendanceExcuseService : IAttendanceExcuseService
         Status = e.Status,
         CreatedAt = e.CreatedAt,
         DocumentUrl = e.DocumentPath is not null ? _fileStorage.GetUrl(e.DocumentPath) : null,
-        DocumentOriginalName = e.DocumentOriginalName
+        DocumentOriginalName = e.DocumentOriginalName,
+        FileName = e.DocumentOriginalName,
+        SessionDate = session?.Date.ToString("dd MMM yyyy"),
+        SessionTime = session?.StartTime.HasValue == true
+            ? $"{session.StartTime:hh\\:mm} - {session.EndTime:hh\\:mm}"
+            : null,
+        SessionType = session?.SessionType.ToString()
     };
+
+    private AttendanceExcuseDto MapToDtoWithDetails(AttendanceExcuse e, Student? student, Session? session)
+    {
+        var dto = MapToDto(e, session);
+        if (student is not null)
+        {
+            dto.StudentCode = student.StudentCode ?? "";
+            dto.StudentName = student.FullName;
+        }
+        return dto;
+    }
 }

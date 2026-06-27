@@ -916,15 +916,15 @@ public class GradeService : IGradeService
 
     public async Task<GradeComplaintResponseDto> FileComplaintAsync(int studentId, GradeComplaintDto dto)
     {
-        // dto.GradeId is treated as StudentAssignmentId for now.
-        var submission = await StudentAssignments.GetByIdAsync(dto.GradeId);
-        if (submission is null || submission.StudentId != studentId)
-            throw new GradeNotFoundException(dto.GradeId);
+        var title = dto.ComplaintType.ToLowerInvariant() switch
+        {
+            "assignment" => await ValidateAssignmentComplaint(studentId, dto.GradeId),
+            "quiz" => await ValidateQuizComplaint(studentId, dto.GradeId),
+            "midterm" or "final" or "project" => await ValidateGradeComplaint(studentId, dto.GradeId, dto.ComplaintType),
+            _ => throw new InvalidOperationException($"Unknown complaint type: {dto.ComplaintType}")
+        };
 
-        if (!submission.Grade.HasValue)
-            throw new InvalidOperationException("Cannot complain about an ungraded submission.");
-
-        var alreadyFiled = await Complaints.AnyAsync(c => c.GradeId == dto.GradeId && c.StudentId == studentId && c.Status == "Pending");
+        var alreadyFiled = await Complaints.AnyAsync(c => c.GradeId == dto.GradeId && c.StudentId == studentId && c.Status == ComplaintStatus.Pending);
         if (alreadyFiled)
             throw new InvalidOperationException("You already have a pending complaint for this grade.");
 
@@ -934,15 +934,14 @@ public class GradeService : IGradeService
             StudentId = studentId,
             ComplaintType = dto.ComplaintType,
             Details = dto.Details,
-            Status = "Pending",
+            Status = ComplaintStatus.Pending,
             SubmittedAt = EgyptTime.Now
         };
 
         Complaints.Add(complaint);
         await _unitOfWork.SaveChangesAsync();
 
-        var assignment = await Assignments.GetByIdAsync(submission.AssignmentId);
-        return MapComplaintToDto(complaint, assignment?.Title ?? string.Empty);
+        return MapComplaintToDto(complaint, title);
     }
 
     public async Task<IEnumerable<GradeComplaintResponseDto>> GetComplaintsAsync(int studentId)
@@ -950,21 +949,10 @@ public class GradeService : IGradeService
         var spec = new GradeComplaintSpec(studentId);
         var complaints = await Complaints.GetAllAsync(spec);
 
-        // GradeComplaintSpec includes Grade navigation which won't be populated in this mode.
-        // Resolve titles from StudentAssignment -> Assignment.
-        var assignmentTitles = new Dictionary<int, string>();
-
         var result = new List<GradeComplaintResponseDto>();
         foreach (var c in complaints)
         {
-            if (!assignmentTitles.TryGetValue(c.GradeId, out var title))
-            {
-                var submission = await StudentAssignments.GetByIdAsync(c.GradeId);
-                var assignment = submission is null ? null : await Assignments.GetByIdAsync(submission.AssignmentId);
-                title = assignment?.Title ?? string.Empty;
-                assignmentTitles[c.GradeId] = title;
-            }
-
+            var title = await ResolveComplaintTitleAsync(c.GradeId, c.ComplaintType);
             result.Add(MapComplaintToDto(c, title));
         }
 
@@ -977,30 +965,149 @@ public class GradeService : IGradeService
         if (complaint is null)
             throw new ComplaintNotFoundException(complaintId);
 
-        // complaint.GradeId is StudentAssignmentId
-        var submission = await StudentAssignments.GetByIdAsync(complaint.GradeId);
-        if (submission is null)
-            throw new GradeNotFoundException(complaint.GradeId);
+        var courseId = await ResolveComplaintCourseIdAsync(complaint.GradeId, complaint.ComplaintType);
+        if (courseId is null)
+            throw new InvalidOperationException("Could not resolve complaint course.");
 
-        var assignment = await Assignments.GetByIdAsync(submission.AssignmentId);
-        if (assignment is null)
-            throw new AssignmentNotFoundException(submission.AssignmentId);
-
-        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == courseId && c.InstructorId == instructorId);
         if (!teachesCourse)
             throw new InvalidOperationException("Not authorized.");
 
-        complaint.Status = "Reviewed";
+        complaint.Status = ComplaintStatus.Resolved;
         Complaints.Update(complaint);
         await _unitOfWork.SaveChangesAsync();
+
+        var title = await ResolveComplaintTitleAsync(complaint.GradeId, complaint.ComplaintType);
 
         await _notificationService.SendAsync(
             complaint.StudentId,
             NotificationType.GradeComplaintReviewed,
-            $"Your grade complaint for '{assignment.Title}' has been reviewed by your instructor.",
-            clickUrl: $"/courses/{assignment.CourseId}/assignments/{submission.AssignmentId}");
+            $"Your grade complaint for '{title}' has been reviewed by your instructor.",
+            clickUrl: $"/courses/{courseId}");
 
-        return MapComplaintToDto(complaint, assignment.Title);
+        return MapComplaintToDto(complaint, title);
+    }
+
+    private async Task<int?> ResolveComplaintCourseIdAsync(int gradeId, string complaintType)
+    {
+        return complaintType.ToLowerInvariant() switch
+        {
+            "assignment" => await ResolveAssignmentCourseId(gradeId),
+            "quiz" => await ResolveQuizCourseId(gradeId),
+            _ => await ResolveGradeCourseId(gradeId)
+        };
+    }
+
+    private async Task<int?> ResolveAssignmentCourseId(int gradeId)
+    {
+        var submission = await StudentAssignments.GetByIdAsync(gradeId);
+        if (submission is null) return null;
+        var assignment = await Assignments.GetByIdAsync(submission.AssignmentId);
+        return assignment?.CourseId;
+    }
+
+    private async Task<int?> ResolveQuizCourseId(int quizId)
+    {
+        var quiz = await Quizzes.GetByIdAsync(quizId);
+        return quiz?.CourseId;
+    }
+
+    private async Task<int?> ResolveGradeCourseId(int gradeId)
+    {
+        var grade = await Grades.GetByIdAsync(gradeId);
+        return grade?.CourseId;
+    }
+
+    public async Task<IEnumerable<InstructorGradeComplaintDto>> GetCourseComplaintsAsync(int courseId, int instructorId)
+    {
+        var teaches = await Classes.AnyAsync(c => c.CourseId == courseId && c.InstructorId == instructorId);
+        if (!teaches)
+            throw new InvalidOperationException("Not authorized.");
+
+        var allComplaints = await Complaints.GetAllAsync();
+        var result = new List<InstructorGradeComplaintDto>();
+
+        foreach (var c in allComplaints)
+        {
+            if (!await BelongsToCourse(c.GradeId, c.ComplaintType, courseId)) continue;
+
+            var student = await Students.GetByIdAsync(c.StudentId);
+            var title = await ResolveComplaintTitleAsync(c.GradeId, c.ComplaintType);
+
+            result.Add(new InstructorGradeComplaintDto
+            {
+                Id = c.ComplaintId,
+                StudentName = student?.FullName ?? "Unknown",
+                ComplaintType = c.ComplaintType,
+                AssessmentTitle = title,
+                Reason = c.Details,
+                Status = c.Status.ToString().ToLower(),
+                CreatedAt = c.SubmittedAt.ToString("o"),
+                InstructorResponse = c.InstructorResponse
+            });
+        }
+
+        return result;
+    }
+
+    private async Task<bool> BelongsToCourse(int gradeId, string complaintType, int courseId)
+    {
+        return complaintType.ToLowerInvariant() switch
+        {
+            "assignment" => await BelongsToCourseAssignment(gradeId, courseId),
+            "quiz" => await BelongsToCourseQuiz(gradeId, courseId),
+            _ => await BelongsToCourseGrade(gradeId, courseId)
+        };
+    }
+
+    private async Task<bool> BelongsToCourseAssignment(int gradeId, int courseId)
+    {
+        var submission = await StudentAssignments.GetByIdAsync(gradeId);
+        if (submission is null) return false;
+        var assignment = await Assignments.GetByIdAsync(submission.AssignmentId);
+        return assignment?.CourseId == courseId;
+    }
+
+    private async Task<bool> BelongsToCourseQuiz(int quizId, int courseId)
+    {
+        var quiz = await Quizzes.GetByIdAsync(quizId);
+        return quiz?.CourseId == courseId;
+    }
+
+    private async Task<bool> BelongsToCourseGrade(int gradeId, int courseId)
+    {
+        var grade = await Grades.GetByIdAsync(gradeId);
+        return grade?.CourseId == courseId;
+    }
+
+    public async Task<GradeComplaintResponseDto?> UpdateComplaintStatusAsync(int complaintId, int instructorId, ReviewComplaintDto dto)
+    {
+        var complaint = await Complaints.GetByIdAsync(complaintId);
+        if (complaint is null)
+            throw new ComplaintNotFoundException(complaintId);
+
+        var courseId = await ResolveComplaintCourseIdAsync(complaint.GradeId, complaint.ComplaintType);
+        if (courseId is null)
+            throw new InvalidOperationException("Could not resolve complaint course.");
+
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == courseId && c.InstructorId == instructorId);
+        if (!teachesCourse)
+            throw new InvalidOperationException("Not authorized.");
+
+        complaint.Status = (ComplaintStatus)Enum.Parse(typeof(ComplaintStatus), dto.Status, ignoreCase: true);
+        complaint.InstructorResponse = dto.InstructorResponse;
+        Complaints.Update(complaint);
+        await _unitOfWork.SaveChangesAsync();
+
+        var title = await ResolveComplaintTitleAsync(complaint.GradeId, complaint.ComplaintType);
+
+        await _notificationService.SendAsync(
+            complaint.StudentId,
+            NotificationType.GradeComplaintReviewed,
+            $"Your grade complaint for '{title}' has been {dto.Status} by your instructor.",
+            clickUrl: $"/courses/{courseId}");
+
+        return MapComplaintToDto(complaint, title);
     }
 
     // Helpers
@@ -1127,6 +1234,68 @@ public class GradeService : IGradeService
         _ => "other"
     };
 
+    private async Task<string> ResolveComplaintTitleAsync(int gradeId, string complaintType)
+    {
+        var type = complaintType.ToLowerInvariant();
+        return type switch
+        {
+            "assignment" => await ResolveAssignmentTitle(gradeId),
+            "quiz" => await ResolveQuizTitle(gradeId),
+            _ => await ResolveGradeTitle(gradeId)
+        };
+    }
+
+    private async Task<string> ValidateAssignmentComplaint(int studentId, int gradeId)
+    {
+        var submission = await StudentAssignments.GetByIdAsync(gradeId);
+        if (submission is null || submission.StudentId != studentId)
+            throw new GradeNotFoundException(gradeId);
+        if (!submission.Grade.HasValue)
+            throw new InvalidOperationException("Cannot complain about an ungraded submission.");
+        var assignment = await Assignments.GetByIdAsync(submission.AssignmentId);
+        return assignment?.Title ?? string.Empty;
+    }
+
+    private async Task<string> ValidateQuizComplaint(int studentId, int quizId)
+    {
+        var spec = new StudentQuizSpec(studentId, quizId);
+        var submission = await StudentQuizzes.GetByIdAsync(spec);
+        if (submission is null)
+            throw new GradeNotFoundException(quizId);
+        if (!submission.Score.HasValue)
+            throw new InvalidOperationException("Cannot complain about an ungraded quiz.");
+        var quiz = await Quizzes.GetByIdAsync(quizId);
+        return quiz?.Title ?? string.Empty;
+    }
+
+    private async Task<string> ValidateGradeComplaint(int studentId, int gradeId, string complaintType)
+    {
+        var grade = await Grades.GetByIdAsync(gradeId);
+        if (grade is null || grade.StudentId != studentId)
+            throw new GradeNotFoundException(gradeId);
+        return grade.Title;
+    }
+
+    private async Task<string> ResolveAssignmentTitle(int gradeId)
+    {
+        var submission = await StudentAssignments.GetByIdAsync(gradeId);
+        if (submission is null) return string.Empty;
+        var assignment = await Assignments.GetByIdAsync(submission.AssignmentId);
+        return assignment?.Title ?? string.Empty;
+    }
+
+    private async Task<string> ResolveQuizTitle(int quizId)
+    {
+        var quiz = await Quizzes.GetByIdAsync(quizId);
+        return quiz?.Title ?? string.Empty;
+    }
+
+    private async Task<string> ResolveGradeTitle(int gradeId)
+    {
+        var grade = await Grades.GetByIdAsync(gradeId);
+        return grade?.Title ?? string.Empty;
+    }
+
     private static GradeComplaintResponseDto MapComplaintToDto(GradeComplaint c, string gradeTitle) => new()
     {
         ComplaintId = c.ComplaintId,
@@ -1134,7 +1303,7 @@ public class GradeService : IGradeService
         Title = gradeTitle,
         ComplaintType = c.ComplaintType,
         Details = c.Details,
-        Status = c.Status,
+        Status = c.Status.ToString().ToLower(),
         SubmittedAt = c.SubmittedAt.ToString("dd MM yyyy HH:mm")
     };
 
