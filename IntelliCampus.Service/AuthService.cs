@@ -78,7 +78,7 @@ public class AuthService(
         if (user is null)
             throw new UserNotFoundException(userId);
 
-        return new UserProfileDto
+        var dto = new UserProfileDto
         {
             UserId = user.UserId,
             NationalId = user.NationalId,
@@ -87,9 +87,31 @@ public class AuthService(
             PhoneNumber = user.PhoneNumber,
             Email = user.Email,
             Address = user.Address,
+            Nationality = user.Nationality,
+            FacultyName = user.Faculty?.FacultyName,
             Roles = user.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage)
         };
+
+        if (user is Instructor)
+        {
+            var instructorSpec = new InstructorSpec(userId);
+            var instructor = await _unitOfWork.GetRepository<Instructor, int>().GetByIdAsync(instructorSpec);
+            if (instructor is not null)
+            {
+                dto.InstructorCode = instructor.InstructorCode;
+                dto.InstructorRole = instructor.InstructorRole?.ToString();
+                dto.Specialization = instructor.Specialization;
+                dto.DepartmentId = instructor.DepartmentId;
+                dto.DepartmentName = instructor.Department?.DepartmentName;
+                dto.HireDate = instructor.HireDate?.ToString("dd MM yyyy");
+                dto.Status = instructor.Status?.ToString();
+                dto.OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName;
+                dto.OfficeHoursRoomLocation = instructor.OfficeHoursRoom?.Location;
+            }
+        }
+
+        return dto;
     }
 
     public async Task<UserProfileDto?> UpdateProfileAsync(int userId, UpdateProfileDto dto)
@@ -112,7 +134,7 @@ public class AuthService(
         _unitOfWork.GetRepository<User, int>().Update(user);
         await _unitOfWork.SaveChangesAsync();
 
-        return new UserProfileDto
+        var profileDto = new UserProfileDto
         {
             UserId = user.UserId,
             NationalId = user.NationalId,
@@ -121,9 +143,31 @@ public class AuthService(
             PhoneNumber = user.PhoneNumber,
             Email = user.Email,
             Address = user.Address,
+            Nationality = user.Nationality,
+            FacultyName = user.Faculty?.FacultyName,
             Roles = user.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage)
         };
+
+        if (user is Instructor)
+        {
+            var instructorSpec = new InstructorSpec(userId);
+            var instructor = await _unitOfWork.GetRepository<Instructor, int>().GetByIdAsync(instructorSpec);
+            if (instructor is not null)
+            {
+                profileDto.InstructorCode = instructor.InstructorCode;
+                profileDto.InstructorRole = instructor.InstructorRole?.ToString();
+                profileDto.Specialization = instructor.Specialization;
+                profileDto.DepartmentId = instructor.DepartmentId;
+                profileDto.DepartmentName = instructor.Department?.DepartmentName;
+                profileDto.HireDate = instructor.HireDate?.ToString("dd MM yyyy");
+                profileDto.Status = instructor.Status?.ToString();
+                profileDto.OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName;
+                profileDto.OfficeHoursRoomLocation = instructor.OfficeHoursRoom?.Location;
+            }
+        }
+
+        return profileDto;
     }
 
     public async Task<UserProfileDto?> UpdateProfileImageAsync(int userId, IFormFile file)
@@ -140,7 +184,7 @@ public class AuthService(
         _unitOfWork.GetRepository<User, int>().Update(user);
         await _unitOfWork.SaveChangesAsync();
 
-        return new UserProfileDto
+        var dto = new UserProfileDto
         {
             UserId = user.UserId,
             NationalId = user.NationalId,
@@ -149,9 +193,31 @@ public class AuthService(
             PhoneNumber = user.PhoneNumber,
             Email = user.Email,
             Address = user.Address,
+            Nationality = user.Nationality,
+            FacultyName = user.Faculty?.FacultyName,
             Roles = user.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage)
         };
+
+        if (user is Instructor)
+        {
+            var instructorSpec = new InstructorSpec(userId);
+            var instructor = await _unitOfWork.GetRepository<Instructor, int>().GetByIdAsync(instructorSpec);
+            if (instructor is not null)
+            {
+                dto.InstructorCode = instructor.InstructorCode;
+                dto.InstructorRole = instructor.InstructorRole?.ToString();
+                dto.Specialization = instructor.Specialization;
+                dto.DepartmentId = instructor.DepartmentId;
+                dto.DepartmentName = instructor.Department?.DepartmentName;
+                dto.HireDate = instructor.HireDate?.ToString("dd MM yyyy");
+                dto.Status = instructor.Status?.ToString();
+                dto.OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName;
+                dto.OfficeHoursRoomLocation = instructor.OfficeHoursRoom?.Location;
+            }
+        }
+
+        return dto;
     }
 
     public async Task<bool> ChangePasswordAsync(int userId, ChangePasswordDto dto)

@@ -7,6 +7,7 @@ namespace IntelliCampus.Service.Specifications
         public UserByIdSpec(int userId)
         : base(u => u.UserId == userId)
         {
+            AddInclude(i => i.Faculty!);
             AddInclude("UserRoles.Role");
         }
     }

@@ -11,4 +11,15 @@ public class UserProfileDto
     public string? Address { get; set; }
     public List<string> Roles { get; set; } = [];
     public string? ProfileImage { get; set; }
+    public string? Nationality { get; set; }
+    public string? FacultyName { get; set; }
+    public string? InstructorCode { get; set; }
+    public string? InstructorRole { get; set; }
+    public string? Specialization { get; set; }
+    public int? DepartmentId { get; set; }
+    public string? DepartmentName { get; set; }
+    public string? HireDate { get; set; }
+    public string? Status { get; set; }
+    public string? OfficeHoursRoomName { get; set; }
+    public string? OfficeHoursRoomLocation { get; set; }
 }
