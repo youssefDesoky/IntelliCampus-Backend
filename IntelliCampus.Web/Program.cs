@@ -142,6 +142,7 @@ builder.Services.AddScoped<IExamService, ExamService>();
 builder.Services.AddScoped<IAutoExamSchedulingService, AutoExamSchedulingService>();
 builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
 builder.Services.AddScoped<IPdfExportService, PdfExportService>();
+builder.Services.AddScoped<IChartExportService, ChartExportService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IMeetingService, MeetingService>();

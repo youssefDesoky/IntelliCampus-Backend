@@ -42,6 +42,7 @@ public class CommunityController(
 
         var allCommenterIds = posts.SelectMany(p => p.Comments).Select(c => c.UserId).Distinct().ToList();
         var instructorRoles = await communityService.GetCourseInstructorRolesAsync(courseId, allCommenterIds);
+        var isInstructor = await communityService.IsUserCourseInstructorAsync(UserId, courseId);
 
         var projectedData = posts.Select(p =>
         {
@@ -54,8 +55,12 @@ public class CommunityController(
                 p.IsPinned,
                 userId = p.UserId,
                 authorName = p.User.FullName,
+                authorProfileImage = communityService.ResolveProfileImage(p.User.ProfileImage),
                 commentCount = p.Comments.Count,
                 upvoteCount = p.Votes.Count,
+                isUpvoted = p.Votes.Any(v => v.UserId == UserId),
+                canEdit = p.UserId == UserId,
+                canDelete = p.UserId == UserId || isInstructor,
                 comments = p.Comments.Select(c => new
                 {
                     c.CommentId,
@@ -63,6 +68,7 @@ public class CommunityController(
                     c.CreatedAt,
                     userId = c.UserId,
                     authorName = c.User.FullName,
+                    authorProfileImage = communityService.ResolveProfileImage(c.User.ProfileImage),
                     isRecommended = candidateMap.ContainsKey(c.UserId),
                     recommendationRank = candidateMap.TryGetValue(c.UserId, out var rank) ? rank : (int?)null,
                     instructorRole = instructorRoles.TryGetValue(c.UserId, out var role) ? role : null,
@@ -94,8 +100,12 @@ public class CommunityController(
             post.IsPinned,
             userId = post.UserId,
             authorName = post.User.FullName,
+            authorProfileImage = communityService.ResolveProfileImage(post.User.ProfileImage),
             commentCount = post.Comments.Count,
             upvoteCount = post.Votes.Count,
+            isUpvoted = post.Votes.Any(v => v.UserId == UserId),
+            canEdit = post.UserId == UserId,
+            canDelete = post.UserId == UserId || await communityService.IsUserCourseInstructorAsync(UserId, courseId),
             comments = post.Comments.Select(c => new
             {
                 c.CommentId,
@@ -103,6 +113,7 @@ public class CommunityController(
                 c.CreatedAt,
                 userId = c.UserId,
                 authorName = c.User.FullName,
+                authorProfileImage = communityService.ResolveProfileImage(c.User.ProfileImage),
                 isRecommended = candidateMap.ContainsKey(c.UserId),
                 recommendationRank = candidateMap.TryGetValue(c.UserId, out var rank) ? rank : (int?)null,
                 instructorRole = instructorRoles.TryGetValue(c.UserId, out var role) ? role : null,
