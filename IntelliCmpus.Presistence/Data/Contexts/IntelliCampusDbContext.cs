@@ -66,6 +66,9 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<AnnouncementAttachment> AnnouncementAttachments { get; set; }
     public DbSet<AnnouncementComment> AnnouncementComments { get; set; }
 
+    // Broadcast announcements
+    public DbSet<BroadcastAnnouncement> BroadcastAnnouncements { get; set; }
+
     // Attendance
     public DbSet<QrToken> QrTokens { get; set; }
 
