@@ -19,4 +19,6 @@ public interface ICommunityService
     Task DeleteCommentAsync(int commentId, int userId);
     Task<Post> GetQuestionPostAsync(int courseId, int postId);
     Task<Dictionary<int, string>> GetCourseInstructorRolesAsync(int courseId, IEnumerable<int> userIds);
+    string ResolveProfileImage(string? profileImage);
+    Task<bool> IsUserCourseInstructorAsync(int userId, int courseId);
 }

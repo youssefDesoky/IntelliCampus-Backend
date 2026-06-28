@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Service.Exceptions;
@@ -17,6 +18,7 @@ public class CommunityService : ICommunityService
     private readonly IRoutingClientService _routingClient;
     private readonly INotificationService _notificationService;
     private readonly ILogger<CommunityService> _logger;
+    private readonly UrlResolver _urlResolver;
 
     private static readonly int NotificationTopN = 3;
 
@@ -24,12 +26,14 @@ public class CommunityService : ICommunityService
         IUnitOfWork unitOfWork,
         IRoutingClientService routingClient,
         INotificationService notificationService,
-        ILogger<CommunityService> logger)
+        ILogger<CommunityService> logger,
+        UrlResolver urlResolver)
     {
         _unitOfWork = unitOfWork;
         _routingClient = routingClient;
         _notificationService = notificationService;
         _logger = logger;
+        _urlResolver = urlResolver;
     }
 
     private IGenericRepository<Community, int> Communities
@@ -312,7 +316,7 @@ public class CommunityService : ICommunityService
         var post = await Posts.GetByIdAsync(spec);
         if (post is null) throw new PostNotFoundException($"Post {postId} not found.");
 
-        if (post.UserId != userId && !await IsUserCourseInstructor(userId, post.Community.CourseId))
+        if (post.UserId != userId && !await IsUserCourseInstructorAsync(userId, post.Community.CourseId))
             throw new UnauthorizedAccessException("You can only delete your own posts.");
 
         Posts.Delete(post);
@@ -412,9 +416,12 @@ public class CommunityService : ICommunityService
         return result;
     }
 
-    private async Task<bool> IsUserCourseInstructor(int userId, int courseId)
+    public async Task<bool> IsUserCourseInstructorAsync(int userId, int courseId)
     {
         var classes = _unitOfWork.GetRepository<Class, int>();
         return await classes.AnyAsync(c => c.CourseId == courseId && c.InstructorId == userId);
     }
+
+    public string ResolveProfileImage(string? profileImage)
+        => _urlResolver.ResolveProfile(profileImage);
 }
