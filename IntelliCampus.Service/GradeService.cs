@@ -419,12 +419,16 @@ public class GradeService : IGradeService
                 }
             }
 
+            var level = ExtractLevelFromCourseCode(course.CourseCode);
+
             result.Add(new TranscriptCourseDto
             {
                 CourseId = course.CourseId,
                 CourseName = course.CourseName,
                 CourseCode = course.CourseCode!,
                 CreditHours = effectiveCredits.GetValueOrDefault(course.CourseId, course.CreditHours),
+                Semester = sc.Semester,
+                Level = level,
                 Coursework = courseworkStr,
                 TotalGrade = totalGradeStr,
                 Letter = letter
@@ -523,6 +527,100 @@ public class GradeService : IGradeService
         await _unitOfWork.SaveChangesAsync();
 
         return targetLevel;
+    }
+
+    public async Task<AcademicProgressDto> GetAcademicProgressAsync(int studentId)
+    {
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var bylawSpec = new BylawSpec(student.BylawId ?? 0);
+        var bylaw = await _unitOfWork
+            .GetRepository<Bylaw, int>()
+            .GetByIdAsync(bylawSpec);
+
+        if (bylaw is null)
+            return new AcademicProgressDto();
+
+        var effectiveCredits = await _bylawService.GetEffectiveCreditHoursAsync(
+            student.BylawId ?? 0, student.DepartmentId);
+
+        var allGrades = await Grades.GetAllAsync(new GradeSpec(studentId));
+        var completedCourseIds = allGrades
+            .Where(g => g.GradeType == GradeType.Final && g.Status == "Graded")
+            .Select(g => g.CourseId)
+            .Distinct()
+            .ToHashSet();
+
+        var gpa = await GetCumulativeGpaAsync(studentId);
+
+        var bucketTypes = new[] {
+            (Type: CourseType.GeneralUniversity, Name: "University Requirements"),
+            (Type: CourseType.Faculty, Name: "Faculty Requirements"),
+            (Type: CourseType.Department, Name: "Department Requirements"),
+            (Type: CourseType.Specialization, Name: "Major Requirements"),
+            (Type: CourseType.Elective, Name: "Free Electives")
+        };
+
+        var electiveBucketTotalHours = (int)bylaw.ElectiveBuckets
+            .Where(eb => eb.DepartmentId is null || eb.DepartmentId == student.DepartmentId)
+            .Sum(eb => eb.RequiredCreditHours);
+
+        var grouped = bylaw.BylawCourses
+            .Where(bc => bc.Course != null)
+            .GroupBy(bc => bc.CourseType);
+
+        var buckets = new List<BylawBucketDto>();
+
+        foreach (var (type, name) in bucketTypes)
+        {
+            var group = grouped.FirstOrDefault(g => g.Key == type)?.ToList() ?? [];
+            if (group.Count == 0 && type != CourseType.Elective)
+                continue;
+
+            var courses = group.Select(bc =>
+            {
+                var credit = effectiveCredits.GetValueOrDefault(bc.CourseId, bc.Course?.CreditHours ?? 0);
+                return new BucketCourseDto
+                {
+                    CourseId = bc.CourseId,
+                    CourseCode = bc.Course?.CourseCode ?? "",
+                    CourseName = bc.Course?.CourseName ?? "",
+                    CreditHours = credit,
+                    IsCompleted = completedCourseIds.Contains(bc.CourseId)
+                };
+            }).ToList();
+
+            var completedHours = courses.Where(c => c.IsCompleted).Sum(c => c.CreditHours);
+            var requiredHours = courses.Sum(c => c.CreditHours);
+
+            if (type == CourseType.Elective && electiveBucketTotalHours > 0)
+            {
+                requiredHours = electiveBucketTotalHours;
+            }
+
+            buckets.Add(new BylawBucketDto
+            {
+                BucketName = name,
+                BucketType = type.ToString(),
+                CompletedHours = completedHours,
+                RequiredHours = requiredHours,
+                Courses = courses
+            });
+        }
+
+        var graduationHours = bylaw.Settings?.TotalHoursToCompleteDegree
+            ?? buckets.Sum(b => b.RequiredHours);
+
+        return new AcademicProgressDto
+        {
+            TotalCompletedHours = buckets.Sum(b => b.CompletedHours),
+            TotalRequiredHours = buckets.Sum(b => b.RequiredHours),
+            TotalGraduationHours = graduationHours,
+            Gpa = gpa,
+            Buckets = buckets
+        };
     }
 
     public async Task<byte[]> ExportTranscriptPdfAsync(int studentId)
@@ -1322,5 +1420,18 @@ public class GradeService : IGradeService
             credits += c.CreditHours;
         }
         return credits > 0 ? Math.Round(total / credits, 2) : 0.0;
+    }
+
+    private static int? ExtractLevelFromCourseCode(string? courseCode)
+    {
+        if (string.IsNullOrEmpty(courseCode))
+            return null;
+
+        var digits = new string(courseCode.Where(char.IsDigit).ToArray());
+        if (digits.Length == 0)
+            return null;
+
+        var firstDigit = digits[0] - '0';
+        return firstDigit >= 1 && firstDigit <= 5 ? firstDigit : null;
     }
 }

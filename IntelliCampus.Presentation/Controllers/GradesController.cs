@@ -40,6 +40,11 @@ public class GradesController(IGradeService gradeService) : ControllerBase
     public async Task<IActionResult> GetTranscript()
         => Ok(await gradeService.GetTranscriptAsync(UserId));
 
+    [HttpGet("academic-progress")]
+    [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
+    public async Task<IActionResult> GetAcademicProgress()
+        => Ok(await gradeService.GetAcademicProgressAsync(UserId));
+
     [HttpGet("transcript/export")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<IActionResult> ExportTranscript()
