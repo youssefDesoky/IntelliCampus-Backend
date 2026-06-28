@@ -9,6 +9,7 @@ namespace IntelliCampus.Service.Specifications
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
+        AddInclude(i => i.Faculty!);
         AddInclude("UserRoles.Role");
     }
 
@@ -17,6 +18,7 @@ namespace IntelliCampus.Service.Specifications
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
+        AddInclude(i => i.Faculty!);
         AddInclude("UserRoles.Role");
     }
 
@@ -27,6 +29,7 @@ namespace IntelliCampus.Service.Specifications
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
+        AddInclude(i => i.Faculty!);
         AddInclude("UserRoles.Role");
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
