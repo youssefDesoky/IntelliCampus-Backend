@@ -89,6 +89,10 @@ public class DataSeed : IDataSeed
             await SeedClassesAsync();
             await _dbContext.SaveChangesAsync();
 
+            // Depends on Classes
+            await SeedSessionsAsync();
+            await _dbContext.SaveChangesAsync();
+
             await SeedBylawAsync();
             await _dbContext.SaveChangesAsync();
 
@@ -109,6 +113,10 @@ public class DataSeed : IDataSeed
 
             await SeedSchedulesAsync();
 
+            // Depends on Sessions, StudentCourses
+            await SeedAttendanceAsync();
+            await _dbContext.SaveChangesAsync();
+
             // Depends on Courses, Instructors
             await SeedMaterialFoldersAsync();
             await _dbContext.SaveChangesAsync();
@@ -128,6 +136,10 @@ public class DataSeed : IDataSeed
             await _dbContext.SaveChangesAsync();
 
             await SeedAnnouncementCommentsAsync();
+            await _dbContext.SaveChangesAsync();
+
+            // Depends on Admin
+            await SeedBroadcastAnnouncementsAsync();
             await _dbContext.SaveChangesAsync();
 
             // Depends on Courses, Rooms
@@ -1342,6 +1354,113 @@ public class DataSeed : IDataSeed
         }
     }
 
+    // ---- Broadcast Announcements ----
+
+    private async Task SeedBroadcastAnnouncementsAsync()
+    {
+        if (await _dbContext.BroadcastAnnouncements.AnyAsync()) return;
+        var items = await ReadJsonAsync<BroadcastAnnouncementSeedDto>("broadcast-announcements.json");
+        foreach (var dto in items)
+        {
+            var senderId = _userIds.GetValueOrDefault(dto.SenderEmail);
+            if (senderId == 0) continue;
+            _dbContext.BroadcastAnnouncements.Add(new BroadcastAnnouncement
+            {
+                SenderId = senderId,
+                Title = dto.Title,
+                CreatedAt = ParseDateOffset(dto.CreatedAtOffset)
+            });
+        }
+    }
+
+    // ---- Sessions ----
+
+    private async Task SeedSessionsAsync()
+    {
+        if (await _dbContext.Sessions.AnyAsync()) return;
+        var classes = await _dbContext.Classes.Include(c => c.Course).ToListAsync();
+        var now = EgyptTime.Now;
+        var sessions = new List<Session>();
+
+        foreach (var cls in classes)
+        {
+            if (cls.Day is null || cls.StartTime is null || cls.EndTime is null) continue;
+
+            for (int weekOffset = 10; weekOffset >= 0; weekOffset--)
+            {
+                var targetDate = now.Date.AddDays(-weekOffset * 7);
+                var targetDay = DayOfWeek.Sunday;
+                try { targetDay = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), cls.Day.Value.ToString()); } catch { continue; }
+
+                int daysUntilTarget = ((int)targetDay - (int)targetDate.DayOfWeek + 7) % 7;
+                var sessionDate = targetDate.AddDays(daysUntilTarget);
+                if (sessionDate > now.Date) continue;
+
+                var created = sessions.Count(s =>
+                    s.ClassId == cls.ClassId &&
+                    s.Date.Date == sessionDate.Date);
+                if (created > 0) continue;
+
+                sessions.Add(new Session
+                {
+                    ClassId = cls.ClassId,
+                    Topic = $"{cls.Course?.CourseName ?? "Class"} - Week {weekOffset + 1}",
+                    Date = sessionDate,
+                    StartTime = new TimeOnly(cls.StartTime.Value.Hours, cls.StartTime.Value.Minutes),
+                    EndTime = new TimeOnly(cls.EndTime.Value.Hours, cls.EndTime.Value.Minutes),
+                    SessionType = SessionType.Lecture
+                });
+            }
+        }
+
+        _dbContext.Sessions.AddRange(sessions);
+    }
+
+    // ---- Attendance ----
+
+    private async Task SeedAttendanceAsync()
+    {
+        if (await _dbContext.Attendances.AnyAsync()) return;
+        var sessions = await _dbContext.Sessions.Include(s => s.Class).ToListAsync();
+        var studentCourses = await _dbContext.Set<StudentCourse>().ToListAsync();
+        var students = await _dbContext.Students.ToListAsync();
+
+        var courseClassMap = studentCourses
+            .GroupBy(sc => sc.CourseId)
+            .ToDictionary(
+                g => g.Key,
+                g => new HashSet<int>(g.Where(sc => sc.StudentId > 0).Select(sc => sc.StudentId))
+            );
+
+        var rng = new Random();
+        var attendances = new List<Attendance>();
+
+        foreach (var session in sessions)
+        {
+            if (session.Class?.CourseId is null) continue;
+            if (!courseClassMap.TryGetValue(session.Class.CourseId, out var enrolledStudents)) continue;
+            if (enrolledStudents.Count == 0) continue;
+
+            foreach (var studentId in enrolledStudents)
+            {
+                var roll = rng.NextDouble();
+                var status = roll < 0.85 ? AttendanceStatus.Present
+                    : roll < 0.95 ? AttendanceStatus.Absent
+                    : AttendanceStatus.NotRecorded;
+
+                attendances.Add(new Attendance
+                {
+                    SessionId = session.SessionId,
+                    StudentId = studentId,
+                    Date = session.Date,
+                    Status = status
+                });
+            }
+        }
+
+        _dbContext.Attendances.AddRange(attendances);
+    }
+
     // ---- DTOs ----
 
     private record FacultyDto
@@ -1580,6 +1699,13 @@ public class DataSeed : IDataSeed
         public string Content { get; init; } = "";
         public string CreatedAtOffset { get; init; } = "";
         public string UpdatedAtOffset { get; init; } = "";
+    }
+
+    private record BroadcastAnnouncementSeedDto
+    {
+        public string SenderEmail { get; init; } = "";
+        public string Title { get; init; } = "";
+        public string CreatedAtOffset { get; init; } = "";
     }
 
     private record ExamDto

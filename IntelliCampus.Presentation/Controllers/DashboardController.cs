@@ -32,4 +32,21 @@ public class DashboardController : ControllerBase
         var dashboard = await _dashboardService.GetStudentDashboardAsync(userId);
         return Ok(dashboard);
     }
+
+    [HttpGet("admin")]
+    [Authorize(Roles = "SuperAdmin,Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,Admin_AcademicStaff")]
+    public async Task<ActionResult<AdminDashboardDto>> GetAdminDashboard()
+    {
+        var dashboard = await _dashboardService.GetAdminDashboardAsync();
+        return Ok(dashboard);
+    }
+
+    [HttpPost("admin/news")]
+    [Authorize(Roles = "SuperAdmin,Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,Admin_AcademicStaff")]
+    public async Task<ActionResult<LatestNewsItemDto>> PublishNews([FromBody] PublishNewsDto dto)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var news = await _dashboardService.PublishNewsAsync(userId, dto.Title);
+        return Ok(news);
+    }
 }

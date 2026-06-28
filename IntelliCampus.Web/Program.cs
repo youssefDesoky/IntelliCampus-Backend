@@ -237,6 +237,11 @@ if (app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<IntelliCampusDbContext>();
+    // Set RESET_DB=true as environment variable to drop and recreate the database on next startup
+    if (Environment.GetEnvironmentVariable("RESET_DB") == "true")
+    {
+        await context.Database.EnsureDeletedAsync();
+    }
     await context.Database.MigrateAsync();
     var dataSeed = scope.ServiceProvider.GetRequiredService<IDataSeed>();
     await dataSeed.SeedDataAsync();

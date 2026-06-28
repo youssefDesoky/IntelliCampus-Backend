@@ -6,4 +6,6 @@ public interface IDashboardService
 {
     Task<DashboardStatsDto> GetStatsAsync();
     Task<StudentDashboardDto> GetStudentDashboardAsync(int studentId);
+    Task<AdminDashboardDto> GetAdminDashboardAsync();
+    Task<LatestNewsItemDto> PublishNewsAsync(int senderId, string title);
 }

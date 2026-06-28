@@ -1,0 +1,27 @@
+[
+  {
+    "senderEmail": "20260101@intellicampus.online",
+    "title": "Fall 2026 enrollment is now open — register by August 15th",
+    "createdAtOffset": "now"
+  },
+  {
+    "senderEmail": "20260101@intellicampus.online",
+    "title": "Campus-wide system maintenance scheduled for Sunday 2 AM - 6 AM",
+    "createdAtOffset": "-1 days"
+  },
+  {
+    "senderEmail": "20260101@intellicampus.online",
+    "title": "Faculty meeting rescheduled to next Thursday at 3 PM",
+    "createdAtOffset": "-3 days"
+  },
+  {
+    "senderEmail": "20260101@intellicampus.online",
+    "title": "New scholarship program announced for postgraduate students",
+    "createdAtOffset": "-5 days"
+  },
+  {
+    "senderEmail": "20260101@intellicampus.online",
+    "title": "Library hours extended to 11 PM during exam weeks",
+    "createdAtOffset": "-7 days"
+  }
+]

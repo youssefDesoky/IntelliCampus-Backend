@@ -20,6 +20,7 @@ public class LatestNewsItemDto
     public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Course { get; set; } = string.Empty;
+    public string Kind { get; set; } = "Course";
     public DateTime Date { get; set; }
 }
 
