@@ -1,4 +1,5 @@
 ﻿using IntelliCampus.Service.Exceptions;
+using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IntelliCampus.Web.CustomMiddleWares
@@ -25,8 +26,16 @@ namespace IntelliCampus.Web.CustomMiddleWares
             }
             catch (Exception ex)
             {
-                //logging the exception can be done here
-                _logger.LogError(ex, "An unhandled exception has occurred while executing the request.");
+                switch (ex)
+                {
+                    case NotFoundException:
+                    case ForbiddenException:
+                        _logger.LogWarning(ex, "Expected application exception: {Message}", ex.Message);
+                        break;
+                    default:
+                        _logger.LogError(ex, "Unhandled exception: {Message}", ex.Message);
+                        break;
+                }
 
                 //return custom error response
                
@@ -41,6 +50,8 @@ namespace IntelliCampus.Web.CustomMiddleWares
                         ForbiddenException => StatusCodes.Status403Forbidden,
                         UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
                         InvalidOperationException => StatusCodes.Status400BadRequest,
+                        ArgumentException => StatusCodes.Status400BadRequest,
+                        RouterNotInitializedException => StatusCodes.Status503ServiceUnavailable,
                         _ => StatusCodes.Status500InternalServerError
                     }
                };
