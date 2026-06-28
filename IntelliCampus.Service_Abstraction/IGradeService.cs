@@ -15,6 +15,7 @@ public interface IGradeService
     Task<IEnumerable<TranscriptCourseDto>> GetTranscriptAsync(int studentId);
     Task<double> GetCumulativeGpaAsync(int studentId);
     Task<byte[]> ExportTranscriptPdfAsync(int studentId);
+    Task<AcademicProgressDto> GetAcademicProgressAsync(int studentId);
 
     /// <summary>
     /// Checks if all courses for the student have complete grades (total + letter).
