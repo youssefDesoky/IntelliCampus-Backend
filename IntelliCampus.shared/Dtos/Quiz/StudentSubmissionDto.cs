@@ -17,4 +17,6 @@ public class StudentSubmissionDto
     public Dictionary<string, object>? Answers { get; set; }
 
     public List<QuestionResultDto>? QuestionResults { get; set; }
+
+    public List<SubmissionAnswerDetailDto> AnswerDetails { get; set; } = new();
 }
