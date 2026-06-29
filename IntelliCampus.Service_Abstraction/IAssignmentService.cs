@@ -16,6 +16,9 @@ public interface IAssignmentService
     Task<IEnumerable<SubmissionDto>> GetAllSubmissionsAsync(int assignmentId, int instructorId);
     Task<AssignmentDto> GradeSubmissionAsync(int instructorId, GradeSubmissionDto dto);
     Task<AssignmentStatsDto> GetStatsAsync(int courseId, int studentId);
+    Task<(Stream Stream, string FileName, string ContentType)> DownloadSubmissionFileAsync(string fileId);
+    Task<(Stream Stream, string FileName, string ContentType)> DownloadAssignmentAttachmentAsync(string fileId);
+    Task<AssignmentAttachmentDto> UploadAttachmentAsync(IFormFile file);
 
     // Student
     Task<SubmissionDto> SubmitAsync(int studentId, int assignmentId, SubmitAssignmentDto dto, IFormFileCollection? files);

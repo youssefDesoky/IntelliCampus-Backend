@@ -59,6 +59,8 @@ public class StudentAssignmentSpec : BaseSpecifications<StudentAssignment>
     {
         AddInclude(sa => sa.Files!);
         AddInclude(sa => sa.GradedByInstructor!);
+        AddInclude(sa => sa.Assignment!);
+        AddInclude(sa => sa.Student!);
         EnableSplitQuery();
     }
 

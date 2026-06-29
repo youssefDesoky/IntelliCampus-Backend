@@ -35,6 +35,12 @@ public class AssignmentService(
     private IGenericRepository<StudentAssignment, int> StudentAssignments
         => _unitOfWork.GetRepository<StudentAssignment, int>();
 
+    private IGenericRepository<SubmissionFile, string> SubmissionFiles
+        => _unitOfWork.GetRepository<SubmissionFile, string>();
+
+    private IGenericRepository<AssignmentAttachment, string> AssignmentAttachments
+        => _unitOfWork.GetRepository<AssignmentAttachment, string>();
+
     private IGenericRepository<Class, int> Classes
         => _unitOfWork.GetRepository<Class, int>();
 
@@ -181,7 +187,8 @@ public class AssignmentService(
 
     public async Task<AssignmentDto> UpdateAsync(int instructorId, int assignmentId, UpdateAssignmentDto dto)
     {
-        var assignment = await Assignments.GetByIdAsync(assignmentId);
+        var loadSpec = new AssignmentSpec(assignmentId);
+        var assignment = await Assignments.GetByIdAsync(loadSpec);
         if (assignment is null)
             throw new AssignmentNotFoundException(assignmentId);
 
@@ -209,13 +216,17 @@ public class AssignmentService(
         assignment.MaxGrade = dto.TotalPoints;
 
         // Replace attachments
-        assignment.Attachments = dto.Attachments?.Select(a => new AssignmentAttachment
+        assignment.Attachments.Clear();
+        foreach (var a in dto.Attachments ?? [])
         {
-            Id = a.Id,
-            Name = a.Name,
-            Size = a.Size,
-            Url = a.Url
-        }).ToList() ?? new List<AssignmentAttachment>();
+            assignment.Attachments.Add(new AssignmentAttachment
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Size = a.Size,
+                Url = a.Url
+            });
+        }
 
         Assignments.Update(assignment);
         await _unitOfWork.SaveChangesAsync();
@@ -227,9 +238,10 @@ public class AssignmentService(
 
     public async Task DeleteAsync(int assignmentId, int instructorId)
     {
-        var assignment = await Assignments.GetByIdAsync(assignmentId);
-        if (assignment is null) throw new AssignmentNotFoundException(assignmentId);
-
+        var spec = new AssignmentSpec(assignmentId);
+        var assignment = await Assignments.GetByIdAsync(spec);
+        if (assignment is null)
+            throw new AssignmentNotFoundException(assignmentId);
         var instructorTeachesCourse = await Classes.AnyAsync(
             c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
 
@@ -255,6 +267,81 @@ public class AssignmentService(
         var spec = new StudentAssignmentSpec(assignmentId, allSubmissions: true);
         var submissions = await StudentAssignments.GetAllAsync(spec, asNoTracking: true);
         return submissions.Select(MapSubmissionToDto);
+    }
+
+    public async Task<(Stream Stream, string FileName, string ContentType)> DownloadSubmissionFileAsync(string fileId)
+    {
+        var file = await SubmissionFiles.GetByIdAsync(fileId);
+        if (file is null)
+            throw new KeyNotFoundException("Submission file not found.");
+
+        var stream = await _fileStorage.OpenReadAsync(file.Url);
+        var ext = Path.GetExtension(file.Name);
+        var contentType = ext?.ToLowerInvariant() switch
+        {
+            ".pdf" => "application/pdf",
+            ".doc" => "application/msword",
+            ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ".xls" => "application/vnd.ms-excel",
+            ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            ".png" => "image/png",
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".zip" => "application/zip",
+            ".rar" => "application/vnd.rar",
+            _ => "application/octet-stream"
+        };
+
+        return (stream, file.Name, contentType);
+    }
+
+    private string ResolveStoragePath(string url)
+    {
+        if (string.IsNullOrEmpty(url)) return url;
+
+        if (url.StartsWith("http", StringComparison.OrdinalIgnoreCase) && Uri.TryCreate(url, UriKind.Absolute, out var uri))
+        {
+            var relative = Uri.UnescapeDataString(uri.AbsolutePath).TrimStart('/');
+            return relative;
+        }
+
+        return Uri.UnescapeDataString(url).TrimStart('/');
+    }
+
+    public async Task<(Stream Stream, string FileName, string ContentType)> DownloadAssignmentAttachmentAsync(string fileId)
+    {
+        var file = await AssignmentAttachments.GetByIdAsync(fileId);
+        if (file is null)
+            throw new KeyNotFoundException("Attachment not found.");
+
+        var stream = await _fileStorage.OpenReadAsync(ResolveStoragePath(file.Url));
+        var ext = Path.GetExtension(file.Name);
+        var contentType = ext?.ToLowerInvariant() switch
+        {
+            ".pdf" => "application/pdf",
+            ".doc" => "application/msword",
+            ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ".xls" => "application/vnd.ms-excel",
+            ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            ".png" => "image/png",
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".zip" => "application/zip",
+            ".rar" => "application/vnd.rar",
+            _ => "application/octet-stream"
+        };
+
+        return (stream, file.Name, contentType);
+    }
+
+    public async Task<AssignmentAttachmentDto> UploadAttachmentAsync(IFormFile file)
+    {
+        var url = await _fileStorage.SaveAsync(file, "assignments");
+        return new AssignmentAttachmentDto
+        {
+            Id = Guid.NewGuid().ToString("N"),
+            Name = file.FileName,
+            Size = file.Length,
+            Url = url
+        };
     }
 
     public async Task<AssignmentStatsDto> GetStatsAsync(int courseId, int studentId)
