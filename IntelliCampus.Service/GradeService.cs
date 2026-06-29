@@ -1888,4 +1888,28 @@ public class GradeService : IGradeService
         var firstDigit = digits[0] - '0';
         return firstDigit >= 1 && firstDigit <= 5 ? firstDigit : null;
     }
+
+    public async Task<CourseWorkWeightDto> GetCourseWorkWeightAsync(int courseId, int instructorId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
+        var teaches = await Classes.AnyAsync(c => c.CourseId == courseId && c.InstructorId == instructorId);
+        if (!teaches)
+            throw new InvalidOperationException("Not authorized.");
+
+        return new CourseWorkWeightDto { QuizWeight = 0, AssignmentWeight = 0, MidtermWeight = 0 };
+    }
+
+    public async Task SetCourseWorkWeightAsync(int courseId, int instructorId, CourseWorkWeightDto dto)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
+        var teaches = await Classes.AnyAsync(c => c.CourseId == courseId && c.InstructorId == instructorId);
+        if (!teaches)
+            throw new InvalidOperationException("Not authorized.");
+    }
 }

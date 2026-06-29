@@ -95,4 +95,20 @@ public class GradesController(IGradeService gradeService) : ControllerBase
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> UpdateComplaintStatus(int complaintId, [FromBody] ReviewComplaintDto dto)
         => Ok(await gradeService.UpdateComplaintStatusAsync(complaintId, UserId, dto));
+
+    [HttpGet("course/{courseId}/coursework-weight")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> GetCourseWorkWeight(int courseId)
+    {
+        var result = await gradeService.GetCourseWorkWeightAsync(courseId, UserId);
+        return Ok(result);
+    }
+
+    [HttpPut("course/{courseId}/coursework-weight")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> SetCourseWorkWeight(int courseId, [FromBody] CourseWorkWeightDto dto)
+    {
+        await gradeService.SetCourseWorkWeightAsync(courseId, UserId, dto);
+        return Ok();
+    }
 }
