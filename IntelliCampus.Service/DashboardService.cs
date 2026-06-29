@@ -143,6 +143,111 @@ public class DashboardService : IDashboardService
         };
     }
 
+    public async Task<InstructorDashboardDto> GetInstructorDashboardAsync(int instructorId)
+    {
+        var classRepo = _unitOfWork.GetRepository<Class, int>();
+        var sessionRepo = _unitOfWork.GetRepository<Session, int>();
+        var attendanceRepo = _unitOfWork.GetRepository<Attendance, int>();
+        var announcementRepo = _unitOfWork.GetRepository<Announcement, int>();
+        var broadcastRepo = _unitOfWork.GetRepository<BroadcastAnnouncement, int>();
+        var studentCourseRepo = _unitOfWork.GetRepository<StudentCourse, (int, int)>();
+
+        var classes = await classRepo.GetAllAsync(new ClassByInstructorSpec(instructorId));
+        var courseIds = classes.Select(c => c.CourseId).Distinct().ToList();
+
+        var activeCourseIds = classes
+            .Where(c => c.Course.Status == CourseStatus.Active)
+            .Select(c => c.CourseId)
+            .Distinct()
+            .ToList();
+
+        var activeCourses = activeCourseIds.Count;
+
+        var totalStudents = activeCourseIds.Count > 0
+            ? await studentCourseRepo.CountAsync(sc => activeCourseIds.Contains(sc.CourseId))
+            : 0;
+
+        var classIds = classes.Select(c => c.ClassId).ToList();
+        var sessionIds = classIds.Count > 0
+            ? (await sessionRepo.GetAllAsync()).Where(s => classIds.Contains(s.ClassId)).Select(s => s.SessionId).ToList()
+            : [];
+
+        var averageAttendance = 0.0;
+        if (sessionIds.Count > 0)
+        {
+            var totalAttendance = await attendanceRepo.CountAsync(a => sessionIds.Contains(a.SessionId));
+            var presentAttendance = await attendanceRepo.CountAsync(a => sessionIds.Contains(a.SessionId) && a.Status != AttendanceStatus.Absent);
+            averageAttendance = totalAttendance > 0
+                ? Math.Round((double)presentAttendance / totalAttendance * 100, 1)
+                : 0.0;
+        }
+
+        var latestNews = new List<LatestNewsItemDto>();
+        if (courseIds.Count > 0)
+        {
+            var announcements = await announcementRepo.GetAllAsync(new AnnouncementsByCoursesSpec(courseIds));
+            latestNews = announcements
+                .Take(5)
+                .Select(a => new LatestNewsItemDto
+                {
+                    Id = a.AnnouncementId,
+                    Title = a.Content.Length > 150 ? a.Content[..150] + "..." : a.Content,
+                    Course = a.Course?.CourseName ?? "",
+                    Kind = "Course",
+                    Date = a.CreatedAt
+                })
+                .ToList();
+        }
+
+        var broadcasts = await broadcastRepo.GetAllAsync();
+        var broadcastItems = broadcasts
+            .OrderByDescending(b => b.CreatedAt)
+            .Take(5)
+            .Select(b => new LatestNewsItemDto
+            {
+                Id = b.Id,
+                Title = b.Title,
+                Course = "General",
+                Kind = "Broadcast",
+                Date = b.CreatedAt
+            })
+            .ToList();
+        latestNews.AddRange(broadcastItems);
+        latestNews = latestNews.OrderByDescending(n => n.Date).Take(7).ToList();
+
+        var attendanceTrend = new List<AttendanceTrendPointDto>();
+        if (sessionIds.Count > 0)
+        {
+            var attendances = (await attendanceRepo.GetAllAsync())
+                .Where(a => sessionIds.Contains(a.SessionId))
+                .ToList();
+            attendanceTrend = attendances
+                .GroupBy(a => new { a.Date.Year, Week = GetWeekNumber(a.Date) })
+                .Select(g => new AttendanceTrendPointDto
+                {
+                    Week = $"Week {g.Key.Week}",
+                    Attendance = g.Count() > 0
+                        ? Math.Round((double)g.Count(a => a.Status != AttendanceStatus.Absent) / g.Count() * 100, 1)
+                        : 0.0
+                })
+                .OrderBy(g => g.Week)
+                .ToList();
+        }
+
+        return new InstructorDashboardDto
+        {
+            Stats = new InstructorStatsDto
+            {
+                ActiveCourses = activeCourses,
+                TotalStudents = totalStudents,
+                AverageAttendance = averageAttendance
+            },
+            LatestNews = latestNews,
+            AttendanceTrend = attendanceTrend,
+            RadarData = []
+        };
+    }
+
     private static int GetWeekNumber(DateTime date)
     {
         return System.Globalization.CultureInfo.CurrentCulture.Calendar

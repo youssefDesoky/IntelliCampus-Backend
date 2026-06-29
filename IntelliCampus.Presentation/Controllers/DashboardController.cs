@@ -33,6 +33,14 @@ public class DashboardController : ControllerBase
         return Ok(dashboard);
     }
 
+    [HttpGet("instructor")]
+    public async Task<ActionResult<InstructorDashboardDto>> GetInstructorDashboard()
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var dashboard = await _dashboardService.GetInstructorDashboardAsync(userId);
+        return Ok(dashboard);
+    }
+
     [HttpGet("admin")]
     [Authorize(Roles = "SuperAdmin,Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,Admin_AcademicStaff")]
     public async Task<ActionResult<AdminDashboardDto>> GetAdminDashboard()
