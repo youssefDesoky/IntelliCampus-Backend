@@ -145,12 +145,15 @@ public class MaterialService(
         InstructorMaterials.Add(instructorMaterial);
         await _unitOfWork.SaveChangesAsync();
 
-        // Notify enrolled students
+        // Notify enrolled students (InProgress only)
         var studentCourses = await _unitOfWork
             .GetRepository<StudentCourse, int>()
             .GetAllAsync(new StudentCourseIdsSpec(dto.CourseId, byCourse: true), asNoTracking: true);
 
-        var studentIds = studentCourses.Select(sc => sc.StudentId).ToList();
+        var studentIds = studentCourses
+            .Where(sc => sc.Status == StudentCourseStatus.InProgress)
+            .Select(sc => sc.StudentId)
+            .ToList();
 
         if (studentIds.Count > 0)
         {
@@ -158,7 +161,7 @@ public class MaterialService(
                 studentIds,
                 NotificationType.MaterialUploaded,
                 $"New material uploaded: '{dto.Title}' in {course.CourseName}.",
-                clickUrl: $"/courses/{dto.CourseId}/materials/{material.MaterialId}");
+                clickUrl: $"/courses/{dto.CourseId}/materials?materialId={material.MaterialId}");
         }
 
         return new MaterialDto

@@ -341,6 +341,17 @@ public class CommunityService : ICommunityService
         var comments = _unitOfWork.GetRepository<Comment, int>();
         comments.Add(comment);
         await _unitOfWork.SaveChangesAsync();
+
+        if (post.UserId != userId)
+        {
+            var commenter = await Users.GetByIdAsync(userId);
+            var community = await Communities.GetByIdAsync(post.CommunityId);
+            var name = commenter?.FullName ?? "Someone";
+            await _notificationService.SendAsync(post.UserId, NotificationType.NewComment,
+                $"{name} commented on your post",
+                clickUrl: $"/courses/{community?.CourseId}/community/questions/{postId}");
+        }
+
         return comment;
     }
 
@@ -372,6 +383,17 @@ public class CommunityService : ICommunityService
             CreatedAt = EgyptTime.Now,
         });
         await _unitOfWork.SaveChangesAsync();
+
+        if (post.UserId != userId)
+        {
+            var voter = await Users.GetByIdAsync(userId);
+            var community = await Communities.GetByIdAsync(post.CommunityId);
+            var name = voter?.FullName ?? "Someone";
+            await _notificationService.SendAsync(post.UserId, NotificationType.NewUpvote,
+                $"{name} upvoted your post",
+                clickUrl: $"/courses/{community?.CourseId}/community/questions/{postId}");
+        }
+
         return true;
     }
 

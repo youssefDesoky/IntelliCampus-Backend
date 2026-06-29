@@ -21,10 +21,6 @@ namespace IntelliCampus.Domain.Interfaces
         Task<TResult?> MaxAsync<TResult>(Expression<Func<TEntity, TResult?>> selector);
         void DeleteRange(IEnumerable<TEntity> entities);
         Task<int> CountAsync(ISpecifications<TEntity> specifications);
-        Task<int> ExecuteUpdateAsync<TProperty>(
-            Expression<Func<TEntity, bool>> predicate,
-            Expression<Func<TEntity, TProperty>> propertyExpression,
-            TProperty value);
 
     }
 }

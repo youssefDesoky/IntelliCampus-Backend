@@ -55,12 +55,5 @@ namespace IntelliCmpus.Presistence.Repositories
         public async Task<int> CountAsync(ISpecifications<TEntity> specifications)
             => await SpecificationBuilder.BuildQuery(_dbContext.Set<TEntity>(), specifications).CountAsync();
 
-        public async Task<int> ExecuteUpdateAsync<TProperty>(
-            Expression<Func<TEntity, bool>> predicate,
-            Expression<Func<TEntity, TProperty>> propertyExpression,
-            TProperty value)
-            => await _dbContext.Set<TEntity>()
-                .Where(predicate)
-                .ExecuteUpdateAsync(setters => setters.SetProperty(propertyExpression.Compile(), value));
     }
 }

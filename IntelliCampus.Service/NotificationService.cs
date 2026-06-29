@@ -115,10 +115,14 @@ public class NotificationService : INotificationService
         if (user is null)
             throw new UserNotFoundException(userId);
 
-        await UserNotifications.ExecuteUpdateAsync(
-            un => un.UserId == userId && !un.IsRead,
-            un => un.IsRead,
-            true);
+        var unreadNotifications = (await UserNotifications.GetAllAsync(
+            new NotificationSpec(userId, unreadOnly: true, forUpdate: true),
+            asNoTracking: false)).ToList();
+
+        foreach (var un in unreadNotifications)
+            un.IsRead = true;
+
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<bool> DeleteAsync(int notificationId, int userId)
@@ -253,6 +257,8 @@ public class NotificationService : INotificationService
         NotificationType.QuestionRouting => "Question Routing",
         NotificationType.ElectiveBucketLocked => "Elective Bucket Locked",
         NotificationType.NewMessage => "New Message",
+        NotificationType.NewComment => "New Comment",
+        NotificationType.NewUpvote => "New Upvote",
         _ => "Notification"
     };
 

@@ -91,13 +91,14 @@ public class AssignmentService(
         var totalCount = await Assignments.CountAsync(a => a.CourseId == courseId);
 
         var assignmentIds = assignments.Select(a => a.AssignmentId).ToList();
-        StudentAssignmentSpec submissionsSpec;
         Dictionary<int, StudentAssignment> submissionsByAssignment;
         if (assignmentIds.Count > 0)
         {
-            submissionsSpec = new StudentAssignmentSpec(assignmentIds, byAssignments: true);
+            var submissionsSpec = new StudentAssignmentSpec(studentId, assignmentIds);
             var submissions = await StudentAssignments.GetAllAsync(submissionsSpec, asNoTracking: true);
-            submissionsByAssignment = submissions.ToDictionary(s => s.AssignmentId);
+            submissionsByAssignment = submissions
+                .GroupBy(s => s.AssignmentId)
+                .ToDictionary(g => g.Key, g => g.OrderByDescending(s => s.SubmittedAt).First());
         }
         else
         {

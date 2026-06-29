@@ -123,13 +123,24 @@ public class AttendanceService : IAttendanceService
             throw new InvalidOperationException(
                 "QR code has expired or is invalid. Ask student to refresh.");
 
-        var alreadyRecorded = await Attendances.AnyAsync(
-            a => a.StudentId == payload.UserId
-              && a.SessionId == dto.SessionId);
-
         var student = await Students.GetByIdAsync(payload.UserId);
         var studentName = student?.FullName ?? "Student";
         var studentCode = student?.StudentCode ?? payload.UserId.ToString();
+
+        if (student is not null)
+        {
+            var isEnrolled = await StudentCourses.AnyAsync(
+                sc => sc.StudentId == student.UserId
+                   && sc.CourseId == classEntity.CourseId
+                   && sc.Status == StudentCourseStatus.InProgress);
+            if (!isEnrolled)
+                throw new InvalidOperationException(
+                    $"{studentName} is not enrolled in this course.");
+        }
+
+        var alreadyRecorded = await Attendances.AnyAsync(
+            a => a.StudentId == payload.UserId
+              && a.SessionId == dto.SessionId);
 
         if (alreadyRecorded)
             throw new InvalidOperationException(
@@ -178,6 +189,15 @@ public class AttendanceService : IAttendanceService
         var student = await Students.GetByIdAsync(new StudentSpec(dto.StudentCode, byCode: true));
         if (student is null)
             throw new InvalidOperationException($"Student with code '{dto.StudentCode}' not found.");
+
+        var isEnrolled = await StudentCourses.AnyAsync(
+            sc => sc.StudentId == student.UserId
+               && sc.CourseId == classEntity.CourseId
+               && sc.Status == StudentCourseStatus.InProgress);
+
+        if (!isEnrolled)
+            throw new InvalidOperationException(
+                $"{student.FullName} is not enrolled in this course.");
 
         var alreadyRecorded = await Attendances.AnyAsync(
             a => a.StudentId == student.UserId
@@ -228,6 +248,16 @@ public class AttendanceService : IAttendanceService
             .ToDictionary(s => s.StudentCode ?? "", s => s);
         var now = EgyptTime.Now;
 
+        // Only allow attendance for students enrolled in the course with InProgress status
+        var enrolledIds = students.Count > 0
+            ? (await StudentCourses.GetAllAsync(
+                new StudentCourseIdsSpec(students.Values.Select(s => s.UserId).ToList(), StudentCourseStatus.InProgress),
+                asNoTracking: true))
+                .Where(sc => sc.CourseId == classEntity.CourseId)
+                .Select(sc => sc.StudentId)
+                .ToHashSet()
+            : new HashSet<int>();
+
         // Batch check which students already have attendance recorded for this session
         var studentIds = students.Values.Select(s => s.UserId).ToHashSet();
         var existingAttendance = studentIds.Count > 0
@@ -239,6 +269,7 @@ public class AttendanceService : IAttendanceService
         {
             if (!students.TryGetValue(record.StudentCode, out var student)) continue;
             if (alreadyRecordedIds.Contains(student.UserId)) continue;
+            if (!enrolledIds.Contains(student.UserId)) continue;
 
             Attendances.Add(new Attendance
             {
@@ -469,30 +500,38 @@ public class AttendanceService : IAttendanceService
         if (classEntity?.InstructorId != instructorId)
             throw new InvalidOperationException("Not authorized.");
 
-        var studentCourses = await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(session.ClassId, "class"), asNoTracking: true);
-        var enrolledStudentIds = studentCourses
-            .Select(sc => sc.StudentId)
-            .ToHashSet();
-
-        var enrolledStudents = (await Students.GetAllAsync(new StudentSpec(enrolledStudentIds.ToList()), asNoTracking: true))
-            .OrderBy(s => s.FullName)
-            .ToList();
-
         var sessionAttendance = await Attendances.GetAllAsync(new AttendanceSpec(sessionId, bySession: true), asNoTracking: true);
         var attendanceByStudent = sessionAttendance.ToDictionary(a => a.StudentId);
 
-            var students = enrolledStudents.Select(s =>
+        // Collect all student IDs: enrolled + anyone with attendance (manual recording bypasses enrollment)
+        var enrolledStudentIds = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(classEntity.CourseId, byCourse: true), asNoTracking: true))
+            .Select(sc => sc.StudentId)
+            .ToHashSet();
+
+        var allStudentIds = enrolledStudentIds
+            .Concat(attendanceByStudent.Keys)
+            .Distinct()
+            .ToList();
+
+        var allStudents = (await Students.GetAllAsync(new StudentSpec(allStudentIds), asNoTracking: true))
+            .ToDictionary(s => s.UserId);
+
+        var students = allStudentIds
+            .Select(id =>
             {
-                var record = attendanceByStudent.GetValueOrDefault(s.UserId);
+                allStudents.TryGetValue(id, out var student);
+                var record = attendanceByStudent.GetValueOrDefault(id);
                 return new SessionAttendanceStudentDto
                 {
-                    StudentId = s.UserId,
-                    StudentCode = s.StudentCode ?? "",
-                    FullName = s.FullName,
+                    StudentId = id,
+                    StudentCode = student?.StudentCode ?? "",
+                    FullName = student?.FullName ?? "Unknown",
                     Status = record is not null ? record.Status : AttendanceStatus.NotRecorded,
                     CheckInTime = record?.Date
                 };
-            }).ToList();
+            })
+            .OrderBy(s => s.FullName)
+            .ToList();
 
         return new SessionAttendanceDto
         {

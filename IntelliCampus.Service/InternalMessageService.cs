@@ -59,12 +59,13 @@ public class InternalMessageService : IInternalMessageService
 
         try
         {
+            var threadId = parentMessageId ?? message.MessageId;
             await _notificationService.SendAsync(
                 recipient.UserId,
                 NotificationType.NewMessage,
                 $"New message: {subject}",
                 title: sender?.FullName ?? "Unknown",
-                clickUrl: "/messages/inbox");
+                clickUrl: $"/inbox/{threadId}");
         }
         catch
         {

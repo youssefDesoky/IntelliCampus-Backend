@@ -53,6 +53,15 @@ public class StudentAssignmentSpec : BaseSpecifications<StudentAssignment>
         EnableSplitQuery();
     }
 
+    // GetByStudentAndAssignmentIdsAsync — submissions for a specific student + set of assignments
+    public StudentAssignmentSpec(int studentId, ICollection<int> assignmentIds)
+        : base(sa => sa.StudentId == studentId && assignmentIds.Contains(sa.AssignmentId))
+    {
+        AddInclude(sa => sa.Files!);
+        AddInclude(sa => sa.GradedByInstructor!);
+        EnableSplitQuery();
+    }
+
     // GetBySubmissionIdsAsync — load submissions by their PKs, no includes
     public StudentAssignmentSpec(List<int> submissionIds, string discriminator)
         : base(sa => submissionIds.Contains(sa.StudentAssignmentId)) { }
