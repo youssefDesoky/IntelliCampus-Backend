@@ -6,6 +6,9 @@ namespace IntelliCampus.Service.Specifications;
 
 internal sealed class NotificationSpec : BaseSpecifications<UserNotification>
 {
+    public static System.Linq.Expressions.Expression<Func<UserNotification, bool>> BuildFilterExpression(int userId, NotificationQueryParams queryParams)
+        => BuildNotificationExpression(userId, queryParams);
+
     public NotificationSpec(int userId)
         : base(n => n.UserId == userId)
     {

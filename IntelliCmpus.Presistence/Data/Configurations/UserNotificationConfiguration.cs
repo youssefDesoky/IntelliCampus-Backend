@@ -13,6 +13,9 @@ public class UserNotificationConfiguration : IEntityTypeConfiguration<UserNotifi
         builder.Property(un => un.IsRead)
             .HasDefaultValue(false);
 
+        builder.HasIndex(un => un.UserId);
+        builder.HasIndex(un => new { un.UserId, un.IsRead });
+
         builder.HasOne(un => un.User)
             .WithMany(u => u.UserNotifications)
             .HasForeignKey(un => un.UserId)

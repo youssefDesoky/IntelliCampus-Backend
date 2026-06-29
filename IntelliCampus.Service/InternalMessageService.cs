@@ -47,13 +47,18 @@ public class InternalMessageService : IInternalMessageService
         repo.Add(message);
         await _unitOfWork.SaveChangesAsync();
 
-        var dto = await MapToDtoAsync(message);
+        var sender = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(senderId);
+        var userMap = new Dictionary<int, User>
+        {
+            { senderId, sender },
+            { recipient.UserId, recipient }
+        };
+        var dto = MapToDto(message, userMap);
 
         await _inboxHub.NotifyNewMessage(recipient.UserId, dto);
 
         try
         {
-            var sender = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(senderId);
             await _notificationService.SendAsync(
                 recipient.UserId,
                 NotificationType.NewMessage,
@@ -73,12 +78,12 @@ public class InternalMessageService : IInternalMessageService
         var repo = _unitOfWork.GetRepository<InternalMessage, int>();
 
         // Get root messages where user is recipient (paginated)
-        var roots = await repo.GetAllAsync(InternalMessageSpec.InboxRoots(userId, queryParams));
+        var roots = await repo.GetAllAsync(InternalMessageSpec.InboxRoots(userId, queryParams), asNoTracking: true);
         var rootIds = roots.Select(r => r.MessageId).ToList();
 
         // Get all replies to those roots that user can see
         var replies = rootIds.Any()
-            ? await repo.GetAllAsync(InternalMessageSpec.RepliesToRoots(rootIds, userId))
+            ? await repo.GetAllAsync(InternalMessageSpec.RepliesToRoots(rootIds, userId), asNoTracking: true)
             : new List<InternalMessage>();
 
         var dataToReturn = (await BuildThreadsAsync(roots, replies)).ToList();
@@ -94,12 +99,12 @@ public class InternalMessageService : IInternalMessageService
         var repo = _unitOfWork.GetRepository<InternalMessage, int>();
 
         // Get root messages where user is sender
-        var roots = await repo.GetAllAsync(InternalMessageSpec.SentRoots(userId, queryParams));
+        var roots = await repo.GetAllAsync(InternalMessageSpec.SentRoots(userId, queryParams), asNoTracking: true);
         var rootIds = roots.Select(r => r.MessageId).ToList();
 
         // Get all replies to those roots that user can see
         var replies = rootIds.Any()
-            ? await repo.GetAllAsync(InternalMessageSpec.RepliesToRoots(rootIds, userId))
+            ? await repo.GetAllAsync(InternalMessageSpec.RepliesToRoots(rootIds, userId), asNoTracking: true)
             : new List<InternalMessage>();
 
         return await BuildThreadsAsync(roots, replies);
@@ -141,15 +146,31 @@ public class InternalMessageService : IInternalMessageService
     private async Task<IEnumerable<InternalMessageDto>> BuildThreadsAsync(
         IEnumerable<InternalMessage> roots, IEnumerable<InternalMessage> replies)
     {
+        var rootList = roots.ToList();
         var replyList = replies.ToList();
-        var rootDtos = new List<InternalMessageDto>();
 
-        foreach (var root in roots)
+        if (rootList.Count == 0 && replyList.Count == 0)
+            return [];
+
+        var allUserIds = rootList.Select(r => r.SenderId)
+            .Concat(rootList.Select(r => r.RecipientId))
+            .Concat(replyList.Select(r => r.SenderId))
+            .Concat(replyList.Select(r => r.RecipientId))
+            .Distinct()
+            .ToList();
+
+        var userMap = allUserIds.Count > 0
+            ? (await _unitOfWork.GetRepository<User, int>().GetAllAsync(new UsersByIdsSpec(allUserIds), asNoTracking: true))
+                .ToDictionary(u => u.UserId)
+            : new Dictionary<int, User>();
+
+        var rootDtos = new List<InternalMessageDto>();
+        foreach (var root in rootList)
         {
-            var rootDto = await MapToDtoAsync(root);
+            var rootDto = MapToDto(root, userMap);
             foreach (var reply in replyList.Where(r => r.ParentMessageId == root.MessageId))
             {
-                rootDto.Replies.Add(await MapToDtoAsync(reply));
+                rootDto.Replies.Add(MapToDto(reply, userMap));
             }
             rootDtos.Add(rootDto);
         }
@@ -173,11 +194,10 @@ public class InternalMessageService : IInternalMessageService
         return DateTime.MinValue;
     }
 
-    private async Task<InternalMessageDto> MapToDtoAsync(InternalMessage m)
+    private static InternalMessageDto MapToDto(InternalMessage m, Dictionary<int, User> userMap)
     {
-        var userRepo = _unitOfWork.GetRepository<User, int>();
-        var sender = await userRepo.GetByIdAsync(m.SenderId);
-        var recipient = await userRepo.GetByIdAsync(m.RecipientId);
+        var sender = userMap.GetValueOrDefault(m.SenderId);
+        var recipient = userMap.GetValueOrDefault(m.RecipientId);
 
         return new InternalMessageDto
         {

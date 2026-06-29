@@ -7,9 +7,9 @@ namespace IntelliCampus.Service_Abstraction;
 public interface IExamScheduleService
 {
     Task<ExamScheduleDto> GetByIdAsync(int examScheduleId);
-    Task<IEnumerable<ExamScheduleDto>> GetByStudentIdAsync(int studentId);
-    Task<IEnumerable<ExamScheduleDto>> GetByTypeAsync(int studentId, ExamType examType);
-    Task<IEnumerable<ExamScheduleDto>> GetByStatusAsync(int studentId, ExamStatus status);
+    Task<IEnumerable<ExamScheduleDto>> GetByStudentIdAsync(int studentId, ExamScheduleQueryParams? queryParams = null);
+    Task<IEnumerable<ExamScheduleDto>> GetByTypeAsync(int studentId, ExamType examType, ExamScheduleQueryParams? queryParams = null);
+    Task<IEnumerable<ExamScheduleDto>> GetByStatusAsync(int studentId, ExamStatus status, ExamScheduleQueryParams? queryParams = null);
     Task<byte[]> ExportExamSchedulePdfAsync(int studentId, ExamScheduleQueryParams queryParams);
 
     Task SyncFromExamAsync(int examId);

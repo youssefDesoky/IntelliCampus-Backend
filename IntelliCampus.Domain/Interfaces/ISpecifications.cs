@@ -19,5 +19,8 @@ namespace IntelliCampus.Domain.Interfaces
         public int Take { get; }
         public int Skip { get; }
         public bool IsPaginated { get; }
+
+        public bool UseSplitQuery { get; }
+        public Expression? Select { get; }
     }
 }

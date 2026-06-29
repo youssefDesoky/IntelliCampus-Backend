@@ -37,5 +37,13 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
         builder.Property(s => s.StudentType)
             .HasConversion<int>()
             .HasDefaultValue(IntelliCampus.Domain.Entities.Enums.StudentType.Bachelor);
+
+        builder.HasIndex(s => s.DepartmentId);
+        builder.HasIndex(s => s.FacultyId);
+        builder.HasIndex(s => s.Level);
+        builder.HasIndex(s => s.StudentType);
+        builder.HasIndex(s => s.StudentCode);
+        builder.HasIndex(s => s.BylawId);
+        builder.HasIndex(s => s.SpecializationId);
     }
 }

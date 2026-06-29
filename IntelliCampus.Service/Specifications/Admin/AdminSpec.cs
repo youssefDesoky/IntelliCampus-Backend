@@ -9,6 +9,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(a => a.Faculty!);
             AddInclude("UserRoles.Role");
+            EnableSplitQuery();
         }
 
         public AdminSpec(AdminQueryParams queryParams)
@@ -18,6 +19,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(a => a.Faculty!);
             AddInclude("UserRoles.Role");
+            EnableSplitQuery();
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
 
@@ -26,6 +28,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(a => a.Faculty!);
             AddInclude("UserRoles.Role");
+            EnableSplitQuery();
         }
     }
 }

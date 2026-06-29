@@ -50,7 +50,7 @@ public class ExamService : IExamService
     public async Task<PaginatedResult<ExamDto>> GetAllAsync(ExamQueryParams queryParams)
     {
         var spec = new ExamWithCourseSpec(queryParams);
-        var exams = await Exams.GetAllAsync(spec);
+        var exams = await Exams.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = exams.Select(MapToDto).ToList();
 
         var countSpec = new ExamCountSpec(queryParams);
@@ -65,9 +65,9 @@ public class ExamService : IExamService
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
-        var spec = new ExamWithDetailsSpec();
-        var all = await Exams.GetAllAsync(spec);
-        return all.Where(e => e.CourseId == courseId).Select(MapToDto);
+        var spec = new ExamWithDetailsSpec(courseId, filterByCourse: true);
+        var exams = await Exams.GetAllAsync(spec, asNoTracking: true);
+        return exams.Select(MapToDto);
     }
 
     public async Task<ExamDto> CreateAsync(CreateExamDto dto)
@@ -191,27 +191,30 @@ public class ExamService : IExamService
     private async Task<List<int>> GetConflictsAsync(int courseId, DateTime date, TimeSpan startTime, TimeSpan endTime, int? excludeExamId = null)
     {
         var semester = SemesterHelper.GetSemesterFromDate(date);
-        var allStudentCourses = await StudentCourseRepo.GetAllAsync();
-        var enrolledStudentIds = allStudentCourses
-            .Where(sc => sc.CourseId == courseId && sc.Semester == semester)
+        var enrolledStudentIds = (await StudentCourseRepo.GetAllAsync(
+            new StudentCourseIdsSpec(courseId, true), asNoTracking: true))
+            .Where(sc => sc.Semester == semester)
             .Select(sc => sc.StudentId)
             .ToHashSet();
 
         if (enrolledStudentIds.Count == 0)
             return [];
 
+        var allStudentCourses = (await StudentCourseRepo.GetAllAsync(
+            new StudentCourseSemesterAllSpec(semester), asNoTracking: true))
+            .Where(sc => enrolledStudentIds.Contains(sc.StudentId))
+            .ToList();
+
         var otherEnrolledCourseIds = allStudentCourses
             .Where(sc => enrolledStudentIds.Contains(sc.StudentId) && sc.CourseId != courseId && sc.Semester == semester)
             .Select(sc => sc.CourseId)
             .ToHashSet();
 
-        var allExams = await Exams.GetAllAsync();
-        var overlappingExams = allExams
+        var overlappingExams = (await Exams.GetAllAsync(
+            new ExamByDateSpec(date, excludeExamId), asNoTracking: true))
             .Where(ex =>
-                ex.Date.Date == date.Date &&
                 ex.Time < endTime &&
                 ex.Time.Add(TimeSpan.FromMinutes(ex.DurationMinutes)) > startTime &&
-                (!excludeExamId.HasValue || ex.ExamId != excludeExamId.Value) &&
                 otherEnrolledCourseIds.Contains(ex.CourseId))
             .ToList();
 
@@ -272,10 +275,9 @@ public class ExamService : IExamService
             await _unitOfWork.SaveChangesAsync();
         }
 
-        // --- Notify Instructors ---
-        var allClasses = await ClassesRepo.GetAllAsync();
-        var instructorIds = allClasses
-            .Where(c => c.CourseId == exam.CourseId && c.InstructorId.HasValue)
+        var instructorIds = (await ClassesRepo.GetAllAsync(
+            new ClassByCourseSpec(exam.CourseId), asNoTracking: true))
+            .Where(c => c.InstructorId.HasValue)
             .Select(c => c.InstructorId!.Value)
             .Distinct()
             .ToList();

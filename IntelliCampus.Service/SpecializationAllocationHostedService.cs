@@ -48,10 +48,11 @@ public class SpecializationAllocationHostedService : BackgroundService
                         result.Allocations.Count, result.Unallocated.Count);
                 }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error running specialization allocation");
-            }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error running specialization allocation");
+            throw;
+        }
 
             await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
         }

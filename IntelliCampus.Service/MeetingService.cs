@@ -1,5 +1,6 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Shared.Dtos.Meeting;
@@ -22,11 +23,8 @@ public class MeetingService(IUnitOfWork unitOfWork) : IMeetingService
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
-        var all = await Meetings.GetAllAsync();
-        return all
-            .Where(m => m.CourseId == courseId)
-            .OrderByDescending(m => m.DateTime)
-            .Select(MapToDto);
+        var meetings = await Meetings.GetAllAsync(new MeetingByCourseSpec(courseId), asNoTracking: true);
+        return meetings.Select(MapToDto).ToList();
     }
 
     public async Task<MeetingDto> CreateAsync(CreateMeetingDto dto, int instructorId)

@@ -423,7 +423,7 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasColumnType("nvarchar(4000)");
 
                     b.Property<string>("GroupName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsEdited")
                         .ValueGeneratedOnAdd()
@@ -449,6 +449,12 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("MessageId");
+
+                    b.HasIndex("GroupName");
+
+                    b.HasIndex("RecipientId");
+
+                    b.HasIndex("SenderId");
 
                     b.ToTable("ChatMessages");
                 });
@@ -519,6 +525,8 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasColumnType("time");
 
                     b.HasKey("ClassId");
+
+                    b.HasIndex("ClassType");
 
                     b.HasIndex("CourseId");
 
@@ -636,7 +644,11 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.HasKey("CourseId");
 
+                    b.HasIndex("CourseCode");
+
                     b.HasIndex("DepartmentId");
+
+                    b.HasIndex("Status");
 
                     b.ToTable("Courses");
                 });
@@ -901,7 +913,13 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.HasIndex("CourseId");
 
+                    b.HasIndex("Date");
+
+                    b.HasIndex("ExamType");
+
                     b.HasIndex("RoomId");
+
+                    b.HasIndex("Status");
 
                     b.ToTable("Exams");
                 });
@@ -1349,6 +1367,12 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.HasKey("MessageId");
 
+                    b.HasIndex("ParentMessageId");
+
+                    b.HasIndex("RecipientId");
+
+                    b.HasIndex("SenderId");
+
                     b.ToTable("InternalMessages");
                 });
 
@@ -1576,6 +1600,10 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.HasKey("NotificationId");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("Type");
 
                     b.ToTable("Notifications");
                 });
@@ -1975,6 +2003,10 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.HasIndex("CourseId");
 
+                    b.HasIndex("ScheduleType");
+
+                    b.HasIndex("StudentId");
+
                     b.HasIndex("StudentId", "Date");
 
                     b.ToTable("Schedules", (string)null);
@@ -2222,6 +2254,12 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.HasIndex("CourseId");
 
+                    b.HasIndex("Semester");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("StudentId");
+
                     b.ToTable("StudentCourses");
                 });
 
@@ -2432,6 +2470,8 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.HasIndex("UserId");
 
+                    b.HasIndex("UserId", "IsRead");
+
                     b.ToTable("UserNotifications");
                 });
 
@@ -2563,7 +2603,13 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.HasIndex("DepartmentId");
 
+                    b.HasIndex("Level");
+
                     b.HasIndex("SpecializationId");
+
+                    b.HasIndex("StudentCode");
+
+                    b.HasIndex("StudentType");
 
                     b.ToTable("Students", (string)null);
                 });

@@ -9,6 +9,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(d => d.HeadInstructor!);
             AddInclude(d => d.Faculty!);
+            EnableSplitQuery();
         }
 
         public DepartmentSpec(DepartmentQueryParams queryParams)
@@ -18,6 +19,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(d => d.HeadInstructor!);
             AddInclude(d => d.Faculty!);
+            EnableSplitQuery();
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
 
@@ -26,6 +28,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(d => d.HeadInstructor!);
             AddInclude(d => d.Faculty!);
+            EnableSplitQuery();
         }
     }
 }

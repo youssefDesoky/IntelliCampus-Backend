@@ -17,6 +17,8 @@ public class SessionConfiguration : IEntityTypeConfiguration<Session>
             .HasConversion<string>()
             .HasMaxLength(20);
 
+        builder.HasIndex(s => s.ClassId);
+
         builder.HasOne(s => s.Class)
             .WithMany(c => c.Sessions)
             .HasForeignKey(s => s.ClassId)

@@ -13,6 +13,8 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
         builder.Property(p => p.Content)
             .IsRequired();
 
+        builder.HasIndex(p => p.CommunityId);
+
         builder.HasOne(p => p.Community)
             .WithMany(c => c.Posts)
             .HasForeignKey(p => p.CommunityId)

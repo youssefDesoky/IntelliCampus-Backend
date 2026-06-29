@@ -10,6 +10,9 @@ public class AttendanceExcuseConfiguration : IEntityTypeConfiguration<Attendance
     {
         builder.HasKey(e => e.ExcuseId);
 
+        builder.HasIndex(ae => ae.StudentId);
+        builder.HasIndex(ae => ae.SessionId);
+
         builder.HasOne(e => e.Student)
             .WithMany()
             .HasForeignKey(e => e.StudentId)

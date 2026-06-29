@@ -26,6 +26,8 @@ public class ReminderConfiguration : IEntityTypeConfiguration<Reminder>
             .HasMaxLength(20)
             .HasDefaultValue("low");
 
+        builder.HasIndex(r => r.StudentId);
+
         builder.HasOne(r => r.Student)
             .WithMany(s => s.Reminders)
             .HasForeignKey(r => r.StudentId)

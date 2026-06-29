@@ -9,6 +9,7 @@ public sealed class ExamWithDetailsSpec : BaseSpecifications<Exam>
     {
         AddInclude(e => e.Course!);
         AddInclude(e => e.Room!);
+        EnableSplitQuery();
         AddOrderByDescending(e => e.Date);
     }
 
@@ -18,6 +19,7 @@ public sealed class ExamWithDetailsSpec : BaseSpecifications<Exam>
         AddInclude(e => e.Course!);
         AddInclude(e => e.Room!);
         AddInclude("Course.StudentCourses");
+        EnableSplitQuery();
     }
 
     public ExamWithDetailsSpec(ExamQueryParams queryParams)
@@ -28,7 +30,17 @@ public sealed class ExamWithDetailsSpec : BaseSpecifications<Exam>
     {
         AddInclude(e => e.Course!);
         AddInclude(e => e.Room!);
+        EnableSplitQuery();
         AddOrderByDescending(e => e.Date);
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
+    }
+
+    public ExamWithDetailsSpec(int courseId, bool filterByCourse)
+        : base(e => e.CourseId == courseId)
+    {
+        AddInclude(e => e.Course!);
+        AddInclude(e => e.Room!);
+        EnableSplitQuery();
+        AddOrderByDescending(e => e.Date);
     }
 }

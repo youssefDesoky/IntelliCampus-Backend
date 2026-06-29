@@ -9,8 +9,8 @@ public class SessionSpec : BaseSpecifications<Session>
         : base(s => s.ClassId == classId)
     {
         AddInclude(s => s.Attendances!);
-        AddInclude("Attendances.Student");
         AddInclude(s => s.Class!);
+        EnableSplitQuery();
         AddOrderByDescending(s => s.Date);
     }
 
@@ -18,18 +18,26 @@ public class SessionSpec : BaseSpecifications<Session>
         : base(s => s.SessionId == sessionId)
     {
         AddInclude(s => s.Attendances!);
-        AddInclude("Attendances.Student");
         AddInclude(s => s.Class!);
+        EnableSplitQuery();
     }
 
     public SessionSpec(HashSet<int> classIds, SessionQueryParams queryParams)
         : base(s => classIds.Contains(s.ClassId))
     {
         AddInclude(s => s.Attendances!);
-        AddInclude("Attendances.Student");
         AddInclude(s => s.Class!);
+        EnableSplitQuery();
         AddOrderByDescending(s => s.Date);
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
+    }
+
+    // Batch load sessions by class IDs without pagination, with attendance data
+    public SessionSpec(HashSet<int> classIds)
+        : base(s => classIds.Contains(s.ClassId))
+    {
+        AddInclude(s => s.Attendances!);
+        AddOrderByDescending(s => s.Date);
     }
 }
 

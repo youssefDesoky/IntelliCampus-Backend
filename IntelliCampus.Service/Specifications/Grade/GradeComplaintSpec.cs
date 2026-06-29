@@ -12,11 +12,21 @@ public class GradeComplaintSpec : BaseSpecifications<GradeComplaint>
         AddOrderByDescending(c => c.SubmittedAt);
     }
 
-    // GetByGradeIdAsync — instructor views complaints
+    // GetByGradeIdAsync - instructor views complaints
     public GradeComplaintSpec(int gradeId, bool byGrade)
         : base(c => c.GradeId == gradeId)
     {
         AddInclude(c => c.Student!);
         AddInclude(c => c.Grade!);
+        EnableSplitQuery();
+    }
+
+    // GetByCourseIdAsync - instructor views complaints for a course
+    public GradeComplaintSpec(int courseId, bool byCourse, bool unused)
+        : base(c => c.Grade!.CourseId == courseId)
+    {
+        AddInclude(c => c.Student!);
+        AddInclude(c => c.Grade!);
+        EnableSplitQuery();
     }
 }

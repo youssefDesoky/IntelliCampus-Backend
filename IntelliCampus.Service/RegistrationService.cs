@@ -56,23 +56,7 @@ public class RegistrationService : IRegistrationService
         if (course is null)
             throw new CourseNotFoundException($"Course with ID {dto.CourseId} not found.");
 
-        // Determine the class to register into
-        Class classEntity;
-        if (dto.ClassId.HasValue && dto.ClassId > 0)
-        {
-            classEntity = await Classes.GetByIdAsync(new ClassByCourseSpec(dto.ClassId.Value, dto.CourseId));
-            if (classEntity is null)
-                throw new ClassNotFoundException($"Class with ID {dto.ClassId} not found or does not belong to the specified course.");
-        }
-        else
-        {
-            // No class specified — pick first available section, or fall back to the lecture
-            var allClasses = await Classes.GetAllAsync(new ClassByCourseSpec(dto.CourseId));
-            var matching = allClasses.FirstOrDefault(c => c.ClassType == ClassType.Lecture);
-            if (matching is null)
-                throw new ClassNotFoundException($"No class found for course with ID {dto.CourseId}.");
-            classEntity = matching;
-        }
+        var classEntity = await ResolveClassForRegistrationAsync(dto, dto.CourseId);
 
         // Check if already registered
         var existingRegistration = await StudentCourses.GetByIdAsync(new StudentCourseSpec(studentId, dto.CourseId));
@@ -82,61 +66,13 @@ public class RegistrationService : IRegistrationService
         // Auto-generate semester based on current date
         var semester = SemesterHelper.GetCurrentSemester();
 
-        // Get lecture class for this course
-        var lectureSpec = new LectureClassSpec(dto.CourseId);
-        var lectureClass = await Classes.GetByIdAsync(lectureSpec);
+        var lectureClass = await Classes.GetByIdAsync(new LectureClassSpec(dto.CourseId));
 
-        // Load existing semester registrations for validation
+        await ValidateRegistrationConflictsAsync(studentId, classEntity, lectureClass, course.CourseName, semester);
+
         var existingSemesterCourses = await StudentCourses.GetAllAsync(
-            new StudentCourseSemesterSpec(studentId, semester));
-
-        // Check for scheduling conflicts
-        var newClasses = new List<Class> { classEntity };
-        if (classEntity.ClassType != ClassType.Lecture && lectureClass is not null)
-            newClasses.Add(lectureClass);
-
-        foreach (var existing in existingSemesterCourses)
-        {
-            if (existing.Class is null || existing.Course is null) continue;
-            if (existing.Class.Day is null || existing.Class.StartTime is null || existing.Class.EndTime is null) continue;
-
-            foreach (var nc in newClasses)
-            {
-                if (nc.Day is null || nc.StartTime is null || nc.EndTime is null) continue;
-                if (existing.Class.Day != nc.Day) continue;
-                if (existing.Class.StartTime < nc.EndTime && existing.Class.EndTime > nc.StartTime)
-                    throw new InvalidOperationException(
-                        $"Cannot register for \"{course.CourseName}\": time conflict with \"{existing.Course.CourseName}\" on {existing.Class.Day}.");
-            }
-        }
-
-        // Semester credit hours validation from bylaw
-        if (student.BylawId is not null)
-        {
-            var bylaw = await Bylaws.GetByIdAsync(student.BylawId.Value);
-            if (bylaw is not null)
-            {
-                var effectiveCredits = await _bylawService.GetEffectiveCreditHoursAsync(
-                    student.BylawId.Value, student.DepartmentId);
-                var existingHours = existingSemesterCourses.Sum(sc =>
-                    effectiveCredits.GetValueOrDefault(sc.CourseId, sc.Course.CreditHours));
-                var newCourseHours = effectiveCredits.GetValueOrDefault(course.CourseId, course.CreditHours);
-                var totalAfterRegistration = existingHours + newCourseHours;
-
-                var isSummer = semester.StartsWith("Summer", StringComparison.OrdinalIgnoreCase);
-                var maxHours = isSummer && bylaw.Settings.SummerMaxCreditHours.HasValue
-                    ? bylaw.Settings.SummerMaxCreditHours.Value
-                    : bylaw.Settings.MaxCreditHoursPerSemester;
-
-                if (maxHours.HasValue && totalAfterRegistration > maxHours.Value)
-                    throw new InvalidOperationException(
-                        $"Cannot register for \"{course.CourseName}\". Adding {newCourseHours} credit hours would bring your semester total to {totalAfterRegistration}, exceeding the maximum of {maxHours.Value} credit hours{(isSummer ? " for summer" : "")}.");
-
-                if (!isSummer && bylaw.Settings.MinCreditHoursPerSemester.HasValue && totalAfterRegistration < bylaw.Settings.MinCreditHoursPerSemester.Value)
-                    throw new InvalidOperationException(
-                        $"Cannot register for \"{course.CourseName}\". The total of {totalAfterRegistration} credit hours is below the minimum of {bylaw.Settings.MinCreditHoursPerSemester.Value} credit hours per semester.");
-            }
-        }
+            new StudentCourseSemesterSpec(studentId, semester), asNoTracking: true);
+        await ValidateCreditHoursAsync(student, course, semester, existingSemesterCourses);
 
         var studentCourse = new StudentCourse
         {
@@ -180,7 +116,7 @@ public class RegistrationService : IRegistrationService
     public async Task<IEnumerable<StudentRegistrationDto>> GetStudentRegistrationsAsync(int studentId)
     {
         var spec = new StudentCourseSpec(studentId);
-        var registrations = await StudentCourses.GetAllAsync(spec);
+        var registrations = await StudentCourses.GetAllAsync(spec, asNoTracking: true);
 
         return registrations.Select(sc => new StudentRegistrationDto
         {
@@ -245,13 +181,83 @@ public class RegistrationService : IRegistrationService
     private async Task<int> GetTotalEarnedCreditHoursAsync(int studentId)
     {
         var spec = new StudentCompletedCoursesSpec(studentId);
-        var completed = await StudentCourses.GetAllAsync(spec);
+        var completed = await StudentCourses.GetAllAsync(spec, asNoTracking: true);
         var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
         if (student?.BylawId is null) return completed.Sum(sc => sc.Course.CreditHours);
 
         var effectiveCredits = await _bylawService.GetEffectiveCreditHoursAsync(
             student.BylawId.Value, student.DepartmentId);
         return completed.Sum(sc => effectiveCredits.GetValueOrDefault(sc.CourseId, sc.Course.CreditHours));
+    }
+
+    private async Task<Class> ResolveClassForRegistrationAsync(CourseRegistrationDto dto, int courseId)
+    {
+        if (dto.ClassId.HasValue && dto.ClassId > 0)
+        {
+            var classEntity = await Classes.GetByIdAsync(new ClassByCourseSpec(dto.ClassId.Value, courseId));
+            if (classEntity is null)
+                throw new ClassNotFoundException($"Class with ID {dto.ClassId} not found or does not belong to the specified course.");
+            return classEntity;
+        }
+
+        var allClasses = await Classes.GetAllAsync(new ClassByCourseSpec(courseId), asNoTracking: true);
+        var matching = allClasses.FirstOrDefault(c => c.ClassType == ClassType.Lecture);
+        if (matching is null)
+            throw new ClassNotFoundException($"No class found for course with ID {courseId}.");
+        return matching;
+    }
+
+    private async Task ValidateRegistrationConflictsAsync(int studentId, Class classEntity, Class? lectureClass, string courseName, string semester)
+    {
+        var existingSemesterCourses = await StudentCourses.GetAllAsync(
+            new StudentCourseSemesterSpec(studentId, semester), asNoTracking: true);
+
+        var newClasses = new List<Class> { classEntity };
+        if (classEntity.ClassType != ClassType.Lecture && lectureClass is not null)
+            newClasses.Add(lectureClass);
+
+        foreach (var existing in existingSemesterCourses)
+        {
+            if (existing.Class is null || existing.Course is null) continue;
+            if (existing.Class.Day is null || existing.Class.StartTime is null || existing.Class.EndTime is null) continue;
+
+            foreach (var nc in newClasses)
+            {
+                if (nc.Day is null || nc.StartTime is null || nc.EndTime is null) continue;
+                if (existing.Class.Day != nc.Day) continue;
+                if (existing.Class.StartTime < nc.EndTime && existing.Class.EndTime > nc.StartTime)
+                    throw new InvalidOperationException(
+                        $"Cannot register for \"{courseName}\": time conflict with \"{existing.Course.CourseName}\" on {existing.Class.Day}.");
+            }
+        }
+    }
+
+    private async Task ValidateCreditHoursAsync(Student student, Course course, string semester, IEnumerable<StudentCourse> existingSemesterCourses)
+    {
+        if (student.BylawId is null) return;
+
+        var bylaw = await Bylaws.GetByIdAsync(student.BylawId.Value);
+        if (bylaw is null) return;
+
+        var effectiveCredits = await _bylawService.GetEffectiveCreditHoursAsync(
+            student.BylawId.Value, student.DepartmentId);
+        var existingHours = existingSemesterCourses.Sum(sc =>
+            effectiveCredits.GetValueOrDefault(sc.CourseId, sc.Course?.CreditHours ?? 0));
+        var newCourseHours = effectiveCredits.GetValueOrDefault(course.CourseId, course.CreditHours);
+        var totalAfterRegistration = existingHours + newCourseHours;
+
+        var isSummer = semester.StartsWith("Summer", StringComparison.OrdinalIgnoreCase);
+        var maxHours = isSummer && bylaw.Settings.SummerMaxCreditHours.HasValue
+            ? bylaw.Settings.SummerMaxCreditHours.Value
+            : bylaw.Settings.MaxCreditHoursPerSemester;
+
+        if (maxHours.HasValue && totalAfterRegistration > maxHours.Value)
+            throw new InvalidOperationException(
+                $"Cannot register for \"{course.CourseName}\". Adding {newCourseHours} credit hours would bring your semester total to {totalAfterRegistration}, exceeding the maximum of {maxHours.Value} credit hours{(isSummer ? " for summer" : "")}.");
+
+        if (!isSummer && bylaw.Settings.MinCreditHoursPerSemester.HasValue && totalAfterRegistration < bylaw.Settings.MinCreditHoursPerSemester.Value)
+            throw new InvalidOperationException(
+                $"Cannot register for \"{course.CourseName}\". The total of {totalAfterRegistration} credit hours is below the minimum of {bylaw.Settings.MinCreditHoursPerSemester.Value} credit hours per semester.");
     }
 
 }

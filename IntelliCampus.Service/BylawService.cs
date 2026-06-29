@@ -12,6 +12,7 @@ using IntelliCampus.Shared.Dtos.ElectiveBucket;
 using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace IntelliCampus.Service;
 
@@ -20,12 +21,14 @@ public class BylawService : IBylawService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IFileStorageService _fileStorageService;
     private readonly UrlResolver _urlResolver;
+    private readonly IMemoryCache _cache;
 
-    public BylawService(IUnitOfWork unitOfWork, IFileStorageService fileStorageService, UrlResolver urlResolver)
+    public BylawService(IUnitOfWork unitOfWork, IFileStorageService fileStorageService, UrlResolver urlResolver, IMemoryCache memoryCache)
     {
         _unitOfWork = unitOfWork;
         _fileStorageService = fileStorageService;
         _urlResolver = urlResolver;
+        _cache = memoryCache;
     }
 
     private IGenericRepository<Bylaw, int> Bylaws
@@ -53,14 +56,19 @@ public class BylawService : IBylawService
 
     public async Task<PaginatedResult<BylawDto>> GetAllAsync(BylawQueryParams queryParams)
     {
-        var spec = new BylawSpec(queryParams);
-        var bylaws = await Bylaws.GetAllAsync(spec);
-        var dataToReturn = bylaws.Select(MapToDto).ToList();
+        var cacheKey = $"bylaws_{queryParams.Type ?? "all"}_{queryParams.PageIndex}_{queryParams.PageSize}";
+        return await _cache.GetOrCreateAsync(cacheKey, async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
+            var spec = new BylawSpec(queryParams);
+            var bylaws = await Bylaws.GetAllAsync(spec, asNoTracking: true);
+            var dataToReturn = bylaws.Select(MapToDto).ToList();
 
-        var countSpec = new BylawCountSpec(queryParams);
-        var totalCount = await Bylaws.CountAsync(countSpec);
+            var countSpec = new BylawCountSpec(queryParams);
+            var totalCount = await Bylaws.CountAsync(countSpec);
 
-        return new PaginatedResult<BylawDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
+            return new PaginatedResult<BylawDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
+        });
     }
 
     public async Task<BylawDto> CreateAsync(CreateBylawDto dto, int adminId)
@@ -179,8 +187,7 @@ public class BylawService : IBylawService
 
     public async Task<bool> ToggleActiveAsync(int bylawId)
     {
-        var spec = new BylawSpec(bylawId);
-        var bylaw = await Bylaws.GetByIdAsync(spec);
+        var bylaw = await Bylaws.GetByIdAsync(new BylawSpec(bylawId, lightweight: true));
 
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
@@ -474,14 +481,17 @@ public class BylawService : IBylawService
         foreach (var prereq in bylawCourse.Prerequisites.ToList())
             BylawCoursePrerequisites.Delete(prereq);
 
-        foreach (var prereqId in dto.PrerequisiteBylawCourseIds.Distinct())
-        {
-            if (prereqId == bylawCourseId)
-                throw new InvalidOperationException("A course cannot be a prerequisite of itself.");
+        var distinctPrereqIds = dto.PrerequisiteBylawCourseIds.Distinct().ToList();
+        if (distinctPrereqIds.Contains(bylawCourseId))
+            throw new InvalidOperationException("A course cannot be a prerequisite of itself.");
 
-            var prereqBcSpec = new BylawCourseSpec(prereqId);
-            var prereqCourse = await BylawCourses.GetByIdAsync(prereqBcSpec);
-            if (prereqCourse is null)
+        var prereqSpec = new BylawCourseSpec(distinctPrereqIds, byPk: true);
+        var prereqCourses = await BylawCourses.GetAllAsync(prereqSpec, asNoTracking: true);
+        var prereqMap = prereqCourses.ToDictionary(p => p.BylawCourseId);
+
+        foreach (var prereqId in distinctPrereqIds)
+        {
+            if (!prereqMap.TryGetValue(prereqId, out var prereqCourse))
                 throw new BylawCourseNotFoundException(prereqId);
 
             if (prereqCourse.BylawId != bylawCourse.BylawId)
@@ -589,24 +599,8 @@ public class BylawService : IBylawService
             UploadedByAdminId = bylaw.UploadedByAdminId,
             UploadedByAdminName = bylaw.UploadedBy?.FullName,
             StudentCount = bylaw.Students?.Count,
-            GradeScales = bylaw.GradeScales?
-                .OrderBy(g => g.SortOrder)
-                .Select(g => new GradeScaleItemDto
-                {
-                    GradeLetter = g.GradeLetter,
-                    MinPercentage = g.MinPercentage,
-                    GpaValue = g.GpaValue,
-                    SortOrder = g.SortOrder
-                })
-                .ToList(),
-            LevelScales = bylaw.Settings.LevelScales?
-                .OrderBy(l => l.Level)
-                .Select(l => new LevelScaleItemDto
-                {
-                    Level = l.Level,
-                    MinHours = l.MinHours
-                })
-                .ToList(),
+            GradeScales = MapGradeScales(bylaw),
+            LevelScales = MapLevelScales(bylaw),
             MinHoursToChooseDepartment = bylaw.Settings.MinHoursToChooseDepartment,
             MinHoursToChooseSpecialization = bylaw.Settings.MinHoursToChooseSpecialization,
             TotalHoursToCompleteDegree = bylaw.Settings.TotalHoursToCompleteDegree,
@@ -627,68 +621,104 @@ public class BylawService : IBylawService
             ThesisCreditHours = bylaw.Settings.ThesisCreditHours,
             HasComprehensiveExam = bylaw.Settings.HasComprehensiveExam,
             Type = bylaw.Type.ToString(),
-            ElectiveBuckets = bylaw.ElectiveBuckets?.Select(eb =>
-            {
-                var bcLookup = (bylaw.BylawCourses ?? [])
-                    .GroupBy(bc => bc.CourseId)
-                    .ToDictionary(g => g.Key, g => g.First().BylawCourseId);
-
-                return new ElectiveBucketDto
-                {
-                    ElectiveBucketId = eb.ElectiveBucketId,
-                    Name = eb.Name,
-                    NameAr = eb.NameAr,
-                    BylawId = eb.BylawId,
-                    BylawName = bylaw.Name,
-                    DepartmentId = eb.DepartmentId,
-                    DepartmentName = eb.Department?.DepartmentName,
-                    RequiredCreditHours = eb.RequiredCreditHours,
-                    IsActive = eb.IsActive,
-                    Courses = (eb.ElectiveBucketCourses ?? [])
-                        .Select(ebc => new ElectiveBucketCourseDto
-                    {
-                        CourseId = ebc.CourseId,
-                        CourseCode = ebc.Course?.CourseCode,
-                        CourseName = ebc.Course?.CourseName ?? "Unknown",
-                        CreditHours = ebc.Course?.CreditHours ?? 0,
-                        BylawCourseId = bcLookup.GetValueOrDefault(ebc.CourseId)
-                    }).ToList()
-                };
-            }).ToList(),
-            BylawCourses = bylaw.BylawCourses?.Select(bc =>
-            {
-                List<int>? allowedDepts = null;
-                if (!string.IsNullOrWhiteSpace(bc.AllowedDepartmentIds))
-                {
-                    try { allowedDepts = JsonSerializer.Deserialize<List<int>>(bc.AllowedDepartmentIds); }
-                    catch { allowedDepts = null; }
-                }
-
-                var prereqs = bc.Prerequisites?
-                    .Where(p => p.PrerequisiteCourse?.Course != null)
-                    .Select(p => new BylawCoursePrerequisiteDto
-                    {
-                        BylawCourseId = p.BylawCourseId,
-                        PrerequisiteBylawCourseId = p.PrerequisiteBylawCourseId,
-                        PrerequisiteCourseCode = p.PrerequisiteCourse.Course.CourseCode,
-                        PrerequisiteCourseName = p.PrerequisiteCourse.Course.CourseName
-                    })
-                    .ToList();
-
-                return new BylawCourseDto
-                {
-                    BylawCourseId = bc.BylawCourseId,
-                    BylawId = bc.BylawId,
-                    CourseId = bc.CourseId,
-                    CourseCode = bc.Course?.CourseCode,
-                    CourseName = bc.Course?.CourseName,
-                    CourseType = bc.CourseType.ToString(),
-                    CreditHours = bc.CreditHours,
-                    AllowedDepartments = allowedDepts,
-                    Prerequisites = prereqs
-                };
-            }).ToList()
+            ElectiveBuckets = MapElectiveBuckets(bylaw),
+            BylawCourses = MapBylawCourses(bylaw)
         };
+    }
+
+    private static List<GradeScaleItemDto>? MapGradeScales(Bylaw bylaw)
+    {
+        return bylaw.GradeScales?
+            .OrderBy(g => g.SortOrder)
+            .Select(g => new GradeScaleItemDto
+            {
+                GradeLetter = g.GradeLetter,
+                MinPercentage = g.MinPercentage,
+                GpaValue = g.GpaValue,
+                SortOrder = g.SortOrder
+            })
+            .ToList();
+    }
+
+    private static List<LevelScaleItemDto>? MapLevelScales(Bylaw bylaw)
+    {
+        return bylaw.Settings.LevelScales?
+            .OrderBy(l => l.Level)
+            .Select(l => new LevelScaleItemDto
+            {
+                Level = l.Level,
+                MinHours = l.MinHours
+            })
+            .ToList();
+    }
+
+    private static List<ElectiveBucketDto>? MapElectiveBuckets(Bylaw bylaw)
+    {
+        return bylaw.ElectiveBuckets?.Select(eb =>
+        {
+            var bcLookup = (bylaw.BylawCourses ?? [])
+                .GroupBy(bc => bc.CourseId)
+                .ToDictionary(g => g.Key, g => g.FirstOrDefault()?.BylawCourseId ?? 0);
+
+            return new ElectiveBucketDto
+            {
+                ElectiveBucketId = eb.ElectiveBucketId,
+                Name = eb.Name,
+                NameAr = eb.NameAr,
+                BylawId = eb.BylawId,
+                BylawName = bylaw.Name,
+                DepartmentId = eb.DepartmentId,
+                DepartmentName = eb.Department?.DepartmentName,
+                RequiredCreditHours = eb.RequiredCreditHours,
+                IsActive = eb.IsActive,
+                Courses = (eb.ElectiveBucketCourses ?? [])
+                    .Select(ebc => new ElectiveBucketCourseDto
+                {
+                    CourseId = ebc.CourseId,
+                    CourseCode = ebc.Course?.CourseCode,
+                    CourseName = ebc.Course?.CourseName ?? "Unknown",
+                    CreditHours = ebc.Course?.CreditHours ?? 0,
+                    BylawCourseId = bcLookup.GetValueOrDefault(ebc.CourseId)
+                }).ToList()
+            };
+        }).ToList();
+    }
+
+    private static List<BylawCourseDto>? MapBylawCourses(Bylaw bylaw)
+    {
+        return bylaw.BylawCourses?.Select(bc =>
+        {
+            List<int>? allowedDepts = null;
+            if (!string.IsNullOrWhiteSpace(bc.AllowedDepartmentIds))
+            {
+                try { allowedDepts = JsonSerializer.Deserialize<List<int>>(bc.AllowedDepartmentIds); }
+                catch { allowedDepts = null; }
+            }
+
+            var prereqs = bc.Prerequisites?
+                .Where(p => p.PrerequisiteCourse?.Course != null)
+                .Select(p => new BylawCoursePrerequisiteDto
+                {
+                    BylawCourseId = p.BylawCourseId,
+                    PrerequisiteBylawCourseId = p.PrerequisiteBylawCourseId,
+                    PrerequisiteCourseCode = p.PrerequisiteCourse.Course.CourseCode,
+                    PrerequisiteCourseName = p.PrerequisiteCourse.Course.CourseName
+                })
+                .ToList();
+
+            return new BylawCourseDto
+            {
+                BylawCourseId = bc.BylawCourseId,
+                BylawId = bc.BylawId,
+                CourseId = bc.CourseId,
+                CourseCode = bc.Course?.CourseCode,
+                CourseName = bc.Course?.CourseName,
+                CourseType = bc.CourseType.ToString(),
+                CreditHours = bc.CreditHours,
+                AllowedDepartments = allowedDepts,
+                Prerequisites = prereqs
+            };
+        }).ToList();
     }
 
     public async Task<BylawDto> UpdatePassingCourseGradesAsync(int bylawId, UpdateBylawPassingCourseGradesDto dto)

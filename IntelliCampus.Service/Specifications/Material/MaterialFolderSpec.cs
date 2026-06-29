@@ -10,6 +10,7 @@ namespace IntelliCampus.Service.Specifications
             AddInclude(f => f.Course!);
             AddInclude(f => f.CreatedByInstructor!);
             AddInclude(f => f.Materials!);
+            EnableSplitQuery();
         }
 
         public MaterialFolderSpec(int courseId, bool byCourse)
@@ -18,6 +19,7 @@ namespace IntelliCampus.Service.Specifications
             AddInclude(f => f.Course!);
             AddInclude(f => f.CreatedByInstructor!);
             AddInclude(f => f.Materials!);
+            EnableSplitQuery();
             AddOrderBy(f => f.DisplayOrder);
         }
 

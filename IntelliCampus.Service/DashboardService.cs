@@ -44,6 +44,21 @@ public class DashboardService : IDashboardService
         if (student is null)
             return new StudentDashboardDto();
 
+        var (activeCourses, attendanceRate, studentCourses, _, latestNews, attendances, grades)
+            = await LoadStudentDashboardDataAsync(studentId);
+        return BuildStudentDashboardDto(student, activeCourses, attendanceRate, studentCourses, latestNews, attendances, grades);
+    }
+
+    private async Task<(
+        int ActiveCourses,
+        double AttendanceRate,
+        List<StudentCourse> StudentCourses,
+        List<int> CourseIds,
+        List<LatestNewsItemDto> LatestNews,
+        List<Attendance> Attendances,
+        List<Grade> Grades
+    )> LoadStudentDashboardDataAsync(int studentId)
+    {
         var studentCourseRepo = _unitOfWork.GetRepository<StudentCourse, (int, int)>();
         var attendanceRepo = _unitOfWork.GetRepository<Attendance, int>();
         var gradeRepo = _unitOfWork.GetRepository<Grade, int>();
@@ -59,13 +74,13 @@ public class DashboardService : IDashboardService
             ? Math.Round((double)presentAttendance / totalAttendance * 100, 1)
             : 0.0;
 
-        var studentCourses = (await studentCourseRepo.GetAllAsync(new StudentCourseIdsSpec(studentId))).ToList();
+        var studentCourses = (await studentCourseRepo.GetAllAsync(new StudentCourseIdsSpec(studentId), asNoTracking: true)).ToList();
         var courseIds = studentCourses.Select(sc => sc.CourseId).ToList();
 
         var latestNews = new List<LatestNewsItemDto>();
         if (courseIds.Count > 0)
         {
-            var announcements = await announcementRepo.GetAllAsync(new AnnouncementsByCoursesSpec(courseIds));
+            var announcements = await announcementRepo.GetAllAsync(new AnnouncementsByCoursesSpec(courseIds), asNoTracking: true);
             latestNews = announcements
                 .Take(5)
                 .Select(a => new LatestNewsItemDto
@@ -79,10 +94,7 @@ public class DashboardService : IDashboardService
                 .ToList();
 
             var broadcastRepo = _unitOfWork.GetRepository<BroadcastAnnouncement, int>();
-            var broadcasts = await broadcastRepo.GetAllAsync();
-            var broadcastItems = broadcasts
-                .OrderByDescending(b => b.CreatedAt)
-                .Take(5)
+            var broadcastItems = (await broadcastRepo.GetAllAsync(new BroadcastSpec(), asNoTracking: true))
                 .Select(b => new LatestNewsItemDto
                 {
                     Id = b.Id,
@@ -96,20 +108,33 @@ public class DashboardService : IDashboardService
             latestNews = latestNews.OrderByDescending(n => n.Date).Take(7).ToList();
         }
 
-        var attendances = (await attendanceRepo.GetAllAsync(new AttendanceSpec(studentId))).ToList();
+        var attendances = (await attendanceRepo.GetAllAsync(new AttendanceSpec(studentId), asNoTracking: true)).ToList();
+        var grades = (await gradeRepo.GetAllAsync(new GradeSpec(studentId), asNoTracking: true)).ToList();
+
+        return (activeCourses, attendanceRate, studentCourses, courseIds, latestNews, attendances, grades);
+    }
+
+    private static StudentDashboardDto BuildStudentDashboardDto(
+        Student student,
+        int activeCourses,
+        double attendanceRate,
+        List<StudentCourse> studentCourses,
+        List<LatestNewsItemDto> latestNews,
+        List<Attendance> attendances,
+        List<Grade> grades)
+    {
         var attendanceTrend = attendances
             .GroupBy(a => new { a.Date.Year, Week = GetWeekNumber(a.Date) })
             .Select(g => new AttendanceTrendPointDto
             {
                 Week = $"Week {g.Key.Week}",
-                Attendance = g.Count() > 0
+                Attendance = g.Any()
                     ? Math.Round((double)g.Count(a => a.Status != AttendanceStatus.Absent) / g.Count() * 100, 1)
                     : 0.0
             })
             .OrderBy(g => g.Week)
             .ToList();
 
-        var grades = (await gradeRepo.GetAllAsync(new GradeSpec(studentId))).ToList();
         var gpaTrend = studentCourses
             .Where(sc => !string.IsNullOrEmpty(sc.Semester))
             .GroupBy(sc => sc.Semester!)
@@ -254,7 +279,39 @@ public class DashboardService : IDashboardService
             .GetWeekOfYear(date, System.Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
     }
 
+    private static List<string> GetRecentSemesters(int yearsBack)
+    {
+        var now = DateTime.UtcNow;
+        var result = new List<string>();
+        for (int y = now.Year - yearsBack; y <= now.Year; y++)
+        {
+            result.Add($"Spring {y}");
+            result.Add($"Summer {y}");
+            result.Add($"Fall {y}");
+        }
+        return result;
+    }
+
     public async Task<AdminDashboardDto> GetAdminDashboardAsync()
+    {
+        var (stats, courseStatusBreakdown, attendances, grades, allCourses, allDepartments, studentCourses, allStudents, latestNews)
+            = await LoadAdminDashboardDataAsync();
+        var (attendanceTrend, gradeDistribution, topCourses, deptStatus, snapshot)
+            = ComputeTrendMetrics(attendances, grades, allCourses, allDepartments, studentCourses, allStudents);
+        return BuildAdminDashboardDto(stats, courseStatusBreakdown, attendanceTrend, gradeDistribution, topCourses, deptStatus, snapshot, latestNews);
+    }
+
+    private async Task<(
+        AdminStatsDto Stats,
+        List<CourseStatusPointDto> CourseStatusBreakdown,
+        List<Attendance> Attendances,
+        List<Grade> Grades,
+        Dictionary<int, Course> AllCourses,
+        Dictionary<int, Department> AllDepartments,
+        List<StudentCourse> StudentCourses,
+        IEnumerable<Student> AllStudents,
+        List<LatestNewsItemDto> LatestNews
+    )> LoadAdminDashboardDataAsync()
     {
         var studentsRepo = _unitOfWork.GetRepository<Student, int>();
         var instructorsRepo = _unitOfWork.GetRepository<Instructor, int>();
@@ -283,20 +340,58 @@ public class DashboardService : IDashboardService
             new() { Name = "Inactive", Value = await coursesRepo.CountAsync(c => c.Status == CourseStatus.Inactive) },
         };
 
-        var attendances = (await attendanceRepo.GetAllAsync()).ToList();
+        var now = DateTime.UtcNow;
+        var yearAgo = now.AddYears(-1);
+        var attendances = (await attendanceRepo.GetAllAsync(new AttendanceSpec(yearAgo, now), asNoTracking: true)).ToList();
+        var grades = (await gradeRepo.GetAllAsync(new GradeSpec(yearAgo, now), asNoTracking: true)).ToList();
+
+        var allCourses = (await coursesRepo.GetAllAsync(new CourseBasicSpec(), asNoTracking: true)).ToDictionary(c => c.CourseId);
+        var allDepartments = (await departmentsRepo.GetAllAsync(specifications: null, asNoTracking: true)).ToDictionary(d => d.DepartmentId);
+        var recentSemesters = GetRecentSemesters(3);
+        var studentCourses = (await studentCourseRepo.GetAllAsync(new StudentCourseIdsSpec(recentSemesters), asNoTracking: true)).ToList();
+
+        var allStudents = await studentsRepo.GetAllAsync(new StudentSpec(true), asNoTracking: true);
+
+        var latestNews = (await broadcastRepo.GetAllAsync(new BroadcastSpec(), asNoTracking: true))
+            .Select(b => new LatestNewsItemDto
+            {
+                Id = b.Id,
+                Title = b.Title,
+                Course = "General",
+                Kind = "Broadcast",
+                Date = b.CreatedAt,
+            })
+            .ToList();
+
+        return (stats, courseStatusBreakdown, attendances, grades, allCourses, allDepartments, studentCourses, allStudents, latestNews);
+    }
+
+    private static (
+        List<AttendanceTrendPointDto> AttendanceTrend,
+        List<GradeDistributionPointDto> GradeDistribution,
+        List<TopCourseDto> TopCourses,
+        List<DepartmentStatusDto> DepartmentStatus,
+        AdminSnapshotDto Snapshot
+    ) ComputeTrendMetrics(
+        List<Attendance> attendances,
+        List<Grade> grades,
+        Dictionary<int, Course> allCourses,
+        Dictionary<int, Department> allDepartments,
+        List<StudentCourse> studentCourses,
+        IEnumerable<Student> allStudents)
+    {
         var attendanceTrend = attendances
             .GroupBy(a => new { a.Date.Year, Week = GetWeekNumber(a.Date) })
             .Select(g => new AttendanceTrendPointDto
             {
                 Week = $"Week {g.Key.Week}",
-                Attendance = g.Count() > 0
+                Attendance = g.Any()
                     ? Math.Round((double)g.Count(a => a.Status != AttendanceStatus.Absent) / g.Count() * 100, 1)
                     : 0.0
             })
             .OrderBy(a => a.Week)
             .ToList();
 
-        var grades = (await gradeRepo.GetAllAsync()).ToList();
         int aCount = 0, bCount = 0, cCount = 0, dCount = 0, fCount = 0;
         foreach (var grade in grades)
         {
@@ -316,10 +411,6 @@ public class DashboardService : IDashboardService
             new() { Name = "D", Value = dCount },
             new() { Name = "F", Value = fCount },
         };
-
-        var allCourses = (await coursesRepo.GetAllAsync()).ToDictionary(c => c.CourseId);
-        var allDepartments = (await departmentsRepo.GetAllAsync()).ToDictionary(d => d.DepartmentId);
-        var studentCourses = (await studentCourseRepo.GetAllAsync()).ToList();
 
         var topCourses = studentCourses
             .GroupBy(sc => sc.CourseId)
@@ -345,7 +436,6 @@ public class DashboardService : IDashboardService
             })
             .ToList();
 
-        var allStudents = await studentsRepo.GetAllAsync();
         var totalSC = studentCourses.Count;
         var completedCount = studentCourses.Count(sc => sc.Status == StudentCourseStatus.Completed);
         var failedCount = studentCourses.Count(sc => sc.Status == StudentCourseStatus.Failed);
@@ -380,9 +470,8 @@ public class DashboardService : IDashboardService
             retention = earliest.Count > 0 ? Math.Round((double)retained / earliest.Count * 100, 1) : 100;
         }
 
-        var gpaStudents = allStudents.Where(s => s.Gpa > 0).ToList();
-        var averageGpa = gpaStudents.Count > 0
-            ? Math.Round(gpaStudents.Average(s => s.Gpa), 2)
+        var averageGpa = allStudents.Any()
+            ? Math.Round(allStudents.Average(s => s.Gpa), 2)
             : 0.0;
 
         var snapshot = new AdminSnapshotDto
@@ -393,20 +482,19 @@ public class DashboardService : IDashboardService
             AverageGpa = averageGpa,
         };
 
-        var broadcasts = await broadcastRepo.GetAllAsync();
-        var latestNews = broadcasts
-            .OrderByDescending(b => b.CreatedAt)
-            .Take(5)
-            .Select(b => new LatestNewsItemDto
-            {
-                Id = b.Id,
-                Title = b.Title,
-                Course = "General",
-                Kind = "Broadcast",
-                Date = b.CreatedAt,
-            })
-            .ToList();
+        return (attendanceTrend, gradeDistribution, topCourses, deptStatus, snapshot);
+    }
 
+    private static AdminDashboardDto BuildAdminDashboardDto(
+        AdminStatsDto stats,
+        List<CourseStatusPointDto> courseStatusBreakdown,
+        List<AttendanceTrendPointDto> attendanceTrend,
+        List<GradeDistributionPointDto> gradeDistribution,
+        List<TopCourseDto> topCourses,
+        List<DepartmentStatusDto> deptStatus,
+        AdminSnapshotDto snapshot,
+        List<LatestNewsItemDto> latestNews)
+    {
         return new AdminDashboardDto
         {
             Stats = stats,

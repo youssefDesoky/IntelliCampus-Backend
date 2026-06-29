@@ -3,6 +3,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Resolvers;
+using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Friend;
 
@@ -37,18 +38,25 @@ public class FriendService : IFriendService
         if (recipient == null)
             throw new UserNotFoundException("Recipient not found");
 
-        var existingRequest = (await FriendRequests.GetAllAsync())
-            .FirstOrDefault(fr =>
-                fr.SenderId == senderId && fr.RecipientId == recipientId &&
-                fr.Status == FriendRequestStatus.Pending);
+        var existingRequest = await FriendRequests.AnyAsync(fr =>
+            fr.SenderId == senderId && fr.RecipientId == recipientId &&
+            fr.Status == FriendRequestStatus.Pending);
 
-        if (existingRequest != null)
+        if (existingRequest)
             throw new InvalidOperationException("Friend request already sent");
 
-        var reverseRequest = (await FriendRequests.GetAllAsync())
-            .FirstOrDefault(fr =>
-                fr.SenderId == recipientId && fr.RecipientId == senderId &&
-                fr.Status == FriendRequestStatus.Pending);
+        var hasReverseRequest = await FriendRequests.AnyAsync(fr =>
+            fr.SenderId == recipientId && fr.RecipientId == senderId &&
+            fr.Status == FriendRequestStatus.Pending);
+
+        FriendRequest? reverseRequest = null;
+        if (hasReverseRequest)
+        {
+            reverseRequest = (await FriendRequests.GetAllAsync())
+                .FirstOrDefault(fr =>
+                    fr.SenderId == recipientId && fr.RecipientId == senderId &&
+                    fr.Status == FriendRequestStatus.Pending);
+        }
 
         if (reverseRequest != null)
         {
@@ -93,17 +101,15 @@ public class FriendService : IFriendService
         if (user is null)
             throw new UserNotFoundException(userId);
 
-        var requests = (await FriendRequests.GetAllAsync())
-            .Where(fr => fr.RecipientId == userId && fr.Status == FriendRequestStatus.Pending)
-            .OrderByDescending(fr => fr.CreatedAt)
-            .ToList();
+        var requests = (await FriendRequests.GetAllAsync(new FriendRequestsByRecipientSpec(userId, FriendRequestStatus.Pending), asNoTracking: true)).ToList();
+
+        var userIds = requests.SelectMany(r => new[] { r.SenderId, r.RecipientId }).Distinct().ToList();
+        var users = (await Users.GetAllAsync(new UsersByIdsSpec(userIds), asNoTracking: true)).ToDictionary(u => u.UserId);
 
         var dtos = new List<FriendRequestDto>();
         foreach (var request in requests)
         {
-            var sender = await Users.GetByIdAsync(request.SenderId);
-            var recipient = await Users.GetByIdAsync(request.RecipientId);
-            dtos.Add(await MapToDto(request, sender, recipient));
+            dtos.Add(await MapToDto(request, users.GetValueOrDefault(request.SenderId), users.GetValueOrDefault(request.RecipientId)));
         }
 
         return dtos;
@@ -133,9 +139,8 @@ public class FriendService : IFriendService
         Friendships.Add(friendship);
         await _unitOfWork.SaveChangesAsync();
 
-        var sender = await Users.GetByIdAsync(request.SenderId);
-        var recipient = await Users.GetByIdAsync(request.RecipientId);
-        return await MapToDto(request, sender, recipient);
+        var users = (await Users.GetAllAsync(new UsersByIdsSpec(new List<int> { request.SenderId, request.RecipientId }), asNoTracking: true)).ToDictionary(u => u.UserId);
+        return await MapToDto(request, users.GetValueOrDefault(request.SenderId), users.GetValueOrDefault(request.RecipientId));
     }
 
     public async Task<FriendRequestDto> RejectRequestAsync(int requestId, int userId)
@@ -154,39 +159,35 @@ public class FriendService : IFriendService
         FriendRequests.Update(request);
         await _unitOfWork.SaveChangesAsync();
 
-        var sender = await Users.GetByIdAsync(request.SenderId);
-        var recipient = await Users.GetByIdAsync(request.RecipientId);
-        return await MapToDto(request, sender, recipient);
+        var users = (await Users.GetAllAsync(new UsersByIdsSpec(new List<int> { request.SenderId, request.RecipientId }), asNoTracking: true)).ToDictionary(u => u.UserId);
+        return await MapToDto(request, users.GetValueOrDefault(request.SenderId), users.GetValueOrDefault(request.RecipientId));
     }
 
-    public async Task<IEnumerable<FriendDto>> GetFriendsAsync(int userId)
+    public async Task<IEnumerable<FriendDto>> GetFriendsAsync(int userId, int pageIndex = 1, int pageSize = 100)
     {
         var user = await Users.GetByIdAsync(userId);
         if (user is null)
             throw new UserNotFoundException(userId);
 
-        var friendships = (await Friendships.GetAllAsync())
-            .Where(f => f.UserId1 == userId || f.UserId2 == userId)
-            .ToList();
+        var spec = new FriendshipsByUserIdSpec(userId, pageSize, pageIndex);
+        var friendships = await Friendships.GetAllAsync(spec, asNoTracking: true);
 
-        var friendDtos = new List<FriendDto>();
+        var friendIds = friendships.Select(f => f.UserId1 == userId ? f.UserId2 : f.UserId1).ToList();
+        var friends = (await Users.GetAllAsync(new UsersByIdsSpec(friendIds), asNoTracking: true)).ToDictionary(u => u.UserId);
 
-        foreach (var friendship in friendships)
+        var friendDtos = friendships.Select(f =>
         {
-            var friendId = friendship.UserId1 == userId ? friendship.UserId2 : friendship.UserId1;
-            var friend = await Users.GetByIdAsync(friendId);
-            if (friend != null)
+            var friendId = f.UserId1 == userId ? f.UserId2 : f.UserId1;
+            var friend = friends.GetValueOrDefault(friendId);
+            return new FriendDto
             {
-                friendDtos.Add(new FriendDto
-                {
-                    UserId = friend.UserId,
-                    FullName = friend.FullName,
-                    ProfileImage = _urlResolver.ResolveProfile(friend.ProfileImage),
-                    Roles = friend.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
-                    FriendsSince = friendship.CreatedAt
-                });
-            }
-        }
+                UserId = friendId,
+                FullName = friend?.FullName ?? "Unknown",
+                ProfileImage = friend != null ? _urlResolver.ResolveProfile(friend.ProfileImage) : null,
+                Roles = friend?.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList() ?? [],
+                FriendsSince = f.CreatedAt
+            };
+        }).ToList();
 
         return friendDtos.OrderBy(f => f.FullName);
     }

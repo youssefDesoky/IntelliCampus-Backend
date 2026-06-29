@@ -35,7 +35,7 @@ public class InstructorScheduleService : IInstructorScheduleService
 
         var instructor = await FindInstructorByUserIdAsync(userId);
         var spec = new ClassByInstructorSpec(instructor.UserId);
-        var classes = await Classes.GetAllAsync(spec);
+        var classes = await Classes.GetAllAsync(spec, asNoTracking: true);
 
         var schedules = classes.Select(MapToDto);
 

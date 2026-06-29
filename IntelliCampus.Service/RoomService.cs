@@ -29,7 +29,7 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
     public async Task<PaginatedResult<RoomDto>> GetAllAsync(RoomQueryParams queryParams)
     {
         var spec = new RoomSpec(queryParams);
-        var rooms = await Rooms.GetAllAsync(spec);
+        var rooms = await Rooms.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = rooms.Select(MapToDto).ToList();
 
         var countSpec = new RoomCountSpec(queryParams);

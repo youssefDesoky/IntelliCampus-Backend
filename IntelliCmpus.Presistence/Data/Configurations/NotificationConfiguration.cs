@@ -26,5 +26,8 @@ public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
 
         builder.Property(n => n.ImageUrl)
             .HasMaxLength(500);
+
+        builder.HasIndex(n => n.CreatedAt);
+        builder.HasIndex(n => n.Type);
     }
 }

@@ -28,7 +28,7 @@ public class ReminderService(IUnitOfWork unitOfWork) : IReminderService
             throw new StudentNotFoundException(studentId);
 
         var spec = new RemindersByStudentSpec(studentId, queryParams);
-        var reminders = await Reminders.GetAllAsync(spec);
+        var reminders = await Reminders.GetAllAsync(spec, asNoTracking: true);
 
         var nextDay = selectedDay.AddDays(1);
         var weekEnd = selectedDay.AddDays(8);

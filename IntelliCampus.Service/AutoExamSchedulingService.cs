@@ -3,10 +3,10 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Helpers;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Exceptions;
+using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.ExamScheduling;
 using IntelliCampus.Shared.Params;
-using Microsoft.EntityFrameworkCore;
 
 namespace IntelliCampus.Service;
 
@@ -40,8 +40,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
 
     public async Task<ConflictGraph> BuildConflictGraphAsync(string semester)
     {
-        var enrollments = await StudentCoursesRepo.GetAllAsync();
-        var filtered = enrollments.Where(e => e.Semester == semester).ToList();
+        var filtered = await StudentCoursesRepo.GetAllAsync(new StudentCourseSemesterAllSpec(semester), asNoTracking: true);
 
         var byStudent = filtered
             .GroupBy(e => e.StudentId)
@@ -66,6 +65,14 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
     public async Task<List<ConflictInfoDto>> DetectConflictsAsync(
         string semester, ExamSchedulingQueryParams queryParams)
     {
+        var semesterEnrollments = (await StudentCoursesRepo.GetAllAsync(
+            new StudentCourseSemesterAllSpec(semester), asNoTracking: true)).ToList();
+        return await DetectConflictsCoreAsync(semesterEnrollments, queryParams);
+    }
+
+    private async Task<List<ConflictInfoDto>> DetectConflictsCoreAsync(
+        List<StudentCourse> semesterEnrollments, ExamSchedulingQueryParams queryParams)
+    {
         if (!queryParams.CourseId.HasValue)
             throw new InvalidOperationException("CourseId is required.");
 
@@ -79,19 +86,14 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
-        var enrollments = await StudentCoursesRepo.GetAllAsync();
-        var courseEnrolled = enrollments.Where(e => e.CourseId == courseId && e.Semester == semester).ToList();
+        var courseEnrolled = semesterEnrollments.Where(e => e.CourseId == courseId).ToList();
         if (courseEnrolled.Count == 0)
             return [];
 
         var studentIds = courseEnrolled.Select(e => e.StudentId).ToHashSet();
 
-        var allOtherEnrollments = enrollments
-            .Where(e => e.Semester == semester && e.CourseId != courseId)
-            .ToList();
-
-        var otherByStudent = allOtherEnrollments
-            .Where(e => studentIds.Contains(e.StudentId))
+        var otherByStudent = semesterEnrollments
+            .Where(e => e.CourseId != courseId && studentIds.Contains(e.StudentId))
             .GroupBy(e => e.StudentId)
             .ToDictionary(g => g.Key, g => g.Select(e => e.CourseId).Distinct().ToHashSet());
 
@@ -99,20 +101,16 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
         if (conflictingStudentIds.Count == 0)
             return [];
 
-        var existingExams = await ExamsRepo.GetAllAsync();
-        var conflictingExams = existingExams
-            .Where(ex =>
-                (excludeExamId == null || ex.ExamId != excludeExamId.Value) &&
-                ex.Date.Date == date.Date &&
-                ex.Time < endTime &&
-                ex.Time.Add(TimeSpan.FromMinutes(ex.DurationMinutes)) > startTime)
+        var existingExams = (await ExamsRepo.GetAllAsync(new ExamByDateSpec(date, excludeExamId), asNoTracking: true))
+            .Where(ex => ex.Time < endTime && ex.Time.Add(TimeSpan.FromMinutes(ex.DurationMinutes)) > startTime)
             .ToList();
 
-        var users = await UsersRepo.GetAllAsync();
-        var userDict = users.ToDictionary(u => u.UserId);
+        var userIds = conflictingStudentIds.ToList();
+        var userDict = (await UsersRepo.GetAllAsync(new UsersByIdsSpec(userIds), asNoTracking: true))
+            .ToDictionary(u => u.UserId);
 
         var result = new List<ConflictInfoDto>();
-        foreach (var ex in conflictingExams)
+        foreach (var ex in existingExams)
         {
             var affected = conflictingStudentIds
                 .Where(sid => otherByStudent.TryGetValue(sid, out var courses) && courses.Contains(ex.CourseId))
@@ -156,6 +154,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
     {
         var workingDays = EgyptianHolidays.GetWorkingDays(request.ScheduleFrom, request.ScheduleTo);
         var result = new List<AvailableSlotDto>();
+        var semesterCache = new Dictionary<string, List<StudentCourse>>();
 
         foreach (var day in workingDays)
         {
@@ -171,7 +170,11 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
                     EndTime = slot.EndTime,
                     ExcludeExamId = request.ExcludeExamId
                 };
-                var conflicts = await DetectConflictsAsync(semester, queryParams);
+
+                if (!semesterCache.ContainsKey(semester))
+                    semesterCache[semester] = (await StudentCoursesRepo.GetAllAsync(
+                        new StudentCourseSemesterAllSpec(semester), asNoTracking: true)).ToList();
+                var conflicts = await DetectConflictsCoreAsync(semesterCache[semester], queryParams);
 
                 result.Add(new AvailableSlotDto
                 {
@@ -250,14 +253,19 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             schedule[courseId] = chosen!;
         }
 
-        // Create Exam entities for scheduled courses
-        var courses = await _unitOfWork
-            .GetRepository<Course, int>().GetAllAsync();
+        // Pre-load course data and enrollment counts for all scheduled courses
+        var courseIds = schedule.Keys.ToList();
+        var courses = courseIds.Count > 0
+            ? (await CoursesRepo.GetAllAsync(new CourseBasicSpec(courseIds), asNoTracking: true)).ToDictionary(c => c.CourseId)
+            : new Dictionary<int, Course>();
+        var semesterEnrollments = (await StudentCoursesRepo.GetAllAsync(new StudentCourseSemesterAllSpec(semester), asNoTracking: true))
+            .GroupBy(e => e.CourseId)
+            .ToDictionary(g => g.Key, g => g.Count());
 
         foreach (var kv in schedule)
         {
-            var course = courses.FirstOrDefault(c => c.CourseId == kv.Key);
-            if (course is null) continue;
+            if (!courses.TryGetValue(kv.Key, out var course))
+                continue;
 
             var slot = kv.Value;
             var examDate = slot.Date.ToDateTime(TimeOnly.FromTimeSpan(slot.StartTime));
@@ -280,9 +288,6 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             await _unitOfWork.SaveChangesAsync();
             await _examScheduleService.SyncFromExamAsync(exam.ExamId);
 
-            var enrollmentCount = (await StudentCoursesRepo.GetAllAsync())
-                .Count(e => e.CourseId == course.CourseId && e.Semester == semester);
-
             result.Scheduled.Add(new ScheduledExamDto
             {
                 CourseId = course.CourseId,
@@ -292,7 +297,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
                 Date = slot.Date,
                 StartTime = slot.StartTime,
                 EndTime = slot.EndTime,
-                StudentCount = enrollmentCount
+                StudentCount = semesterEnrollments.GetValueOrDefault(course.CourseId)
             });
         }
 
@@ -315,8 +320,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             return result;
         }
 
-        var halls = (await ExamHallsRepo.GetAllAsync())
-            .Where(h => examHallIds.Contains(h.ExamHallId))
+        var halls = (await ExamHallsRepo.GetAllAsync(new ExamHallsByIdsSpec(examHallIds), asNoTracking: true))
             .OrderBy(h => h.HallName)
             .ToList();
 
@@ -327,9 +331,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             return result;
         }
 
-        var enrollments = await StudentCoursesRepo.GetAllAsync();
-        var studentIds = enrollments
-            .Where(e => e.CourseId == exam.CourseId)
+        var studentIds = (await StudentCoursesRepo.GetAllAsync(new StudentCourseIdsSpec(exam.CourseId, true), asNoTracking: true))
             .Select(e => e.StudentId)
             .Distinct()
             .ToList();
@@ -341,8 +343,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             return result;
         }
 
-        var users = (await UsersRepo.GetAllAsync())
-            .Where(u => studentIds.Contains(u.UserId))
+        var users = (await UsersRepo.GetAllAsync(new UsersByIdsSpec(studentIds), asNoTracking: true))
             .ToDictionary(u => u.UserId);
 
         if (users.Count == 0)
@@ -361,9 +362,8 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
         }
 
         // Remove old seat assignments for this exam
-        var oldAssignments = await SeatAssignRepo.GetAllAsync();
-        var toRemove = oldAssignments.Where(a => a.ExamId == examId).ToList();
-        foreach (var a in toRemove) SeatAssignRepo.Delete(a);
+        var oldAssignments = (await SeatAssignRepo.GetAllAsync(new ExamSeatAssignmentsByExamSpec(examId))).ToList();
+        foreach (var a in oldAssignments) SeatAssignRepo.Delete(a);
         await _unitOfWork.SaveChangesAsync();
 
         // Distribute students across halls (ordered by name)
@@ -428,8 +428,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             throw new ExamNotFoundException(examId);
 
         var result = new HallAssignmentResultDto { ExamId = examId };
-        var all = await SeatAssignRepo.GetAllAsync();
-        var assignments = all.Where(a => a.ExamId == examId).ToList();
+        var assignments = (await SeatAssignRepo.GetAllAsync(new ExamSeatAssignmentsByExamSpec(examId), asNoTracking: true)).ToList();
 
         if (assignments.Count == 0)
         {
@@ -438,15 +437,15 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             return result;
         }
 
-        var halls = await ExamHallsRepo.GetAllAsync();
-        var users = await UsersRepo.GetAllAsync();
-        var hallDict = halls.ToDictionary(h => h.ExamHallId);
-        var userDict = users.ToDictionary(u => u.UserId);
+        var hallIds = assignments.Select(a => a.ExamHallId).Distinct().ToList();
+        var studentIds = assignments.Select(a => a.StudentId).Distinct().ToList();
+        var halls = (await ExamHallsRepo.GetAllAsync(new ExamHallsByIdsSpec(hallIds), asNoTracking: true)).ToDictionary(h => h.ExamHallId);
+        var users = (await UsersRepo.GetAllAsync(new UsersByIdsSpec(studentIds), asNoTracking: true)).ToDictionary(u => u.UserId);
 
         var grouped = assignments.GroupBy(a => a.ExamHallId);
         foreach (var g in grouped)
         {
-            var hall = hallDict.GetValueOrDefault(g.Key);
+            var hall = halls.GetValueOrDefault(g.Key);
             var dto = new HallAssignmentDto
             {
                 ExamHallId = g.Key,
@@ -456,7 +455,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
                 Students = g.Select(a => new SeatAssignmentDto
                 {
                     StudentId = a.StudentId,
-                    StudentName = userDict.TryGetValue(a.StudentId, out var u) ? u.FullName : $"#{a.StudentId}",
+                    StudentName = users.TryGetValue(a.StudentId, out var u) ? u.FullName : $"#{a.StudentId}",
                     SeatNumber = a.SeatNumber,
                     ExamHallId = a.ExamHallId,
                     HallName = hall?.HallName
@@ -477,22 +476,21 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
         if (exam is null)
             throw new ExamNotFoundException(examId);
 
-        var all = await SeatAssignRepo.GetAllAsync();
-        var assignments = all.Where(a => a.ExamId == examId).ToList();
+        var assignments = (await SeatAssignRepo.GetAllAsync(new ExamSeatAssignmentsByExamSpec(examId), asNoTracking: true)).ToList();
         if (assignments.Count == 0) return [];
 
-        var users = await UsersRepo.GetAllAsync();
-        var halls = await ExamHallsRepo.GetAllAsync();
-        var userDict = users.ToDictionary(u => u.UserId);
-        var hallDict = halls.ToDictionary(h => h.ExamHallId);
+        var studentIds = assignments.Select(a => a.StudentId).Distinct().ToList();
+        var hallIds = assignments.Select(a => a.ExamHallId).Distinct().ToList();
+        var users = (await UsersRepo.GetAllAsync(new UsersByIdsSpec(studentIds), asNoTracking: true)).ToDictionary(u => u.UserId);
+        var halls = (await ExamHallsRepo.GetAllAsync(new ExamHallsByIdsSpec(hallIds), asNoTracking: true)).ToDictionary(h => h.ExamHallId);
 
         return assignments.Select(a => new SeatAssignmentDto
         {
             StudentId = a.StudentId,
-            StudentName = userDict.TryGetValue(a.StudentId, out var u) ? u.FullName : $"#{a.StudentId}",
+            StudentName = users.TryGetValue(a.StudentId, out var u) ? u.FullName : $"#{a.StudentId}",
             SeatNumber = a.SeatNumber,
             ExamHallId = a.ExamHallId,
-            HallName = hallDict.TryGetValue(a.ExamHallId, out var h) ? h.HallName : null
+            HallName = halls.TryGetValue(a.ExamHallId, out var h) ? h.HallName : null
         }).ToList();
     }
 }

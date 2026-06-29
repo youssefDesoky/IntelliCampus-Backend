@@ -34,18 +34,22 @@ public class AdminAnalysisService : IAdminAnalysisService
         var totalExams = await examsRepo.CountAsync(_ => true);
         var activeBylaws = await bylawsRepo.CountAsync(b => b.IsActive);
 
-        var departments = await departmentsRepo.GetAllAsync();
-        var breakdown = new List<DepartmentAnalysisItemDto>();
-        foreach (var dept in departments)
+        var departments = await departmentsRepo.GetAllAsync(specifications: null, asNoTracking: true);
+        var allStudents = (await studentsRepo.GetAllAsync(specifications: null, asNoTracking: true)).ToList();
+        var allInstructors = (await instructorsRepo.GetAllAsync(specifications: null, asNoTracking: true)).ToList();
+        var allCourses = (await coursesRepo.GetAllAsync(specifications: null, asNoTracking: true)).ToList();
+
+        var studentCounts = allStudents.GroupBy(s => s.DepartmentId).ToDictionary(g => g.Key, g => g.Count());
+        var instructorCounts = allInstructors.GroupBy(i => i.DepartmentId).ToDictionary(g => g.Key, g => g.Count());
+        var courseCounts = allCourses.GroupBy(c => c.DepartmentId).ToDictionary(g => g.Key, g => g.Count());
+
+        var breakdown = departments.Select(dept => new DepartmentAnalysisItemDto
         {
-            breakdown.Add(new DepartmentAnalysisItemDto
-            {
-                DepartmentName = dept.DepartmentName,
-                StudentCount = await studentsRepo.CountAsync(s => s.DepartmentId == dept.DepartmentId),
-                InstructorCount = await instructorsRepo.CountAsync(i => i.DepartmentId == dept.DepartmentId),
-                CourseCount = await coursesRepo.CountAsync(c => c.DepartmentId == dept.DepartmentId),
-            });
-        }
+            DepartmentName = dept.DepartmentName,
+            StudentCount = studentCounts.GetValueOrDefault(dept.DepartmentId),
+            InstructorCount = instructorCounts.GetValueOrDefault(dept.DepartmentId),
+            CourseCount = courseCounts.GetValueOrDefault(dept.DepartmentId),
+        }).ToList();
 
         var dto = new AdminAnalysisExportDto
         {

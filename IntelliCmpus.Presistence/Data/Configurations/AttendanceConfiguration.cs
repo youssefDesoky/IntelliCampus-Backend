@@ -14,6 +14,9 @@ public class AttendanceConfiguration : IEntityTypeConfiguration<Attendance>
             .HasConversion<string>()
             .HasMaxLength(20);
 
+        builder.HasIndex(a => a.SessionId);
+        builder.HasIndex(a => a.StudentId);
+
         builder.HasOne(a => a.Session)
             .WithMany(s => s.Attendances)
             .HasForeignKey(a => a.SessionId)

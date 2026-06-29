@@ -55,7 +55,7 @@ public class MaterialService(
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
-        var materials = await Materials.GetAllAsync(new MaterialSpec(courseId, byCourse: true));
+        var materials = await Materials.GetAllAsync(new MaterialSpec(courseId, byCourse: true), asNoTracking: true);
 
         return materials.Select(MapToDto);
     }
@@ -67,9 +67,9 @@ public class MaterialService(
         if (course is null)
             throw new CourseNotFoundException();
 
-        var folders = await Folders.GetAllAsync(new MaterialFolderSpec(courseId, byCourse: true));
+        var folders = await Folders.GetAllAsync(new MaterialFolderSpec(courseId, byCourse: true), asNoTracking: true);
 
-        var unorganizedMaterials = await Materials.GetAllAsync(new MaterialSpec(courseId, byCourse: true, queryParams));
+        var unorganizedMaterials = await Materials.GetAllAsync(new MaterialSpec(courseId, byCourse: true, queryParams), asNoTracking: true);
 
         return new CourseMaterialsDto
         {
@@ -148,7 +148,7 @@ public class MaterialService(
         // Notify enrolled students
         var studentCourses = await _unitOfWork
             .GetRepository<StudentCourse, int>()
-            .GetAllAsync(new StudentCourseIdsSpec(dto.CourseId, byCourse: true));
+            .GetAllAsync(new StudentCourseIdsSpec(dto.CourseId, byCourse: true), asNoTracking: true);
 
         var studentIds = studentCourses.Select(sc => sc.StudentId).ToList();
 
@@ -224,7 +224,7 @@ public class MaterialService(
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
-        var folders = await Folders.GetAllAsync(new MaterialFolderSpec(courseId, byCourse: true));
+        var folders = await Folders.GetAllAsync(new MaterialFolderSpec(courseId, byCourse: true), asNoTracking: true);
 
         return folders.Select(MapFolderToDto);
     }
@@ -246,7 +246,7 @@ public class MaterialService(
         var instructor = await Instructors.GetByIdAsync(instructorId);
 
         // Get max display order
-        var courseFolders = await Folders.GetAllAsync(new MaterialFolderSpec(dto.CourseId, byCourse: true));
+        var courseFolders = await Folders.GetAllAsync(new MaterialFolderSpec(dto.CourseId, byCourse: true), asNoTracking: true);
         var maxOrder = courseFolders.Any() ? courseFolders.Max(f => f.DisplayOrder) : 0;
 
         var folder = new MaterialFolder

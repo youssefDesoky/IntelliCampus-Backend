@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service.Specifications
@@ -11,6 +12,16 @@ namespace IntelliCampus.Service.Specifications
         AddInclude(i => i.OfficeHoursRoom!);
         AddInclude(i => i.Faculty!);
         AddInclude("UserRoles.Role");
+        EnableSplitQuery();
+    }
+
+    public InstructorSpec(params InstructorRole[] roles)
+        : base(i => i.InstructorRole != null && roles.Contains(i.InstructorRole.Value))
+    {
+        AddInclude(i => i.Department!);
+        AddInclude(i => i.OfficeHoursRoom!);
+        AddInclude("UserRoles.Role");
+        EnableSplitQuery();
     }
 
     public InstructorSpec(int instructorId)
@@ -20,6 +31,17 @@ namespace IntelliCampus.Service.Specifications
         AddInclude(i => i.OfficeHoursRoom!);
         AddInclude(i => i.Faculty!);
         AddInclude("UserRoles.Role");
+        EnableSplitQuery();
+    }
+
+    public InstructorSpec(InstructorRole[] roles, ClassQueryParams queryParams)
+        : base(i => i.InstructorRole != null && roles.Contains(i.InstructorRole.Value))
+    {
+        AddInclude(i => i.Department!);
+        AddInclude(i => i.OfficeHoursRoom!);
+        AddInclude("UserRoles.Role");
+        EnableSplitQuery();
+        ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 
     public InstructorSpec(InstructorQueryParams queryParams)
@@ -31,6 +53,7 @@ namespace IntelliCampus.Service.Specifications
         AddInclude(i => i.OfficeHoursRoom!);
         AddInclude(i => i.Faculty!);
         AddInclude("UserRoles.Role");
+        EnableSplitQuery();
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
     }

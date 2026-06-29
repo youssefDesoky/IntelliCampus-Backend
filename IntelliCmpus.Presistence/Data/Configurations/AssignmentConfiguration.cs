@@ -20,6 +20,8 @@ public class AssignmentConfiguration : IEntityTypeConfiguration<Assignment>
         builder.Property(a => a.MaxGrade)
             .HasPrecision(10, 2);
 
+        builder.HasIndex(a => a.CourseId);
+
         builder.HasOne(a => a.Course)
             .WithMany(c => c.Assignments)
             .HasForeignKey(a => a.CourseId)

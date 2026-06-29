@@ -23,15 +23,15 @@ public class ScheduleController(IScheduleService scheduleService) : ControllerBa
 
     [HttpGet("student/{studentId}")]
     [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
-    public async Task<IActionResult> GetByStudentId(int studentId)
-        => Ok(await scheduleService.GetByStudentIdAsync(studentId));
+    public async Task<IActionResult> GetByStudentId(int studentId, [FromQuery] ScheduleQueryParams? queryParams = null)
+        => Ok(await scheduleService.GetByStudentIdAsync(studentId, queryParams));
 
     [HttpGet("my-schedule")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<IActionResult> GetMySchedule([FromQuery] ScheduleQueryParams queryParams)
     {
         if (queryParams.Types is null || queryParams.Types.Length == 0)
-            return Ok(await scheduleService.GetByStudentIdAsync(UserId));
+            return Ok(await scheduleService.GetByStudentIdAsync(UserId, queryParams));
 
         return Ok(await scheduleService.GetByStudentIdAndTypesAsync(UserId, queryParams));
     }

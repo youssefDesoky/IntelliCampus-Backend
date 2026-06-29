@@ -74,7 +74,7 @@ public class GradeService : IGradeService
         var (assignTotalScore, assignTotalMax) = await GetAssignmentScoresAsync(studentId, courseId);
         var (quizTotalScore, quizTotalMax) = await GetQuizScoresAsync(studentId, courseId);
 
-        var courseGrades = await Grades.GetAllAsync(new GradeSpec(studentId, courseId));
+        var courseGrades = await Grades.GetAllAsync(new GradeSpec(studentId, courseId), asNoTracking: true);
         var midterm = courseGrades.FirstOrDefault(g => g.GradeType == GradeType.Midterm && g.Status == "Graded");
 
         var (assignQuizContrib, midtermContrib, _) = CalculateWeightedContributions(
@@ -93,24 +93,24 @@ public class GradeService : IGradeService
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
-        var assignments = await Assignments.GetAllAsync(new AssignmentSpec(courseId, byCourse: true));
+        var assignments = await Assignments.GetAllAsync(new AssignmentSpec(courseId, byCourse: true), asNoTracking: true);
         var assignmentIds = assignments.Select(a => a.AssignmentId).ToHashSet();
 
-        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseId, byCourse: true));
+        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseId, byCourse: true), asNoTracking: true);
         var quizIds = quizzes.Select(q => q.QuizId).ToHashSet();
 
-        var mySubmissions = (await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(studentId, byStudent: true, dummy: true)))
+        var mySubmissions = (await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(studentId, byStudent: true, dummy: true), asNoTracking: true))
             .Where(sa => assignmentIds.Contains(sa.AssignmentId))
             .ToList();
 
-        var myQuizSubmissions = (await StudentQuizzes.GetAllAsync(new StudentQuizSpec(studentId, true, true)))
+        var myQuizSubmissions = (await StudentQuizzes.GetAllAsync(new StudentQuizSpec(studentId, true, true), asNoTracking: true))
             .Where(sq => quizIds.Contains(sq.QuizId))
             .ToList();
 
         var gradedAssignments = mySubmissions.Where(sa => sa.Grade.HasValue).ToList();
         var gradedQuizzes = myQuizSubmissions.Where(sq => sq.Score.HasValue).ToList();
 
-        var courseGrades = await Grades.GetAllAsync(new GradeSpec(studentId, courseId));
+        var courseGrades = await Grades.GetAllAsync(new GradeSpec(studentId, courseId), asNoTracking: true);
         var midterm = courseGrades.FirstOrDefault(g => g.GradeType == GradeType.Midterm && g.Status == "Graded");
         var final = courseGrades.FirstOrDefault(g => g.GradeType == GradeType.Final && g.Status == "Graded");
 
@@ -119,13 +119,14 @@ public class GradeService : IGradeService
 
         var history = new List<GradeHistoryItemDto>();
 
-        history.AddRange(gradedAssignments.Select(sa =>
+        foreach (var sa in gradedAssignments)
         {
-            var assignment = assignments.First(a => a.AssignmentId == sa.AssignmentId);
+            var assignment = assignments.FirstOrDefault(a => a.AssignmentId == sa.AssignmentId);
+            if (assignment is null) continue;
             var max = assignment.MaxGrade;
             var score = sa.Grade!.Value;
 
-            return new GradeHistoryItemDto
+            history.Add(new GradeHistoryItemDto
             {
                 Id = sa.StudentAssignmentId,
                 Title = assignment.Title,
@@ -136,16 +137,17 @@ public class GradeService : IGradeService
                 Status = "Graded",
                 Date = (sa.GradedAt ?? sa.SubmittedAt).ToString("dd MMM yyyy"),
                 Percent = max > 0 ? Math.Round(score / max * 100, 0) : 0
-            };
-        }));
+            });
+        }
 
-        history.AddRange(gradedQuizzes.Select(sq =>
+        foreach (var sq in gradedQuizzes)
         {
-            var quiz = quizzes.First(q => q.QuizId == sq.QuizId);
+            var quiz = quizzes.FirstOrDefault(q => q.QuizId == sq.QuizId);
+            if (quiz is null) continue;
             var max = quiz.MaxGrade;
             var score = sq.Score!.Value;
 
-            return new GradeHistoryItemDto
+            history.Add(new GradeHistoryItemDto
             {
                 Id = sq.QuizId,
                 Title = quiz.Title,
@@ -156,8 +158,8 @@ public class GradeService : IGradeService
                 Status = "Graded",
                 Date = sq.SubmittedAt.ToString("dd MMM yyyy"),
                 Percent = max > 0 ? Math.Round(score / max * 100, 0) : 0
-            };
-        }));
+            });
+        }
 
         if (midterm is not null)
         {
@@ -193,11 +195,8 @@ public class GradeService : IGradeService
 
         history = history.OrderByDescending(h => h.Date).ToList();
 
-        var assignTotalScore = gradedAssignments.Sum(sa => sa.Grade!.Value);
-        var assignTotalMax = gradedAssignments.Sum(sa => assignments.First(a => a.AssignmentId == sa.AssignmentId).MaxGrade);
-
-        var quizTotalScore = gradedQuizzes.Sum(sq => sq.Score!.Value);
-        var quizTotalMax = gradedQuizzes.Sum(sq => quizzes.First(q => q.QuizId == sq.QuizId).MaxGrade);
+        var (assignTotalScore, assignTotalMax) = ComputeAssignmentGrade(gradedAssignments, assignments);
+        var (quizTotalScore, quizTotalMax) = ComputeQuizGrade(gradedQuizzes, quizzes);
 
         var breakdown = new List<AssessmentBreakdownDto>();
         if (gradedAssignments.Count > 0)
@@ -267,17 +266,7 @@ public class GradeService : IGradeService
 
         var (letter, gpa) = await ResolveGradeScaleAsync(studentId, overallPercent);
 
-        return new CourseGradeDto
-        {
-            OverallGrade = new OverallGradeDto
-            {
-                Percent = overallPercent,
-                Letter = letter,
-                Gpa = gpa
-            },
-            AssessmentBreakdown = breakdown,
-            History = history
-        };
+        return BuildCourseGradeDto(overallPercent, letter, gpa, breakdown, history);
     }
 
     public async Task<PaginatedResult<CourseGradeDto>> GetCourseGradeAsync(int studentId, int courseId, GradeQueryParams queryParams)
@@ -296,20 +285,21 @@ public class GradeService : IGradeService
         var result = new List<GradeHistoryItemDto>();
 
         // Assignment grades
-        var mySubmissions = await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(studentId, byStudent: true, dummy: true));
+        var mySubmissions = await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(studentId, byStudent: true, dummy: true), asNoTracking: true);
         var gradedAssignments = mySubmissions.Where(sa => sa.Grade.HasValue).ToList();
 
         if (gradedAssignments.Count > 0)
         {
             var assignmentIds = gradedAssignments.Select(sa => sa.AssignmentId).Distinct().ToList();
-            var assignments = (await Assignments.GetAllAsync()).Where(a => assignmentIds.Contains(a.AssignmentId)).ToList();
+            var assignments = (await Assignments.GetAllAsync(new AssignmentSpec(assignmentIds, byIds: true), asNoTracking: true)).ToList();
 
-            result.AddRange(gradedAssignments.Select(sa =>
+            foreach (var sa in gradedAssignments)
             {
-                var assignment = assignments.First(a => a.AssignmentId == sa.AssignmentId);
+                var assignment = assignments.FirstOrDefault(a => a.AssignmentId == sa.AssignmentId);
+                if (assignment is null) continue;
                 var max = assignment.MaxGrade;
                 var score = sa.Grade!.Value;
-                return new GradeHistoryItemDto
+                result.Add(new GradeHistoryItemDto
                 {
                     Id = sa.StudentAssignmentId,
                     Title = assignment.Title,
@@ -320,25 +310,26 @@ public class GradeService : IGradeService
                     Status = "Graded",
                     Date = (sa.GradedAt ?? sa.SubmittedAt).ToString("dd MMM yyyy"),
                     Percent = max > 0 ? Math.Round(score / max * 100, 0) : 0
-                };
-            }));
+                });
+            }
         }
 
         // Quiz grades
-        var myQuizSubmissions = await StudentQuizzes.GetAllAsync(new StudentQuizSpec(studentId, true, true));
+        var myQuizSubmissions = await StudentQuizzes.GetAllAsync(new StudentQuizSpec(studentId, true, true), asNoTracking: true);
         var gradedQuizzes = myQuizSubmissions.Where(sq => sq.Score.HasValue).ToList();
 
         if (gradedQuizzes.Count > 0)
         {
             var quizIds = gradedQuizzes.Select(sq => sq.QuizId).Distinct().ToList();
-            var quizzes = (await Quizzes.GetAllAsync()).Where(q => quizIds.Contains(q.QuizId)).ToList();
+            var quizzes = (await Quizzes.GetAllAsync(new QuizSpec(quizIds, byIds: true), asNoTracking: true)).ToList();
 
-            result.AddRange(gradedQuizzes.Select(sq =>
+            foreach (var sq in gradedQuizzes)
             {
-                var quiz = quizzes.First(q => q.QuizId == sq.QuizId);
+                var quiz = quizzes.FirstOrDefault(q => q.QuizId == sq.QuizId);
+                if (quiz is null) continue;
                 var max = quiz.MaxGrade;
                 var score = sq.Score!.Value;
-                return new GradeHistoryItemDto
+                result.Add(new GradeHistoryItemDto
                 {
                     Id = sq.QuizId,
                     Title = quiz.Title,
@@ -349,8 +340,8 @@ public class GradeService : IGradeService
                     Status = "Graded",
                     Date = sq.SubmittedAt.ToString("dd MMM yyyy"),
                     Percent = max > 0 ? Math.Round(score / max * 100, 0) : 0
-                };
-            }));
+                });
+            }
         }
 
         return result.OrderByDescending(h => h.Date).ToList();
@@ -358,18 +349,42 @@ public class GradeService : IGradeService
 
     public async Task<IEnumerable<TranscriptCourseDto>> GetTranscriptAsync(int studentId)
     {
-        var studentCourses = await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId));
+        var studentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId), asNoTracking: true)).ToList();
         var courseIds = studentCourses.Select(sc => sc.CourseId).ToList();
 
         if (courseIds.Count == 0)
             return Enumerable.Empty<TranscriptCourseDto>();
 
-        var courses = await Courses.GetAllAsync(new CourseSpec(courseIds));
+        var courses = await Courses.GetAllAsync(new CourseBasicSpec(courseIds), asNoTracking: true);
         var courseDict = courses.ToDictionary(c => c.CourseId);
 
-        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }, lightweight: true));
         var effectiveCredits = await _bylawService.GetEffectiveCreditHoursAsync(
             student?.BylawId ?? 0, student?.DepartmentId);
+
+       
+        var assignments = await Assignments.GetAllAsync(new AssignmentSpec(courseIds), asNoTracking: true);
+        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseIds), asNoTracking: true);
+        var studentAssignments = (await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(studentId, "transcript"), asNoTracking: true)).ToList();
+        var studentQuizzes = (await StudentQuizzes.GetAllAsync(new StudentQuizSpec(studentId, "transcript"), asNoTracking: true)).ToList();
+        var grades = (await Grades.GetAllAsync(new GradeSpec(studentId), asNoTracking: true)).ToList();
+
+        var assignmentsMaxByCourse = assignments
+            .GroupBy(a => a.CourseId)
+            .ToDictionary(g => g.Key, g => g.ToDictionary(a => a.AssignmentId, a => a.MaxGrade));
+        var quizzesMaxByCourse = quizzes
+            .GroupBy(q => q.CourseId)
+            .ToDictionary(g => g.Key, g => g.ToDictionary(q => q.QuizId, q => q.MaxGrade));
+        var gradesByCourse = grades
+            .GroupBy(g => g.CourseId)
+            .ToDictionary(g => g.Key, g => g.OrderBy(gr => gr.GradedAt).ToList());
+        var failedCourseIds = studentCourses
+            .Where(sc => sc.Status == StudentCourseStatus.Failed)
+            .Select(sc => sc.CourseId)
+            .ToHashSet();
+
+        var bylawSettings = student?.Bylaw?.Settings;
+        var gradeScales = student?.Bylaw?.GradeScales;
 
         var result = new List<TranscriptCourseDto>();
 
@@ -380,12 +395,14 @@ public class GradeService : IGradeService
 
             var courseId = course.CourseId;
 
-            var (assignTotalScore, assignTotalMax) = await GetAssignmentScoresAsync(studentId, courseId);
-            var (quizTotalScore, quizTotalMax) = await GetQuizScoresAsync(studentId, courseId);
+            var (assignTotalScore, assignTotalMax) = ComputeAssignmentScores(
+                courseId, assignmentsMaxByCourse, studentAssignments);
+            var (quizTotalScore, quizTotalMax) = ComputeQuizScores(
+                courseId, quizzesMaxByCourse, studentQuizzes);
 
-            var courseGrades = await Grades.GetAllAsync(new GradeSpec(studentId, courseId));
-            var midterm = courseGrades.FirstOrDefault(g => g.GradeType == GradeType.Midterm && g.Status == "Graded");
-            var final = courseGrades.FirstOrDefault(g => g.GradeType == GradeType.Final && g.Status == "Graded");
+            gradesByCourse.TryGetValue(courseId, out var courseGrades);
+            var midterm = courseGrades?.FirstOrDefault(g => g.GradeType == GradeType.Midterm && g.Status == "Graded");
+            var final = courseGrades?.FirstOrDefault(g => g.GradeType == GradeType.Final && g.Status == "Graded");
 
             var hasCoursework = assignTotalMax > 0 || quizTotalMax > 0 || midterm is not null;
 
@@ -406,12 +423,11 @@ public class GradeService : IGradeService
                     var midtermWeight = midterm?.Weight ?? 0;
                     var finalWeight = final?.Weight ?? 0;
                     var assignQuizWeight = 100 - midtermWeight - finalWeight;
-                    overall = await ApplyBylawGradeRulesAsync(studentId, courseId,
+                    overall = ApplyBylawGradeRules(bylawSettings, gradeScales, failedCourseIds, courseId,
                         assignQuizWeight, midtermWeight, finalWeight,
                         assignQuizContrib, midtermContrib, finalContrib, overall);
                     totalGradeStr = overall.ToString();
-                    var (l, _) = await ResolveGradeScaleAsync(studentId, overall);
-                    letter = l;
+                    letter = ResolveGradeScale(gradeScales, overall);
                 }
                 else
                 {
@@ -459,15 +475,34 @@ public class GradeService : IGradeService
 
     public async Task<double?> UpdateStudentGpaIfCompleteAsync(int studentId)
     {
-        var studentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId))).ToList();
-        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
+        var studentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId), asNoTracking: true)).ToList();
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }, lightweight: true));
         if (studentCourses.Count == 0 || student is null) return student?.Gpa;
+
+        var courseIds = studentCourses.Select(sc => sc.CourseId).ToList();
+
+        // Batch load all grading data once — eliminates N+1 round-trips
+        var assignments = await Assignments.GetAllAsync(new AssignmentSpec(courseIds), asNoTracking: true);
+        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseIds), asNoTracking: true);
+        var allSubmissions = (await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(studentId, "transcript"), asNoTracking: true)).ToList();
+        var allQuizSubmissions = (await StudentQuizzes.GetAllAsync(new StudentQuizSpec(studentId, "transcript"), asNoTracking: true)).ToList();
+        var allGrades = (await Grades.GetAllAsync(new GradeSpec(studentId), asNoTracking: true)).ToList();
+
+        var assignmentCourseIds = assignments.ToDictionary(a => a.AssignmentId, a => a.CourseId);
+        var quizCourseIds = quizzes.ToDictionary(q => q.QuizId, q => q.CourseId);
 
         foreach (var sc in studentCourses)
         {
-            var courseGrade = await GetCourseGradeAsync(studentId, sc.CourseId);
-            if (courseGrade?.OverallGrade is null) return student.Gpa;
-            if (courseGrade.OverallGrade.Letter is "-" or null) return student.Gpa;
+            var hasAssignments = allSubmissions.Any(s =>
+                assignmentCourseIds.TryGetValue(s.AssignmentId, out var cid) && cid == sc.CourseId && s.Grade.HasValue);
+            var hasQuizzes = allQuizSubmissions.Any(s =>
+                quizCourseIds.TryGetValue(s.QuizId, out var cid) && cid == sc.CourseId && s.Score.HasValue);
+            var hasMidtermOrFinal = allGrades.Any(g =>
+                g.CourseId == sc.CourseId && g.Status == "Graded" &&
+                (g.GradeType == GradeType.Midterm || g.GradeType == GradeType.Final));
+
+            if (!hasAssignments && !hasQuizzes && !hasMidtermOrFinal)
+                return student.Gpa;
         }
 
         var gpa = await GetCumulativeGpaAsync(studentId);
@@ -481,18 +516,18 @@ public class GradeService : IGradeService
 
     public async Task<int> GetCompletedHoursAsync(int studentId)
     {
-        var studentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId))).ToList();
-        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
+        var studentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId), asNoTracking: true)).ToList();
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }, lightweight: true));
         if (studentCourses.Count == 0 || student is null) return 0;
 
         var courseIds = studentCourses.Select(sc => sc.CourseId).ToList();
-        var courses = (await Courses.GetAllAsync(new CourseSpec(courseIds)))
+        var courses = (await Courses.GetAllAsync(new CourseBasicSpec(courseIds), asNoTracking: true))
             .ToDictionary(c => c.CourseId);
 
         var effectiveCredits = await _bylawService.GetEffectiveCreditHoursAsync(
             student.BylawId ?? 0, student.DepartmentId);
 
-        var allGrades = await Grades.GetAllAsync(new GradeSpec(studentId));
+        var allGrades = await Grades.GetAllAsync(new GradeSpec(studentId), asNoTracking: true);
         var completedCourseIds = allGrades
             .Where(g => g.GradeType == GradeType.Final && g.Status == "Graded")
             .Select(g => g.CourseId)
@@ -543,11 +578,11 @@ public class GradeService : IGradeService
         if (bylaw is null)
             return new AcademicProgressDto();
 
+        var data = await LoadAcademicProgressDataAsync(studentId);
         var effectiveCredits = await _bylawService.GetEffectiveCreditHoursAsync(
             student.BylawId ?? 0, student.DepartmentId);
 
-        var allGrades = await Grades.GetAllAsync(new GradeSpec(studentId));
-        var completedCourseIds = allGrades
+        var completedCourseIds = data.AllGrades
             .Where(g => g.GradeType == GradeType.Final && g.Status == "Graded")
             .Select(g => g.CourseId)
             .Distinct()
@@ -623,6 +658,28 @@ public class GradeService : IGradeService
         };
     }
 
+    private async Task<(
+        List<StudentCourse> StudentCourses,
+        List<Course> Courses,
+        List<Grade> AllGrades,
+        List<StudentAssignment> Submissions,
+        List<StudentQuiz> QuizSubmissions
+    )> LoadAcademicProgressDataAsync(int studentId)
+    {
+        var studentCourses = (await StudentCourses.GetAllAsync(
+            new StudentCourseIdsSpec(studentId), asNoTracking: true)).ToList();
+        var courseIds = studentCourses.Select(sc => sc.CourseId).ToList();
+        var courses = courseIds.Count > 0
+            ? (await Courses.GetAllAsync(new CourseBasicSpec(courseIds), asNoTracking: true)).ToList()
+            : new List<Course>();
+        var allGrades = (await Grades.GetAllAsync(new GradeSpec(studentId), asNoTracking: true)).ToList();
+        var submissions = (await StudentAssignments.GetAllAsync(
+            new StudentAssignmentSpec(studentId, byStudent: true, dummy: true), asNoTracking: true)).ToList();
+        var quizSubmissions = (await StudentQuizzes.GetAllAsync(
+            new StudentQuizSpec(studentId, true, true), asNoTracking: true)).ToList();
+        return (studentCourses, courses, allGrades, submissions, quizSubmissions);
+    }
+
     public async Task<byte[]> ExportTranscriptPdfAsync(int studentId)
     {
         var studentCheck = await Students.GetByIdAsync(studentId);
@@ -631,11 +688,6 @@ public class GradeService : IGradeService
 
         var student = await _studentService.GetByIdAsync(studentId);
         var courseDtos = await GetTranscriptAsync(studentId);
-
-        var studentCourses = await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId));
-        var courseIdToSemester = studentCourses
-            .Where(sc => !string.IsNullOrEmpty(sc.Semester))
-            .ToDictionary(sc => sc.CourseId, sc => sc.Semester!);
 
         var courseItemList = courseDtos.Select(c => (
             Item: new TranscriptCourseItem
@@ -647,7 +699,8 @@ public class GradeService : IGradeService
                 TotalGrade = c.TotalGrade,
                 Letter = c.Letter
             },
-            c.CourseId
+            c.CourseId,
+            c.Semester
         )).ToList();
 
         var spec = new StudentSpec(new CourseQueryParams { StudentId = studentId });
@@ -657,7 +710,7 @@ public class GradeService : IGradeService
         double gpa = CalculateGpa(courseItemList.Select(c => c.Item).ToList(), studentEntity?.Bylaw?.GradeScales);
 
         var semesterGroups = courseItemList
-            .GroupBy(c => courseIdToSemester.GetValueOrDefault(c.CourseId, "Courses"))
+            .GroupBy(c => !string.IsNullOrEmpty(c.Semester) ? c.Semester : "Courses")
             .ToList();
 
         var semesters = semesterGroups
@@ -703,17 +756,18 @@ public class GradeService : IGradeService
         var result = new List<GradeDto>();
 
         // Assignment grades
-        var assignments = await Assignments.GetAllAsync(new AssignmentSpec(courseId, byCourse: true));
+        var assignments = await Assignments.GetAllAsync(new AssignmentSpec(courseId, byCourse: true), asNoTracking: true);
         var assignmentIds = assignments.Select(a => a.AssignmentId).ToHashSet();
 
-        var submissions = (await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(studentId, byStudent: true, dummy: true)))
+        var submissions = (await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(studentId, byStudent: true, dummy: true), asNoTracking: true))
             .Where(sa => assignmentIds.Contains(sa.AssignmentId) && sa.Grade.HasValue)
             .ToList();
 
-        result.AddRange(submissions.Select(sa =>
+        foreach (var sa in submissions)
         {
-            var assignment = assignments.First(a => a.AssignmentId == sa.AssignmentId);
-            return new GradeDto
+            var assignment = assignments.FirstOrDefault(a => a.AssignmentId == sa.AssignmentId);
+            if (assignment is null) continue;
+            result.Add(new GradeDto
             {
                 GradeId = sa.StudentAssignmentId,
                 StudentId = studentId,
@@ -727,21 +781,22 @@ public class GradeService : IGradeService
                 Status = "Graded",
                 GradedAt = (sa.GradedAt ?? EgyptTime.Now).ToString("dd MM yyyy HH:mm"),
                 Notes = sa.Feedback
-            };
-        }));
+            });
+        }
 
         // Quiz grades
-        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseId, byCourse: true));
+        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseId, byCourse: true), asNoTracking: true);
         var quizIds = quizzes.Select(q => q.QuizId).ToHashSet();
 
-        var quizSubmissions = (await StudentQuizzes.GetAllAsync(new StudentQuizSpec(studentId, true, true)))
+        var quizSubmissions = (await StudentQuizzes.GetAllAsync(new StudentQuizSpec(studentId, true, true), asNoTracking: true))
             .Where(sq => quizIds.Contains(sq.QuizId) && sq.Score.HasValue)
             .ToList();
 
-        result.AddRange(quizSubmissions.Select(sq =>
+        foreach (var sq in quizSubmissions)
         {
-            var quiz = quizzes.First(q => q.QuizId == sq.QuizId);
-            return new GradeDto
+            var quiz = quizzes.FirstOrDefault(q => q.QuizId == sq.QuizId);
+            if (quiz is null) continue;
+            result.Add(new GradeDto
             {
                 GradeId = sq.QuizId,
                 StudentId = studentId,
@@ -755,8 +810,8 @@ public class GradeService : IGradeService
                 Status = "Graded",
                 GradedAt = sq.SubmittedAt.ToString("dd MM yyyy HH:mm"),
                 Notes = null
-            };
-        }));
+            });
+        }
 
         return result;
     }
@@ -771,32 +826,119 @@ public class GradeService : IGradeService
         if (!teaches)
             throw new InvalidOperationException("Not authorized.");
 
-        var assignments = await Assignments.GetAllAsync(new AssignmentSpec(courseId, byCourse: true));
-        var assignmentIds = assignments.Select(a => a.AssignmentId).ToHashSet();
-        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseId, byCourse: true));
-        var quizIds = quizzes.Select(q => q.QuizId).ToHashSet();
+        var data = await LoadCourseGradesOverviewDataAsync(courseId);
+        var assessmentMap = BuildAssessmentMap(data.Assignments, data.Quizzes, data.CourseGrades);
 
-        var studentCourses = await StudentCourses.GetAllAsync();
+        var allOverallPercents = new List<double>();
+        var passCount = 0;
+        var studentGrades = new List<InstructorStudentGradeDto>();
+
+        foreach (var student in data.EnrolledStudents)
+        {
+            var dto = ProcessStudentGrade(student,
+                data.CourseAssignmentSubmissions, data.CourseQuizSubmissions, data.CourseGrades,
+                data.AssignmentsById, data.QuizzesById, data.FailedCourseStudentIds,
+                courseId, ref assessmentMap);
+            allOverallPercents.Add(dto.OverallPercent);
+            if (dto.Letter != "-" && dto.Letter != "F" && dto.Letter != "Con" && dto.Letter != "W" && dto.Letter != "I")
+                passCount++;
+            studentGrades.Add(dto);
+        }
+
+        var (assessmentsList, totalCoursework, avgPercent, passRate) = BuildAssessmentSummary(
+            allOverallPercents, passCount, assessmentMap);
+
+        var gradedCount = data.GradedAssignmentCount + data.GradedQuizCount + data.GradedMidtermCount + data.GradedFinalCount;
+
+        return new InstructorCourseGradesDto
+        {
+            CourseId = courseId,
+            CourseName = course.CourseName,
+            CourseCode = course.CourseCode,
+            Summary = new InstructorCourseSummaryDto
+            {
+                AveragePercent = Math.Round(avgPercent, 1),
+                PassRate = Math.Round(passRate, 1),
+                TotalStudents = data.EnrolledStudents.Count,
+                GradedAssessmentsCount = gradedCount,
+                AverageCoursework = Math.Round(avgPercent, 1),
+                TotalCoursework = Math.Round(totalCoursework, 1),
+                GradedAssessments = gradedCount,
+                TotalAssessments = assessmentsList.Count
+            },
+            Assessments = assessmentsList,
+            Students = studentGrades
+        };
+    }
+
+    private async Task<(
+        List<Assignment> Assignments,
+        Dictionary<int, Assignment> AssignmentsById,
+        List<Quiz> Quizzes,
+        Dictionary<int, Quiz> QuizzesById,
+        List<Student> EnrolledStudents,
+        HashSet<int> FailedCourseStudentIds,
+        List<StudentAssignment> CourseAssignmentSubmissions,
+        List<StudentQuiz> CourseQuizSubmissions,
+        List<Grade> CourseGrades,
+        int GradedAssignmentCount,
+        int GradedQuizCount,
+        int GradedMidtermCount,
+        int GradedFinalCount
+    )> LoadCourseGradesOverviewDataAsync(int courseId)
+    {
+        var assignments = (await Assignments.GetAllAsync(new AssignmentSpec(courseId, byCourse: true), asNoTracking: true)).ToList();
+        var assignmentIds = assignments.Select(a => a.AssignmentId).ToHashSet();
+        var assignmentsById = assignments.ToDictionary(a => a.AssignmentId);
+        var quizzes = (await Quizzes.GetAllAsync(new QuizSpec(courseId, byCourse: true), asNoTracking: true)).ToList();
+        var quizIds = quizzes.Select(q => q.QuizId).ToHashSet();
+        var quizzesById = quizzes.ToDictionary(q => q.QuizId);
+
+        var studentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(courseId, true), asNoTracking: true)).ToList();
         var enrolledStudentIds = studentCourses
-            .Where(sc => sc.CourseId == courseId)
             .Select(sc => sc.StudentId)
             .ToHashSet();
 
-        var allStudents = await Students.GetAllAsync();
-        var enrolledStudents = allStudents
-            .Where(s => enrolledStudentIds.Contains(s.UserId))
+        var enrolledStudents = (await Students.GetAllAsync(new StudentSpec(enrolledStudentIds.ToList()), asNoTracking: true))
             .OrderBy(s => s.FullName)
             .ToList();
 
-        var allSubmissions = await StudentAssignments.GetAllAsync();
-        var allQuizSubmissions = await StudentQuizzes.GetAllAsync();
-        var allCourseGrades = await Grades.GetAllAsync();
+        var courseAssignmentSubmissions = (await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(assignmentIds, true), asNoTracking: true)).ToList();
+        var courseQuizSubmissions = (await StudentQuizzes.GetAllAsync(new StudentQuizSpec(quizIds, true), asNoTracking: true)).ToList();
+        var courseGrades = (await Grades.GetAllAsync(new GradeSpec(courseId, true), asNoTracking: true)).ToList();
 
-        var gradedAssignmentCount = allSubmissions.Count(sa => assignmentIds.Contains(sa.AssignmentId) && sa.Grade.HasValue);
-        var gradedQuizCount = allQuizSubmissions.Count(sq => quizIds.Contains(sq.QuizId) && sq.Score.HasValue);
-        var gradedMidtermCount = allCourseGrades.Count(g => g.CourseId == courseId && g.GradeType == GradeType.Midterm && g.Status == "Graded");
-        var gradedFinalCount = allCourseGrades.Count(g => g.CourseId == courseId && g.GradeType == GradeType.Final && g.Status == "Graded");
+        var gradedAssignmentCount = courseAssignmentSubmissions.Count(sa => sa.Grade.HasValue);
+        var gradedQuizCount = courseQuizSubmissions.Count(sq => sq.Score.HasValue);
+        var gradedMidtermCount = courseGrades.Count(g => g.GradeType == GradeType.Midterm && g.Status == "Graded");
+        var gradedFinalCount = courseGrades.Count(g => g.GradeType == GradeType.Final && g.Status == "Graded");
 
+        var failedCourseStudentIds = (await StudentCourses.GetAllAsync(
+            new StudentCourseIdsSpec(enrolledStudentIds.ToList(), StudentCourseStatus.Failed), asNoTracking: true))
+            .Select(f => f.StudentId)
+            .ToHashSet();
+
+        return (
+            Assignments: assignments,
+            AssignmentsById: assignmentsById,
+            Quizzes: quizzes,
+            QuizzesById: quizzesById,
+            EnrolledStudents: enrolledStudents,
+            FailedCourseStudentIds: failedCourseStudentIds,
+            CourseAssignmentSubmissions: courseAssignmentSubmissions,
+            CourseQuizSubmissions: courseQuizSubmissions,
+            CourseGrades: courseGrades,
+            GradedAssignmentCount: gradedAssignmentCount,
+            GradedQuizCount: gradedQuizCount,
+            GradedMidtermCount: gradedMidtermCount,
+            GradedFinalCount: gradedFinalCount
+        );
+    }
+
+    private Dictionary<string, (List<double> Percents, int Count, string Type, double MaxScore)> BuildAssessmentMap(
+        List<Assignment> assignments,
+        List<Quiz> quizzes,
+        List<Grade> courseGrades)
+    {
         var assessmentMap = new Dictionary<string, (List<double> Percents, int Count, string Type, double MaxScore)>();
 
         foreach (var a in assignments)
@@ -810,8 +952,8 @@ public class GradeService : IGradeService
             assessmentMap.TryAdd(key, (new List<double>(), 0, GradeType.Quiz.ToString(), (double)q.MaxGrade));
         }
 
-        var midtermGrades = allCourseGrades.Where(g => g.CourseId == courseId && g.GradeType == GradeType.Midterm).ToList();
-        var finalGrades = allCourseGrades.Where(g => g.CourseId == courseId && g.GradeType == GradeType.Final).ToList();
+        var midtermGrades = courseGrades.Where(g => g.GradeType == GradeType.Midterm).ToList();
+        var finalGrades = courseGrades.Where(g => g.GradeType == GradeType.Final).ToList();
 
         foreach (var g in midtermGrades)
         {
@@ -826,143 +968,175 @@ public class GradeService : IGradeService
                 assessmentMap[key] = (new List<double>(), 0, GradeType.Final.ToString(), (double)g.MaxScore);
         }
 
-        var studentGrades = new List<InstructorStudentGradeDto>();
-        var allOverallPercents = new List<double>();
-        var passCount = 0;
+        return assessmentMap;
+    }
 
-        foreach (var student in enrolledStudents)
+    private InstructorStudentGradeDto ProcessStudentGrade(
+        Student student,
+        List<StudentAssignment> courseAssignmentSubmissions,
+        List<StudentQuiz> courseQuizSubmissions,
+        List<Grade> courseGrades,
+        Dictionary<int, Assignment> assignmentsById,
+        Dictionary<int, Quiz> quizzesById,
+        HashSet<int> failedCourseStudentIds,
+        int courseId,
+        ref Dictionary<string, (List<double> Percents, int Count, string Type, double MaxScore)> assessmentMap)
+    {
+        var (assignTotalScore, assignTotalMax) = (0m, 0m);
+        foreach (var sa in courseAssignmentSubmissions)
         {
-            var (assignTotalScore, assignTotalMax) = await GetAssignmentScoresAsync(student.UserId, courseId);
-            var (quizTotalScore, quizTotalMax) = await GetQuizScoresAsync(student.UserId, courseId);
-
-            var courseGrades = allCourseGrades
-                .Where(g => g.StudentId == student.UserId && g.CourseId == courseId)
-                .ToList();
-            var midterm = courseGrades.FirstOrDefault(g => g.GradeType == GradeType.Midterm && g.Status == "Graded");
-            var final = courseGrades.FirstOrDefault(g => g.GradeType == GradeType.Final && g.Status == "Graded");
-
-            var assessments = new List<InstructorAssessmentDto>();
-
-            var studentSubmissions = allSubmissions
-                .Where(sa => sa.StudentId == student.UserId && assignmentIds.Contains(sa.AssignmentId) && sa.Grade.HasValue)
-                .ToList();
-
-            foreach (var sa in studentSubmissions)
+            if (sa.StudentId == student.UserId && sa.Grade.HasValue && assignmentsById.TryGetValue(sa.AssignmentId, out var a))
             {
-                var assignment = assignments.First(a => a.AssignmentId == sa.AssignmentId);
-                var key = assignment.Title.ToLowerInvariant();
-                var pct = assignment.MaxGrade > 0 ? (double)(sa.Grade!.Value / assignment.MaxGrade * 100) : 0;
-                assessments.Add(new InstructorAssessmentDto
-                {
-                    Name = assignment.Title,
-                    Type = GradeType.Assignment.ToString(),
-                    Score = (double)sa.Grade!.Value,
-                    MaxScore = (double)assignment.MaxGrade,
-                    Weight = (double)assignment.MaxGrade,
-                    Percent = pct
-                });
-                if (assessmentMap.TryGetValue(key, out var entry))
-                {
-                    entry.Percents.Add(pct);
-                    assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore);
-                }
+                assignTotalScore += sa.Grade.Value;
+                assignTotalMax += a.MaxGrade;
             }
-
-            var studentQuizSubmissions = allQuizSubmissions
-                .Where(sq => sq.StudentId == student.UserId && quizIds.Contains(sq.QuizId) && sq.Score.HasValue)
-                .ToList();
-
-            foreach (var sq in studentQuizSubmissions)
-            {
-                var quiz = quizzes.First(q => q.QuizId == sq.QuizId);
-                var key = quiz.Title.ToLowerInvariant();
-                var pct = quiz.MaxGrade > 0 ? (double)(sq.Score!.Value / quiz.MaxGrade * 100) : 0;
-                assessments.Add(new InstructorAssessmentDto
-                {
-                    Name = quiz.Title,
-                    Type = GradeType.Quiz.ToString(),
-                    Score = (double)sq.Score!.Value,
-                    MaxScore = (double)quiz.MaxGrade,
-                    Weight = (double)quiz.MaxGrade,
-                    Percent = pct
-                });
-                if (assessmentMap.TryGetValue(key, out var entry))
-                {
-                    entry.Percents.Add(pct);
-                    assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore);
-                }
-            }
-
-            if (midterm is not null)
-            {
-                var key = GradeType.Midterm.ToString().ToLowerInvariant();
-                var pct = midterm.MaxScore > 0 ? (double)(midterm.Score / midterm.MaxScore * 100) : 0;
-                assessments.Add(new InstructorAssessmentDto
-                {
-                    Name = midterm.Title,
-                    Type = GradeType.Midterm.ToString(),
-                    Score = (double)midterm.Score,
-                    MaxScore = (double)midterm.MaxScore,
-                    Weight = (double)midterm.Weight,
-                    Percent = pct
-                });
-                if (assessmentMap.TryGetValue(key, out var entry))
-                {
-                    entry.Percents.Add(pct);
-                    assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore);
-                }
-            }
-
-            if (final is not null)
-            {
-                var key = GradeType.Final.ToString().ToLowerInvariant();
-                var pct = final.MaxScore > 0 ? (double)(final.Score / final.MaxScore * 100) : 0;
-                assessments.Add(new InstructorAssessmentDto
-                {
-                    Name = final.Title,
-                    Type = GradeType.Final.ToString(),
-                    Score = (double)final.Score,
-                    MaxScore = (double)final.MaxScore,
-                    Weight = (double)final.Weight,
-                    Percent = pct
-                });
-                if (assessmentMap.TryGetValue(key, out var entry))
-                {
-                    entry.Percents.Add(pct);
-                    assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore);
-                }
-            }
-
-            var (assignQuizContrib, midtermContrib, finalContrib) = CalculateWeightedContributions(
-                assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax, midterm, final);
-
-            var overallDecimal = assignQuizContrib + midtermContrib + finalContrib;
-            var midtermWeight = midterm?.Weight ?? 0;
-            var finalWeight = final?.Weight ?? 0;
-            var assignQuizWeight = 100 - midtermWeight - finalWeight;
-            overallDecimal = await ApplyBylawGradeRulesAsync(student.UserId, courseId,
-                assignQuizWeight, midtermWeight, finalWeight,
-                assignQuizContrib, midtermContrib, finalContrib, overallDecimal);
-
-            var overallPercent = Math.Round((double)overallDecimal, 0);
-
-            var (letter, _) = await ResolveGradeScaleAsync(student.UserId, overallDecimal);
-
-            allOverallPercents.Add(overallPercent);
-            if (letter != "-" && letter != "F" && letter != "Con" && letter != "W" && letter != "I")
-                passCount++;
-
-            studentGrades.Add(new InstructorStudentGradeDto
-            {
-                StudentId = student.UserId,
-                StudentCode = student.StudentCode ?? "",
-                FullName = student.FullName,
-                Assessments = assessments,
-                OverallPercent = overallPercent,
-                Letter = letter
-            });
         }
 
+        var (quizTotalScore, quizTotalMax) = (0m, 0m);
+        foreach (var sq in courseQuizSubmissions)
+        {
+            if (sq.StudentId == student.UserId && sq.Score.HasValue && quizzesById.TryGetValue(sq.QuizId, out var q))
+            {
+                quizTotalScore += sq.Score.Value;
+                quizTotalMax += q.MaxGrade;
+            }
+        }
+
+        var studentCourseGrades = courseGrades
+            .Where(g => g.StudentId == student.UserId)
+            .ToList();
+        var midterm = studentCourseGrades.FirstOrDefault(g => g.GradeType == GradeType.Midterm && g.Status == "Graded");
+        var final = studentCourseGrades.FirstOrDefault(g => g.GradeType == GradeType.Final && g.Status == "Graded");
+
+        var assessments = new List<InstructorAssessmentDto>();
+
+        var studentSubmissions = courseAssignmentSubmissions
+            .Where(sa => sa.StudentId == student.UserId && sa.Grade.HasValue)
+            .ToList();
+
+        foreach (var sa in studentSubmissions)
+        {
+            var assignment = assignmentsById[sa.AssignmentId];
+            var key = assignment.Title.ToLowerInvariant();
+            var pct = assignment.MaxGrade > 0 ? (double)(sa.Grade!.Value / assignment.MaxGrade * 100) : 0;
+            assessments.Add(new InstructorAssessmentDto
+            {
+                Name = assignment.Title,
+                Type = GradeType.Assignment.ToString(),
+                Score = (double)sa.Grade!.Value,
+                MaxScore = (double)assignment.MaxGrade,
+                Weight = (double)assignment.MaxGrade,
+                Percent = pct
+            });
+            if (assessmentMap.TryGetValue(key, out var entry))
+            {
+                entry.Percents.Add(pct);
+                assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore);
+            }
+        }
+
+        var studentQuizSubmissions = courseQuizSubmissions
+            .Where(sq => sq.StudentId == student.UserId && sq.Score.HasValue)
+            .ToList();
+
+        foreach (var sq in studentQuizSubmissions)
+        {
+            var quiz = quizzesById[sq.QuizId];
+            var key = quiz.Title.ToLowerInvariant();
+            var pct = quiz.MaxGrade > 0 ? (double)(sq.Score!.Value / quiz.MaxGrade * 100) : 0;
+            assessments.Add(new InstructorAssessmentDto
+            {
+                Name = quiz.Title,
+                Type = GradeType.Quiz.ToString(),
+                Score = (double)sq.Score!.Value,
+                MaxScore = (double)quiz.MaxGrade,
+                Weight = (double)quiz.MaxGrade,
+                Percent = pct
+            });
+            if (assessmentMap.TryGetValue(key, out var entry))
+            {
+                entry.Percents.Add(pct);
+                assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore);
+            }
+        }
+
+        if (midterm is not null)
+        {
+            var key = GradeType.Midterm.ToString().ToLowerInvariant();
+            var pct = midterm.MaxScore > 0 ? (double)(midterm.Score / midterm.MaxScore * 100) : 0;
+            assessments.Add(new InstructorAssessmentDto
+            {
+                Name = midterm.Title,
+                Type = GradeType.Midterm.ToString(),
+                Score = (double)midterm.Score,
+                MaxScore = (double)midterm.MaxScore,
+                Weight = (double)midterm.Weight,
+                Percent = pct
+            });
+            if (assessmentMap.TryGetValue(key, out var entry))
+            {
+                entry.Percents.Add(pct);
+                assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore);
+            }
+        }
+
+        if (final is not null)
+        {
+            var key = GradeType.Final.ToString().ToLowerInvariant();
+            var pct = final.MaxScore > 0 ? (double)(final.Score / final.MaxScore * 100) : 0;
+            assessments.Add(new InstructorAssessmentDto
+            {
+                Name = final.Title,
+                Type = GradeType.Final.ToString(),
+                Score = (double)final.Score,
+                MaxScore = (double)final.MaxScore,
+                Weight = (double)final.Weight,
+                Percent = pct
+            });
+            if (assessmentMap.TryGetValue(key, out var entry))
+            {
+                entry.Percents.Add(pct);
+                assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore);
+            }
+        }
+
+        var (assignQuizContrib, midtermContrib, finalContrib) = CalculateWeightedContributions(
+            assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax, midterm, final);
+
+        var overallDecimal = assignQuizContrib + midtermContrib + finalContrib;
+        var midtermWeight = midterm?.Weight ?? 0;
+        var finalWeight = final?.Weight ?? 0;
+        var assignQuizWeight = 100 - midtermWeight - finalWeight;
+
+        if (student.Bylaw is not null)
+        {
+            overallDecimal = ApplyBylawGradeRules(
+                student.Bylaw.Settings, student.Bylaw.GradeScales,
+                failedCourseStudentIds, courseId,
+                assignQuizWeight, midtermWeight, finalWeight,
+                assignQuizContrib, midtermContrib, finalContrib, overallDecimal);
+        }
+
+        var overallPercent = Math.Round((double)overallDecimal, 0);
+
+        var letter = ResolveGradeScale(student.Bylaw?.GradeScales, overallDecimal);
+
+        return new InstructorStudentGradeDto
+        {
+            StudentId = student.UserId,
+            StudentCode = student.StudentCode ?? "",
+            FullName = student.FullName,
+            Assessments = assessments,
+            OverallPercent = overallPercent,
+            Letter = letter
+        };
+    }
+
+    private (List<InstructorAssessmentSummaryDto> Assessments, double TotalCoursework, double AvgPercent, double PassRate) BuildAssessmentSummary(
+        List<double> allOverallPercents,
+        int passCount,
+        Dictionary<string, (List<double> Percents, int Count, string Type, double MaxScore)> assessmentMap)
+    {
         var avgPercent = allOverallPercents.Count > 0 ? allOverallPercents.Average() : 0;
         var passRate = allOverallPercents.Count > 0 ? (double)passCount / allOverallPercents.Count * 100 : 0;
 
@@ -987,27 +1161,8 @@ public class GradeService : IGradeService
             });
             totalCoursework += maxScore;
         }
-        var gradedCount = gradedAssignmentCount + gradedQuizCount + gradedMidtermCount + gradedFinalCount;
 
-        return new InstructorCourseGradesDto
-        {
-            CourseId = courseId,
-            CourseName = course.CourseName,
-            CourseCode = course.CourseCode,
-            Summary = new InstructorCourseSummaryDto
-            {
-                AveragePercent = Math.Round(avgPercent, 1),
-                PassRate = Math.Round(passRate, 1),
-                TotalStudents = enrolledStudents.Count,
-                GradedAssessmentsCount = gradedCount,
-                AverageCoursework = Math.Round(avgPercent, 1),
-                TotalCoursework = Math.Round(totalCoursework, 1),
-                GradedAssessments = gradedCount,
-                TotalAssessments = assessmentsList.Count
-            },
-            Assessments = assessmentsList,
-            Students = studentGrades
-        };
+        return (assessmentsList, totalCoursework, avgPercent, passRate);
     }
 
     // Complaints
@@ -1045,12 +1200,15 @@ public class GradeService : IGradeService
     public async Task<IEnumerable<GradeComplaintResponseDto>> GetComplaintsAsync(int studentId)
     {
         var spec = new GradeComplaintSpec(studentId);
-        var complaints = await Complaints.GetAllAsync(spec);
+        var complaints = await Complaints.GetAllAsync(spec, asNoTracking: true);
+
+        // Batch resolve titles
+        var titleByComplaint = await BatchResolveTitlesAsync(complaints);
 
         var result = new List<GradeComplaintResponseDto>();
         foreach (var c in complaints)
         {
-            var title = await ResolveComplaintTitleAsync(c.GradeId, c.ComplaintType);
+            var title = titleByComplaint.TryGetValue(c.ComplaintId, out var t) ? t : "";
             result.Add(MapComplaintToDto(c, title));
         }
 
@@ -1122,22 +1280,49 @@ public class GradeService : IGradeService
         if (!teaches)
             throw new InvalidOperationException("Not authorized.");
 
-        var allComplaints = await Complaints.GetAllAsync();
+        var data = await LoadComplaintsDataAsync(courseId);
+
+        var gradeTitles = data.Grades.ToDictionary(g => g.GradeId, g => g.Title);
         var result = new List<InstructorGradeComplaintDto>();
 
-        foreach (var c in allComplaints)
+        foreach (var c in data.AssignmentComplaints)
         {
-            if (!await BelongsToCourse(c.GradeId, c.ComplaintType, courseId)) continue;
-
-            var student = await Students.GetByIdAsync(c.StudentId);
-            var title = await ResolveComplaintTitleAsync(c.GradeId, c.ComplaintType);
-
             result.Add(new InstructorGradeComplaintDto
             {
                 Id = c.ComplaintId,
-                StudentName = student?.FullName ?? "Unknown",
+                StudentName = data.StudentMap.GetValueOrDefault(c.StudentId, "Unknown"),
                 ComplaintType = c.ComplaintType,
-                AssessmentTitle = title,
+                AssessmentTitle = data.AssignTitles.GetValueOrDefault(c.GradeId, ""),
+                Reason = c.Details,
+                Status = c.Status.ToString().ToLower(),
+                CreatedAt = c.SubmittedAt.ToString("o"),
+                InstructorResponse = c.InstructorResponse
+            });
+        }
+
+        foreach (var c in data.QuizComplaints)
+        {
+            result.Add(new InstructorGradeComplaintDto
+            {
+                Id = c.ComplaintId,
+                StudentName = data.StudentMap.GetValueOrDefault(c.StudentId, "Unknown"),
+                ComplaintType = c.ComplaintType,
+                AssessmentTitle = data.QuizTitles.GetValueOrDefault(c.GradeId, ""),
+                Reason = c.Details,
+                Status = c.Status.ToString().ToLower(),
+                CreatedAt = c.SubmittedAt.ToString("o"),
+                InstructorResponse = c.InstructorResponse
+            });
+        }
+
+        foreach (var c in data.GradeComplaints)
+        {
+            result.Add(new InstructorGradeComplaintDto
+            {
+                Id = c.ComplaintId,
+                StudentName = data.StudentMap.GetValueOrDefault(c.StudentId, "Unknown"),
+                ComplaintType = c.ComplaintType,
+                AssessmentTitle = gradeTitles.GetValueOrDefault(c.GradeId, ""),
                 Reason = c.Details,
                 Status = c.Status.ToString().ToLower(),
                 CreatedAt = c.SubmittedAt.ToString("o"),
@@ -1146,6 +1331,74 @@ public class GradeService : IGradeService
         }
 
         return result;
+    }
+
+    private async Task<(
+        List<GradeComplaint> AssignmentComplaints,
+        List<GradeComplaint> QuizComplaints,
+        List<GradeComplaint> GradeComplaints,
+        Dictionary<int, string> StudentMap,
+        List<StudentAssignment> Submissions,
+        Dictionary<int, string> AssignTitles,
+        List<StudentQuiz> QuizSubmissions,
+        Dictionary<int, string> QuizTitles,
+        List<Grade> Grades
+    )> LoadComplaintsDataAsync(int courseId)
+    {
+        var allComplaints = await Complaints.GetAllAsync(
+            new GradeComplaintSpec(courseId, byCourse: true, unused: true), asNoTracking: true);
+
+        var assignmentComplaints = new List<GradeComplaint>();
+        var quizComplaints = new List<GradeComplaint>();
+        var gradeComplaints = new List<GradeComplaint>();
+        var allStudentIds = new HashSet<int>();
+
+        foreach (var c in allComplaints)
+        {
+            allStudentIds.Add(c.StudentId);
+            switch (c.ComplaintType.ToLowerInvariant())
+            {
+                case "assignment": assignmentComplaints.Add(c); break;
+                case "quiz": quizComplaints.Add(c); break;
+                default: gradeComplaints.Add(c); break;
+            }
+        }
+
+        var studentMap = (await Students.GetAllAsync(new StudentSpec(allStudentIds.ToList(), lightweight: true), asNoTracking: true))
+            .ToDictionary(s => s.UserId, s => s.FullName);
+
+        var assignmentPks = assignmentComplaints.Select(c => c.GradeId).ToList();
+        var submissions = new List<StudentAssignment>();
+        var assignTitles = new Dictionary<int, string>();
+        if (assignmentPks.Count > 0)
+        {
+            submissions = (await StudentAssignments.GetAllAsync(
+                new StudentAssignmentSpec(assignmentPks, "batch"), asNoTracking: true)).ToList();
+            var assignIds = submissions.Select(s => s.AssignmentId).ToHashSet();
+            var assignments = await Assignments.GetAllAsync(new AssignmentSpec(assignIds.ToList()), asNoTracking: true);
+            var assignById = assignments.ToDictionary(a => a.AssignmentId);
+            foreach (var s in submissions)
+                if (assignById.TryGetValue(s.AssignmentId, out var a))
+                    assignTitles[s.StudentAssignmentId] = a.Title;
+        }
+
+        var quizPks = quizComplaints.Select(c => c.GradeId).ToList();
+        var quizSubmissions = new List<StudentQuiz>();
+        var quizTitles = new Dictionary<int, string>();
+        if (quizPks.Count > 0)
+        {
+            var quizzes = await Quizzes.GetAllAsync(new QuizSpec(quizPks), asNoTracking: true);
+            foreach (var q in quizzes)
+                quizTitles[q.QuizId] = q.Title;
+        }
+
+        var gradePks = gradeComplaints.Select(c => c.GradeId).ToList();
+        var grades = new List<Grade>();
+        if (gradePks.Count > 0)
+            grades = (await Grades.GetAllAsync(new GradeSpec(gradePks, true), asNoTracking: true)).ToList();
+
+        return (assignmentComplaints, quizComplaints, gradeComplaints,
+                studentMap, submissions, assignTitles, quizSubmissions, quizTitles, grades);
     }
 
     private async Task<bool> BelongsToCourse(int gradeId, string complaintType, int courseId)
@@ -1212,32 +1465,183 @@ public class GradeService : IGradeService
 
     private async Task<(decimal TotalScore, decimal TotalMax)> GetAssignmentScoresAsync(int studentId, int courseId)
     {
-        var assignments = await Assignments.GetAllAsync(new AssignmentSpec(courseId, byCourse: true));
+        var assignments = await Assignments.GetAllAsync(new AssignmentSpec(courseId, byCourse: true), asNoTracking: true);
         var assignmentIds = assignments.Select(a => a.AssignmentId).ToHashSet();
 
-        var submissions = (await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(studentId, byStudent: true, dummy: true)))
+        var submissions = (await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(studentId, byStudent: true, dummy: true), asNoTracking: true))
             .Where(sa => assignmentIds.Contains(sa.AssignmentId) && sa.Grade.HasValue)
             .ToList();
 
         var totalScore = submissions.Sum(sa => sa.Grade!.Value);
-        var totalMax = submissions.Sum(sa => assignments.First(a => a.AssignmentId == sa.AssignmentId).MaxGrade);
+        var totalMax = submissions.Sum(sa => assignments.FirstOrDefault(a => a.AssignmentId == sa.AssignmentId)?.MaxGrade ?? 0);
 
         return (totalScore, totalMax);
     }
 
     private async Task<(decimal TotalScore, decimal TotalMax)> GetQuizScoresAsync(int studentId, int courseId)
     {
-        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseId, byCourse: true));
+        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseId, byCourse: true), asNoTracking: true);
         var quizIds = quizzes.Select(q => q.QuizId).ToHashSet();
 
-        var submissions = (await StudentQuizzes.GetAllAsync(new StudentQuizSpec(studentId, true, true)))
+        var submissions = (await StudentQuizzes.GetAllAsync(new StudentQuizSpec(studentId, true, true), asNoTracking: true))
             .Where(sq => quizIds.Contains(sq.QuizId) && sq.Score.HasValue)
             .ToList();
 
         var totalScore = submissions.Sum(sq => sq.Score!.Value);
-        var totalMax = submissions.Sum(sq => quizzes.First(q => q.QuizId == sq.QuizId).MaxGrade);
+        var totalMax = submissions.Sum(sq => quizzes.FirstOrDefault(q => q.QuizId == sq.QuizId)?.MaxGrade ?? 0);
 
         return (totalScore, totalMax);
+    }
+
+    // In-memory variants of the per-course scoring helpers above, operating on
+    // data that was batch-loaded once for all of the student's courses. These
+    // replace the N+1 round-trips the transcript loop used to perform.
+    private static (decimal TotalScore, decimal TotalMax) ComputeAssignmentScores(
+        int courseId,
+        Dictionary<int, Dictionary<int, decimal>> assignmentsMaxByCourse,
+        IReadOnlyList<StudentAssignment> studentAssignments)
+    {
+        if (!assignmentsMaxByCourse.TryGetValue(courseId, out var maxByAssignment))
+            return (0, 0);
+
+        var assignmentIds = maxByAssignment.Keys;
+        decimal totalScore = 0;
+        decimal totalMax = 0;
+
+        foreach (var sa in studentAssignments)
+        {
+            if (!assignmentIds.Contains(sa.AssignmentId) || !sa.Grade.HasValue)
+                continue;
+
+            totalScore += sa.Grade.Value;
+            totalMax += maxByAssignment[sa.AssignmentId];
+        }
+
+        return (totalScore, totalMax);
+    }
+
+    private static (decimal TotalScore, decimal TotalMax) ComputeQuizScores(
+        int courseId,
+        Dictionary<int, Dictionary<int, decimal>> quizzesMaxByCourse,
+        IReadOnlyList<StudentQuiz> studentQuizzes)
+    {
+        if (!quizzesMaxByCourse.TryGetValue(courseId, out var maxByQuiz))
+            return (0, 0);
+
+        var quizIds = maxByQuiz.Keys;
+        decimal totalScore = 0;
+        decimal totalMax = 0;
+
+        foreach (var sq in studentQuizzes)
+        {
+            if (!quizIds.Contains(sq.QuizId) || !sq.Score.HasValue)
+                continue;
+
+            totalScore += sq.Score.Value;
+            totalMax += maxByQuiz[sq.QuizId];
+        }
+
+        return (totalScore, totalMax);
+    }
+
+    private static (decimal TotalScore, decimal TotalMax) ComputeAssignmentGrade(
+        List<StudentAssignment> gradedAssignments, IEnumerable<Assignment> assignments)
+    {
+        var totalScore = gradedAssignments.Sum(sa => sa.Grade!.Value);
+        var totalMax = gradedAssignments.Sum(sa => assignments.FirstOrDefault(a => a.AssignmentId == sa.AssignmentId)?.MaxGrade ?? 0);
+        return (totalScore, totalMax);
+    }
+
+    private static (decimal TotalScore, decimal TotalMax) ComputeQuizGrade(
+        List<StudentQuiz> gradedQuizzes, IEnumerable<Quiz> quizzes)
+    {
+        var totalScore = gradedQuizzes.Sum(sq => sq.Score!.Value);
+        var totalMax = gradedQuizzes.Sum(sq => quizzes.FirstOrDefault(q => q.QuizId == sq.QuizId)?.MaxGrade ?? 0);
+        return (totalScore, totalMax);
+    }
+
+    private static (decimal TotalScore, decimal TotalMax) ComputeAssignmentScores(
+        IEnumerable<StudentAssignment> submissions, IEnumerable<Assignment> assignments)
+    {
+        var graded = submissions.Where(sa => sa.Grade.HasValue).ToList();
+        var assignDict = assignments.ToDictionary(a => a.AssignmentId);
+        var totalScore = graded.Sum(sa => sa.Grade!.Value);
+        var totalMax = graded.Sum(sa => assignDict.GetValueOrDefault(sa.AssignmentId)?.MaxGrade ?? 0);
+        return (totalScore, totalMax);
+    }
+
+    private static (decimal TotalScore, decimal TotalMax) ComputeQuizScores(
+        IEnumerable<StudentQuiz> submissions, IEnumerable<Quiz> quizzes)
+    {
+        var graded = submissions.Where(sq => sq.Score.HasValue).ToList();
+        var quizDict = quizzes.ToDictionary(q => q.QuizId);
+        var totalScore = graded.Sum(sq => sq.Score!.Value);
+        var totalMax = graded.Sum(sq => quizDict.GetValueOrDefault(sq.QuizId)?.MaxGrade ?? 0);
+        return (totalScore, totalMax);
+    }
+
+    private static CourseGradeDto BuildCourseGradeDto(decimal overallPercent, string letter, decimal gpa,
+        List<AssessmentBreakdownDto> breakdown, List<GradeHistoryItemDto> history) => new()
+    {
+        OverallGrade = new OverallGradeDto
+        {
+            Percent = overallPercent,
+            Letter = letter,
+            Gpa = gpa
+        },
+        AssessmentBreakdown = breakdown,
+        History = history
+    };
+
+    private static decimal ApplyBylawGradeRules(
+        BylawSettings? settings, List<GradeScaleItem>? gradeScales,
+        HashSet<int> failedCourseIds, int courseId,
+        decimal assignQuizWeight, decimal midtermWeight, decimal finalWeight,
+        decimal assignQuizContrib, decimal midtermContrib, decimal finalContrib,
+        decimal overallPercent)
+    {
+        if (settings is null)
+            return overallPercent;
+
+        var courseworkWeight = assignQuizWeight + midtermWeight;
+
+        if (settings.MinPassingCourseworkGrade.HasValue && courseworkWeight > 0)
+        {
+            var courseworkPct = Math.Round((assignQuizContrib + midtermContrib) / courseworkWeight * 100, 0);
+            if (courseworkPct < settings.MinPassingCourseworkGrade.Value)
+                return 0;
+        }
+
+        if (settings.MinPassingFinalExamGrade.HasValue && finalWeight > 0)
+        {
+            var finalPct = Math.Round(finalContrib / finalWeight * 100, 0);
+            if (finalPct < settings.MinPassingFinalExamGrade.Value)
+                return 0;
+        }
+
+        if (!string.IsNullOrWhiteSpace(settings.MaxGradeOnRetake) && failedCourseIds.Contains(courseId))
+        {
+            var scale = gradeScales?.FirstOrDefault(s => s.GradeLetter == settings.MaxGradeOnRetake);
+            if (scale is not null && overallPercent > scale.MinPercentage)
+                return scale.MinPercentage;
+        }
+
+        return overallPercent;
+    }
+
+    private static string ResolveGradeScale(List<GradeScaleItem>? scales, decimal percent)
+    {
+        if (scales?.Count > 0)
+        {
+            var scale = scales
+                .OrderByDescending(s => s.MinPercentage)
+                .FirstOrDefault(s => percent >= s.MinPercentage);
+
+            if (scale is not null)
+                return scale.GradeLetter;
+        }
+
+        return "-";
     }
 
     private async Task<decimal> ApplyBylawGradeRulesAsync(int studentId, int courseId,
@@ -1341,6 +1745,56 @@ public class GradeService : IGradeService
             "quiz" => await ResolveQuizTitle(gradeId),
             _ => await ResolveGradeTitle(gradeId)
         };
+    }
+
+    private async Task<Dictionary<int, string>> BatchResolveTitlesAsync(IEnumerable<GradeComplaint> complaints)
+    {
+        var result = new Dictionary<int, string>();
+        var assignPks = new List<int>();
+        var quizPks = new List<int>();
+        var gradePks = new List<int>();
+
+        foreach (var c in complaints)
+        {
+            switch (c.ComplaintType.ToLowerInvariant())
+            {
+                case "assignment": assignPks.Add(c.GradeId); break;
+                case "quiz": quizPks.Add(c.GradeId); break;
+                default: gradePks.Add(c.GradeId); break;
+            }
+        }
+
+        if (assignPks.Count > 0)
+        {
+            var submissions = await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(assignPks, "batch"), asNoTracking: true);
+            var assignIds = submissions.Select(s => s.AssignmentId).ToHashSet();
+            var assignments = await Assignments.GetAllAsync(new AssignmentSpec(assignIds.ToList()), asNoTracking: true);
+            var titleById = assignments.ToDictionary(a => a.AssignmentId, a => a.Title);
+            foreach (var s in submissions)
+            {
+                result[s.StudentAssignmentId] = titleById.GetValueOrDefault(s.AssignmentId, "");
+            }
+        }
+
+        if (quizPks.Count > 0)
+        {
+            var quizzes = await Quizzes.GetAllAsync(new QuizSpec(quizPks), asNoTracking: true);
+            foreach (var q in quizzes)
+            {
+                result[q.QuizId] = q.Title;
+            }
+        }
+
+        if (gradePks.Count > 0)
+        {
+            var grades = await Grades.GetAllAsync(new GradeSpec(gradePks, true), asNoTracking: true);
+            foreach (var g in grades)
+            {
+                result[g.GradeId] = g.Title;
+            }
+        }
+
+        return result;
     }
 
     private async Task<string> ValidateAssignmentComplaint(int studentId, int gradeId)

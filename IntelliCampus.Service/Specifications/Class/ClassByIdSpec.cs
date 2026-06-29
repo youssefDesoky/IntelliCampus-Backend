@@ -9,5 +9,6 @@ public sealed class ClassByIdSpec : BaseSpecifications<Class>
     {
         AddInclude(c => c.Instructor!);
         AddInclude(c => c.Course!);
+        EnableSplitQuery();
     }
 }

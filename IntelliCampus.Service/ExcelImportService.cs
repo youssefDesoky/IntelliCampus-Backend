@@ -197,7 +197,7 @@ public class ExcelImportService : IExcelImportService
 
             if (departmentId is null)
             {
-                var allDepts = await Departments.GetAllAsync();
+                var allDepts = await Departments.GetAllAsync(specifications: null, asNoTracking: true);
                 var dept = allDepts.FirstOrDefault(d =>
                     string.Equals(d.DepartmentName, departmentName, StringComparison.OrdinalIgnoreCase));
                 departmentId = dept?.DepartmentId;
@@ -225,7 +225,7 @@ public class ExcelImportService : IExcelImportService
                 .Select(p => p.Trim())
                 .ToList();
 
-            var allCourses = await Courses.GetAllAsync();
+            var allCourses = await Courses.GetAllAsync(specifications: null, asNoTracking: true);
             foreach (var code in prereqCodes)
             {
                 var prereqCourse = allCourses.FirstOrDefault(c =>
@@ -321,7 +321,7 @@ public class ExcelImportService : IExcelImportService
         var courseCode = row.Cell(1).GetString().Trim();
         var courseRepo = _unitOfWork.GetRepository<Course, int>();
         var courseSpec = new Specifications.CourseByCodeSpec(courseCode);
-        var courses = await courseRepo.GetAllAsync(courseSpec);
+        var courses = await courseRepo.GetAllAsync(courseSpec, asNoTracking: true);
         var course = courses.FirstOrDefault();
         if (course is null)
             throw new InvalidOperationException($"Course not found: {courseCode}");
@@ -331,7 +331,7 @@ public class ExcelImportService : IExcelImportService
         if (!string.IsNullOrWhiteSpace(roomName))
         {
             var roomRepo = _unitOfWork.GetRepository<Room, int>();
-            var rooms = await roomRepo.GetAllAsync();
+            var rooms = await roomRepo.GetAllAsync(specifications: null, asNoTracking: true);
             var room = rooms.FirstOrDefault(r =>
                 r.RoomName.Equals(roomName, StringComparison.OrdinalIgnoreCase));
             if (room is not null)

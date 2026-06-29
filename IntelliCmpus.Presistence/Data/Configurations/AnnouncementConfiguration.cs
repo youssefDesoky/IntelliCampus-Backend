@@ -13,6 +13,8 @@ public class AnnouncementConfiguration : IEntityTypeConfiguration<Announcement>
         builder.Property(a => a.Content)
             .IsRequired();
 
+        builder.HasIndex(a => a.CourseId);
+
         builder.HasOne(a => a.Course)
             .WithMany()
             .HasForeignKey(a => a.CourseId)

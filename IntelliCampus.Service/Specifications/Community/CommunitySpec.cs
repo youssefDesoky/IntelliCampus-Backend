@@ -37,6 +37,7 @@ internal sealed class CommunityPostSpec : BaseSpecifications<Post>
         AddInclude(p => p.Votes);
         AddInclude("Votes.User");
         AddInclude(p => p.Candidates);
+        EnableSplitQuery();
     }
 
     public CommunityPostSpec(int communityId, CommunityQueryParams queryParams)
@@ -49,6 +50,7 @@ internal sealed class CommunityPostSpec : BaseSpecifications<Post>
         AddInclude(p => p.Votes);
         AddInclude("Votes.User");
         AddInclude(p => p.Candidates);
+        EnableSplitQuery();
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 }
@@ -72,5 +74,6 @@ internal sealed class PostWithDetailsSpec : BaseSpecifications<Post>
         AddInclude(p => p.Votes);
         AddInclude("Votes.User");
         AddInclude(p => p.Candidates);
+        EnableSplitQuery();
     }
 }

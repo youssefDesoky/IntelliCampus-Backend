@@ -17,6 +17,7 @@ internal class ProfessorsSpec : BaseSpecifications<Instructor>
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
         AddInclude("UserRoles.Role");
+        EnableSplitQuery();
     }
 
     public ProfessorsSpec(InstructorQueryParams queryParams)
@@ -30,5 +31,6 @@ internal class ProfessorsSpec : BaseSpecifications<Instructor>
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
         AddInclude("UserRoles.Role");
+        EnableSplitQuery();
     }
 }

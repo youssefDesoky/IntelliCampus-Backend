@@ -10,6 +10,7 @@ internal class StudentCourseSpec : BaseSpecifications<StudentCourse>
     {
         AddInclude(sc => sc.Class!);
         AddInclude("Course.Classes.Instructor");
+        EnableSplitQuery();
     }
 
     // Check existing + Unregister

@@ -40,6 +40,6 @@ public class FriendsController(IFriendService friendService) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetFriends()
-        => Ok(await friendService.GetFriendsAsync(UserId));
+    public async Task<IActionResult> GetFriends([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 100)
+        => Ok(await friendService.GetFriendsAsync(UserId, pageIndex, pageSize));
 }

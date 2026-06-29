@@ -29,6 +29,8 @@ public class QuizConfiguration : IEntityTypeConfiguration<Quiz>
         builder.Property(q => q.TotalMarks)
             .IsRequired();
 
+        builder.HasIndex(q => q.CourseId);
+
         builder.HasOne(q => q.Course)
             .WithMany(c => c.Quizzes)
             .HasForeignKey(q => q.CourseId)
