@@ -39,11 +39,10 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         return MapToDto(classEntity);
     }
 
-    public async Task<IEnumerable<ClassDto>> GetAllAsync()
+    public async Task<IEnumerable<ClassDto>> GetAllAsync(ClassQueryParams? queryParams = null)
     {
-        var spec = new ClassSpec();
-        var classes = await Classes.GetAllAsync(spec);
-
+        var spec = queryParams is not null ? new ClassSpec(queryParams) : new ClassSpec();
+        var classes = await Classes.GetAllAsync(spec, asNoTracking: true);
         return classes.Select(MapToDto);
     }
 
@@ -54,8 +53,7 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
             throw new CourseNotFoundException(courseId);
 
         var spec = new ClassSpec(courseId, byCourse: true, queryParams);
-        var classes = await Classes.GetAllAsync(spec);
-
+        var classes = await Classes.GetAllAsync(spec, asNoTracking: true);
         return classes.Select(MapToDto);
     }
 
@@ -283,47 +281,49 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         return true;
     }
 
-    public async Task<IEnumerable<InstructorDto>> GetLectureInstructorsAsync()
+    public async Task<IEnumerable<InstructorDto>> GetLectureInstructorsAsync(ClassQueryParams? queryParams = null)
     {
-        var spec = new InstructorSpec();
-        var instructors = await Instructors.GetAllAsync(spec);
-        return instructors
-            .Where(i => i.InstructorRole == InstructorRole.Professor || i.InstructorRole == InstructorRole.Lecturer || i.InstructorRole == InstructorRole.AssociateProfessor)
-            .Select(MapInstructorToDto);
+        var spec = queryParams is not null
+            ? new InstructorSpec([InstructorRole.Professor, InstructorRole.Lecturer, InstructorRole.AssociateProfessor], queryParams)
+            : new InstructorSpec(InstructorRole.Professor, InstructorRole.Lecturer, InstructorRole.AssociateProfessor);
+        var instructors = await Instructors.GetAllAsync(spec, asNoTracking: true);
+        return instructors.Select(MapInstructorToDto);
     }
 
-    public async Task<IEnumerable<InstructorDto>> GetSectionInstructorsAsync()
+    public async Task<IEnumerable<InstructorDto>> GetSectionInstructorsAsync(ClassQueryParams? queryParams = null)
     {
-        var spec = new InstructorSpec();
-        var instructors = await Instructors.GetAllAsync(spec);
-        return instructors
-            .Where(i => i.InstructorRole == InstructorRole.TeachingAssistant || i.InstructorRole == InstructorRole.AssistantLecturer)
-            .Select(MapInstructorToDto);
+        var spec = queryParams is not null
+            ? new InstructorSpec([InstructorRole.TeachingAssistant, InstructorRole.AssistantLecturer], queryParams)
+            : new InstructorSpec(InstructorRole.TeachingAssistant, InstructorRole.AssistantLecturer);
+        var instructors = await Instructors.GetAllAsync(spec, asNoTracking: true);
+        return instructors.Select(MapInstructorToDto);
     }
 
-    public async Task<IEnumerable<ClassDto>> GetProfessorLecturesAsync()
+    public async Task<IEnumerable<ClassDto>> GetProfessorLecturesAsync(ClassQueryParams? queryParams = null)
     {
-        var spec = new ProfessorLecturesSpec();
-        var classes = await Classes.GetAllAsync(spec);
+        var spec = queryParams is not null ? new ProfessorLecturesSpec(queryParams) : new ProfessorLecturesSpec();
+        var classes = await Classes.GetAllAsync(spec, asNoTracking: true);
         return classes.Select(MapToDto);
     }
 
     public async Task<IEnumerable<ClassDto>> GetTALecturerSectionsAsync(ClassQueryParams queryParams)
     {
         var spec = new TALecturerSectionsSpec(queryParams);
-        var classes = await Classes.GetAllAsync(spec);
+        var classes = await Classes.GetAllAsync(spec, asNoTracking: true);
         return classes.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<RoomDto>> GetLectureRoomsAsync()
+    public async Task<IEnumerable<RoomDto>> GetLectureRoomsAsync(ClassQueryParams? queryParams = null)
     {
-        var rooms = await Rooms.GetAllAsync();
+        var spec = queryParams is not null ? new RoomSpec(queryParams.PageSize, queryParams.PageIndex) : new RoomSpec();
+        var rooms = await Rooms.GetAllAsync(spec, asNoTracking: true);
         return rooms.Select(MapRoomToDto);
     }
 
-    public async Task<IEnumerable<RoomDto>> GetSectionRoomsAsync()
+    public async Task<IEnumerable<RoomDto>> GetSectionRoomsAsync(ClassQueryParams? queryParams = null)
     {
-        var rooms = await Rooms.GetAllAsync();
+        var spec = queryParams is not null ? new RoomSpec(queryParams.PageSize, queryParams.PageIndex) : new RoomSpec();
+        var rooms = await Rooms.GetAllAsync(spec, asNoTracking: true);
         return rooms.Select(MapRoomToDto);
     }
 

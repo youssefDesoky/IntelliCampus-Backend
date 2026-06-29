@@ -28,7 +28,7 @@ public class InstructorReminderService(IUnitOfWork unitOfWork) : IInstructorRemi
             throw new InstructorNotFoundException(instructorId);
 
         var spec = new RemindersByInstructorSpec(instructorId, queryParams);
-        var reminders = await Reminders.GetAllAsync(spec);
+        var reminders = await Reminders.GetAllAsync(spec, asNoTracking: true);
 
         var nextDay = selectedDay.AddDays(1);
         var weekEnd = selectedDay.AddDays(8);

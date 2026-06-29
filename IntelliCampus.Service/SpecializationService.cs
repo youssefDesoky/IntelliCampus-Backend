@@ -31,7 +31,7 @@ public class SpecializationService : ISpecializationService
     public async Task<IEnumerable<SpecializationDto>> GetAllAsync()
     {
         var spec = new SpecializationSpec();
-        var items = await Specializations.GetAllAsync(spec);
+        var items = await Specializations.GetAllAsync(spec, asNoTracking: true);
         return items.Select(MapToDto);
     }
 
@@ -42,7 +42,7 @@ public class SpecializationService : ISpecializationService
             throw new DepartmentNotFoundException(departmentId);
 
         var spec = new SpecializationSpec(departmentId, byDepartment: true);
-        var items = await Specializations.GetAllAsync(spec);
+        var items = await Specializations.GetAllAsync(spec, asNoTracking: true);
         return items.Select(MapToDto);
     }
 
@@ -122,7 +122,7 @@ public class SpecializationService : ISpecializationService
         if (specialization is null) throw new SpecializationNotFoundException(specializationId);
 
         var prerequisites = await SpecializationPrerequisites.GetAllAsync(
-            new SpecializationPrerequisiteSpec(specializationId));
+            new SpecializationPrerequisiteSpec(specializationId), asNoTracking: true);
 
         return prerequisites.Select(p => new SpecializationPrerequisiteDto
         {

@@ -26,6 +26,7 @@ internal sealed class AnnouncementsByCourseSpec : BaseSpecifications<Announcemen
         AddInclude(a => a.Sender);
         AddInclude(a => a.Attachments);
         AddInclude("Comments.User");
+        EnableSplitQuery();
     }
 }
 
@@ -56,5 +57,6 @@ internal sealed class AnnouncementByIdSpec : BaseSpecifications<Announcement>
         AddInclude(a => a.Sender);
         AddInclude(a => a.Attachments);
         AddInclude("Comments.User");
+        EnableSplitQuery();
     }
 }

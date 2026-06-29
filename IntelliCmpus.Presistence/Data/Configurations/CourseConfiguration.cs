@@ -39,5 +39,9 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
             .WithMany(d => d.Courses)
             .HasForeignKey(c => c.DepartmentId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasIndex(c => c.DepartmentId);
+        builder.HasIndex(c => c.CourseCode);
+        builder.HasIndex(c => c.Status);
     }
 }

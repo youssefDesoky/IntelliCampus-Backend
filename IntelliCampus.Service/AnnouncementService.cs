@@ -34,7 +34,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
             throw new CourseNotFoundException(courseId);
 
         var spec = new AnnouncementsByCourseSpec(courseId, queryParams);
-        var announcements = await Announcements.GetAllAsync(spec);
+        var announcements = await Announcements.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = announcements.Select(MapToDto).ToList();
 
         var countSpec = new AnnouncementCountSpec(courseId, queryParams);

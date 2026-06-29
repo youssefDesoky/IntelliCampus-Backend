@@ -4,32 +4,35 @@ using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Shared.Dtos.Role;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace IntelliCampus.Service;
 
 public class RoleService : IRoleService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMemoryCache _cache;
 
-    public RoleService(IUnitOfWork unitOfWork)
+    public RoleService(IUnitOfWork unitOfWork, IMemoryCache memoryCache)
     {
         _unitOfWork = unitOfWork;
+        _cache = memoryCache;
     }
 
     public async Task<IEnumerable<RoleDto>> GetAllRolesAsync()
     {
-        var roles = await _unitOfWork.GetRepository<Role, int>().GetAllAsync();
-        return roles.Select(r => new RoleDto
+        return await _cache.GetOrCreateAsync("all_roles", async entry =>
         {
-            RoleId = r.RoleId,
-            RoleName = r.RoleName
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+            var roles = await _unitOfWork.GetRepository<Role, int>().GetAllAsync(specifications: null, asNoTracking: true);
+            return roles.Select(r => new RoleDto { RoleId = r.RoleId, RoleName = r.RoleName }).ToList();
         });
     }
 
     public async Task<IEnumerable<UserRoleDto>> GetUserRolesAsync(int userId)
     {
         var spec = new UserRoleJunctionSpec(userId);
-        var userRoles = await _unitOfWork.GetRepository<UserRoleJunction, int>().GetAllAsync(spec);
+        var userRoles = await _unitOfWork.GetRepository<UserRoleJunction, int>().GetAllAsync(spec, asNoTracking: true);
         return userRoles.Select(ur => new UserRoleDto
         {
             UserId = ur.UserId,
@@ -50,13 +53,13 @@ public class RoleService : IRoleService
         if (user is null)
             throw new UserNotFoundException(dto.UserId);
 
-        var roles = await roleRepo.GetAllAsync();
+        var roles = await roleRepo.GetAllAsync(specifications: null, asNoTracking: true);
         var role = roles.FirstOrDefault(r => r.RoleName == dto.RoleName);
         if (role is null)
             throw new RoleNotFoundException($"Role '{dto.RoleName}' not found.");
 
-        var existing = (await userRoleRepo.GetAllAsync())
-            .FirstOrDefault(ur => ur.UserId == dto.UserId && ur.RoleId == role.RoleId);
+        var existing = (await userRoleRepo.GetAllAsync(new UserRoleJunctionSpec(dto.UserId)))
+            .FirstOrDefault(ur => ur.RoleId == role.RoleId);
 
         if (existing is not null)
         {
@@ -150,8 +153,8 @@ public class RoleService : IRoleService
     public async Task<bool> RemoveRoleAsync(int userId, int roleId)
     {
         var userRoleRepo = _unitOfWork.GetRepository<UserRoleJunction, int>();
-        var userRoles = await userRoleRepo.GetAllAsync();
-        var userRole = userRoles.FirstOrDefault(ur => ur.UserId == userId && ur.RoleId == roleId);
+        var userRoles = await userRoleRepo.GetAllAsync(new UserRoleJunctionSpec(userId));
+        var userRole = userRoles.FirstOrDefault(ur => ur.RoleId == roleId);
 
         if (userRole is null)
             throw new RoleNotFoundException(roleId);

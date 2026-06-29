@@ -36,7 +36,7 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
     public async Task<PaginatedResult<DepartmentDto>> GetAllAsync(DepartmentQueryParams queryParams)
     {
         var spec = new DepartmentSpec(queryParams);
-        var departments = await Departments.GetAllAsync(spec);
+        var departments = await Departments.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = departments.Select(MapToDto).ToList();
 
         var countSpec = new DepartmentCountSpec(queryParams);
@@ -162,7 +162,7 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
 
     public async Task<IEnumerable<DepartmentDto>> UpdateAllRegistrationSettingsAsync(DepartmentRegistrationSettingsDto dto)
     {
-        var allDepts = await Departments.GetAllAsync();
+        var allDepts = await Departments.GetAllAsync(new DepartmentSpec(), asNoTracking: true);
 
         foreach (var department in allDepts)
         {

@@ -21,6 +21,9 @@ public class MaterialConfiguration : IEntityTypeConfiguration<Material>
             .HasConversion<string>()
             .HasMaxLength(20);
 
+        builder.HasIndex(m => m.CourseId);
+        builder.HasIndex(m => m.FolderId);
+
         builder.HasOne(m => m.Course)
             .WithMany(c => c.Materials)
             .HasForeignKey(m => m.CourseId)

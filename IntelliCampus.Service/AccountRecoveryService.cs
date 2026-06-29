@@ -123,8 +123,7 @@ public class AccountRecoveryService : IAccountRecoveryService
 
     public async Task ForgotPasswordAsync(ForgotPasswordDto dto, string? ipAddress, string? userAgent)
     {
-        var users = await Users.GetAllAsync();
-        var user = users.FirstOrDefault(u => u.Email == dto.Email);
+        var user = await Users.GetByIdAsync(new UserByEmailSpec(dto.Email));
 
         if (user is null || string.IsNullOrWhiteSpace(user.RecoveryEmail) || !user.RecoveryEmailVerified)
         {

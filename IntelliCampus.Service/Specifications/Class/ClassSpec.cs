@@ -11,6 +11,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(c => c.Course!);
             AddInclude(c => c.Instructor!);
+            EnableSplitQuery();
         }
 
         public ClassSpec(int classId)
@@ -18,6 +19,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(c => c.Course!);
             AddInclude(c => c.Instructor!);
+            EnableSplitQuery();
         }
 
         public ClassSpec(int courseId, bool byCourse, string? classType = null)
@@ -25,6 +27,15 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(c => c.Course!);
             AddInclude(c => c.Instructor!);
+            EnableSplitQuery();
+        }
+
+        public ClassSpec(ClassQueryParams queryParams)
+        {
+            AddInclude(c => c.Course!);
+            AddInclude(c => c.Instructor!);
+            EnableSplitQuery();
+            ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
 
         public ClassSpec(int courseId, bool byCourse, ClassQueryParams queryParams)
@@ -32,6 +43,8 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(c => c.Course!);
             AddInclude(c => c.Instructor!);
+            EnableSplitQuery();
+            ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
 
         private static Expression<Func<Class, bool>> BuildByCourseAndClassTypeExpression(int courseId, ClassQueryParams queryParams)

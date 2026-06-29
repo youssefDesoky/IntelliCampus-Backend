@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using IntelliCampus.Domain.Interfaces;
 
 namespace IntelliCampus.UnitTests.TestHelpers;
@@ -44,5 +45,13 @@ public class TestUnitOfWork : IUnitOfWork
         if (_executeSqlAsync is not null)
             return _executeSqlAsync(sql, parameters);
         throw new InvalidOperationException("ExecuteSqlAsync not configured.");
+    }
+
+    public Task<int> ExecuteUpdateAsync<TEntity, TProperty>(
+        Expression<Func<TEntity, bool>> predicate,
+        Expression<Func<TEntity, TProperty>> propertyExpression,
+        TProperty value) where TEntity : class
+    {
+        return Task.FromResult(0);
     }
 }

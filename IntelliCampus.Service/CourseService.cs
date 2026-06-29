@@ -58,7 +58,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     public async Task<PaginatedResult<CourseDto>> GetAllAsync(CourseQueryParams queryParams)
     {
         var spec = new CourseSpec(queryParams, CourseIncludeLevel.Light);
-        var courses = await Courses.GetAllAsync(spec);
+        var courses = await Courses.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = courses.Select(c => MapToDto(c)).ToList();
         var countSpec = new CourseCountSpec(queryParams);
         var totalCount = await Courses.CountAsync(countSpec);
@@ -70,7 +70,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     {
         queryParams.IsActiveOnly = true;
         var spec = new CourseSpec(queryParams, CourseIncludeLevel.Light);
-        var courses = await Courses.GetAllAsync(spec);
+        var courses = await Courses.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = courses.Select(c => MapToDto(c)).ToList();
 
         var countSpec = new CourseCountSpec(queryParams);
@@ -87,7 +87,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             throw new StudentNotFoundException(studentId);
 
         var gradeScales = student.Bylaw?.GradeScales;
-        var courses = await Courses.GetAllAsync(new CourseSpec(queryParams, CourseIncludeLevel.Student));
+        var courses = await Courses.GetAllAsync(new CourseSpec(queryParams, CourseIncludeLevel.Student), asNoTracking: true);
         var dataToReturn = courses.Select(c => MapToDto(c, studentId, gradeScales)).ToList();
 
         var countSpec = new CourseCountSpec(queryParams);
@@ -103,10 +103,10 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         if (instructor is null)
             throw new InstructorNotFoundException(instructorId);
 
-        var classes = await Classes.GetAllAsync(new ClassByInstructorSpec(instructorId));
+        var classes = await Classes.GetAllAsync(new ClassByInstructorSpec(instructorId), asNoTracking: true);
         var courseIds = classes.Select(c => c.CourseId).Distinct().ToList();
 
-        var courses = await Courses.GetAllAsync(new CourseSpec(courseIds, queryParams));
+        var courses = await Courses.GetAllAsync(new CourseSpec(courseIds, queryParams), asNoTracking: true);
         var dataToReturn = courses.Select(c => MapToDto(c)).ToList();
 
         var countSpec = new CourseSpec(courseIds, queryParams, forCount: true);
@@ -137,10 +137,8 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
         if (dto.PrerequisiteCodes is { Count: > 0 })
         {
-            var allCourses = await Courses.GetAllAsync();
-            var prereqCourses = allCourses
-                .Where(c => dto.PrerequisiteCodes.Contains(c.CourseCode!))
-                .ToList();
+            var prereqCourses = (await Courses.GetAllAsync(
+                new CourseBasicSpec(dto.PrerequisiteCodes, byCodes: true), asNoTracking: true)).ToList();
 
             foreach (var prereq in prereqCourses)
             {
@@ -185,10 +183,8 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             foreach (var prereq in existingPrereqs)
                 Prerequisites.Delete(prereq);
 
-            var allCourses = await Courses.GetAllAsync();
-            var prereqCourses = allCourses
-                .Where(c => dto.PrerequisiteCodes.Contains(c.CourseCode!))
-                .ToList();
+            var prereqCourses = (await Courses.GetAllAsync(
+                new CourseBasicSpec(dto.PrerequisiteCodes, byCodes: true), asNoTracking: true)).ToList();
 
             foreach (var prereq in prereqCourses)
             {
@@ -230,7 +226,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     public async Task<PaginatedResult<CoursePrerequisiteDto>> GetAllWithPrerequisitesAsync(CourseQueryParams queryParams)
     {
         var spec = new CourseSpec(queryParams, CourseIncludeLevel.Light);
-        var courses = await Courses.GetAllAsync(spec);
+        var courses = await Courses.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = courses.Select(c => new CoursePrerequisiteDto
         {
             CourseId = c.CourseId,
@@ -365,7 +361,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         var course = await Courses.GetByIdAsync(courseId);
         if (course is null) throw new CourseNotFoundException(courseId);
 
-        var studentCourses = await StudentCourses.GetAllAsync(new CourseStudentsSpec(courseId));
+        var studentCourses = await StudentCourses.GetAllAsync(new CourseStudentsSpec(courseId), asNoTracking: true);
 
         return studentCourses.Select(sc =>
         {
@@ -420,7 +416,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         }
 
         var normalized = departmentName.Trim();
-        var departments = await Departments.GetAllAsync();
+        var departments = await Departments.GetAllAsync(specifications: null, asNoTracking: true);
         
         var department = departments
             .FirstOrDefault(d => string.Equals(d.DepartmentName, departmentName, StringComparison.OrdinalIgnoreCase));
@@ -447,75 +443,16 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     {
         var currentSemester = SemesterHelper.GetCurrentSemester();
 
-        var allSessions = course.Classes?.SelectMany(cl => cl.Sessions) ?? [];
-
-        var allAttendances = allSessions.SelectMany(s => s.Attendances);
-        if (studentId.HasValue)
-            allAttendances = allAttendances.Where(a => a.StudentId == studentId.Value);
-
-        var totalAttendances = studentId.HasValue
-            ? allSessions.Count()
-            : allAttendances.Count();
-
-        var presentAttendances = allAttendances.Count(a => a.Status == AttendanceStatus.Present);
-        var attendancePercent = totalAttendances > 0 ? Math.Round((decimal)presentAttendances / totalAttendances * 100, 1) : (decimal?)null;
-
-        var courseGrades = course.Grades ?? [];
-        if (studentId.HasValue)
-            courseGrades = courseGrades.Where(g => g.StudentId == studentId.Value).ToList();
-
-        decimal? avgGrade;
-        string? gradeLetter = null;
-        decimal? courseWork;
-        if (studentId.HasValue && courseGrades.Count != 0)
-        {
-            var percentages = courseGrades.Select(g => g.MaxScore > 0 ? g.Score / g.MaxScore * 100 : 0).ToList();
-            avgGrade = Math.Round(percentages.Average(), 0);
-
-            if (avgGrade.HasValue && gradeScales?.Count > 0)
-            {
-                var scale = gradeScales
-                    .OrderByDescending(s => s.MinPercentage)
-                    .FirstOrDefault(s => avgGrade.Value >= s.MinPercentage);
-                if (scale is not null)
-                    gradeLetter = scale.GradeLetter;
-            }
-
-            var courseworkGrades = courseGrades
-                .Where(g => g.GradeType is GradeType.Assignment or GradeType.Quiz)
-                .ToList();
-            courseWork = courseworkGrades.Count != 0
-                ? Math.Round(courseworkGrades.Average(g => g.MaxScore > 0 ? g.Score / g.MaxScore * 100 : 0), 0)
-                : (decimal?)null;
-        }
-        else
-        {
-            avgGrade = courseGrades.Any() ? Math.Round(courseGrades.Average(g => g.Score), 1) : (decimal?)null;
-            courseWork = null;
-        }
-
-        var numStudents = course.StudentCourses?.Count ?? 0;
+        var (_, _, attendancePercent) = ComputeAttendanceData(course, studentId);
+        var (avgGrade, gradeLetter, courseWork) = ComputeCourseGradeData(course, studentId, gradeScales);
+        var (schedule, room) = BuildScheduleInfo(course);
+        var (classId, className, studentCourseStatusName) = GetStudentCourseInfo(course, studentId);
 
         var lectureClass = course.Classes?.FirstOrDefault(cl => cl.ClassType == ClassType.Lecture);
-        var scheduleClass = lectureClass ?? course.Classes?.FirstOrDefault();
+        var numStudents = course.StudentCourses?.Count ?? 0;
 
-        string? schedule = null;
-        string? room = null;
-
-        var today = EgyptTime.Today;
+        var allSessions = course.Classes?.SelectMany(cl => cl.Sessions) ?? [];
         var now = EgyptTime.Now;
-
-        if (scheduleClass is not null)
-        {
-            room = scheduleClass.Room;
-            if (scheduleClass.Day.HasValue && scheduleClass.StartTime.HasValue && scheduleClass.EndTime.HasValue)
-            {
-                var startFormatted = today.Add(scheduleClass.StartTime.Value).ToString("h:mm tt");
-                var endFormatted = today.Add(scheduleClass.EndTime.Value).ToString("h:mm tt");
-                schedule = $"{scheduleClass.Day.Value} {startFormatted} - {endFormatted}";
-            }
-        }
-
         var distinctSessionWeeks = allSessions
             .Select(s => s.Date)
             .Where(d => d <= now)
@@ -523,26 +460,6 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
                 .GetWeekOfYear(d, System.Globalization.CalendarWeekRule.FirstDay, DayOfWeek.Sunday))
             .Distinct()
             .Count();
-
-        int? classId = null;
-        string? className = null;
-        string? studentCourseStatusName = null;
-        if (studentId.HasValue)
-        {
-            var studentCourse = course.StudentCourses?
-                .FirstOrDefault(sc => sc.StudentId == studentId.Value);
-            if (studentCourse is not null)
-            {
-                classId = studentCourse.ClassId;
-                className = studentCourse.Class?.GroupCode;
-                studentCourseStatusName = studentCourse.Status switch
-                {
-                    StudentCourseStatus.Registered or StudentCourseStatus.InProgress => "InProgress",
-                    StudentCourseStatus.Completed or StudentCourseStatus.Failed => "Completed",
-                    _ => null
-                };
-            }
-        }
 
         return new CourseDto
         {
@@ -586,5 +503,115 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
                 ? JsonSerializer.Deserialize<List<int>>(course.AllowedDepartmentIds)
                 : null
         };
+    }
+
+    private static (int TotalAttendances, int PresentAttendances, decimal? AttendancePercent) ComputeAttendanceData(
+        Course course, int? studentId)
+    {
+        var allSessions = course.Classes?.SelectMany(cl => cl.Sessions) ?? [];
+
+        var allAttendances = allSessions.SelectMany(s => s.Attendances);
+        if (studentId.HasValue)
+            allAttendances = allAttendances.Where(a => a.StudentId == studentId.Value);
+
+        var totalAttendances = studentId.HasValue
+            ? allSessions.Count()
+            : allAttendances.Count();
+
+        var presentAttendances = allAttendances.Count(a => a.Status == AttendanceStatus.Present);
+        var attendancePercent = totalAttendances > 0 ? Math.Round((decimal)presentAttendances / totalAttendances * 100, 1) : (decimal?)null;
+
+        return (totalAttendances, presentAttendances, attendancePercent);
+    }
+
+    private static (decimal? AvgGrade, string? GradeLetter, decimal? CourseWork) ComputeCourseGradeData(
+        Course course, int? studentId, List<GradeScaleItem>? gradeScales)
+    {
+        var courseGrades = course.Grades ?? [];
+        if (studentId.HasValue)
+            courseGrades = courseGrades.Where(g => g.StudentId == studentId.Value).ToList();
+
+        decimal? avgGrade;
+        string? gradeLetter = null;
+        decimal? courseWork;
+        if (studentId.HasValue && courseGrades.Count != 0)
+        {
+            var percentages = courseGrades.Select(g => g.MaxScore > 0 ? g.Score / g.MaxScore * 100 : 0).ToList();
+            avgGrade = Math.Round(percentages.Average(), 0);
+
+            if (avgGrade.HasValue && gradeScales?.Count > 0)
+            {
+                var scale = gradeScales
+                    .OrderByDescending(s => s.MinPercentage)
+                    .FirstOrDefault(s => avgGrade.Value >= s.MinPercentage);
+                if (scale is not null)
+                    gradeLetter = scale.GradeLetter;
+            }
+
+            var courseworkGrades = courseGrades
+                .Where(g => g.GradeType is GradeType.Assignment or GradeType.Quiz)
+                .ToList();
+            courseWork = courseworkGrades.Count != 0
+                ? Math.Round(courseworkGrades.Average(g => g.MaxScore > 0 ? g.Score / g.MaxScore * 100 : 0), 0)
+                : (decimal?)null;
+        }
+        else
+        {
+            avgGrade = courseGrades.Any() ? Math.Round(courseGrades.Average(g => g.Score), 1) : (decimal?)null;
+            courseWork = null;
+        }
+
+        return (avgGrade, gradeLetter, courseWork);
+    }
+
+    private static (string? Schedule, string? Room) BuildScheduleInfo(Course course)
+    {
+        var lectureClass = course.Classes?.FirstOrDefault(cl => cl.ClassType == ClassType.Lecture);
+        var scheduleClass = lectureClass ?? course.Classes?.FirstOrDefault();
+
+        string? schedule = null;
+        string? room = null;
+
+        var today = EgyptTime.Today;
+        var now = EgyptTime.Now;
+
+        if (scheduleClass is not null)
+        {
+            room = scheduleClass.Room;
+            if (scheduleClass.Day.HasValue && scheduleClass.StartTime.HasValue && scheduleClass.EndTime.HasValue)
+            {
+                var startFormatted = today.Add(scheduleClass.StartTime.Value).ToString("h:mm tt");
+                var endFormatted = today.Add(scheduleClass.EndTime.Value).ToString("h:mm tt");
+                schedule = $"{scheduleClass.Day.Value} {startFormatted} - {endFormatted}";
+            }
+        }
+
+        return (schedule, room);
+    }
+
+    private static (int? ClassId, string? ClassName, string? StudentCourseStatusName) GetStudentCourseInfo(
+        Course course, int? studentId)
+    {
+        int? classId = null;
+        string? className = null;
+        string? studentCourseStatusName = null;
+        if (studentId.HasValue)
+        {
+            var studentCourse = course.StudentCourses?
+                .FirstOrDefault(sc => sc.StudentId == studentId.Value);
+            if (studentCourse is not null)
+            {
+                classId = studentCourse.ClassId;
+                className = studentCourse.Class?.GroupCode;
+                studentCourseStatusName = studentCourse.Status switch
+                {
+                    StudentCourseStatus.Registered or StudentCourseStatus.InProgress => "InProgress",
+                    StudentCourseStatus.Completed or StudentCourseStatus.Failed => "Completed",
+                    _ => null
+                };
+            }
+        }
+
+        return (classId, className, studentCourseStatusName);
     }
 }

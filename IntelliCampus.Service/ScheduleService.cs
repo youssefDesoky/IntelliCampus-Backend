@@ -40,25 +40,29 @@ public class ScheduleService : IScheduleService
         return MapToDto(schedule);
     }
 
-    public async Task<IEnumerable<ScheduleDto>> GetByStudentIdAsync(int studentId)
+    public async Task<IEnumerable<ScheduleDto>> GetByStudentIdAsync(int studentId, ScheduleQueryParams? queryParams = null)
     {
         var student = await Students.GetByIdAsync(studentId);
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
-        var spec = new ScheduleSpec(studentId);
-        var schedules = await Schedules.GetAllAsync(spec);
+        var spec = queryParams is not null
+            ? new ScheduleSpec(studentId, queryParams.PageSize, queryParams.PageIndex)
+            : new ScheduleSpec(studentId);
+        var schedules = await Schedules.GetAllAsync(spec, asNoTracking: true);
         return schedules.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<ScheduleDto>> GetByStudentIdAndTypeAsync(int studentId, ScheduleType type)
+    public async Task<IEnumerable<ScheduleDto>> GetByStudentIdAndTypeAsync(int studentId, ScheduleType type, ScheduleQueryParams? queryParams = null)
     {
         var student = await Students.GetByIdAsync(studentId);
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
-        var spec = new ScheduleSpec(studentId, type);
-        var schedules = await Schedules.GetAllAsync(spec);
+        var spec = queryParams is not null
+            ? new ScheduleSpec(studentId, type, queryParams)
+            : new ScheduleSpec(studentId, type);
+        var schedules = await Schedules.GetAllAsync(spec, asNoTracking: true);
         return schedules.Select(MapToDto);
     }
 
@@ -69,8 +73,7 @@ public class ScheduleService : IScheduleService
             throw new StudentNotFoundException(studentId);
 
         var spec = new ScheduleSpec(studentId, queryParams);
-        var schedules = await Schedules.GetAllAsync(spec);
-
+        var schedules = await Schedules.GetAllAsync(spec, asNoTracking: true);
         return schedules.Select(MapToDto);
     }
 
@@ -149,7 +152,7 @@ public class ScheduleService : IScheduleService
         if (queryParams.Types is null || queryParams.Types.Length == 0)
             schedules = await GetByStudentIdAsync(studentId);
         else
-            schedules = await GetByStudentIdAndTypesAsync(studentId, queryParams);
+            schedules = await GetByStudentIdAndTypesAsync(studentId, new ScheduleQueryParams { Types = queryParams.Types, PageSize = 50 });
 
         var dto = new ScheduleExportDto
         {

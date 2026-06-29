@@ -50,7 +50,7 @@ namespace IntelliCampus.Service.Specifications
 
         public bool IsPaginated { get; private set; }
 
-        protected void ApplyPagination(int pageSize, int pageIndex)
+        public void ApplyPagination(int pageSize, int pageIndex)
         {
             IsPaginated = true;
             Take = pageSize;
@@ -58,6 +58,18 @@ namespace IntelliCampus.Service.Specifications
 
         }
 
+        #endregion
+
+        #region Split Query
+        public bool UseSplitQuery { get; private set; }
+
+        protected void EnableSplitQuery() => UseSplitQuery = true;
+        #endregion
+
+        #region Select
+        public Expression? Select { get; private set; }
+
+        protected void AddSelect<TResult>(Expression<Func<TEntity, TResult>> selector) => Select = selector;
         #endregion
     }
 }

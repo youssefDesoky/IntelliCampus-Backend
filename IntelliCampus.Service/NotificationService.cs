@@ -39,7 +39,7 @@ public class NotificationService : INotificationService
             throw new UserNotFoundException(userId);
 
         var spec = new NotificationSpec(userId, queryParams);
-        var userNotifications = await UserNotifications.GetAllAsync(spec);
+        var userNotifications = await UserNotifications.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = userNotifications.Select(MapToDto).ToList();
 
         var countSpec = new NotificationCountSpec(userId, queryParams);
@@ -55,7 +55,7 @@ public class NotificationService : INotificationService
             throw new UserNotFoundException(userId);
 
         var spec = new NotificationSpec(userId, queryParams);
-        var userNotifications = await UserNotifications.GetAllAsync(spec);
+        var userNotifications = await UserNotifications.GetAllAsync(spec, asNoTracking: true);
         return userNotifications.Where(n => !n.IsRead).Select(MapToDto);
     }
 
@@ -65,14 +65,20 @@ public class NotificationService : INotificationService
         if (user is null)
             throw new UserNotFoundException(userId);
 
-        var spec = new NotificationSpec(userId, queryParams);
-        var all = (await UserNotifications.GetAllAsync(spec)).ToList();
+        var filterExpr = NotificationSpec.BuildFilterExpression(userId, queryParams);
+        var totalCount = await UserNotifications.CountAsync(filterExpr);
+        var unreadCount = await UserNotifications.CountAsync(n =>
+            n.UserId == userId && !n.IsRead);
+
+        var recentSpec = new NotificationSpec(userId, queryParams);
+        var recent = (await UserNotifications.GetAllAsync(recentSpec, asNoTracking: true))
+            .Take(5).Select(MapToDto).ToList();
 
         return new NotificationSummaryDto
         {
-            TotalCount = all.Count,
-            UnreadCount = all.Count(n => !n.IsRead),
-            Recent = all.Take(5).Select(MapToDto).ToList()
+            TotalCount = totalCount,
+            UnreadCount = unreadCount,
+            Recent = recent
         };
     }
 
@@ -109,16 +115,10 @@ public class NotificationService : INotificationService
         if (user is null)
             throw new UserNotFoundException(userId);
 
-        var spec = new NotificationSpec(userId, unreadOnly: true, forUpdate: true);
-        var unread = await UserNotifications.GetAllAsync(spec);
-
-        foreach (var item in unread)
-        {
-            item.IsRead = true;
-            UserNotifications.Update(item);
-        }
-
-        await _unitOfWork.SaveChangesAsync();
+        await UserNotifications.ExecuteUpdateAsync(
+            un => un.UserId == userId && !un.IsRead,
+            un => un.IsRead,
+            true);
     }
 
     public async Task<bool> DeleteAsync(int notificationId, int userId)
@@ -275,7 +275,7 @@ public class NotificationService : INotificationService
         {
             var deviceTokenRepo = _unitOfWork.GetRepository<DeviceToken, int>();
             var spec = new DeviceTokenSpec(userIds);
-            var activeTokens = (await deviceTokenRepo.GetAllAsync(spec)).ToList();
+            var activeTokens = (await deviceTokenRepo.GetAllAsync(spec, asNoTracking: true)).ToList();
 
             if (activeTokens.Count == 0) return;
 

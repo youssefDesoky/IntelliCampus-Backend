@@ -20,23 +20,23 @@ public class ClassesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ClassDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<ClassDto>>> GetAll([FromQuery] ClassQueryParams? queryParams = null)
     {
-        var classes = await _classService.GetAllAsync();
+        var classes = await _classService.GetAllAsync(queryParams);
         return Ok(classes);
     }
 
     [HttpGet("lecture-instructors")]
-    public async Task<ActionResult<IEnumerable<InstructorDto>>> GetLectureInstructors()
+    public async Task<ActionResult<IEnumerable<InstructorDto>>> GetLectureInstructors([FromQuery] ClassQueryParams? queryParams = null)
     {
-        var instructors = await _classService.GetLectureInstructorsAsync();
+        var instructors = await _classService.GetLectureInstructorsAsync(queryParams);
         return Ok(instructors);
     }
 
     [HttpGet("professor-lectures")]
-    public async Task<ActionResult<IEnumerable<ClassDto>>> GetProfessorLectures()
+    public async Task<ActionResult<IEnumerable<ClassDto>>> GetProfessorLectures([FromQuery] ClassQueryParams? queryParams = null)
     {
-        var classes = await _classService.GetProfessorLecturesAsync();
+        var classes = await _classService.GetProfessorLecturesAsync(queryParams);
         return Ok(classes);
     }
 
@@ -48,23 +48,23 @@ public class ClassesController : ControllerBase
     }
 
     [HttpGet("section-instructors")]
-    public async Task<ActionResult<IEnumerable<InstructorDto>>> GetSectionInstructors()
+    public async Task<ActionResult<IEnumerable<InstructorDto>>> GetSectionInstructors([FromQuery] ClassQueryParams? queryParams = null)
     {
-        var instructors = await _classService.GetSectionInstructorsAsync();
+        var instructors = await _classService.GetSectionInstructorsAsync(queryParams);
         return Ok(instructors);
     }
 
     [HttpGet("lecture-rooms")]
-    public async Task<ActionResult<IEnumerable<RoomDto>>> GetLectureRooms()
+    public async Task<ActionResult<IEnumerable<RoomDto>>> GetLectureRooms([FromQuery] ClassQueryParams? queryParams = null)
     {
-        var rooms = await _classService.GetLectureRoomsAsync();
+        var rooms = await _classService.GetLectureRoomsAsync(queryParams);
         return Ok(rooms);
     }
 
     [HttpGet("section-rooms")]
-    public async Task<ActionResult<IEnumerable<RoomDto>>> GetSectionRooms()
+    public async Task<ActionResult<IEnumerable<RoomDto>>> GetSectionRooms([FromQuery] ClassQueryParams? queryParams = null)
     {
-        var rooms = await _classService.GetSectionRoomsAsync();
+        var rooms = await _classService.GetSectionRoomsAsync(queryParams);
         return Ok(rooms);
     }
 

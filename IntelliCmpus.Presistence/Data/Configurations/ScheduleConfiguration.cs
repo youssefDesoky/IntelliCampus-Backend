@@ -42,6 +42,8 @@ public class ScheduleConfiguration : IEntityTypeConfiguration<Schedule>
             .HasMaxLength(20)
             .IsRequired();
 
+        builder.HasIndex(s => s.StudentId);
+        builder.HasIndex(s => s.ScheduleType);
         builder.HasIndex(s => new { s.StudentId, s.Date });
         builder.HasIndex(s => s.CourseId);
         builder.HasIndex(s => s.ClassId);

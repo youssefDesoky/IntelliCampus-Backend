@@ -39,36 +39,42 @@ public class ExamScheduleService : IExamScheduleService
         return exam is null ? throw new ExamScheduleNotFoundException(examScheduleId) : MapToDto(exam);
     }
 
-    public async Task<IEnumerable<ExamScheduleDto>> GetByStudentIdAsync(int studentId)
+    public async Task<IEnumerable<ExamScheduleDto>> GetByStudentIdAsync(int studentId, ExamScheduleQueryParams? queryParams = null)
     {
         var student = await Students.GetByIdAsync(studentId);
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
-        var spec = new ExamScheduleSpec(studentId);
-        var exams = await ExamSchedules.GetAllAsync(spec);
+        var spec = queryParams is not null
+            ? new ExamScheduleSpec(studentId, queryParams.PageSize, queryParams.PageIndex)
+            : new ExamScheduleSpec(studentId);
+        var exams = await ExamSchedules.GetAllAsync(spec, asNoTracking: true);
         return exams.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<ExamScheduleDto>> GetByTypeAsync(int studentId, ExamType examType)
+    public async Task<IEnumerable<ExamScheduleDto>> GetByTypeAsync(int studentId, ExamType examType, ExamScheduleQueryParams? queryParams = null)
     {
         var student = await Students.GetByIdAsync(studentId);
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
-        var spec = new ExamScheduleSpec(studentId, examType);
-        var exams = await ExamSchedules.GetAllAsync(spec);
+        var spec = queryParams is not null
+            ? new ExamScheduleSpec(studentId, examType, queryParams)
+            : new ExamScheduleSpec(studentId, examType);
+        var exams = await ExamSchedules.GetAllAsync(spec, asNoTracking: true);
         return exams.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<ExamScheduleDto>> GetByStatusAsync(int studentId, ExamStatus status)
+    public async Task<IEnumerable<ExamScheduleDto>> GetByStatusAsync(int studentId, ExamStatus status, ExamScheduleQueryParams? queryParams = null)
     {
         var student = await Students.GetByIdAsync(studentId);
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
-        var spec = new ExamScheduleSpec(studentId, status);
-        var exams = await ExamSchedules.GetAllAsync(spec);
+        var spec = queryParams is not null
+            ? new ExamScheduleSpec(studentId, status, queryParams)
+            : new ExamScheduleSpec(studentId, status);
+        var exams = await ExamSchedules.GetAllAsync(spec, asNoTracking: true);
         return exams.Select(MapToDto);
     }
 
@@ -132,8 +138,8 @@ public class ExamScheduleService : IExamScheduleService
 
         var studentDto = await _studentService.GetByIdAsync(studentId);
 
-        var spec = new ExamScheduleSpec(studentId, queryParams);
-        var exams = (await ExamSchedules.GetAllAsync(spec)).Select(MapToDto);
+        var spec = new ExamScheduleSpec(studentId, queryParams, forCount: true);
+        var exams = (await ExamSchedules.GetAllAsync(spec, asNoTracking: true)).Select(MapToDto);
 
         var dto = new ExamScheduleExportDto
         {

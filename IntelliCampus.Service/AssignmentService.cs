@@ -66,20 +66,18 @@ public class AssignmentService(
             throw new CourseNotFoundException(courseId);
 
         var spec = new AssignmentSpec(courseId, byCourse: true);
-        var assignments = await Assignments.GetAllAsync(spec);
+        var assignments = await Assignments.GetAllAsync(spec, asNoTracking: true);
 
         if (studentId is null)
             return assignments.Select(a => MapToDtoWithStatus(a, submission: null));
 
-        var result = new List<AssignmentDto>();
-        foreach (var assignment in assignments)
-        {
-            var submissionSpec = new StudentAssignmentSpec(studentId.Value, assignment.AssignmentId);
-            var submission = await StudentAssignments.GetByIdAsync(submissionSpec);
-            result.Add(MapToDtoWithStatus(assignment, submission));
-        }
+        var assignmentIds = assignments.Select(a => a.AssignmentId).ToList();
+        var submissionsSpec = new StudentAssignmentSpec(assignmentIds, byAssignments: true);
+        var submissions = await StudentAssignments.GetAllAsync(submissionsSpec, asNoTracking: true);
+        var submissionsByAssignment = submissions.ToDictionary(s => s.AssignmentId);
 
-        return result;
+        return assignments.Select(a =>
+            MapToDtoWithStatus(a, submissionsByAssignment.GetValueOrDefault(a.AssignmentId))).ToList();
     }
 
     // Student view with status
@@ -88,14 +86,29 @@ public class AssignmentService(
 
     public async Task<PaginatedResult<AssignmentDto>> GetByStudentAndCourseAsync(int studentId, int courseId, AssignmentQueryParams queryParams)
     {
-        var all = await GetByCourseIdAsync(courseId, studentId);
-        var list = all.ToList();
-        var totalCount = list.Count;
-        var paged = list
-            .Skip((queryParams.PageIndex - 1) * queryParams.PageSize)
-            .Take(queryParams.PageSize)
+        var pagedSpec = new AssignmentSpec(courseId, byCourse: true, queryParams);
+        var assignments = await Assignments.GetAllAsync(pagedSpec, asNoTracking: true);
+        var totalCount = await Assignments.CountAsync(a => a.CourseId == courseId);
+
+        var assignmentIds = assignments.Select(a => a.AssignmentId).ToList();
+        StudentAssignmentSpec submissionsSpec;
+        Dictionary<int, StudentAssignment> submissionsByAssignment;
+        if (assignmentIds.Count > 0)
+        {
+            submissionsSpec = new StudentAssignmentSpec(assignmentIds, byAssignments: true);
+            var submissions = await StudentAssignments.GetAllAsync(submissionsSpec, asNoTracking: true);
+            submissionsByAssignment = submissions.ToDictionary(s => s.AssignmentId);
+        }
+        else
+        {
+            submissionsByAssignment = new Dictionary<int, StudentAssignment>();
+        }
+
+        var dataToReturn = assignments
+            .Select(a => MapToDtoWithStatus(a, submissionsByAssignment.GetValueOrDefault(a.AssignmentId)))
             .ToList();
-        return new PaginatedResult<AssignmentDto>(queryParams.PageIndex, paged.Count, totalCount, paged);
+
+        return new PaginatedResult<AssignmentDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
     public async Task<AssignmentDto> CreateAsync(int instructorId, CreateAssignmentDto dto)
@@ -104,9 +117,8 @@ public class AssignmentService(
         if (course is null)
             throw new CourseNotFoundException(dto.CourseId);
 
-        // Verify instructor teaches this course (at least one class for this course)
-        var instructorTeachesCourse = (await Classes.GetAllAsync())
-            .Any(c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
+        var instructorTeachesCourse = await Classes.AnyAsync(
+            c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
 
         if (!instructorTeachesCourse)
             throw new InvalidOperationException("You do not teach this course.");
@@ -131,9 +143,8 @@ public class AssignmentService(
         Assignments.Add(assignment);
         await _unitOfWork.SaveChangesAsync();
 
-        // Auto-create reminders for students registered in this course
-        var registered = (await StudentCourses.GetAllAsync())
-            .Where(sc => sc.CourseId == dto.CourseId)
+        var registered = (await StudentCourses.GetAllAsync(
+            new StudentCourseIdsSpec(dto.CourseId, true), asNoTracking: true))
             .Select(sc => sc.StudentId)
             .Distinct()
             .ToList();
@@ -173,18 +184,16 @@ public class AssignmentService(
         if (assignment is null)
             throw new AssignmentNotFoundException(assignmentId);
 
-        // Verify instructor teaches the course this assignment belongs to
-        var instructorTeachesCourse = (await Classes.GetAllAsync())
-            .Any(c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
+        var instructorTeachesCourse = await Classes.AnyAsync(
+            c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
 
         if (!instructorTeachesCourse)
             throw new InvalidOperationException("You are not authorized to edit this assignment.");
 
-        // If course changed, verify instructor teaches the new course
         if (dto.CourseId != assignment.CourseId)
         {
-            var instructorTeachesNewCourse = (await Classes.GetAllAsync())
-                .Any(c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
+            var instructorTeachesNewCourse = await Classes.AnyAsync(
+                c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
             if (!instructorTeachesNewCourse)
                 throw new InvalidOperationException("You do not teach the target course.");
 
@@ -220,9 +229,8 @@ public class AssignmentService(
         var assignment = await Assignments.GetByIdAsync(assignmentId);
         if (assignment is null) throw new AssignmentNotFoundException(assignmentId);
 
-        // Verify instructor teaches the course this assignment belongs to
-        var instructorTeachesCourse = (await Classes.GetAllAsync())
-            .Any(c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
+        var instructorTeachesCourse = await Classes.AnyAsync(
+            c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
 
         if (!instructorTeachesCourse)
             throw new InvalidOperationException("You are not authorized to delete this assignment.");
@@ -237,15 +245,14 @@ public class AssignmentService(
         if (assignment is null)
             throw new AssignmentNotFoundException(assignmentId);
 
-        // Verify instructor teaches the course this assignment belongs to
-        var instructorTeachesCourse = (await Classes.GetAllAsync())
-            .Any(c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
+        var instructorTeachesCourse = await Classes.AnyAsync(
+            c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
 
         if (!instructorTeachesCourse)
             throw new InvalidOperationException("Not authorized.");
 
         var spec = new StudentAssignmentSpec(assignmentId, allSubmissions: true);
-        var submissions = await StudentAssignments.GetAllAsync(spec);
+        var submissions = await StudentAssignments.GetAllAsync(spec, asNoTracking: true);
         return submissions.Select(MapSubmissionToDto);
     }
 
@@ -260,11 +267,11 @@ public class AssignmentService(
             throw new StudentNotFoundException(studentId);
 
         var spec = new AssignmentSpec(courseId, byCourse: true);
-        var assignments = await Assignments.GetAllAsync(spec);
+        var assignments = await Assignments.GetAllAsync(spec, asNoTracking: true);
         var assignmentIds = assignments.Select(a => a.AssignmentId).ToList();
 
         var submissionsSpec = new StudentAssignmentSpec(studentId, byStudent: true, dummy: true);
-        var submissions = (await StudentAssignments.GetAllAsync(submissionsSpec))
+        var submissions = (await StudentAssignments.GetAllAsync(submissionsSpec, asNoTracking: true))
             .Where(sa => assignmentIds.Contains(sa.AssignmentId))
             .ToList();
 
@@ -333,17 +340,19 @@ public class AssignmentService(
 
         if (files is { Count: > 0 })
         {
-            foreach (var file in files)
+            var saveTasks = files.Select(async file =>
             {
                 var url = await _fileStorage.SaveAsync(file, "assignments");
-                submission.Files.Add(new SubmissionFile
+                return new SubmissionFile
                 {
                     Id = Guid.NewGuid().ToString("N"),
                     Name = file.FileName,
                     Size = file.Length,
                     Url = url
-                });
-            }
+                };
+            }).ToArray();
+            var results = await Task.WhenAll(saveTasks);
+            foreach (var file in results) submission.Files.Add(file);
         }
 
         StudentAssignments.Add(submission);
@@ -367,9 +376,8 @@ public class AssignmentService(
 
         var assignment = await Assignments.GetByIdAsync(submission.AssignmentId);
 
-        // Verify instructor teaches the course this assignment belongs to
-        var instructorTeachesCourse = (await Classes.GetAllAsync())
-            .Any(c => c.CourseId == assignment!.CourseId && c.InstructorId == instructorId);
+        var instructorTeachesCourse = await Classes.AnyAsync(
+            c => c.CourseId == assignment!.CourseId && c.InstructorId == instructorId);
 
         if (!instructorTeachesCourse)
             throw new InvalidOperationException("Not authorized.");

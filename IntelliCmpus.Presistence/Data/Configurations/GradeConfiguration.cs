@@ -34,6 +34,9 @@ public class GradeConfiguration : IEntityTypeConfiguration<Grade>
         builder.Property(g => g.Notes)
             .HasMaxLength(2000);
 
+        builder.HasIndex(g => g.StudentId);
+        builder.HasIndex(g => g.CourseId);
+
         builder.HasOne(g => g.Course)
             .WithMany(c => c.Grades)
             .HasForeignKey(g => g.CourseId)

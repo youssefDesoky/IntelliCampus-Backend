@@ -31,11 +31,34 @@ public class ExamScheduleSpec : BaseSpecifications<ExamSchedule>
     public ExamScheduleSpec(int examScheduleId, bool byId)
         : base(e => e.ExamScheduleId == examScheduleId) { }
 
-    public ExamScheduleSpec(int studentId, ExamScheduleQueryParams queryParams)
+    public ExamScheduleSpec(int studentId, ExamType examType, ExamScheduleQueryParams queryParams)
+        : base(e => e.StudentId == studentId && e.ExamType == examType)
+    {
+        AddOrderBy(e => e.Date);
+        ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
+    }
+
+    public ExamScheduleSpec(int studentId, ExamStatus status, ExamScheduleQueryParams queryParams)
+        : base(e => e.StudentId == studentId && e.Status == status)
+    {
+        AddOrderBy(e => e.Date);
+        ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
+    }
+
+    public ExamScheduleSpec(int studentId, int pageSize, int pageIndex)
+        : base(e => e.StudentId == studentId)
+    {
+        AddOrderBy(e => e.Date);
+        ApplyPagination(pageSize, pageIndex);
+    }
+
+    public ExamScheduleSpec(int studentId, ExamScheduleQueryParams queryParams, bool forCount = false)
         : base(e => e.StudentId == studentId
             && (!queryParams.Type.HasValue || e.ExamType == queryParams.Type.Value)
             && (!queryParams.Status.HasValue || e.Status == queryParams.Status.Value))
     {
         AddOrderBy(e => e.Date);
+        if (!forCount)
+            ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 }

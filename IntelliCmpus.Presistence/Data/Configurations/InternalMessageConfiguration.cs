@@ -25,5 +25,9 @@ public class InternalMessageConfiguration : IEntityTypeConfiguration<InternalMes
 
         builder.Property(e => e.IsDeletedByRecipient)
             .HasDefaultValue(false);
+
+        builder.HasIndex(im => im.SenderId);
+        builder.HasIndex(im => im.RecipientId);
+        builder.HasIndex(im => im.ParentMessageId);
     }
 }

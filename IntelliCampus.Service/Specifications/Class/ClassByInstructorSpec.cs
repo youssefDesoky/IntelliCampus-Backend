@@ -9,6 +9,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(c => c.Course!);
             AddInclude(c => c.Instructor!);
+            EnableSplitQuery();
         }
     }
 }

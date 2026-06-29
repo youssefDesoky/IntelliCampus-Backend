@@ -109,7 +109,7 @@ public class AttendanceService : IAttendanceService
             var json = Encoding.UTF8.GetString(
                 Convert.FromBase64String(dto.QrPayload));
             payload = JsonSerializer.Deserialize<QrPayload>(json)
-                ?? throw new Exception("Null payload");
+                ?? throw new InvalidOperationException("Null payload");
         }
         catch
         {
@@ -175,8 +175,7 @@ public class AttendanceService : IAttendanceService
         if (classEntity?.InstructorId != instructorId)
             throw new InvalidOperationException("Not authorized.");
 
-        var allStudents = await Students.GetAllAsync();
-        var student = allStudents.FirstOrDefault(s => s.StudentCode == dto.StudentCode);
+        var student = await Students.GetByIdAsync(new StudentSpec(dto.StudentCode, byCode: true));
         if (student is null)
             throw new InvalidOperationException($"Student with code '{dto.StudentCode}' not found.");
 
@@ -224,19 +223,22 @@ public class AttendanceService : IAttendanceService
         if (classEntity?.InstructorId != instructorId)
             throw new InvalidOperationException("Not authorized.");
 
-        var allStudents = await Students.GetAllAsync();
+        var studentCodes = dto.Records.Select(r => r.StudentCode).Distinct().ToList();
+        var students = (await Students.GetAllAsync(new StudentSpec(studentCodes, byCodes: true), asNoTracking: true))
+            .ToDictionary(s => s.StudentCode ?? "", s => s);
         var now = EgyptTime.Now;
+
+        // Batch check which students already have attendance recorded for this session
+        var studentIds = students.Values.Select(s => s.UserId).ToHashSet();
+        var existingAttendance = studentIds.Count > 0
+            ? await Attendances.GetAllAsync(new AttendanceSpec(dto.SessionId, studentIds), asNoTracking: true)
+            : new List<Attendance>();
+        var alreadyRecordedIds = existingAttendance.Select(a => a.StudentId).ToHashSet();
 
         foreach (var record in dto.Records)
         {
-            var student = allStudents.FirstOrDefault(s => s.StudentCode == record.StudentCode);
-            if (student is null) continue;
-
-            var alreadyRecorded = await Attendances.AnyAsync(
-                a => a.StudentId == student.UserId
-                  && a.SessionId == dto.SessionId);
-
-            if (alreadyRecorded) continue;
+            if (!students.TryGetValue(record.StudentCode, out var student)) continue;
+            if (alreadyRecordedIds.Contains(student.UserId)) continue;
 
             Attendances.Add(new Attendance
             {
@@ -249,15 +251,36 @@ public class AttendanceService : IAttendanceService
 
         await _unitOfWork.SaveChangesAsync();
 
-        foreach (var record in dto.Records)
-        {
-            var student = allStudents.FirstOrDefault(s => s.StudentCode == record.StudentCode);
-            if (student is null) continue;
+        // Batch notify about threshold — check all students after save (single DB pass)
+        var classesForThreshold = classEntity.CourseId > 0
+            ? await Classes.GetAllAsync(new ClassSpec(classEntity.CourseId, byCourse: true), asNoTracking: true)
+            : [];
+        var classIdsForThreshold = classesForThreshold.Select(c => c.ClassId).ToHashSet();
+        var sessionsForThreshold = classIdsForThreshold.Count > 0
+            ? (await Sessions.GetAllAsync(new SessionSpec(classIdsForThreshold), asNoTracking: true)).ToList()
+            : [];
 
-            await CheckAndNotifyThresholdAsync(
-                student.UserId,
-                classEntity.CourseId,
-                classEntity.GroupCode ?? "");
+        foreach (var student in students.Values)
+        {
+            var totalSessions = sessionsForThreshold.Count;
+            var present = totalSessions > 0
+                ? sessionsForThreshold
+                    .SelectMany(s => s.Attendances ?? [])
+                    .Count(a => a.StudentId == student.UserId && a.Status == AttendanceStatus.Present)
+                : 0;
+            var percentage = totalSessions > 0
+                ? Math.Round((decimal)present / totalSessions * 100, 1)
+                : 0;
+
+            if (percentage < AttendanceThreshold)
+            {
+                await _notificationService.SendAsync(
+                    student.UserId,
+                    NotificationType.AttendanceWarning,
+                    $"Warning: Your attendance in {classEntity.GroupCode} dropped to {percentage}%. " +
+                    $"Minimum required is {AttendanceThreshold}%.",
+                    clickUrl: $"/courses/{classEntity.CourseId}/attendance");
+            }
         }
     }
 
@@ -272,16 +295,13 @@ public class AttendanceService : IAttendanceService
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
-        var classes = await Classes.GetAllAsync();
-        var classIds = classes
-            .Where(c => c.CourseId == courseId)
+        var classIds = (await Classes.GetAllAsync(new ClassSpec(courseId, byCourse: true), asNoTracking: true))
             .Select(c => c.ClassId)
             .ToHashSet();
 
-        var allSessions = await Sessions.GetAllAsync();
-        var sessions = allSessions
-            .Where(s => classIds.Contains(s.ClassId))
-            .ToList();
+        var sessions = classIds.Count > 0
+            ? (await Sessions.GetAllAsync(new SessionSpec(classIds), asNoTracking: true)).ToList()
+            : new List<Session>();
 
         return sessions.Select(s => new SessionDto
         {
@@ -311,14 +331,12 @@ public class AttendanceService : IAttendanceService
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
-        var classes = await Classes.GetAllAsync();
-        var classIds = classes
-            .Where(c => c.CourseId == courseId)
+        var classIds = (await Classes.GetAllAsync(new ClassSpec(courseId, byCourse: true), asNoTracking: true))
             .Select(c => c.ClassId)
             .ToHashSet();
 
         var spec = new SessionSpec(classIds, queryParams);
-        var sessions = await Sessions.GetAllAsync(spec);
+        var sessions = await Sessions.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = sessions.Select(s => new SessionDto
         {
             SessionId = s.SessionId,
@@ -350,7 +368,7 @@ public class AttendanceService : IAttendanceService
             throw new InvalidOperationException("Not authorized.");
 
         var sessionSpec = new SessionSpec(classId, byClass: true);
-        var sessions = (await Sessions.GetAllAsync(sessionSpec)).ToList();
+        var sessions = (await Sessions.GetAllAsync(sessionSpec, asNoTracking: true)).ToList();
         var totalSessions = sessions.Count;
 
         var allAttendances = sessions
@@ -375,8 +393,8 @@ public class AttendanceService : IAttendanceService
 
             return new StudentAttendanceSummary
             {
-                StudentCode = sa.First().Student?.StudentCode ?? "",
-                StudentName = sa.First().Student?.FullName,
+                StudentCode = sa.FirstOrDefault()?.Student?.StudentCode ?? "",
+                StudentName = sa.FirstOrDefault()?.Student?.FullName,
                 Present = present,
                 Absent = absent,
                 AttendancePercentage = pct,
@@ -422,31 +440,21 @@ public class AttendanceService : IAttendanceService
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
-        var classes = await Classes.GetAllAsync();
-        var classIds = classes
-            .Where(c => c.CourseId == courseId)
+        var classIds = (await Classes.GetAllAsync(new ClassSpec(courseId, byCourse: true), asNoTracking: true))
             .Select(c => c.ClassId)
             .ToHashSet();
 
-        var allSessions = await Sessions.GetAllAsync();
-        var sessions = allSessions
-            .Where(s => classIds.Contains(s.ClassId))
-            .ToList();
+        if (classIds.Count == 0) return 0;
 
-        var totalSessions = sessions.Count;
+        var sessions = await Sessions.GetAllAsync(new SessionSpec(classIds), asNoTracking: true);
+        var sessionsList = sessions.ToList();
+        var totalSessions = sessionsList.Count;
         if (totalSessions == 0) return 0;
 
-        var sessionIds = sessions.Select(s => s.SessionId).ToHashSet();
-
-        var attendanceRecords = sessions
+        var present = sessionsList
             .SelectMany(s => s.Attendances ?? [])
-            .Where(a => a.StudentId == studentId
-                     && sessionIds.Contains(a.SessionId))
-            .ToList();
-
-        var present = attendanceRecords.Count(a =>
-            a.Status == AttendanceStatus.Present ||
-            a.Status == AttendanceStatus.Present);
+            .Count(a => a.StudentId == studentId
+                     && a.Status == AttendanceStatus.Present);
 
         return Math.Round((decimal)present / totalSessions * 100, 1);
     }
@@ -461,20 +469,16 @@ public class AttendanceService : IAttendanceService
         if (classEntity?.InstructorId != instructorId)
             throw new InvalidOperationException("Not authorized.");
 
-        var studentCourses = await StudentCourses.GetAllAsync();
+        var studentCourses = await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(session.ClassId, "class"), asNoTracking: true);
         var enrolledStudentIds = studentCourses
-            .Where(sc => sc.ClassId == session.ClassId)
             .Select(sc => sc.StudentId)
             .ToHashSet();
 
-        var allStudents = await Students.GetAllAsync();
-        var enrolledStudents = allStudents
-            .Where(s => enrolledStudentIds.Contains(s.UserId))
+        var enrolledStudents = (await Students.GetAllAsync(new StudentSpec(enrolledStudentIds.ToList()), asNoTracking: true))
             .OrderBy(s => s.FullName)
             .ToList();
 
-        var attendanceRecords = await Attendances.GetAllAsync();
-        var sessionAttendance = attendanceRecords.Where(a => a.SessionId == sessionId).ToList();
+        var sessionAttendance = await Attendances.GetAllAsync(new AttendanceSpec(sessionId, bySession: true), asNoTracking: true);
         var attendanceByStudent = sessionAttendance.ToDictionary(a => a.StudentId);
 
             var students = enrolledStudents.Select(s =>

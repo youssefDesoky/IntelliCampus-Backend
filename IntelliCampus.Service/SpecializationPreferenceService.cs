@@ -55,7 +55,7 @@ public class SpecializationPreferenceService : ISpecializationPreferenceService
             : bylaw.Settings.MinHoursToChooseDepartment ?? 0;
 
         var spec = new StudentCompletedCoursesSpec(studentId);
-        var completedCourses = await StudentCourses.GetAllAsync(spec);
+        var completedCourses = await StudentCourses.GetAllAsync(spec, asNoTracking: true);
         var passedHours = completedCourses.Sum(sc => sc.Course.CreditHours);
 
         return new SpecializationPreferenceEligibilityDto
@@ -70,7 +70,7 @@ public class SpecializationPreferenceService : ISpecializationPreferenceService
     public async Task<SpecializationPreferenceDto> GetPreferencesAsync(int studentId)
     {
         var items = await Preferences.GetAllAsync(
-            new SpecializationPreferenceByStudentSpec(studentId));
+            new SpecializationPreferenceByStudentSpec(studentId), asNoTracking: true);
 
         if (!items.Any())
             return new SpecializationPreferenceDto
@@ -80,35 +80,30 @@ public class SpecializationPreferenceService : ISpecializationPreferenceService
             };
 
         var ordered = items.OrderBy(p => p.Rank).ToList();
-        var targetType = ordered.First().TargetType;
+        var targetType = ordered.FirstOrDefault()?.TargetType;
 
-        var resultItems = new List<SpecializationPreferenceItemDto>();
-        foreach (var item in ordered)
+        var targetIds = ordered.Select(i => i.TargetId).Distinct().ToList();
+        Dictionary<int, string> nameMap;
+        if (targetType == "Department")
         {
-            string? name = null;
-            if (targetType == "Department")
-            {
-                var dept = await Departments.GetByIdAsync(item.TargetId);
-                name = dept?.DepartmentName;
-            }
-            else
-            {
-                var spec = await Specializations.GetByIdAsync(item.TargetId);
-                name = spec?.Name;
-            }
-
-            resultItems.Add(new SpecializationPreferenceItemDto
-            {
-                TargetId = item.TargetId,
-                Rank = item.Rank,
-                Name = name
-            });
+            var departments = await Departments.GetAllAsync(new DepartmentByIdsSpec(targetIds), asNoTracking: true);
+            nameMap = departments.ToDictionary(d => d.DepartmentId, d => d.DepartmentName);
+        }
+        else
+        {
+            var specializations = await Specializations.GetAllAsync(new SpecializationByIdsSpec(targetIds), asNoTracking: true);
+            nameMap = specializations.ToDictionary(s => s.SpecializationId, s => s.Name);
         }
 
         return new SpecializationPreferenceDto
         {
             TargetType = targetType,
-            Items = resultItems
+            Items = ordered.Select(item => new SpecializationPreferenceItemDto
+            {
+                TargetId = item.TargetId,
+                Rank = item.Rank,
+                Name = nameMap.GetValueOrDefault(item.TargetId)
+            }).ToList()
         };
     }
 

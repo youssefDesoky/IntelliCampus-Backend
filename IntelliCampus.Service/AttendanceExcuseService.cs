@@ -78,7 +78,7 @@ public class AttendanceExcuseService : IAttendanceExcuseService
             throw new StudentNotFoundException(studentId);
 
         var spec = new AttendanceExcuseSpec(studentId);
-        var excuses = await Excuses.GetAllAsync(spec);
+        var excuses = await Excuses.GetAllAsync(spec, asNoTracking: true);
         return excuses.Select(e => MapToDto(e));
     }
 
@@ -93,7 +93,7 @@ public class AttendanceExcuseService : IAttendanceExcuseService
             throw new InvalidOperationException("Not authorized.");
 
         var spec = new AttendanceExcuseSpec(sessionId, bySession: true);
-        var excuses = await Excuses.GetAllAsync(spec);
+        var excuses = await Excuses.GetAllAsync(spec, asNoTracking: true);
         return excuses.Select(e => MapToDto(e, session));
     }
 
@@ -103,22 +103,20 @@ public class AttendanceExcuseService : IAttendanceExcuseService
         if (!teaches)
             throw new InvalidOperationException("Not authorized.");
 
-        var classIds = (await Classes.GetAllAsync())
-            .Where(c => c.CourseId == courseId)
+        var classIds = (await Classes.GetAllAsync(new ClassByCourseSpec(courseId), asNoTracking: true))
             .Select(c => c.ClassId)
             .ToHashSet();
 
-        var sessions = await Sessions.GetAllAsync();
+        var sessions = await Sessions.GetAllAsync(new SessionSpec(classIds), asNoTracking: true);
         var sessionIds = sessions.Where(s => classIds.Contains(s.ClassId))
             .Select(s => s.SessionId)
             .ToHashSet();
 
         var spec = new AttendanceExcuseForSessionsSpec(sessionIds);
-        var excuses = (await Excuses.GetAllAsync(spec)).ToList();
+        var excuses = (await Excuses.GetAllAsync(spec, asNoTracking: true)).ToList();
 
         var studentIds = excuses.Select(e => e.StudentId).Distinct().ToHashSet();
-        var students = (await Students.GetAllAsync())
-            .Where(s => studentIds.Contains(s.UserId))
+        var students = (await Students.GetAllAsync(new StudentSpec(studentIds.ToList(), lightweight: true), asNoTracking: true))
             .ToDictionary(s => s.UserId);
 
         var sessionsDict = sessions.ToDictionary(s => s.SessionId);

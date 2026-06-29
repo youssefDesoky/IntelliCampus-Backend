@@ -13,6 +13,12 @@ public class StudentCourseConfiguration : IEntityTypeConfiguration<StudentCourse
         builder.Property(sc => sc.Semester)
             .HasMaxLength(20);
 
+        builder.HasIndex(sc => sc.CourseId);
+        builder.HasIndex(sc => sc.ClassId);
+        builder.HasIndex(sc => sc.Semester);
+        builder.HasIndex(sc => sc.StudentId);
+        builder.HasIndex(sc => sc.Status);
+
         builder.HasOne(sc => sc.Student)
             .WithMany(s => s.StudentCourses)
             .HasForeignKey(sc => sc.StudentId)

@@ -10,6 +10,7 @@ public class StudentQuizSpec : BaseSpecifications<StudentQuiz>
     {
         AddInclude(sq => sq.Quiz!);
         AddInclude(sq => sq.Student!);
+        EnableSplitQuery();
     }
 
     // GetAllResultsAsync — all students for a quiz
@@ -18,6 +19,7 @@ public class StudentQuizSpec : BaseSpecifications<StudentQuiz>
     {
         AddInclude(sq => sq.Student!);
         AddInclude(sq => sq.Quiz!);
+        EnableSplitQuery();
     }
 
     // GetByStudentIdAsync — only submitted records
@@ -27,4 +29,16 @@ public class StudentQuizSpec : BaseSpecifications<StudentQuiz>
         AddInclude(sq => sq.Quiz!);
         AddOrderByDescending(sq => sq.SubmittedAt);
     }
+
+    // GetByStudentIdForTranscriptAsync — only submitted records, no includes
+    public StudentQuizSpec(int studentId, string scope)
+        : base(sq => sq.StudentId == studentId && sq.SubmittedAt != default) { }
+
+    // GetByQuizIdsAsync — all submissions for a set of quizzes, no includes
+    public StudentQuizSpec(ICollection<int> quizIds, bool byQuizzes)
+        : base(sq => quizIds.Contains(sq.QuizId)) { }
+
+    // GetByStudentAndQuizIdsAsync — all submissions for a student and set of quizzes, no includes
+    public StudentQuizSpec(int studentId, ICollection<int> quizIds)
+        : base(sq => sq.StudentId == studentId && quizIds.Contains(sq.QuizId)) { }
 }

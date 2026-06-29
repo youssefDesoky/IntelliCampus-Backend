@@ -9,5 +9,6 @@ internal class StudentCourseSemesterSpec : BaseSpecifications<StudentCourse>
     {
         AddInclude(sc => sc.Course);
         AddInclude(sc => sc.Class!);
+        EnableSplitQuery();
     }
 }

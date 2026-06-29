@@ -1,7 +1,10 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Exceptions;
+using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.shared.Dtos.Attendance;
 using IntelliCampus.Shared.Dtos.Export;
 using IntelliCampus.Shared.Dtos.InstructorAnalytics;
 using IntelliCampus.Shared.Params;
@@ -64,8 +67,8 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
         var instructorId = await ResolveInstructorIdAsync(userId, courseId);
 
         var instructorRepo = _unitOfWork.GetRepository<Instructor, int>();
-        var instructors = await instructorRepo.GetAllAsync();
-        var instructor = instructors.First(i => i.UserId == userId);
+        var instructor = await instructorRepo.GetByIdAsync(userId)
+            ?? throw new InstructorNotFoundException($"Instructor with user id {userId} not found");
 
         var students = await _courseService.GetStudentsByCourseIdAsync(courseId);
         var totalStudents = students.Count();
@@ -86,8 +89,7 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
     private async Task<int> ResolveInstructorIdAsync(int userId, int courseId)
     {
         var instructorRepo = _unitOfWork.GetRepository<Instructor, int>();
-        var instructors = await instructorRepo.GetAllAsync();
-        if (!instructors.Any(i => i.UserId == userId))
+        if (!await instructorRepo.AnyAsync(i => i.UserId == userId))
             throw new InstructorNotFoundException($"Instructor with user id {userId} not found");
 
         var instructorCourses = await _courseService.GetCoursesByInstructorIdAsync(new CourseQueryParams { InstructorId = userId });
@@ -102,12 +104,24 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
         var items = new List<AssessmentPerformanceItemDto>();
 
         var quizzes = await _quizService.GetByCourseIdAsync(courseId);
+        var quizIds = quizzes.Select(q => q.Id).ToHashSet();
+        var studentQuizRepo = _unitOfWork.GetRepository<StudentQuiz, int>();
+        var allQuizResults = quizIds.Count > 0
+            ? await studentQuizRepo.GetAllAsync(new StudentQuizSpec(quizIds, true), asNoTracking: true)
+            : new List<StudentQuiz>();
+
+        var quizScoresByQuiz = allQuizResults
+            .Where(sq => sq.Score.HasValue)
+            .GroupBy(sq => sq.QuizId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
         foreach (var quiz in quizzes)
         {
-            var results = await _quizService.GetAllResultsAsync(quiz.Id, instructorId);
-            var scoredResults = results.Where(r => r.Score.HasValue).ToList();
+            var scoredResults = quizScoresByQuiz.TryGetValue(quiz.Id, out var results)
+                ? results
+                : new List<StudentQuiz>();
             var avg = scoredResults.Count != 0
-                ? Math.Round(scoredResults.Average(r => (double)r.Score!.Value), 1)
+                ? Math.Round(scoredResults.Average(sq => (double)sq.Score!.Value), 1)
                 : 0;
 
             items.Add(new AssessmentPerformanceItemDto
@@ -119,12 +133,25 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
         }
 
         var assignments = await _assignmentService.GetByCourseIdAsync(courseId);
+        var assignmentIds = assignments.Select(a => int.Parse(a.Id)).ToHashSet();
+        var studentAssignmentRepo = _unitOfWork.GetRepository<StudentAssignment, int>();
+        var allSubmissions = assignmentIds.Count > 0
+            ? await studentAssignmentRepo.GetAllAsync(new StudentAssignmentSpec(assignmentIds, true), asNoTracking: true)
+            : new List<StudentAssignment>();
+
+        var subsByAssignment = allSubmissions
+            .Where(sa => sa.Grade.HasValue)
+            .GroupBy(sa => sa.AssignmentId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
         foreach (var assignment in assignments)
         {
-            var submissions = await _assignmentService.GetAllSubmissionsAsync(int.Parse(assignment.Id), instructorId);
-            var gradedSubmissions = submissions.Where(s => s.Grade is not null).ToList();
-            var avg = gradedSubmissions.Count != 0
-                ? Math.Round(gradedSubmissions.Average(s => (double)s.Grade!.Score), 1)
+            var id = int.Parse(assignment.Id);
+            var graded = subsByAssignment.TryGetValue(id, out var subs)
+                ? subs
+                : new List<StudentAssignment>();
+            var avg = graded.Count != 0
+                ? Math.Round(graded.Average(s => (double)s.Grade!.Value), 1)
                 : 0;
 
             items.Add(new AssessmentPerformanceItemDto
@@ -149,24 +176,22 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
 
         var submittedStudentIds = new HashSet<int>();
 
-        foreach (var quiz in await _quizService.GetByCourseIdAsync(courseId))
+        var quizzes = await _quizService.GetByCourseIdAsync(courseId);
+        var quizIds = quizzes.Select(q => q.Id).ToHashSet();
+        if (quizIds.Count > 0)
         {
-            try
-            {
-                foreach (var r in await _quizService.GetAllResultsAsync(quiz.Id, instructorId))
-                    submittedStudentIds.Add(r.StudentId);
-            }
-            catch { }
+            var studentQuizRepo = _unitOfWork.GetRepository<StudentQuiz, int>();
+            foreach (var r in await studentQuizRepo.GetAllAsync(new StudentQuizSpec(quizIds, true), asNoTracking: true))
+                submittedStudentIds.Add(r.StudentId);
         }
 
-        foreach (var assignment in await _assignmentService.GetByCourseIdAsync(courseId))
+        var assignments = await _assignmentService.GetByCourseIdAsync(courseId);
+        var assignmentIds = assignments.Select(a => int.Parse(a.Id)).ToHashSet();
+        if (assignmentIds.Count > 0)
         {
-            try
-            {
-                foreach (var s in await _assignmentService.GetAllSubmissionsAsync(int.Parse(assignment.Id), instructorId))
-                    submittedStudentIds.Add(s.StudentId);
-            }
-            catch { }
+            var studentAssignmentRepo = _unitOfWork.GetRepository<StudentAssignment, int>();
+            foreach (var s in await studentAssignmentRepo.GetAllAsync(new StudentAssignmentSpec(assignmentIds, true), asNoTracking: true))
+                submittedStudentIds.Add(s.StudentId);
         }
 
         var submittedPct = (int)Math.Round((double)submittedStudentIds.Count / totalStudents * 100);
@@ -180,20 +205,30 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
 
     private async Task<List<WeeklyAttendanceItemDto>> BuildWeeklyAttendanceAsync(int courseId)
     {
-        var classes = await _classService.GetByCourseIdAsync(courseId, new ClassQueryParams());
+        var classes = await _classService.GetByCourseIdAsync(courseId, new ClassQueryParams { PageSize = 50 });
+        var classIds = classes.Select(c => c.ClassId).ToHashSet();
 
-        var allSessions = new List<IntelliCampus.shared.Dtos.Attendance.SessionDto>();
-        foreach (var cls in classes)
-        {
-            var sessions = await _sessionService.GetByClassIdAsync(cls.ClassId);
-            allSessions.AddRange(sessions);
-        }
-
-        if (allSessions.Count == 0)
+        if (classIds.Count == 0)
             return [];
 
-        var ordered = allSessions.OrderBy(s => s.Date).ToList();
-        var earliest = ordered.First().Date;
+        var sessionRepo = _unitOfWork.GetRepository<Session, int>();
+        var sessions = await sessionRepo.GetAllAsync(new SessionSpec(classIds), asNoTracking: true);
+
+        var allSessionDtos = sessions.Select(s => new SessionDto
+        {
+            SessionId = s.SessionId,
+            Date = s.Date,
+            ClassId = s.ClassId,
+            Topic = s.Topic,
+            TotalStudents = s.Attendances?.Count ?? 0,
+            PresentCount = s.Attendances?.Count(a => a.Status == AttendanceStatus.Present) ?? 0
+        }).ToList();
+
+        if (allSessionDtos.Count == 0)
+            return [];
+
+        var ordered = allSessionDtos.OrderBy(s => s.Date).ToList();
+        var earliest = ordered.FirstOrDefault()?.Date ?? default;
 
         return ordered
             .GroupBy(s => GetWeekLabel(s.Date, earliest))

@@ -33,5 +33,9 @@ public class ClassConfiguration : IEntityTypeConfiguration<Class>
             .WithMany(i => i.Classes)
             .HasForeignKey(c => c.InstructorId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasIndex(c => c.CourseId);
+        builder.HasIndex(c => c.InstructorId);
+        builder.HasIndex(c => c.ClassType);
     }
 }

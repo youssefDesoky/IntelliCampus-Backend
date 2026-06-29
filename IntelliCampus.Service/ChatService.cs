@@ -2,6 +2,7 @@ using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Service.Exceptions;
+using IntelliCampus.Service.Specifications;
 using IntelliCampus.Shared.Dtos.ChatMessage;
 
 namespace IntelliCampus.Service;
@@ -38,7 +39,7 @@ public class ChatService : IChatService
         return await MapToDtoAsync(message);
     }
 
-    public async Task<IEnumerable<ChatMessageDto>> GetChatHistoryAsync(string userId1, string userId2)
+    public async Task<IEnumerable<ChatMessageDto>> GetChatHistoryAsync(string userId1, string userId2, int pageNumber = 1, int pageSize = 50)
     {
         if (!int.TryParse(userId1, out var id1) || !int.TryParse(userId2, out var id2))
             throw new InvalidOperationException("Invalid user IDs.");
@@ -51,23 +52,16 @@ public class ChatService : IChatService
         if (user2 is null)
             throw new UserNotFoundException(id2);
 
-        var messages = (await Messages.GetAllAsync())
-            .Where(m =>
-                (m.SenderId == userId1 && m.RecipientId == userId2) ||
-                (m.SenderId == userId2 && m.RecipientId == userId1)
-            )
-            .OrderByDescending(m => m.Timestamp)
-            .ToList();
+        var messages = await Messages.GetAllAsync(
+            new ChatMessageSpec(userId1, userId2, pageNumber, pageSize), asNoTracking: true);
 
         return await MapToDtoListAsync(messages);
     }
 
-    public async Task<IEnumerable<ChatMessageDto>> GetGroupChatHistoryAsync(string groupName)
+    public async Task<IEnumerable<ChatMessageDto>> GetGroupChatHistoryAsync(string groupName, int pageNumber = 1, int pageSize = 50)
     {
-        var messages = (await Messages.GetAllAsync())
-            .Where(m => m.GroupName == groupName)
-            .OrderByDescending(m => m.Timestamp)
-            .ToList();
+        var messages = await Messages.GetAllAsync(
+            new ChatMessageSpec(groupName, pageNumber, pageSize), asNoTracking: true);
 
         return await MapToDtoListAsync(messages);
     }
@@ -96,15 +90,38 @@ public class ChatService : IChatService
 
     private async Task<IEnumerable<ChatMessageDto>> MapToDtoListAsync(IEnumerable<ChatMessage> messages)
     {
-        var results = new List<ChatMessageDto>();
-        foreach (var m in messages)
-            results.Add(await MapToDtoAsync(m));
-        return results;
+        var messageList = messages.ToList();
+        if (messageList.Count == 0)
+            return [];
+
+        // Batch load all referenced users
+        var userIds = new HashSet<int>();
+        foreach (var m in messageList)
+        {
+            if (int.TryParse(m.SenderId, out var sid)) userIds.Add(sid);
+            if (int.TryParse(m.RecipientId, out var rid)) userIds.Add(rid);
+        }
+
+        var users = await Users.GetAllAsync(new UserSpec(userIds.ToList()), asNoTracking: true);
+        var userMap = users.ToDictionary(u => u.UserId.ToString(), u => u.FullName);
+
+        return messageList.Select(m => new ChatMessageDto
+        {
+            MessageId = m.MessageId,
+            Content = m.Content,
+            Timestamp = m.Timestamp,
+            SenderId = m.SenderId,
+            SenderName = userMap.GetValueOrDefault(m.SenderId),
+            RecipientId = m.RecipientId,
+            RecipientName = userMap.GetValueOrDefault(m.RecipientId),
+            GroupName = m.GroupName,
+            IsEdited = m.IsEdited,
+            IsPinned = m.IsPinned
+        }).ToList();
     }
 
     public Task MarkMessageAsReadAsync(string userId, string messageId)
     {
-        // Not supported: ChatMessage does not have IsRead property
         throw new NotSupportedException("Mark as read is not supported. Add IsRead property to ChatMessage if needed.");
     }
 
@@ -117,7 +134,6 @@ public class ChatService : IChatService
         if (message == null)
             throw new ChatMessageNotFoundException("Message not found");
 
-            // Only sender or recipient can delete
         if (message.SenderId != userId && message.RecipientId != userId)
             throw new UnauthorizedAccessException("User cannot delete this message");
 
@@ -139,20 +155,16 @@ public class ChatService : IChatService
         if (message.SenderId != userId && message.RecipientId != userId)
             throw new UnauthorizedAccessException("User cannot pin this message");
 
-        // Unpin any previously pinned message in the same chat
-        var allMessages = await Messages.GetAllAsync();
         ChatMessage? oldPinned;
         if (!string.IsNullOrEmpty(message.GroupName))
         {
-            oldPinned = allMessages.FirstOrDefault(m =>
-                m.GroupName == message.GroupName && m.IsPinned && m.MessageId != msgId);
+            oldPinned = (await Messages.GetAllAsync(new ChatMessageSpec(message.GroupName, true)))
+                .FirstOrDefault();
         }
         else
         {
-            oldPinned = allMessages.FirstOrDefault(m =>
-                ((m.SenderId == message.SenderId && m.RecipientId == message.RecipientId) ||
-                 (m.SenderId == message.RecipientId && m.RecipientId == message.SenderId))
-                && m.IsPinned && m.MessageId != msgId);
+            oldPinned = (await Messages.GetAllAsync(new ChatMessageSpec(message.SenderId, message.RecipientId, true)))
+                .FirstOrDefault();
         }
 
         if (oldPinned != null)
@@ -194,7 +206,6 @@ public class ChatService : IChatService
         if (message == null)
             throw new ChatMessageNotFoundException("Message not found");
 
-        // Only sender can edit
         if (message.SenderId != userId)
             throw new UnauthorizedAccessException("User cannot edit this message");
 

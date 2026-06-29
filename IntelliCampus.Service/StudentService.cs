@@ -69,7 +69,7 @@ public class StudentService : IStudentService
     public async Task<PaginatedResult<StudentDto>> GetAllAsync(StudentQueryParams queryParams)
     {
         var spec = new StudentSpec(queryParams);
-        var students = await Students.GetAllAsync(spec);
+        var students = await Students.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = students.Select(s => MapToDto(s)).ToList();
 
         var countSpec = new StudentCountSpec(queryParams);
@@ -86,8 +86,6 @@ public class StudentService : IStudentService
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentId, dto.DepartmentName);
         var bylawId = await ResolveBylawIdAsync(dto.BylawId, dto.BylawName);
         var enrollmentDate = ParseEnrollmentDate(dto.EnrollmentDate) ?? EgyptTime.Now;
-        var password = string.IsNullOrWhiteSpace(dto.Password) ? dto.NationalId : dto.Password;
-
         var facultyId = dto.FacultyId;
         if (facultyId is null && creatorUserId.HasValue)
         {
@@ -112,58 +110,15 @@ public class StudentService : IStudentService
                 throw new SpecializationNotFoundException(dto.SpecializationId.Value);
         }
 
-        var code = dto.StudentCode;
-        var email = dto.Email;
+        var (code, email, password) = await ResolveStudentCodeEmailPasswordAsync(dto, facultyId, enrollmentDate);
 
-        if (string.IsNullOrWhiteSpace(code) && facultyId.HasValue)
-            code = await _codeGeneration.GenerateStudentCodeAsync(facultyId.Value, enrollmentDate, studentType);
-
-        if (string.IsNullOrWhiteSpace(email))
-            email = !string.IsNullOrWhiteSpace(code) ? code + "@intellicampus.online" : dto.Email;
-
-        if (string.IsNullOrWhiteSpace(email))
-            throw new InvalidOperationException("Email is required. Provide an email or ensure a faculty is assigned for auto-generation.");
-
-        if (await Users.AnyAsync(u => u.Email == email))
-            throw new InvalidOperationException("Email already exists.");
-
-        var student = new Student
-        {
-            NationalId = dto.NationalId,
-            FullName = dto.FullName,
-            FullNameAr = dto.FullNameAr,
-            PhoneNumber = dto.PhoneNumber,
-            Email = email,
-            Address = dto.Address,
-            Password = _passwordService.HashPassword(password),
-            Nationality = dto.Nationality,
-            MustChangePassword = true,
-            StudentCode = code,
-            FacultyId = facultyId,
-            StudentType = studentType,
-            Level = dto.Level,
-            DepartmentId = departmentId,
-            BylawId = bylawId,
-            EnrollmentDate = enrollmentDate,
-            Program = dto.Program,
-            SpecializationId = dto.SpecializationId,
-            ProfileImage = dto.ProfileImage
-        };
+        var student = BuildStudentEntity(dto, email, password, departmentId, facultyId, enrollmentDate, code, bylawId, studentType);
 
         Students.Add(student);
         await _unitOfWork.SaveChangesAsync();
 
         var roleName = ResolveStudentRoleName(studentType);
-        var role = (await RolesRepo.GetAllAsync()).First(r => r.RoleName == roleName);
-        var userRole = new UserRoleJunction
-        {
-            UserId = student.UserId,
-            RoleId = role.RoleId,
-            IsActive = true,
-            AssignedAt = EgyptTime.Now
-        };
-        _unitOfWork.GetRepository<UserRoleJunction, int>().Add(userRole);
-        await _unitOfWork.SaveChangesAsync();
+        await AssignStudentRoleAsync(student.UserId, roleName);
 
         if (student.DepartmentId.HasValue)
         {
@@ -311,7 +266,7 @@ public class StudentService : IStudentService
         if (string.IsNullOrWhiteSpace(bylawName))
             return null;
 
-        var bylaws = await Bylaws.GetAllAsync();
+        var bylaws = await Bylaws.GetAllAsync(new BylawSpec(), asNoTracking: true);
         var matched = bylaws.FirstOrDefault(b =>
             string.Equals(b.Name, bylawName, StringComparison.OrdinalIgnoreCase));
 
@@ -329,13 +284,13 @@ public class StudentService : IStudentService
             return null;
 
         var paramSpec = new DepartmentByNameSpec(departmentName);
-        var department = (await Departments.GetAllAsync(paramSpec)).FirstOrDefault();
+        var department = (await Departments.GetAllAsync(paramSpec, asNoTracking: true)).FirstOrDefault();
 
         if (department is not null)
             return department.DepartmentId;
 
         var normalized = departmentName.Trim();
-        var departments = await Departments.GetAllAsync();
+        var departments = await Departments.GetAllAsync(new DepartmentSpec(), asNoTracking: true);
         var matched = departments.FirstOrDefault(d => string.Equals(GetDepartmentCode(d.DepartmentName), normalized, StringComparison.OrdinalIgnoreCase));
 
         if (matched is null)
@@ -433,4 +388,68 @@ public class StudentService : IStudentService
             MaterialFolderName = folder.Name
         };
     }
+
+    private async Task<(string Code, string Email, string Password)> ResolveStudentCodeEmailPasswordAsync(
+        CreateStudentDto dto, int? facultyId, DateTime enrollmentDate)
+    {
+        var password = string.IsNullOrWhiteSpace(dto.Password) ? dto.NationalId : dto.Password;
+        var code = dto.StudentCode;
+        var email = dto.Email;
+
+        if (string.IsNullOrWhiteSpace(code) && facultyId.HasValue)
+            code = await _codeGeneration.GenerateStudentCodeAsync(facultyId.Value, enrollmentDate, ResolveStudentType(dto.StudentType));
+
+        if (string.IsNullOrWhiteSpace(email))
+            email = !string.IsNullOrWhiteSpace(code) ? code + "@intellicampus.online" : dto.Email;
+
+        if (string.IsNullOrWhiteSpace(email))
+            throw new InvalidOperationException("Email is required. Provide an email or ensure a faculty is assigned for auto-generation.");
+
+        if (await Users.AnyAsync(u => u.Email == email))
+            throw new InvalidOperationException("Email already exists.");
+
+        return (code!, email!, password);
+    }
+
+    private Student BuildStudentEntity(CreateStudentDto dto, string email, string password, int? departmentId, int? facultyId, DateTime enrollmentDate, string code, int? bylawId, StudentType studentType)
+    {
+        return new Student
+        {
+            NationalId = dto.NationalId,
+            FullName = dto.FullName,
+            FullNameAr = dto.FullNameAr,
+            PhoneNumber = dto.PhoneNumber,
+            Email = email,
+            Address = dto.Address,
+            Password = _passwordService.HashPassword(password),
+            Nationality = dto.Nationality,
+            MustChangePassword = true,
+            StudentCode = code,
+            FacultyId = facultyId,
+            StudentType = studentType,
+            Level = dto.Level,
+            DepartmentId = departmentId,
+            BylawId = bylawId,
+            EnrollmentDate = enrollmentDate,
+            Program = dto.Program,
+            SpecializationId = dto.SpecializationId,
+            ProfileImage = dto.ProfileImage
+        };
+    }
+
+    private async Task AssignStudentRoleAsync(int userId, string roleName)
+    {
+        var role = await RolesRepo.GetByIdAsync(new RoleByNameSpec(roleName))
+            ?? throw new InvalidOperationException($"Role '{roleName}' not found.");
+        var userRole = new UserRoleJunction
+        {
+            UserId = userId,
+            RoleId = role.RoleId,
+            IsActive = true,
+            AssignedAt = EgyptTime.Now
+        };
+        _unitOfWork.GetRepository<UserRoleJunction, int>().Add(userRole);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
 }

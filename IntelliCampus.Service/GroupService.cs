@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Exceptions;
+using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Group;
 using Microsoft.EntityFrameworkCore;
@@ -31,13 +32,15 @@ public class GroupService : IGroupService
         if (creator is null)
             throw new UserNotFoundException(createdById);
 
-        foreach (var memberId in memberIds.Distinct())
+        var distinctIds = memberIds.Distinct().Where(id => id != createdById).ToList();
+        if (distinctIds.Count > 0)
         {
-            if (memberId != createdById)
+            var existingUsers = await Users.GetAllAsync(new UsersByIdsSpec(distinctIds), asNoTracking: true);
+            var existingIds = existingUsers.Select(u => u.UserId).ToHashSet();
+            foreach (var mid in distinctIds)
             {
-                var member = await Users.GetByIdAsync(memberId);
-                if (member is null)
-                    throw new UserNotFoundException(memberId);
+                if (!existingIds.Contains(mid))
+                    throw new UserNotFoundException(mid);
             }
         }
 
@@ -79,21 +82,38 @@ public class GroupService : IGroupService
         if (user is null)
             throw new UserNotFoundException(userId);
 
-        var memberships = (await GroupMembers.GetAllAsync())
-            .Where(gm => gm.UserId == userId)
-            .ToList();
-
-        var groupIds = memberships.Select(gm => gm.GroupId).Distinct();
-        var groups = new List<GroupDto>();
-
-        foreach (var groupId in groupIds)
+        var memberships = (await GroupMembers.GetAllAsync(new GroupMembersByUserIdSpec(userId), asNoTracking: true)).ToList();
+        var groupIds = memberships.Select(gm => gm.GroupId).Distinct().ToList();
+    
+        var groups = (await Groups.GetAllAsync(new GroupsByIdsSpec(groupIds), asNoTracking: true)).ToList();
+        var allMembers = (await GroupMembers.GetAllAsync(new GroupMembersByGroupIdsSpec(groupIds), asNoTracking: true)).ToList();
+        var allUserIds = allMembers.Select(m => m.UserId).Concat(groups.Select(g => g.CreatedById)).Distinct().ToList();
+        var users = (await Users.GetAllAsync(new UsersByIdsSpec(allUserIds), asNoTracking: true)).ToDictionary(u => u.UserId);
+    
+        return groups.Select(group =>
         {
-            var dto = await GetGroupByIdAsync(groupId, userId);
-            if (dto != null)
-                groups.Add(dto);
-        }
-
-        return groups.OrderByDescending(g => g.CreatedAt);
+            var groupMembers = allMembers.Where(m => m.GroupId == group.GroupId).ToList();
+            var memberDtos = groupMembers.Select(m => new GroupMemberDto
+            {
+                UserId = m.UserId,
+                FullName = users.GetValueOrDefault(m.UserId)?.FullName ?? "Unknown",
+                ProfileImage = users.GetValueOrDefault(m.UserId)?.ProfileImage,
+                JoinedAt = m.JoinedAt
+            }).ToList();
+        
+            return new GroupDto
+            {
+                GroupId = group.GroupId,
+                Title = group.Title,
+                Description = group.Description,
+                ProfileImage = group.ProfileImage,
+                CreatedById = group.CreatedById,
+                CreatedByName = users.GetValueOrDefault(group.CreatedById)?.FullName ?? "Unknown",
+                CreatedAt = group.CreatedAt,
+                MemberCount = groupMembers.Count,
+                Members = memberDtos
+            };
+        }).OrderByDescending(g => g.CreatedAt);
     }
 
     public async Task<GroupDto?> GetGroupByIdAsync(int groupId, int userId)
@@ -101,27 +121,17 @@ public class GroupService : IGroupService
         var group = await Groups.GetByIdAsync(groupId);
         if (group == null) throw new GroupNotFoundException();
 
-        var members = (await GroupMembers.GetAllAsync())
-            .Where(gm => gm.GroupId == groupId)
-            .ToList();
+        var members = (await GroupMembers.GetAllAsync(new GroupMembersByGroupIdsSpec(new List<int> { groupId }), asNoTracking: true)).ToList();
+        var userIds = members.Select(m => m.UserId).Concat(new[] { group.CreatedById }).Distinct().ToList();
+        var users = (await Users.GetAllAsync(new UsersByIdsSpec(userIds), asNoTracking: true)).ToDictionary(u => u.UserId);
 
-        var memberDtos = new List<GroupMemberDto>();
-        foreach (var member in members)
+        var memberDtos = members.Select(m => new GroupMemberDto
         {
-            var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(member.UserId);
-            if (user != null)
-            {
-                memberDtos.Add(new GroupMemberDto
-                {
-                    UserId = user.UserId,
-                    FullName = user.FullName,
-                    ProfileImage = user.ProfileImage,
-                    JoinedAt = member.JoinedAt
-                });
-            }
-        }
-
-        var creator = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(group.CreatedById);
+            UserId = m.UserId,
+            FullName = users.GetValueOrDefault(m.UserId)?.FullName ?? "Unknown",
+            ProfileImage = users.GetValueOrDefault(m.UserId)?.ProfileImage,
+            JoinedAt = m.JoinedAt
+        }).ToList();
 
         return new GroupDto
         {
@@ -130,7 +140,7 @@ public class GroupService : IGroupService
             Description = group.Description,
             ProfileImage = group.ProfileImage,
             CreatedById = group.CreatedById,
-            CreatedByName = creator?.FullName ?? "Unknown",
+            CreatedByName = users.GetValueOrDefault(group.CreatedById)?.FullName ?? "Unknown",
             CreatedAt = group.CreatedAt,
             MemberCount = members.Count,
             Members = memberDtos

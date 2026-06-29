@@ -25,6 +25,9 @@ namespace IntelliCampus.Presistence
                         (currentQuery, includeString) => currentQuery.Include(includeString));
                 }
 
+                if (specifications.UseSplitQuery)
+                    query = query.AsSplitQuery();
+
                 if (specifications.OrderBy is not null)
                     query = query.OrderBy(specifications.OrderBy);
 

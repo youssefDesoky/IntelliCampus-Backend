@@ -71,6 +71,7 @@ namespace IntelliCampus.Service.Specifications
             AddInclude("Classes.Sessions.Attendances");
             AddInclude("Prerequisites.PrerequisiteCourse");
             AddInclude(c => c.ElectiveBucketCourses!);
+            EnableSplitQuery();
         }
 
         private void AddStudentIncludes()
@@ -81,6 +82,7 @@ namespace IntelliCampus.Service.Specifications
             AddInclude("StudentCourses.Class");
             AddInclude(c => c.Classes!);
             AddInclude("Classes.Instructor");
+            EnableSplitQuery();
         }
 
         private void AddLightIncludes()
@@ -90,6 +92,8 @@ namespace IntelliCampus.Service.Specifications
             AddInclude("Classes.Instructor");
             AddInclude("Prerequisites.PrerequisiteCourse");
             AddInclude(c => c.ElectiveBucketCourses!);
+            EnableSplitQuery();
         }
+
     }
 }

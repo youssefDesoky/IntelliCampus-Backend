@@ -15,127 +15,126 @@ public class ChartExportService : IChartExportService
 {
     public byte[] ExportChartToExcel(ChartExportRequestDto request)
     {
-        if (request.Data.Count == 0)
-            return Array.Empty<byte>();
-
+        if (request.Data.Count == 0) return Array.Empty<byte>();
         using var ms = new MemoryStream();
+        using var doc = SpreadsheetDocument.Create(ms, SpreadsheetDocumentType.Workbook);
+        var workbookPart = doc.AddWorkbookPart();
+        workbookPart.Workbook = new Workbook();
+        var dataSheet = CreateDataSheet(workbookPart, request);
+        var chartSheet = CreateChartSheet(workbookPart, request);
+        var sheets = new Sheets();
+        sheets.Append(dataSheet);
+        sheets.Append(chartSheet);
+        workbookPart.Workbook.Append(sheets);
+        workbookPart.Workbook.Save();
+        return ms.ToArray();
+    }
+
+    private Sheet CreateDataSheet(WorkbookPart workbookPart, ChartExportRequestDto request)
+    {
+        var dataPart = workbookPart.AddNewPart<WorksheetPart>();
+        dataPart.Worksheet = new Worksheet(new SheetData());
+        var dataSheetData = dataPart.Worksheet.GetFirstChild<SheetData>()!;
+
+        var headerRow = new Row();
+        AddCell(headerRow, Capitalize(request.CategoryField), CellValues.String);
+        for (int i = 0; i < request.Series.Count; i++)
+            AddCell(headerRow, request.Series[i].Name, CellValues.String);
+        dataSheetData.Append(headerRow);
+
+        for (int row = 0; row < request.Data.Count; row++)
         {
-            using var doc = SpreadsheetDocument.Create(ms, SpreadsheetDocumentType.Workbook);
-
-            var workbookPart = doc.AddWorkbookPart();
-            workbookPart.Workbook = new Workbook();
-
-            // ── Data Sheet ────────────────────────────────────────────────
-            var dataPart = workbookPart.AddNewPart<WorksheetPart>();
-            dataPart.Worksheet = new Worksheet(new SheetData());
-            var dataSheetData = dataPart.Worksheet.GetFirstChild<SheetData>()!;
-
-            var headerRow = new Row();
-            AddCell(headerRow, Capitalize(request.CategoryField), CellValues.String);
-            for (int i = 0; i < request.Series.Count; i++)
-                AddCell(headerRow, request.Series[i].Name, CellValues.String);
-            dataSheetData.Append(headerRow);
-
-            for (int row = 0; row < request.Data.Count; row++)
-            {
-                var item = request.Data[row];
-                var excelRow = new Row();
-                AddCell(excelRow, GetStringValue(item, request.CategoryField), CellValues.String);
-                for (int s = 0; s < request.Series.Count; s++)
-                    AddCell(excelRow, GetNumericValue(item, request.Series[s].Field), CellValues.Number);
-                dataSheetData.Append(excelRow);
-            }
-
-            var dataSheet = new Sheet
-            {
-                Id = workbookPart.GetIdOfPart(dataPart),
-                SheetId = 1,
-                Name = "Data",
-            };
-
-            // ── Chart Sheet ────────────────────────────────────────────────
-            var chartSheetPart = workbookPart.AddNewPart<WorksheetPart>();
-            var chartWorksheet = new Worksheet(new SheetData());
-            chartSheetPart.Worksheet = chartWorksheet;
-
-            var drawPart = chartSheetPart.AddNewPart<DrawingsPart>();
-            drawPart.WorksheetDrawing = new DrawSpread.WorksheetDrawing();
-
-            var chartPart = drawPart.AddNewPart<ChartPart>();
-
-            // Build chart
-            var chartSpace = new Charts.ChartSpace();
-            var chart = new Charts.Chart();
-            var plotArea = new Charts.PlotArea();
-            plotArea.Append(new Charts.Layout());
-
-            var chartType = MapChartType(request.ChartType);
-            var categoryRef = $"Data!$A$2:$A${request.Data.Count + 1}";
-
-            AddChartType(plotArea, request, chartType, categoryRef);
-
-            chart.Append(plotArea);
-            chart.Append(new Charts.PlotVisibleOnly { Val = true });
-
-            // Legend
-            var legend = new Charts.Legend();
-            legend.Append(new Charts.LegendPosition { Val = Charts.LegendPositionValues.Bottom });
-            legend.Append(new Charts.Layout());
-            chart.Append(legend);
-
-            chartSpace.Append(chart);
-
-            chartPart.ChartSpace = chartSpace;
-            chartPart.ChartSpace.Save();
-
-            // Anchor the chart on the worksheet
-            var anchor = new DrawSpread.OneCellAnchor(
-                new DrawSpread.FromMarker(
-                    new DrawSpread.ColumnId("0"),
-                    new DrawSpread.ColumnOffset("0"),
-                    new DrawSpread.RowId("0"),
-                    new DrawSpread.RowOffset("0")
-                ),
-                new DrawSpread.Extent { Cx = 8000000, Cy = 5000000 },
-                new DrawSpread.GraphicFrame(
-                    new DrawSpread.NonVisualGraphicFrameProperties(
-                        new DrawSpread.NonVisualDrawingProperties { Id = 2, Name = "Chart" },
-                        new DrawSpread.NonVisualGraphicFrameDrawingProperties()
-                    ),
-                    new DrawSpread.Transform(
-                        new Draw.Offset { X = 0, Y = 0 },
-                        new Draw.Extents { Cx = 8000000, Cy = 5000000 }
-                    ),
-                    new Draw.Graphic(
-                        new Draw.GraphicData(
-                            new Charts.ChartReference { Id = drawPart.GetIdOfPart(chartPart) }
-                        ) { Uri = "http://schemas.openxmlformats.org/drawingml/2006/chart" }
-                    )
-                ),
-                new DrawSpread.ClientData()
-            );
-            drawPart.WorksheetDrawing.Append(anchor);
-            drawPart.WorksheetDrawing.Save();
-
-            // Set drawing relationship on worksheet
-            chartWorksheet.Append(new Drawing { Id = chartSheetPart.GetIdOfPart(drawPart) });
-
-            var chartSheetEntry = new Sheet
-            {
-                Id = workbookPart.GetIdOfPart(chartSheetPart),
-                SheetId = 2,
-                Name = "Chart",
-            };
-
-            // ── Workbook sheets ────────────────────────────────────────────
-            var sheets = new Sheets();
-            sheets.Append(dataSheet);
-            sheets.Append(chartSheetEntry);
-            workbookPart.Workbook.Append(sheets);
-            workbookPart.Workbook.Save();
+            var item = request.Data[row];
+            var excelRow = new Row();
+            AddCell(excelRow, GetStringValue(item, request.CategoryField), CellValues.String);
+            for (int s = 0; s < request.Series.Count; s++)
+                AddCell(excelRow, GetNumericValue(item, request.Series[s].Field), CellValues.Number);
+            dataSheetData.Append(excelRow);
         }
 
-        return ms.ToArray();
+        return new Sheet
+        {
+            Id = workbookPart.GetIdOfPart(dataPart),
+            SheetId = 1,
+            Name = "Data",
+        };
+    }
+
+    private Sheet CreateChartSheet(WorkbookPart workbookPart, ChartExportRequestDto request)
+    {
+        var chartSheetPart = workbookPart.AddNewPart<WorksheetPart>();
+        var chartWorksheet = new Worksheet(new SheetData());
+        chartSheetPart.Worksheet = chartWorksheet;
+
+        var drawPart = chartSheetPart.AddNewPart<DrawingsPart>();
+        drawPart.WorksheetDrawing = new DrawSpread.WorksheetDrawing();
+
+        var chartPart = drawPart.AddNewPart<ChartPart>();
+
+        BuildChart(chartPart, request);
+
+        var anchor = new DrawSpread.OneCellAnchor(
+            new DrawSpread.FromMarker(
+                new DrawSpread.ColumnId("0"),
+                new DrawSpread.ColumnOffset("0"),
+                new DrawSpread.RowId("0"),
+                new DrawSpread.RowOffset("0")
+            ),
+            new DrawSpread.Extent { Cx = 8000000, Cy = 5000000 },
+            new DrawSpread.GraphicFrame(
+                new DrawSpread.NonVisualGraphicFrameProperties(
+                    new DrawSpread.NonVisualDrawingProperties { Id = 2, Name = "Chart" },
+                    new DrawSpread.NonVisualGraphicFrameDrawingProperties()
+                ),
+                new DrawSpread.Transform(
+                    new Draw.Offset { X = 0, Y = 0 },
+                    new Draw.Extents { Cx = 8000000, Cy = 5000000 }
+                ),
+                new Draw.Graphic(
+                    new Draw.GraphicData(
+                        new Charts.ChartReference { Id = drawPart.GetIdOfPart(chartPart) }
+                    ) { Uri = "http://schemas.openxmlformats.org/drawingml/2006/chart" }
+                )
+            ),
+            new DrawSpread.ClientData()
+        );
+        drawPart.WorksheetDrawing.Append(anchor);
+        drawPart.WorksheetDrawing.Save();
+
+        chartWorksheet.Append(new Drawing { Id = chartSheetPart.GetIdOfPart(drawPart) });
+
+        return new Sheet
+        {
+            Id = workbookPart.GetIdOfPart(chartSheetPart),
+            SheetId = 2,
+            Name = "Chart",
+        };
+    }
+
+    private void BuildChart(ChartPart chartPart, ChartExportRequestDto request)
+    {
+        var chartSpace = new Charts.ChartSpace();
+        var chart = new Charts.Chart();
+        var plotArea = new Charts.PlotArea();
+        plotArea.Append(new Charts.Layout());
+
+        var chartType = MapChartType(request.ChartType);
+        var categoryRef = $"Data!$A$2:$A${request.Data.Count + 1}";
+
+        AddChartType(plotArea, request, chartType, categoryRef);
+
+        chart.Append(plotArea);
+        chart.Append(new Charts.PlotVisibleOnly { Val = true });
+
+        var legend = new Charts.Legend();
+        legend.Append(new Charts.LegendPosition { Val = Charts.LegendPositionValues.Bottom });
+        legend.Append(new Charts.Layout());
+        chart.Append(legend);
+
+        chartSpace.Append(chart);
+
+        chartPart.ChartSpace = chartSpace;
+        chartPart.ChartSpace.Save();
     }
 
     private void AddChartType(Charts.PlotArea plotArea, ChartExportRequestDto request, string chartType, string categoryRef)

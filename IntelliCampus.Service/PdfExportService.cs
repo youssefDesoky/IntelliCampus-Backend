@@ -361,8 +361,6 @@ public class PdfExportService : IPdfExportService
             }
 
             const float TimelineStartHour = 8f;
-            const float TimelineEndHour   = 18f;
-            const float TimelineDuration  = TimelineEndHour - TimelineStartHour;
 
             var hourTicks = Enumerable.Range(0, 11)
                 .Select(i => TimelineStartHour + i)
@@ -395,94 +393,15 @@ public class PdfExportService : IPdfExportService
             float gridTop    = _layoutY;
             float gridBottom = gridTop + gridTotalH;
 
-            float TimeToX(float hour)
-            {
-                float pct = (hour - TimelineStartHour) / TimelineDuration;
-                pct = Math.Clamp(pct, 0f, 1f);
-                return gridLeft + pct * gridW;
-            }
-
-            static float TsToHour(TimeSpan ts) => ts.Hours + ts.Minutes / 60f;
-
             FillRect(Margin, gridTop, DayColW + gridW, HeaderH, 0.18f, 0.35f, 0.55f);
             WriteCell("DAY", Margin, gridTop, DayColW, HeaderH, 7.5f,
                       bold: true, tr: 1f, tg: 1f, tb: 1f, centerH: true);
             StrokeLine(gridLeft, gridTop, gridLeft, gridTop + HeaderH, 0.4f, 0.55f, 0.7f, 0.6f);
 
-            for (int ti = 0; ti < hourTicks.Length; ti++)
-            {
-                float h  = hourTicks[ti];
-                float tx = TimeToX(h);
-                StrokeLine(tx, gridTop, tx, gridTop + HeaderH, 0.4f, 0.55f, 0.7f, 0.5f);
-
-                float nextH   = h + 1f;
-                float centerX = (TimeToX(h) + TimeToX(Math.Min(nextH, TimelineEndHour))) / 2f;
-                int    hi     = (int)h;
-                string ampm   = hi < 12 ? "AM" : "PM";
-                int    h12    = hi % 12; if (h12 == 0) h12 = 12;
-                string label  = $"{h12} {ampm}";
-                float  labelW = label.Length * 6.5f * 0.58f;
-                float  labelX = centerX - labelW / 2f;
-                if (labelX >= gridLeft && labelX + labelW <= gridRight)
-                    WriteRaw($"1 1 1 rg BT /F1 6.5 Tf {labelX:F1} {ToY(gridTop + HeaderH / 2f + 6.5f / 2f - 1f):F1} Td ({Escape(label)}) Tj ET 0 0 0 rg");
-            }
+            DrawTimeHeaders(gridLeft, gridTop, gridW, HeaderH, hourTicks);
 
             for (int di = 0; di < days.Count; di++)
-            {
-                string day    = days[di];
-                float  rowTop = gridTop + HeaderH + di * RowH;
-                float bgR = di % 2 == 0 ? 1.00f : 0.96f;
-                float bgG = di % 2 == 0 ? 1.00f : 0.97f;
-                float bgB = di % 2 == 0 ? 1.00f : 0.98f;
-                FillRect(gridLeft, rowTop, gridW, RowH, bgR, bgG, bgB);
-                FillRect(Margin, rowTop, DayColW, RowH, 0.20f, 0.35f, 0.55f);
-                string dayLabel = dayFull.TryGetValue(day, out var fn) ? fn : day;
-                WriteCell(dayLabel, Margin, rowTop, DayColW, RowH, 7f,
-                          bold: true, tr: 1f, tg: 1f, tb: 1f, centerH: true);
-                StrokeLine(Margin, rowTop + RowH, PageW - Margin, rowTop + RowH, 0.78f, 0.80f, 0.84f, 0.5f);
-                foreach (float h in hourTicks)
-                    StrokeLine(TimeToX(h), rowTop, TimeToX(h), rowTop + RowH, 0.85f, 0.87f, 0.90f, 0.4f);
-
-                foreach (var item in list.Where(i => i.Day.ToLowerInvariant() == day))
-                {
-                    var tS = ParseTime(item.StartTime);
-                    var tE = ParseTime(item.EndTime);
-                    if (tE <= tS) continue;
-                    float startHour = Math.Clamp(TsToHour(tS), TimelineStartHour, TimelineEndHour);
-                    float endHour   = Math.Clamp(TsToHour(tE), TimelineStartHour, TimelineEndHour);
-                    if (endHour <= startHour) continue;
-                    float bx = TimeToX(startHour);
-                    float bw = TimeToX(endHour) - bx;
-                    if (bw < 2f) continue;
-
-                    var (fr, fg, fb) = BlockFill(item.Type);
-                    FillRect(bx + BlockPad, rowTop + BlockPad, bw - BlockPad * 2, RowH - BlockPad * 2, fr, fg, fb);
-                    FillRect(bx + BlockPad, rowTop + BlockPad, 3f, RowH - BlockPad * 2, fr * 0.68f, fg * 0.68f, fb * 0.68f);
-
-                    float textX  = bx + BlockPad + 5f;
-                    float textW  = bw - BlockPad * 2 - 7f;
-                    float innerH = RowH - BlockPad * 2;
-
-                    string cname = TruncFit(item.CourseName, textW, 4.1f);
-                    WriteRaw($"1 1 1 rg BT /F2 7 Tf {textX:F1} {ToY(rowTop + BlockPad + innerH * 0.28f):F1} Td ({Escape(cname)}) Tj ET 0 0 0 rg");
-
-                    if (!string.IsNullOrWhiteSpace(item.Location) && item.Location != "-")
-                    {
-                        string loc = TruncFit(item.Location, textW, 5.2f);
-                        WriteRaw($"0.88 0.93 1.00 rg BT /F1 6 Tf {textX:F1} {ToY(rowTop + BlockPad + innerH * 0.52f):F1} Td ({Escape(loc)}) Tj ET 0 0 0 rg");
-                    }
-                    if (!string.IsNullOrWhiteSpace(item.Instructor) && bw > 50f)
-                    {
-                        string ins = TruncFit(item.Instructor, textW, 4.8f);
-                        WriteRaw($"0.80 0.90 0.98 rg BT /F1 5.5 Tf {textX:F1} {ToY(rowTop + BlockPad + innerH * 0.70f):F1} Td ({Escape(ins)}) Tj ET 0 0 0 rg");
-                    }
-                    if (bw > 40f)
-                    {
-                        string tLabel = TruncFit($"{item.StartTime}-{item.EndTime}", textW, 4.5f);
-                        WriteRaw($"0.78 0.86 0.95 rg BT /F1 5 Tf {textX:F1} {ToY(rowTop + BlockPad + innerH * 0.88f):F1} Td ({Escape(tLabel)}) Tj ET 0 0 0 rg");
-                    }
-                }
-            }
+                DrawDayRow(days[di], di, gridLeft, gridTop, HeaderH, RowH, gridW, hourTicks, list, dayFull, DayColW, BlockPad);
 
             StrokeLine(Margin,         gridTop,    PageW - Margin, gridTop,    0, 0, 0, 0.8f);
             StrokeLine(Margin,         gridBottom, PageW - Margin, gridBottom, 0, 0, 0, 0.8f);
@@ -493,6 +412,89 @@ public class PdfExportService : IPdfExportService
 
             _layoutY = gridBottom + 10f;
             AddLegend();
+        }
+
+        // ── DrawTimeHeaders ────────────────────────────────────────────────
+        private void DrawTimeHeaders(float gridLeft, float gridTop, float gridW, float HeaderH, float[] hourTicks)
+        {
+            float gridRight = gridLeft + gridW;
+            for (int ti = 0; ti < hourTicks.Length; ti++)
+            {
+                float h  = hourTicks[ti];
+                float tx = gridLeft + Math.Clamp((h - 8f) / 10f, 0f, 1f) * gridW;
+                StrokeLine(tx, gridTop, tx, gridTop + HeaderH, 0.4f, 0.55f, 0.7f, 0.5f);
+
+                float nextH   = h + 1f;
+                float centerX = (gridLeft + Math.Clamp((h - 8f) / 10f, 0f, 1f) * gridW + gridLeft + Math.Clamp((Math.Min(nextH, 18f) - 8f) / 10f, 0f, 1f) * gridW) / 2f;
+                int    hi     = (int)h;
+                string ampm   = hi < 12 ? "AM" : "PM";
+                int    h12    = hi % 12; if (h12 == 0) h12 = 12;
+                string label  = $"{h12} {ampm}";
+                float  labelW = label.Length * 6.5f * 0.58f;
+                float  labelX = centerX - labelW / 2f;
+                if (labelX >= gridLeft && labelX + labelW <= gridRight)
+                    WriteRaw($"1 1 1 rg BT /F1 6.5 Tf {labelX:F1} {ToY(gridTop + HeaderH / 2f + 6.5f / 2f - 1f):F1} Td ({Escape(label)}) Tj ET 0 0 0 rg");
+            }
+        }
+
+        // ── DrawDayRow ─────────────────────────────────────────────────────
+        private void DrawDayRow(string day, int dayIndex, float gridLeft, float gridTop, float HeaderH, float RowH, float gridW, float[] hourTicks, List<ScheduleItemExportDto> items, Dictionary<string, string> dayFull, float DayColW, float BlockPad)
+        {
+            float rowTop = gridTop + HeaderH + dayIndex * RowH;
+            float bgR = dayIndex % 2 == 0 ? 1.00f : 0.96f;
+            float bgG = dayIndex % 2 == 0 ? 1.00f : 0.97f;
+            float bgB = dayIndex % 2 == 0 ? 1.00f : 0.98f;
+            FillRect(gridLeft, rowTop, gridW, RowH, bgR, bgG, bgB);
+            FillRect(Margin, rowTop, DayColW, RowH, 0.20f, 0.35f, 0.55f);
+            string dayLabel = dayFull.TryGetValue(day, out var fn) ? fn : day;
+            WriteCell(dayLabel, Margin, rowTop, DayColW, RowH, 7f,
+                      bold: true, tr: 1f, tg: 1f, tb: 1f, centerH: true);
+            StrokeLine(Margin, rowTop + RowH, PageW - Margin, rowTop + RowH, 0.78f, 0.80f, 0.84f, 0.5f);
+            foreach (float h in hourTicks)
+                StrokeLine(gridLeft + Math.Clamp((h - 8f) / 10f, 0f, 1f) * gridW, rowTop, gridLeft + Math.Clamp((h - 8f) / 10f, 0f, 1f) * gridW, rowTop + RowH, 0.85f, 0.87f, 0.90f, 0.4f);
+
+            foreach (var item in items.Where(i => string.Equals(i.Day, day, StringComparison.OrdinalIgnoreCase)))
+                DrawScheduleBlock(item, rowTop, RowH, gridLeft, gridW, BlockPad);
+        }
+
+        // ── DrawScheduleBlock ──────────────────────────────────────────────
+        private void DrawScheduleBlock(ScheduleItemExportDto item, float rowTop, float RowH, float gridLeft, float gridW, float BlockPad)
+        {
+            var tS = ParseTime(item.StartTime);
+            var tE = ParseTime(item.EndTime);
+            if (tE <= tS) return;
+            float startHour = Math.Clamp(tS.Hours + tS.Minutes / 60f, 8f, 18f);
+            float endHour   = Math.Clamp(tE.Hours + tE.Minutes / 60f, 8f, 18f);
+            float bx = gridLeft + Math.Clamp((startHour - 8f) / 10f, 0f, 1f) * gridW;
+            float bw = gridLeft + Math.Clamp((endHour - 8f) / 10f, 0f, 1f) * gridW - bx;
+            if (bw < 2f) return;
+
+            var (fr, fg, fb) = BlockFill(item.Type);
+            FillRect(bx + BlockPad, rowTop + BlockPad, bw - BlockPad * 2, RowH - BlockPad * 2, fr, fg, fb);
+            FillRect(bx + BlockPad, rowTop + BlockPad, 3f, RowH - BlockPad * 2, fr * 0.68f, fg * 0.68f, fb * 0.68f);
+
+            float textX  = bx + BlockPad + 5f;
+            float textW  = bw - BlockPad * 2 - 7f;
+            float innerH = RowH - BlockPad * 2;
+
+            string cname = TruncFit(item.CourseName, textW, 4.1f);
+            WriteRaw($"1 1 1 rg BT /F2 7 Tf {textX:F1} {ToY(rowTop + BlockPad + innerH * 0.28f):F1} Td ({Escape(cname)}) Tj ET 0 0 0 rg");
+
+            if (!string.IsNullOrWhiteSpace(item.Location) && item.Location != "-")
+            {
+                string loc = TruncFit(item.Location, textW, 5.2f);
+                WriteRaw($"0.88 0.93 1.00 rg BT /F1 6 Tf {textX:F1} {ToY(rowTop + BlockPad + innerH * 0.52f):F1} Td ({Escape(loc)}) Tj ET 0 0 0 rg");
+            }
+            if (!string.IsNullOrWhiteSpace(item.Instructor) && bw > 50f)
+            {
+                string ins = TruncFit(item.Instructor, textW, 4.8f);
+                WriteRaw($"0.80 0.90 0.98 rg BT /F1 5.5 Tf {textX:F1} {ToY(rowTop + BlockPad + innerH * 0.70f):F1} Td ({Escape(ins)}) Tj ET 0 0 0 rg");
+            }
+            if (bw > 40f)
+            {
+                string tLabel = TruncFit($"{item.StartTime}-{item.EndTime}", textW, 4.5f);
+                WriteRaw($"0.78 0.86 0.95 rg BT /F1 5 Tf {textX:F1} {ToY(rowTop + BlockPad + innerH * 0.88f):F1} Td ({Escape(tLabel)}) Tj ET 0 0 0 rg");
+            }
         }
 
         // ── Legend ────────────────────────────────────────────────────────
@@ -817,10 +819,13 @@ public class PdfExportService : IPdfExportService
         // ── GetBytes – multi-page PDF ──────────────────────────────────────
         public byte[] GetBytes()
         {
-            // Flush the last (or only) page
             _cur.AppendLine("Q");
             _pageStreams.Add(_cur.ToString());
+            return BuildPdfObjects();
+        }
 
+        private byte[] BuildPdfObjects()
+        {
             int totalPages = _pageStreams.Count;
 
             var final  = new StringBuilder();
@@ -832,30 +837,19 @@ public class PdfExportService : IPdfExportService
 
             var offsets = new List<long>();
 
-            // Object layout:
-            //  1 = Pages (parent)
-            //  2 = Font F1 (Helvetica)
-            //  3 = Font F2 (Helvetica-Bold)
-            //  4..3+N        = Page objects
-            //  4+N..3+2N     = Content streams
-
             int firstPageObj   = 4;
             int firstStreamObj = firstPageObj + totalPages;
 
-            // ── Obj 1: Pages ───────────────────────────────────────────────
             offsets.Add(off);
             string kids = string.Join(" ", Enumerable.Range(firstPageObj, totalPages).Select(n => $"{n} 0 R"));
             Ap($"1 0 obj\r\n<< /Type /Pages /Kids [{kids}] /Count {totalPages} >>\r\nendobj\r\n");
 
-            // ── Obj 2: Font F1 ─────────────────────────────────────────────
             offsets.Add(off);
             Ap("2 0 obj\r\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\r\nendobj\r\n");
 
-            // ── Obj 3: Font F2 ─────────────────────────────────────────────
             offsets.Add(off);
             Ap("3 0 obj\r\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>\r\nendobj\r\n");
 
-            // ── Page objects ───────────────────────────────────────────────
             for (int p = 0; p < totalPages; p++)
             {
                 offsets.Add(off);
@@ -867,10 +861,8 @@ public class PdfExportService : IPdfExportService
                    $"endobj\r\n");
             }
 
-            // ── Content streams ────────────────────────────────────────────
             for (int p = 0; p < totalPages; p++)
             {
-                // Strip the "%PDF-1.4" marker that was written into page 0's buffer
                 string raw = _pageStreams[p];
                 if (p == 0 && raw.StartsWith("%PDF-1.4"))
                     raw = raw[(raw.IndexOf('\n') + 1)..];
@@ -883,12 +875,10 @@ public class PdfExportService : IPdfExportService
                 Ap("\r\nendstream\r\nendobj\r\n");
             }
 
-            // ── Catalog ────────────────────────────────────────────────────
             int catalogObj = firstStreamObj + totalPages;
             offsets.Add(off);
             Ap($"{catalogObj} 0 obj\r\n<< /Type /Catalog /Pages 1 0 R >>\r\nendobj\r\n");
 
-            // ── xref ──────────────────────────────────────────────────────
             long xref = off;
             Ap("xref\r\n");
             Ap($"0 {offsets.Count + 1}\r\n");

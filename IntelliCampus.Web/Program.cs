@@ -43,6 +43,7 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -51,8 +52,8 @@ builder.Services.AddControllers()
     }); builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add DbContexts
-builder.Services.AddDbContext<IntelliCampusDbContext>(options =>
+// Add DbContexts with pooling
+builder.Services.AddDbContextPool<IntelliCampusDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 // Configure JWT Settings
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));

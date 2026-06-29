@@ -44,7 +44,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
     public async Task<PaginatedResult<AdminDto>> GetAllAsync(AdminQueryParams queryParams)
     {
         var spec = new AdminSpec(queryParams);
-        var admins = await Admins.GetAllAsync(spec);
+        var admins = await Admins.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = admins.Select(MapToDto).ToList();
 
         var countSpec = new AdminCountSpec(queryParams);
@@ -91,7 +91,8 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             throw new InvalidOperationException("Email already exists.");
 
         var roleName = ResolveAdminRoleName(dto.AdminRole);
-        var role = (await RolesRepo.GetAllAsync()).First(r => r.RoleName == roleName);
+        var role = await RolesRepo.GetByIdAsync(new RoleByNameSpec(roleName))
+            ?? throw new InvalidOperationException($"Role '{roleName}' not found.");
 
         var admin = new Admin
         {
@@ -155,7 +156,8 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         if (dto.AdminRole is not null)
         {
             var roleName = ResolveAdminRoleName(dto.AdminRole);
-            var newRole = (await RolesRepo.GetAllAsync()).First(r => r.RoleName == roleName);
+            var newRole = await RolesRepo.GetByIdAsync(new RoleByNameSpec(roleName))
+                ?? throw new InvalidOperationException($"Role '{roleName}' not found.");
             var activeRole = admin.UserRoles.FirstOrDefault(ur => ur.IsActive);
             var now = EgyptTime.Now;
             if (activeRole is not null)

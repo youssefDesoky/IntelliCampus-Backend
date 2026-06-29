@@ -14,6 +14,7 @@ internal class TALecturerSectionsSpec : BaseSpecifications<Class>
     {
         AddInclude(c => c.Course!);
         AddInclude(c => c.Instructor!);
+        EnableSplitQuery();
     }
 
     public TALecturerSectionsSpec(int instructorId)
@@ -25,6 +26,7 @@ internal class TALecturerSectionsSpec : BaseSpecifications<Class>
     {
         AddInclude(c => c.Course!);
         AddInclude(c => c.Instructor!);
+        EnableSplitQuery();
     }
 
     public TALecturerSectionsSpec(ClassQueryParams queryParams)
@@ -36,5 +38,7 @@ internal class TALecturerSectionsSpec : BaseSpecifications<Class>
     {
         AddInclude(c => c.Course!);
         AddInclude(c => c.Instructor!);
+        EnableSplitQuery();
+        ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 }

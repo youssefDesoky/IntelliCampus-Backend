@@ -52,5 +52,10 @@ public class ExamConfiguration : IEntityTypeConfiguration<Exam>
             .WithMany()
             .HasForeignKey(e => e.RoomId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasIndex(e => e.CourseId);
+        builder.HasIndex(e => e.ExamType);
+        builder.HasIndex(e => e.Status);
+        builder.HasIndex(e => e.Date);
     }
 }

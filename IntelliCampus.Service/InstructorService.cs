@@ -45,7 +45,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
     public async Task<PaginatedResult<InstructorDto>> GetAllAsync(InstructorQueryParams queryParams)
     {
         var spec = new InstructorSpec(queryParams);
-        var instructors = await Instructors.GetAllAsync(spec);
+        var instructors = await Instructors.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = instructors.Select(MapToDto).ToList();
 
         var countSpec = new InstructorCountSpec(queryParams);
@@ -57,7 +57,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
     public async Task<IEnumerable<InstructorDto>> GetProfessorsAsync(InstructorQueryParams queryParams)
     {
         var spec = new ProfessorsSpec(queryParams);
-        var professors = await Instructors.GetAllAsync(spec);
+        var professors = await Instructors.GetAllAsync(spec, asNoTracking: true);
         return professors.Select(MapToDto);
     }
 
@@ -77,92 +77,14 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             facultyId = creator?.FacultyId;
         }
 
-        var code = dto.InstructorCode;
-        var email = dto.Email;
+        var (code, email) = await ResolveInstructorCodeAndEmailAsync(dto, facultyId, hireDate);
 
-        if (string.IsNullOrWhiteSpace(code) && facultyId.HasValue)
-            code = await _codeGeneration.GenerateInstructorCodeAsync(facultyId.Value, hireDate);
-
-        if (string.IsNullOrWhiteSpace(email))
-            email = !string.IsNullOrWhiteSpace(code) ? code + "@intellicampus.online" : dto.Email;
-
-        if (string.IsNullOrWhiteSpace(email))
-            throw new InvalidOperationException("Email is required. Provide an email or ensure a faculty is assigned for auto-generation.");
-
-        if (await Users.AnyAsync(u => u.Email == email))
-            throw new InvalidOperationException("Email already exists.");
-
-        Instructor instructor;
-
-        if (dto.LoanFromDepartmentId.HasValue || dto.LoanFromFacultyId.HasValue || dto.LoanProfessorId is not null)
-        {
-            instructor = new LoanInstructor
-            {
-                NationalId = dto.NationalId,
-                FullName = dto.FullName,
-                FullNameAr = dto.FullNameAr,
-                PhoneNumber = dto.PhoneNumber,
-                Email = email,
-                Address = dto.Address,
-                Password = _passwordService.HashPassword(password),
-                Nationality = dto.Nationality,
-                InstructorCode = code,
-                InstructorRole = ParseInstructorRole(dto.InstructorRole),
-                Specialization = dto.Specialization,
-                DepartmentId = departmentId,
-                HireDate = hireDate,
-                FacultyId = facultyId,
-                Status = ParseStatus(dto.Status),
-                OfficeHoursRoomId = dto.OfficeHoursRoomId,
-                ProfileImage = dto.ProfileImage,
-                ContractStartDate = ParseDate(dto.ContractStartDate),
-                ContractEndDate = ParseDate(dto.ContractEndDate),
-                Secondment = dto.Secondment,
-                LoanFromDepartmentId = dto.LoanFromDepartmentId,
-                LoanFromFacultyId = dto.LoanFromFacultyId,
-                LoanProfessorId = dto.LoanProfessorId
-            };
-        }
-        else
-        {
-            instructor = new Instructor
-            {
-                NationalId = dto.NationalId,
-                FullName = dto.FullName,
-                FullNameAr = dto.FullNameAr,
-                PhoneNumber = dto.PhoneNumber,
-                Email = email,
-                Address = dto.Address,
-                Password = _passwordService.HashPassword(password),
-                Nationality = dto.Nationality,
-                InstructorCode = code,
-                InstructorRole = ParseInstructorRole(dto.InstructorRole),
-                Specialization = dto.Specialization,
-                DepartmentId = departmentId,
-                HireDate = hireDate,
-                FacultyId = facultyId,
-                Status = ParseStatus(dto.Status),
-                OfficeHoursRoomId = dto.OfficeHoursRoomId,
-                ProfileImage = dto.ProfileImage,
-                ContractStartDate = ParseDate(dto.ContractStartDate),
-                ContractEndDate = ParseDate(dto.ContractEndDate),
-                Secondment = dto.Secondment
-            };
-        }
+        var instructor = BuildInstructorEntity(dto, email, password, departmentId, facultyId, hireDate, code);
 
         Instructors.Add(instructor);
         await _unitOfWork.SaveChangesAsync();
 
-        var role = (await RolesRepo.GetAllAsync()).First(r => r.RoleName == "Instructor");
-        var userRole = new UserRoleJunction
-        {
-            UserId = instructor.UserId,
-            RoleId = role.RoleId,
-            IsActive = true,
-            AssignedAt = EgyptTime.Now
-        };
-        _unitOfWork.GetRepository<UserRoleJunction, int>().Add(userRole);
-        await _unitOfWork.SaveChangesAsync();
+        await AssignInstructorRoleAsync(instructor.UserId);
 
         if (instructor.DepartmentId.HasValue)
         {
@@ -287,13 +209,13 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         }
 
         var paramSpec = new DepartmentByNameSpec(departmentName);
-        var department = (await Departments.GetAllAsync(paramSpec)).FirstOrDefault();
+        var department = (await Departments.GetAllAsync(paramSpec, asNoTracking: true)).FirstOrDefault();
 
         if (department is not null)
             return department.DepartmentId;
 
         var normalized = departmentName.Trim();
-        var departments = await Departments.GetAllAsync();
+        var departments = await Departments.GetAllAsync(new DepartmentSpec(), asNoTracking: true);
         var matched = departments.FirstOrDefault(d =>
             string.Equals(GetDepartmentCode(d.DepartmentName), normalized, StringComparison.OrdinalIgnoreCase));
 
@@ -390,4 +312,98 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             Roles = instructor.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }
+
+    private async Task<(string Code, string Email)> ResolveInstructorCodeAndEmailAsync(
+        CreateInstructorDto dto, int? facultyId, DateTime hireDate)
+    {
+        var code = dto.InstructorCode;
+        var email = dto.Email;
+
+        if (string.IsNullOrWhiteSpace(code) && facultyId.HasValue)
+            code = await _codeGeneration.GenerateInstructorCodeAsync(facultyId.Value, hireDate);
+
+        if (string.IsNullOrWhiteSpace(email))
+            email = !string.IsNullOrWhiteSpace(code) ? code + "@intellicampus.online" : dto.Email;
+
+        if (string.IsNullOrWhiteSpace(email))
+            throw new InvalidOperationException("Email is required. Provide an email or ensure a faculty is assigned for auto-generation.");
+
+        if (await Users.AnyAsync(u => u.Email == email))
+            throw new InvalidOperationException("Email already exists.");
+
+        return (code!, email!);
+    }
+
+    private Instructor BuildInstructorEntity(CreateInstructorDto dto, string email, string password, int? departmentId, int? facultyId, DateTime hireDate, string code)
+    {
+        if (dto.LoanFromDepartmentId.HasValue || dto.LoanFromFacultyId.HasValue || dto.LoanProfessorId is not null)
+        {
+            return new LoanInstructor
+            {
+                NationalId = dto.NationalId,
+                FullName = dto.FullName,
+                FullNameAr = dto.FullNameAr,
+                PhoneNumber = dto.PhoneNumber,
+                Email = email,
+                Address = dto.Address,
+                Password = _passwordService.HashPassword(password),
+                Nationality = dto.Nationality,
+                InstructorCode = code,
+                InstructorRole = ParseInstructorRole(dto.InstructorRole),
+                Specialization = dto.Specialization,
+                DepartmentId = departmentId,
+                HireDate = hireDate,
+                FacultyId = facultyId,
+                Status = ParseStatus(dto.Status),
+                OfficeHoursRoomId = dto.OfficeHoursRoomId,
+                ProfileImage = dto.ProfileImage,
+                ContractStartDate = ParseDate(dto.ContractStartDate),
+                ContractEndDate = ParseDate(dto.ContractEndDate),
+                Secondment = dto.Secondment,
+                LoanFromDepartmentId = dto.LoanFromDepartmentId,
+                LoanFromFacultyId = dto.LoanFromFacultyId,
+                LoanProfessorId = dto.LoanProfessorId
+            };
+        }
+
+        return new Instructor
+        {
+            NationalId = dto.NationalId,
+            FullName = dto.FullName,
+            FullNameAr = dto.FullNameAr,
+            PhoneNumber = dto.PhoneNumber,
+            Email = email,
+            Address = dto.Address,
+            Password = _passwordService.HashPassword(password),
+            Nationality = dto.Nationality,
+            InstructorCode = code,
+            InstructorRole = ParseInstructorRole(dto.InstructorRole),
+            Specialization = dto.Specialization,
+            DepartmentId = departmentId,
+            HireDate = hireDate,
+            FacultyId = facultyId,
+            Status = ParseStatus(dto.Status),
+            OfficeHoursRoomId = dto.OfficeHoursRoomId,
+            ProfileImage = dto.ProfileImage,
+            ContractStartDate = ParseDate(dto.ContractStartDate),
+            ContractEndDate = ParseDate(dto.ContractEndDate),
+            Secondment = dto.Secondment
+        };
+    }
+
+    private async Task AssignInstructorRoleAsync(int userId)
+    {
+        var role = await RolesRepo.GetByIdAsync(new RoleByNameSpec("Instructor"))
+            ?? throw new InvalidOperationException("Role 'Instructor' not found.");
+        var userRole = new UserRoleJunction
+        {
+            UserId = userId,
+            RoleId = role.RoleId,
+            IsActive = true,
+            AssignedAt = EgyptTime.Now
+        };
+        _unitOfWork.GetRepository<UserRoleJunction, int>().Add(userRole);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
 }

@@ -28,6 +28,10 @@ public class ChatMessageConfiguration : IEntityTypeConfiguration<ChatMessage>
         builder.Property(m => m.IsPinned)
             .HasDefaultValue(false);
 
+        builder.HasIndex(m => m.SenderId);
+        builder.HasIndex(m => m.RecipientId);
+        builder.HasIndex(m => m.GroupName);
+
         builder.Ignore(m => m.Sender);
         builder.Ignore(m => m.Recipient);
     }

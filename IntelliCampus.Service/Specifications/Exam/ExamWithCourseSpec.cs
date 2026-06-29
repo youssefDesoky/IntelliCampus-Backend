@@ -9,6 +9,7 @@ public sealed class ExamWithCourseSpec : BaseSpecifications<Exam>
     {
         AddInclude(e => e.Course!);
         AddInclude("Course.StudentCourses");
+        EnableSplitQuery();
     }
 
     public ExamWithCourseSpec(ExamQueryParams queryParams)
@@ -19,6 +20,7 @@ public sealed class ExamWithCourseSpec : BaseSpecifications<Exam>
     {
         AddInclude(e => e.Course!);
         AddInclude("Course.StudentCourses");
+        EnableSplitQuery();
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 
@@ -27,5 +29,6 @@ public sealed class ExamWithCourseSpec : BaseSpecifications<Exam>
     {
         AddInclude(e => e.Course!);
         AddInclude("Course.StudentCourses");
+        EnableSplitQuery();
     }
 }

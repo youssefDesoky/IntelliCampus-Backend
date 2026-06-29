@@ -78,14 +78,14 @@ public class CommunityService : ICommunityService
     {
         var community = await GetOrCreateCommunityAsync(courseId);
         var spec = new CommunityPostSpec(community.CommunityId);
-        return await Posts.GetAllAsync(spec);
+        return await Posts.GetAllAsync(spec, asNoTracking: true);
     }
 
     public async Task<PaginatedResult<Post>> GetCoursePostsAsync(int courseId, CommunityQueryParams queryParams)
     {
         var community = await GetOrCreateCommunityAsync(courseId);
         var spec = new CommunityPostSpec(community.CommunityId, queryParams);
-        var posts = (await Posts.GetAllAsync(spec)).ToList();
+        var posts = (await Posts.GetAllAsync(spec, asNoTracking: true)).ToList();
         var countSpec = new CommunityPostSpec(community.CommunityId);
         var totalCount = await Posts.CountAsync(countSpec);
         return new PaginatedResult<Post>(queryParams.PageIndex, posts.Count, totalCount, posts);
@@ -196,6 +196,7 @@ public class CommunityService : ICommunityService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to notify candidates for post {PostId}", post.PostId);
+            throw;
         }
     }
 
@@ -232,7 +233,7 @@ public class CommunityService : ICommunityService
 
         if (community is not null)
         {
-            var posts = await Posts.GetAllAsync(new CommunityPostSpec(community.CommunityId));
+            var posts = await Posts.GetAllAsync(new CommunityPostSpec(community.CommunityId), asNoTracking: true);
 
             foreach (var post in posts)
             {
@@ -393,7 +394,7 @@ public class CommunityService : ICommunityService
 
         var classes = _unitOfWork.GetRepository<Class, int>();
         var spec = new CourseInstructorsSpec(courseId, userIdsList);
-        var courseClasses = await classes.GetAllAsync(spec);
+        var courseClasses = await classes.GetAllAsync(spec, asNoTracking: true);
 
         var result = new Dictionary<int, string>();
         foreach (var c in courseClasses)

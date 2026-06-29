@@ -37,7 +37,7 @@ public class SessionService : ISessionService
             throw new ClassNotFoundException(classId);
 
         var spec = new SessionSpec(classId, byClass: true);
-        var sessions = await Sessions.GetAllAsync(spec);
+        var sessions = await Sessions.GetAllAsync(spec, asNoTracking: true);
         return sessions.Select(MapToDto);
     }
 

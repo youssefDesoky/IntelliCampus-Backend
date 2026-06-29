@@ -9,6 +9,11 @@ internal sealed class RoomSpec : BaseSpecifications<Room>
     {
     }
 
+    public RoomSpec(int pageSize, int pageIndex)
+    {
+        ApplyPagination(pageSize, pageIndex);
+    }
+
     public RoomSpec(RoomQueryParams queryParams)
         : base(r =>
             (string.IsNullOrEmpty(queryParams.Search) || r.RoomName.Contains(queryParams.Search)) &&

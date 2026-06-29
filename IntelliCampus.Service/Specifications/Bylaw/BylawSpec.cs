@@ -10,6 +10,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(b => b.UploadedBy!);
             AddInclude(b => b.Students!);
+            EnableSplitQuery();
         }
 
         public BylawSpec(int bylawId)
@@ -25,7 +26,12 @@ namespace IntelliCampus.Service.Specifications
             AddInclude("ElectiveBuckets.ElectiveBucketCourses");
             AddInclude("ElectiveBuckets.ElectiveBucketCourses.Course");
             AddInclude("ElectiveBuckets.Department");
+            EnableSplitQuery();
         }
+
+        // Lightweight — no includes (for operations needing only scalars/owned entities)
+        public BylawSpec(int bylawId, bool lightweight)
+            : base(b => b.BylawId == bylawId) { }
 
         public BylawSpec(BylawQueryParams queryParams)
             : base(b => string.IsNullOrEmpty(queryParams.Type)
@@ -33,6 +39,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(b => b.UploadedBy!);
             AddInclude(b => b.Students!);
+            EnableSplitQuery();
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
     }
