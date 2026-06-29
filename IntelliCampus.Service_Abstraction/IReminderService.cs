@@ -1,3 +1,4 @@
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Shared.Dtos.Reminder;
 using IntelliCampus.Shared.Params;
 
@@ -12,4 +13,6 @@ public interface IReminderService
     Task<ReminderDto?> UpdatePersonalReminderAsync(int studentId, string reminderId, UpdateReminderDto dto);
 
     Task<bool> DeletePersonalReminderAsync(int studentId, string reminderId);
+
+    Task MarkSubmissionCompletedAsync(int studentId, ReminderType type, DateTime date);
 }

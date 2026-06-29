@@ -97,6 +97,7 @@ public class ReminderService(IUnitOfWork unitOfWork) : IReminderService
         reminder.Type = ReminderType.Custom;
         reminder.Location = dto.Location;
         reminder.Priority = string.IsNullOrWhiteSpace(dto.Priority) ? "low" : dto.Priority;
+        reminder.State = Enum.TryParse<SubmissionState>(dto.SubmissionState, ignoreCase: true, out var parsed) ? parsed : SubmissionState.Unsubmitted;
 
         Reminders.Update(reminder);
         await _unitOfWork.SaveChangesAsync();
@@ -121,6 +122,24 @@ public class ReminderService(IUnitOfWork unitOfWork) : IReminderService
         return true;
     }
 
+    public async Task MarkSubmissionCompletedAsync(int studentId, ReminderType type, DateTime date)
+    {
+        var spec = new RemindersByStudentSpec(studentId, new ReminderQueryParams
+        {
+            SelectedDay = DateOnly.FromDateTime(date)
+        });
+        var reminders = await Reminders.GetAllAsync(spec);
+        foreach (var r in reminders)
+        {
+            if (r.Type == type && r.Date.Date == date.Date)
+            {
+                r.State = SubmissionState.Completed;
+                Reminders.Update(r);
+            }
+        }
+        await _unitOfWork.SaveChangesAsync();
+    }
+
     private static ReminderDto MapToDto(Reminder reminder)
     {
         var category = reminder.Type switch
@@ -139,7 +158,8 @@ public class ReminderService(IUnitOfWork unitOfWork) : IReminderService
             DueAt = reminder.Date,
             Location = reminder.Location ?? string.Empty,
             Category = category,
-            Priority = reminder.Priority ?? "low"
+            Priority = reminder.Priority ?? "low",
+            SubmissionState = reminder.State.ToString().ToLowerInvariant()
         };
     }
 }

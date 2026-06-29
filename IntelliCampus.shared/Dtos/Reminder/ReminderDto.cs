@@ -8,4 +8,5 @@ public class ReminderDto
     public string Location { get; set; } = default!;
     public string Category { get; set; } = default!;
     public string Priority { get; set; } = default!;
+    public string SubmissionState { get; set; } = "unsubmitted";
 }
