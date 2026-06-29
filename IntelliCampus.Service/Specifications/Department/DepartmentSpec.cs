@@ -20,6 +20,7 @@ namespace IntelliCampus.Service.Specifications
             AddInclude(d => d.HeadInstructor!);
             AddInclude(d => d.Faculty!);
             EnableSplitQuery();
+            AddOrderBy(d => d.DepartmentId);
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
 

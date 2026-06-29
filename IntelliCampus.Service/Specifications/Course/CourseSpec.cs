@@ -44,6 +44,7 @@ namespace IntelliCampus.Service.Specifications
                     AddFullIncludes();
                     break;
             }
+            AddOrderBy(c => c.CourseCode);
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
 
@@ -51,6 +52,7 @@ namespace IntelliCampus.Service.Specifications
             : base(c => courseIds.Contains(c.CourseId))
         {
             AddFullIncludes();
+            AddOrderBy(c => c.CourseCode);
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
 

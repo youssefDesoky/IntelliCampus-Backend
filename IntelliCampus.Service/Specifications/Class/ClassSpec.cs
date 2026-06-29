@@ -35,6 +35,7 @@ namespace IntelliCampus.Service.Specifications
             AddInclude(c => c.Course!);
             AddInclude(c => c.Instructor!);
             EnableSplitQuery();
+            AddOrderBy(c => c.ClassId);
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
 
@@ -44,6 +45,7 @@ namespace IntelliCampus.Service.Specifications
             AddInclude(c => c.Course!);
             AddInclude(c => c.Instructor!);
             EnableSplitQuery();
+            AddOrderBy(c => c.ClassId);
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
 

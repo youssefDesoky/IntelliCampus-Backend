@@ -21,6 +21,7 @@ public sealed class ExamWithCourseSpec : BaseSpecifications<Exam>
         AddInclude(e => e.Course!);
         AddInclude("Course.StudentCourses");
         EnableSplitQuery();
+        AddOrderBy(e => e.ExamId);
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 

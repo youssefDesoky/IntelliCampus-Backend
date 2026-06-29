@@ -39,6 +39,7 @@ internal class TALecturerSectionsSpec : BaseSpecifications<Class>
         AddInclude(c => c.Course!);
         AddInclude(c => c.Instructor!);
         EnableSplitQuery();
+        AddOrderBy(c => c.ClassId);
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 }

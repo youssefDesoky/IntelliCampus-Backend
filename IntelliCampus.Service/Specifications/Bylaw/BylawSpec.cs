@@ -40,6 +40,7 @@ namespace IntelliCampus.Service.Specifications
             AddInclude(b => b.UploadedBy!);
             AddInclude(b => b.Students!);
             EnableSplitQuery();
+            AddOrderBy(b => b.BylawId);
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
     }

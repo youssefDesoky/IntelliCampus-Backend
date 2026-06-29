@@ -41,6 +41,7 @@ namespace IntelliCampus.Service.Specifications
         AddInclude(i => i.OfficeHoursRoom!);
         AddInclude("UserRoles.Role");
         EnableSplitQuery();
+        AddOrderBy(i => i.FullName);
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 
@@ -54,7 +55,8 @@ namespace IntelliCampus.Service.Specifications
         AddInclude(i => i.Faculty!);
         AddInclude("UserRoles.Role");
         EnableSplitQuery();
+        AddOrderBy(i => i.FullName);
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
-    }
+}
 }
