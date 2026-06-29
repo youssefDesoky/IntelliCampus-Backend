@@ -76,6 +76,14 @@ public class QuizzesController : ControllerBase
         return Ok();
     }
 
+    [HttpGet("/api/courses/{courseId}/quizzes/{quizId}/questions")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> GetQuestions(string courseId, int quizId)
+    {
+        var result = await _quizService.GetQuestionsAsync(quizId, UserId, courseId);
+        return Ok(result);
+    }
+
     [HttpGet("/api/courses/{courseId}/quizzes/{quizId}/submissions")]
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> GetSubmissions(string courseId, int quizId)

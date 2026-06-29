@@ -1,6 +1,7 @@
 ﻿using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service_Abstraction;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IntelliCampus.Web.CustomMiddleWares
 {
@@ -26,6 +27,10 @@ namespace IntelliCampus.Web.CustomMiddleWares
             }
             catch (Exception ex)
             {
+                var detail = ex.Message;
+                if (ex is DbUpdateException dbEx && dbEx.InnerException is not null)
+                    detail = dbEx.InnerException.Message;
+
                 switch (ex)
                 {
                     case NotFoundException:
@@ -42,7 +47,7 @@ namespace IntelliCampus.Web.CustomMiddleWares
                 var problem = new ProblemDetails()
                 {
                     Title = "Error While Processing HTTP Request",
-                    Detail = ex.Message,
+                    Detail = detail,
                     Instance = httpContext.Request.Path,
                     Status = ex switch
                     {

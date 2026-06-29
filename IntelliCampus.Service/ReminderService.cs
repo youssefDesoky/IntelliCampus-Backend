@@ -131,7 +131,7 @@ public class ReminderService(IUnitOfWork unitOfWork) : IReminderService
         var reminders = await Reminders.GetAllAsync(spec);
         foreach (var r in reminders)
         {
-            if (r.Type == type && r.Date.Date == date.Date)
+            if (r.Type == type && r.Date == date)
             {
                 r.State = SubmissionState.Completed;
                 Reminders.Update(r);
