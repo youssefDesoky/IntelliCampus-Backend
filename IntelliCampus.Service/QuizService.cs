@@ -222,7 +222,8 @@ public class QuizService : IQuizService
                 registered,
                 NotificationType.NewQuizPosted,
                 $"A new quiz \"{quiz.Title}\" has been posted. Due: {quiz.DueDate:g}",
-                "New Quiz Available");
+                "New Quiz Available",
+                $"/courses/{parsedCourseId}/quizzes/practice?quizId={quiz.QuizId}");
         }
 
         var spec = new QuizSpec(quiz.QuizId);
@@ -433,15 +434,47 @@ public class QuizService : IQuizService
         var subsSpec = new StudentQuizSpec(quizId, allResults: true);
         var submissions = await StudentQuizzes.GetAllAsync(subsSpec, asNoTracking: true);
 
-        return submissions.Select(sq => new StudentSubmissionDto
+        return submissions.Select(sq =>
         {
-            StudentId = sq.StudentId,
-            StudentName = sq.Student?.FullName,
-            Score = sq.Score,
-            MaxScore = maxScore,
-            SubmittedAt = sq.SubmittedAt.ToString("dd MM yy HH:mm"),
-            Answers = sq.AnswersJson is not null ? JsonSerializer.Deserialize<Dictionary<string, object>>(sq.AnswersJson) : null,
-            QuestionResults = sq.QuestionResultsJson is not null ? JsonSerializer.Deserialize<List<QuestionResultDto>>(sq.QuestionResultsJson) : null
+            var answers = sq.AnswersJson is not null
+                ? JsonSerializer.Deserialize<Dictionary<string, object>>(sq.AnswersJson)
+                : null;
+            var results = sq.QuestionResultsJson is not null
+                ? JsonSerializer.Deserialize<List<QuestionResultDto>>(sq.QuestionResultsJson)
+                : null;
+            var resultsByQId = results?.ToDictionary(r => r.QuestionId) ?? new();
+
+            var answerDetails = new List<SubmissionAnswerDetailDto>();
+            for (int i = 0; i < allQuestions.Count; i++)
+            {
+                var q = allQuestions[i];
+                var qId = "q" + (i + 1);
+                var result = resultsByQId.GetValueOrDefault(qId);
+                answerDetails.Add(new SubmissionAnswerDetailDto
+                {
+                    QuestionId = qId,
+                    Type = q.Type,
+                    Prompt = q.Prompt,
+                    Options = q.Options is not null ? JsonSerializer.Deserialize<List<string>>(q.Options) : null,
+                    Points = q.Points,
+                    StudentAnswer = answers?.TryGetValue(qId, out var val) == true ? val?.ToString() : null,
+                    CorrectAnswer = q.CorrectAnswer,
+                    AutoScore = result?.EarnedPoints,
+                    Score = result?.EarnedPoints
+                });
+            }
+
+            return new StudentSubmissionDto
+            {
+                StudentId = sq.StudentId,
+                StudentName = sq.Student?.FullName,
+                Score = sq.Score,
+                MaxScore = maxScore,
+                SubmittedAt = sq.SubmittedAt.ToString("dd MM yy HH:mm"),
+                Answers = answers,
+                QuestionResults = results,
+                AnswerDetails = answerDetails
+            };
         }).ToList();
     }
 
@@ -982,7 +1015,7 @@ public class QuizService : IQuizService
             studentId,
             NotificationType.QuizSubmitted,
             $"Your quiz '{quiz.Title}' was submitted successfully.",
-            clickUrl: $"/courses/{courseId}/quizzes/{quiz.QuizId}");
+            clickUrl: $"/courses/{courseId}/quizzes/practice?quizId={quiz.QuizId}&review=graded");
 
         var maxS = allQ.Sum(q => q.Points);
         return new QuizSubmitResponseDto
