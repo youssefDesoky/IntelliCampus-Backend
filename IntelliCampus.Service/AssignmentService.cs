@@ -16,12 +16,14 @@ public class AssignmentService(
     IUnitOfWork unitOfWork,
     IFileStorageService fileStorage,
     INotificationService notificationService,
-    UrlResolver urlResolver) : IAssignmentService
+    UrlResolver urlResolver,
+    IReminderService reminderService) : IAssignmentService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IFileStorageService _fileStorage = fileStorage;
     private readonly INotificationService _notificationService = notificationService;
     private readonly UrlResolver _urlResolver = urlResolver;
+    private readonly IReminderService _reminderService = reminderService;
 
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
@@ -451,6 +453,8 @@ public class AssignmentService(
             NotificationType.AssignmentSubmitted,
             $"Your assignment '{assignment.Title}' was submitted successfully.",
             clickUrl: $"/courses/{assignment.CourseId}/assignments/{assignment.AssignmentId}");
+
+        await _reminderService.MarkSubmissionCompletedAsync(studentId, ReminderType.Assignment, assignment.DueDate);
 
         var spec = new StudentAssignmentSpec(studentId, assignmentId);
         var result = await StudentAssignments.GetByIdAsync(spec);

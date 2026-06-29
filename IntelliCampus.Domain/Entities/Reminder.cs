@@ -20,6 +20,8 @@ public class Reminder
 
     public string Priority { get; set; } = "low";
 
+    public SubmissionState State { get; set; } = SubmissionState.Unsubmitted;
+
     // Navigation properties
     public Student? Student { get; set; }
 
