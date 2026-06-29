@@ -40,6 +40,10 @@ public interface IGradeService
     // Instructor (read-only)
     Task<IEnumerable<GradeDto>> GetByStudentAndCourseAsync(int instructorId, int studentId, int courseId);
 
+    // CourseWork weight configuration
+    Task<CourseWorkWeightDto?> GetCourseWorkWeightAsync(int courseId, int instructorId);
+    Task<CourseWorkWeightDto> SetCourseWorkWeightAsync(int courseId, int instructorId, UpdateCourseWorkWeightDto dto);
+
     // Complaints
     Task<GradeComplaintResponseDto> FileComplaintAsync(int studentId, GradeComplaintDto dto);
     Task<IEnumerable<GradeComplaintResponseDto>> GetComplaintsAsync(int studentId);
