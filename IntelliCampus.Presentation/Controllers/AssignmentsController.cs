@@ -45,6 +45,16 @@ public class AssignmentsController(IAssignmentService assignmentService) : Contr
     public async Task<IActionResult> Create([FromBody] CreateAssignmentDto dto)
         => Ok(await assignmentService.CreateAsync(UserId, dto));
 
+    [HttpPost("upload-attachment")]
+    [Authorize(Roles = "Instructor")]
+    [RequestSizeLimit(MaxFileSize)]
+    [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
+    public async Task<IActionResult> UploadAttachment(IFormFile file)
+    {
+        var result = await assignmentService.UploadAttachmentAsync(file);
+        return Ok(result);
+    }
+
     [HttpPut("{assignmentId}")]
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> Update(int assignmentId, [FromBody] UpdateAssignmentDto dto)
@@ -55,9 +65,25 @@ public class AssignmentsController(IAssignmentService assignmentService) : Contr
     public async Task<IActionResult> GetAllSubmissions(int assignmentId)
         => Ok(await assignmentService.GetAllSubmissionsAsync(assignmentId, UserId));
 
-    [HttpPost("grade")]
+    [HttpGet("submissions/{fileId}/download")]
+    [Authorize(Roles = "Instructor,Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
+    public async Task<IActionResult> DownloadSubmissionFile(string fileId)
+    {
+        var (stream, fileName, contentType) = await assignmentService.DownloadSubmissionFileAsync(fileId);
+        return File(stream, contentType, fileName);
+    }
+
+    [HttpGet("attachments/{fileId}/download")]
+    [Authorize(Roles = "Instructor,Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
+    public async Task<IActionResult> DownloadAssignmentAttachment(string fileId)
+    {
+        var (stream, fileName, contentType) = await assignmentService.DownloadAssignmentAttachmentAsync(fileId);
+        return File(stream, contentType, fileName);
+    }
+
+    [HttpPost("{assignmentId}/grade")]
     [Authorize(Roles = "Instructor")]
-    public async Task<IActionResult> Grade([FromBody] GradeSubmissionDto dto)
+    public async Task<IActionResult> Grade(int assignmentId, [FromBody] GradeSubmissionDto dto)
     {
         var result = await assignmentService.GradeSubmissionAsync(UserId, dto);
         return Ok(result);
