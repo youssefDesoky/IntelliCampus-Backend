@@ -51,6 +51,14 @@ public class CoursesController : ControllerBase
         return Ok(courses);
     }
 
+    [HttpGet("student/{studentId}/all")]
+    [Authorize]
+    public async Task<ActionResult<StudentAllCoursesDto>> GetStudentAllCourses(int studentId)
+    {
+        var result = await _courseService.GetAllStudentCoursesAsync(studentId);
+        return Ok(result);
+    }
+
     [HttpGet("my-courses")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<ActionResult<PaginatedResult<CourseDto>>> GetMyStudentCourses([FromQuery] CourseQueryParams queryParams)

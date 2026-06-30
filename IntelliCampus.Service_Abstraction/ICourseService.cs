@@ -26,4 +26,5 @@ public interface ICourseService
     Task<CourseDto> UpdateRegistrationSettingsAsync(int courseId, UpdateCourseRegistrationSettingsDto dto);
     Task<CourseRegistrationSettingsDto?> GetRegistrationSettingsAsync(int courseId);
     Task<ExcelImportResultDto> UploadGradesAsync(int courseId, IFormFile file, int? userId);
+    Task<StudentAllCoursesDto> GetAllStudentCoursesAsync(int studentId);
 }

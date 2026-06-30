@@ -6,7 +6,10 @@ namespace IntelliCampus.Service.Specifications;
 internal sealed class StudentCourseIdsSpec : BaseSpecifications<StudentCourse>
 {
     public StudentCourseIdsSpec(int studentId)
-        : base(sc => sc.StudentId == studentId) { }
+        : base(sc => sc.StudentId == studentId)
+    {
+        AddInclude(sc => sc.Class!);
+    }
 
     public StudentCourseIdsSpec(int studentId, List<StudentCourseStatus> statuses)
         : base(sc => sc.StudentId == studentId && statuses.Contains(sc.Status)) { }
