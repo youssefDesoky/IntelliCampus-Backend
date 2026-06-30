@@ -1,4 +1,4 @@
-﻿[
+[
   {
     "nationalId": "30412022101731",
     "studentCode": "20230100001",
@@ -181,7 +181,8 @@
     "nationality": "EG",
     "password": "30501012200101",
     "roles": [
-      "Student_Masters"
+      "Student_Masters",
+      "Instructor"
     ],
     "gpa": 3.75,
     "studentType": "Masters",
@@ -199,7 +200,8 @@
     "nationality": "EG",
     "password": "30502012200202",
     "roles": [
-      "Student_PhD"
+      "Student_PhD",
+      "Instructor"
     ],
     "gpa": 3.92,
     "studentType": "PhD",

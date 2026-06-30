@@ -102,27 +102,27 @@
   {
     "studentEmail": "20230100001@intellicampus.online",
     "courseCode": "IS211",
-    "classCode": "IS211-LEC"
+    "classCode": "IS211-LEC-ALT"
   },
   {
     "studentEmail": "20230100001@intellicampus.online",
     "courseCode": "IS231",
-    "classCode": "IS231-LEC"
+    "classCode": "IS231-LEC-ALT"
   },
   {
     "studentEmail": "20230100001@intellicampus.online",
     "courseCode": "MA214",
-    "classCode": "MA214-LEC"
+    "classCode": "MA214-LEC-ALT"
   },
   {
     "studentEmail": "20230100001@intellicampus.online",
     "courseCode": "HU112",
-    "classCode": "HU112-LEC"
+    "classCode": "HU112-LEC-ALT"
   },
   {
     "studentEmail": "20230100001@intellicampus.online",
     "courseCode": "HU225",
-    "classCode": "HU225-LEC"
+    "classCode": "HU225-LEC-ALT"
   },
   {
     "studentEmail": "20230100001@intellicampus.online",
@@ -282,7 +282,7 @@
   {
     "studentEmail": "20230100002@intellicampus.online",
     "courseCode": "MA113",
-    "classCode": "MA113-LEC"
+    "classCode": "MA113-LEC-ALT"
   },
   {
     "studentEmail": "20230100002@intellicampus.online",
@@ -327,7 +327,7 @@
   {
     "studentEmail": "20230100002@intellicampus.online",
     "courseCode": "HU117",
-    "classCode": "HU117-LEC"
+    "classCode": "HU117-LEC-ALT"
   },
   {
     "studentEmail": "20230100002@intellicampus.online",
@@ -337,7 +337,7 @@
   {
     "studentEmail": "20230100002@intellicampus.online",
     "courseCode": "IS211",
-    "classCode": "IS211-LEC"
+    "classCode": "IS211-LEC-ALT"
   },
   {
     "studentEmail": "20230100002@intellicampus.online",
@@ -347,27 +347,27 @@
   {
     "studentEmail": "20230100002@intellicampus.online",
     "courseCode": "HU121",
-    "classCode": "HU121-LEC"
+    "classCode": "HU121-LEC-ALT"
   },
   {
     "studentEmail": "20230100002@intellicampus.online",
     "courseCode": "DS251",
-    "classCode": "DS251-LEC"
+    "classCode": "DS251-LEC-ALT"
   },
   {
     "studentEmail": "20230100002@intellicampus.online",
     "courseCode": "IS231",
-    "classCode": "IS231-LEC"
+    "classCode": "IS231-LEC-ALT"
   },
   {
     "studentEmail": "20230100002@intellicampus.online",
     "courseCode": "MA214",
-    "classCode": "MA214-LEC"
+    "classCode": "MA214-LEC-ALT"
   },
   {
     "studentEmail": "20230100002@intellicampus.online",
     "courseCode": "CS214",
-    "classCode": "CS214-LEC"
+    "classCode": "CS214-LEC-ALT"
   },
   {
     "studentEmail": "20230100002@intellicampus.online",
@@ -562,7 +562,7 @@
   {
     "studentEmail": "20230100003@intellicampus.online",
     "courseCode": "HU117",
-    "classCode": "HU117-LEC"
+    "classCode": "HU117-LEC-ALT"
   },
   {
     "studentEmail": "20230100003@intellicampus.online",
@@ -582,37 +582,37 @@
   {
     "studentEmail": "20230100003@intellicampus.online",
     "courseCode": "IS211",
-    "classCode": "IS211-LEC"
+    "classCode": "IS211-LEC-ALT"
   },
   {
     "studentEmail": "20230100003@intellicampus.online",
     "courseCode": "IS231",
-    "classCode": "IS231-LEC"
+    "classCode": "IS231-LEC-ALT"
   },
   {
     "studentEmail": "20230100003@intellicampus.online",
     "courseCode": "DS251",
-    "classCode": "DS251-LEC"
+    "classCode": "DS251-LEC-ALT-ALT"
   },
   {
     "studentEmail": "20230100003@intellicampus.online",
     "courseCode": "CS352",
-    "classCode": "CS352-LEC"
+    "classCode": "CS352-LEC-ALT"
   },
   {
     "studentEmail": "20230100003@intellicampus.online",
     "courseCode": "IS312",
-    "classCode": "IS312-LEC"
+    "classCode": "IS312-LEC-ALT-ALT"
   },
   {
     "studentEmail": "20230100003@intellicampus.online",
     "courseCode": "IS321",
-    "classCode": "IS321-LEC"
+    "classCode": "IS321-LEC-ALT-ALT"
   },
   {
     "studentEmail": "20230100003@intellicampus.online",
     "courseCode": "IS332",
-    "classCode": "IS332-LEC"
+    "classCode": "IS332-LEC-ALT"
   },
   {
     "studentEmail": "20230100003@intellicampus.online",
@@ -837,27 +837,27 @@
   {
     "studentEmail": "20220100001@intellicampus.online",
     "courseCode": "SIS213",
-    "classCode": "SIS213-LEC"
+    "classCode": "SIS213-LEC-ALT"
   },
   {
     "studentEmail": "20220100001@intellicampus.online",
     "courseCode": "SHU132",
-    "classCode": "SHU132-LEC"
+    "classCode": "SHU132-LEC-ALT"
   },
   {
     "studentEmail": "20220100001@intellicampus.online",
     "courseCode": "SIS334",
-    "classCode": "SIS334-LEC"
+    "classCode": "SIS334-LEC-ALT"
   },
   {
     "studentEmail": "20220100001@intellicampus.online",
     "courseCode": "SDS212",
-    "classCode": "SDS212-LEC"
+    "classCode": "SDS212-LEC-ALT"
   },
   {
     "studentEmail": "20220100001@intellicampus.online",
     "courseCode": "SCS241",
-    "classCode": "SCS241-LEC"
+    "classCode": "SCS241-LEC-ALT"
   },
   {
     "studentEmail": "20220100001@intellicampus.online",
@@ -1007,7 +1007,7 @@
   {
     "studentEmail": "20220100002@intellicampus.online",
     "courseCode": "SHU124",
-    "classCode": "SHU124-LEC"
+    "classCode": "SHU124-LEC-ALT"
   },
   {
     "studentEmail": "20220100002@intellicampus.online",
@@ -1032,7 +1032,7 @@
   {
     "studentEmail": "20220100002@intellicampus.online",
     "courseCode": "SMA113",
-    "classCode": "SMA113-LEC"
+    "classCode": "SMA113-LEC-ALT"
   },
   {
     "studentEmail": "20220100002@intellicampus.online",
@@ -1057,17 +1057,17 @@
   {
     "studentEmail": "20220100002@intellicampus.online",
     "courseCode": "SMA214",
-    "classCode": "SMA214-LEC"
+    "classCode": "SMA214-LEC-ALT"
   },
   {
     "studentEmail": "20220100002@intellicampus.online",
     "courseCode": "SST222",
-    "classCode": "SST222-LEC"
+    "classCode": "SST222-LEC-ALT"
   },
   {
     "studentEmail": "20220100002@intellicampus.online",
     "courseCode": "SHU132",
-    "classCode": "SHU132-LEC"
+    "classCode": "SHU132-LEC-ALT"
   },
   {
     "studentEmail": "20220100002@intellicampus.online",
@@ -1077,7 +1077,7 @@
   {
     "studentEmail": "20220100002@intellicampus.online",
     "courseCode": "SIS334",
-    "classCode": "SIS334-LEC"
+    "classCode": "SIS334-LEC-ALT"
   },
   {
     "studentEmail": "20220100002@intellicampus.online",
@@ -1087,17 +1087,17 @@
   {
     "studentEmail": "20220100002@intellicampus.online",
     "courseCode": "SIS213",
-    "classCode": "SIS213-LEC"
+    "classCode": "SIS213-LEC-ALT"
   },
   {
     "studentEmail": "20220100002@intellicampus.online",
     "courseCode": "SDS212",
-    "classCode": "SDS212-LEC"
+    "classCode": "SDS212-LEC-ALT"
   },
   {
     "studentEmail": "20220100002@intellicampus.online",
     "courseCode": "SIS333",
-    "classCode": "SIS333-LEC"
+    "classCode": "SIS333-LEC-ALT"
   },
   {
     "studentEmail": "20220100002@intellicampus.online",
@@ -1302,12 +1302,12 @@
   {
     "studentEmail": "20220100003@intellicampus.online",
     "courseCode": "SHU132",
-    "classCode": "SHU132-LEC"
+    "classCode": "SHU132-LEC-ALT"
   },
   {
     "studentEmail": "20220100003@intellicampus.online",
     "courseCode": "SIS213",
-    "classCode": "SIS213-LEC"
+    "classCode": "SIS213-LEC-ALT"
   },
   {
     "studentEmail": "20220100003@intellicampus.online",
@@ -1317,7 +1317,7 @@
   {
     "studentEmail": "20220100003@intellicampus.online",
     "courseCode": "SIS334",
-    "classCode": "SIS334-LEC"
+    "classCode": "SIS334-LEC-ALT"
   },
   {
     "studentEmail": "20220100003@intellicampus.online",
@@ -1327,12 +1327,12 @@
   {
     "studentEmail": "20220100003@intellicampus.online",
     "courseCode": "SDS212",
-    "classCode": "SDS212-LEC"
+    "classCode": "SDS212-LEC-ALT"
   },
   {
     "studentEmail": "20220100003@intellicampus.online",
     "courseCode": "SCS241",
-    "classCode": "SCS241-LEC"
+    "classCode": "SCS241-LEC-ALT"
   },
   {
     "studentEmail": "20220100003@intellicampus.online",
@@ -1507,7 +1507,7 @@
   {
     "studentEmail": "20220100004@intellicampus.online",
     "courseCode": "SDS321",
-    "classCode": "SDS321-LEC"
+    "classCode": "SDS321-LEC-ALT"
   },
   {
     "studentEmail": "20220100004@intellicampus.online",
@@ -1547,32 +1547,32 @@
   {
     "studentEmail": "20220100004@intellicampus.online",
     "courseCode": "SCS252",
-    "classCode": "SCS252-LEC"
+    "classCode": "SCS252-LEC-ALT"
   },
   {
     "studentEmail": "20220100004@intellicampus.online",
     "courseCode": "SCS253",
-    "classCode": "SCS253-LEC"
+    "classCode": "SCS253-LEC-ALT"
   },
   {
     "studentEmail": "20220100004@intellicampus.online",
     "courseCode": "SCS254",
-    "classCode": "SCS254-LEC"
+    "classCode": "SCS254-LEC-ALT"
   },
   {
     "studentEmail": "20220100004@intellicampus.online",
     "courseCode": "SHU132",
-    "classCode": "SHU132-LEC"
+    "classCode": "SHU132-LEC-ALT"
   },
   {
     "studentEmail": "20220100004@intellicampus.online",
     "courseCode": "SCS331",
-    "classCode": "SCS331-LEC"
+    "classCode": "SCS331-LEC-ALT"
   },
   {
     "studentEmail": "20220100004@intellicampus.online",
     "courseCode": "SIS212",
-    "classCode": "SIS212-LEC"
+    "classCode": "SIS212-LEC-ALT"
   },
   {
     "studentEmail": "20220100004@intellicampus.online",
@@ -1742,7 +1742,7 @@
   {
     "studentEmail": "20220100005@intellicampus.online",
     "courseCode": "SDS321",
-    "classCode": "SDS321-LEC"
+    "classCode": "SDS321-LEC-ALT"
   },
   {
     "studentEmail": "20220100005@intellicampus.online",
@@ -1782,32 +1782,32 @@
   {
     "studentEmail": "20220100005@intellicampus.online",
     "courseCode": "SHU132",
-    "classCode": "SHU132-LEC"
+    "classCode": "SHU132-LEC-ALT"
   },
   {
     "studentEmail": "20220100005@intellicampus.online",
     "courseCode": "SCS252",
-    "classCode": "SCS252-LEC"
+    "classCode": "SCS252-LEC-ALT"
   },
   {
     "studentEmail": "20220100005@intellicampus.online",
     "courseCode": "SCS253",
-    "classCode": "SCS253-LEC"
+    "classCode": "SCS253-LEC-ALT"
   },
   {
     "studentEmail": "20220100005@intellicampus.online",
     "courseCode": "SCS254",
-    "classCode": "SCS254-LEC"
+    "classCode": "SCS254-LEC-ALT"
   },
   {
     "studentEmail": "20220100005@intellicampus.online",
     "courseCode": "SCS331",
-    "classCode": "SCS331-LEC"
+    "classCode": "SCS331-LEC-ALT"
   },
   {
     "studentEmail": "20220100005@intellicampus.online",
     "courseCode": "SIS212",
-    "classCode": "SIS212-LEC"
+    "classCode": "SIS212-LEC-ALT"
   },
   {
     "studentEmail": "20220100005@intellicampus.online",
@@ -1977,7 +1977,7 @@
   {
     "studentEmail": "20220100006@intellicampus.online",
     "courseCode": "SDS321",
-    "classCode": "SDS321-LEC"
+    "classCode": "SDS321-LEC-ALT"
   },
   {
     "studentEmail": "20220100006@intellicampus.online",
@@ -2002,7 +2002,7 @@
   {
     "studentEmail": "20220100006@intellicampus.online",
     "courseCode": "SIT221",
-    "classCode": "SIT221-LEC"
+    "classCode": "SIT221-LEC-ALT"
   },
   {
     "studentEmail": "20220100006@intellicampus.online",
@@ -2022,32 +2022,32 @@
   {
     "studentEmail": "20220100006@intellicampus.online",
     "courseCode": "SIT222",
-    "classCode": "SIT222-LEC"
+    "classCode": "SIT222-LEC-ALT"
   },
   {
     "studentEmail": "20220100006@intellicampus.online",
     "courseCode": "SHU132",
-    "classCode": "SHU132-LEC"
+    "classCode": "SHU132-LEC-ALT"
   },
   {
     "studentEmail": "20220100006@intellicampus.online",
     "courseCode": "SST222",
-    "classCode": "SST222-LEC"
+    "classCode": "SST222-LEC-ALT"
   },
   {
     "studentEmail": "20220100006@intellicampus.online",
     "courseCode": "SIT324",
-    "classCode": "SIT324-LEC"
+    "classCode": "SIT324-LEC-ALT"
   },
   {
     "studentEmail": "20220100006@intellicampus.online",
     "courseCode": "SIT351",
-    "classCode": "SIT351-LEC"
+    "classCode": "SIT351-LEC-ALT"
   },
   {
     "studentEmail": "20220100006@intellicampus.online",
     "courseCode": "SIT345",
-    "classCode": "SIT345-LEC"
+    "classCode": "SIT345-LEC-ALT"
   },
   {
     "studentEmail": "20220100006@intellicampus.online",
@@ -2153,5 +2153,60 @@
     "studentEmail": "20220100006@intellicampus.online",
     "courseCode": "SLB452",
     "classCode": "SLB452-LEC"
+  },
+  {
+    "studentEmail": "20240110001@intellicampus.online",
+    "courseCode": "CS213",
+    "classCode": "CS213-LEC"
+  },
+  {
+    "studentEmail": "20240110001@intellicampus.online",
+    "courseCode": "CS214",
+    "classCode": "CS214-LEC"
+  },
+  {
+    "studentEmail": "20240110001@intellicampus.online",
+    "courseCode": "CS251",
+    "classCode": "CS251-LEC"
+  },
+  {
+    "studentEmail": "20240110001@intellicampus.online",
+    "courseCode": "IS211",
+    "classCode": "IS211-LEC"
+  },
+  {
+    "studentEmail": "20240110001@intellicampus.online",
+    "courseCode": "CS112",
+    "classCode": "CS112-LEC"
+  },
+  {
+    "studentEmail": "20240120002@intellicampus.online",
+    "courseCode": "IS231",
+    "classCode": "IS231-LEC"
+  },
+  {
+    "studentEmail": "20240120002@intellicampus.online",
+    "courseCode": "CS352",
+    "classCode": "CS352-LEC"
+  },
+  {
+    "studentEmail": "20240120002@intellicampus.online",
+    "courseCode": "IS332",
+    "classCode": "IS332-LEC"
+  },
+  {
+    "studentEmail": "20240120002@intellicampus.online",
+    "courseCode": "CS112",
+    "classCode": "CS112-LEC-ALT"
+  },
+  {
+    "studentEmail": "20240120002@intellicampus.online",
+    "courseCode": "IS211",
+    "classCode": "IS211-LEC-ALT"
+  },
+  {
+    "studentEmail": "20240120002@intellicampus.online",
+    "courseCode": "CS251",
+    "classCode": "CS251-LEC"
   }
 ]
