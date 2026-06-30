@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Helpers;
 using IntelliCampus.Domain.Interfaces;
@@ -71,6 +72,128 @@ public class AccountRecoveryService : IAccountRecoveryService
             <p>This code expires in <strong>10 minutes</strong>.</p>
             <p style="color:#6b7280;font-size:13px;">If you did not request this, please ignore this email.</p>
             """);
+    }
+
+    public async Task SendChangeRecoveryEmailCodeAsync(int userId, SendChangeRecoveryEmailCodeDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.NewEmail) || !Regex.IsMatch(dto.NewEmail, @"^\S+@\S+\.\S+$"))
+            throw new InvalidOperationException("A valid new recovery email is required.");
+
+        var user = await Users.GetByIdAsync(userId);
+        if (user is null)
+            throw new InvalidOperationException("User not found.");
+
+        if (!_passwordService.VerifyPassword(dto.CurrentPassword, user.Password))
+            throw new InvalidOperationException("Current password is incorrect.");
+
+        if (!string.IsNullOrWhiteSpace(user.RecoveryEmail)
+            && user.RecoveryEmail.Equals(dto.NewEmail, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("New email is the same as the current recovery email.");
+
+        await InvalidatePendingCodesAsync(userId, dto.NewEmail, "recovery_email_change");
+
+        var code = RandomNumberGenerator.GetInt32(100000, 999999).ToString();
+        var codeHash = HashCode(code);
+
+        var entity = new EmailVerificationCode
+        {
+            UserId = userId,
+            Email = dto.NewEmail,
+            CodeHash = codeHash,
+            Purpose = "recovery_email_change",
+            ExpiresAt = EgyptTime.Now.AddMinutes(10),
+            CreatedAt = EgyptTime.Now
+        };
+
+        VerificationCodes.Add(entity);
+        await _unitOfWork.SaveChangesAsync();
+
+        await _emailSender.SendAsync(
+            dto.NewEmail,
+            user.FullName,
+            "Confirm Your New Recovery Email",
+            $"""
+            <h2 style="color:#1a56db;text-align:center;margin:0 0 24px;">Confirm New Recovery Email</h2>
+            <p>Hello <strong>{user.FullName}</strong>,</p>
+            <p>You requested to change your recovery email. Use the code below to confirm the new address:</p>
+            <div style="text-align:center;margin:24px 0;">
+                <span style="font-size:32px;font-weight:bold;letter-spacing:8px;background:#f3f4f6;padding:12px 24px;border-radius:8px;">{code}</span>
+            </div>
+            <p>This code expires in <strong>10 minutes</strong>.</p>
+            <p style="color:#6b7280;font-size:13px;">If you did not request this change, please ignore this email and consider changing your password.</p>
+            """);
+    }
+
+    public async Task ChangeRecoveryEmailAsync(int userId, ChangeRecoveryEmailDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.NewEmail) || !Regex.IsMatch(dto.NewEmail, @"^\S+@\S+\.\S+$"))
+            throw new InvalidOperationException("A valid new recovery email is required.");
+        if (string.IsNullOrWhiteSpace(dto.VerificationCode))
+            throw new InvalidOperationException("Verification code is required.");
+
+        var user = await Users.GetByIdAsync(userId);
+        if (user is null)
+            throw new InvalidOperationException("User not found.");
+
+        if (!_passwordService.VerifyPassword(dto.CurrentPassword, user.Password))
+            throw new InvalidOperationException("Current password is incorrect.");
+
+        var hashedInput = HashCode(dto.VerificationCode);
+        var recentCodes = (await VerificationCodes.GetAllAsync())
+            .Where(c => c.UserId == userId
+                && c.Email == dto.NewEmail
+                && c.Purpose == "recovery_email_change"
+                && c.ConsumedAt == null
+                && c.ExpiresAt > EgyptTime.Now)
+            .ToList();
+
+        var matchedCode = recentCodes.FirstOrDefault(c => c.CodeHash == hashedInput);
+
+        if (matchedCode is null)
+        {
+            await TrackFailedAttemptAsync(recentCodes);
+            throw new InvalidOperationException("Invalid or expired verification code.");
+        }
+
+        matchedCode.ConsumedAt = EgyptTime.Now;
+        VerificationCodes.Update(matchedCode);
+
+        user.RecoveryEmail = dto.NewEmail;
+        user.RecoveryEmailVerified = true;
+        Users.Update(user);
+
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    private async Task InvalidatePendingCodesAsync(int userId, string email, string purpose)
+    {
+        var pending = (await VerificationCodes.GetAllAsync())
+            .Where(c => c.UserId == userId
+                && c.Email == email
+                && c.Purpose == purpose
+                && c.ConsumedAt == null)
+            .ToList();
+
+        foreach (var c in pending)
+            c.ConsumedAt = EgyptTime.Now;
+
+        foreach (var c in pending)
+            VerificationCodes.Update(c);
+    }
+
+    private async Task TrackFailedAttemptAsync(List<EmailVerificationCode> codes)
+    {
+        foreach (var c in codes)
+        {
+            c.Attempts += 1;
+            if (c.Attempts >= 5)
+                c.ConsumedAt = EgyptTime.Now;
+        }
+
+        foreach (var c in codes)
+            VerificationCodes.Update(c);
+
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<AuthResponseDto> FirstTimeSetupAsync(int userId, FirstTimeSetupDto dto)

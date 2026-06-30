@@ -235,21 +235,4 @@ public class AuthService(
 
         return true;
     }
-
-    public async Task<bool> ChangeRecoveryEmailAsync(int userId, ChangeRecoveryEmailDto dto)
-    {
-        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
-
-        if (user is null)
-            throw new UserNotFoundException(userId);
-
-        if (!_passwordService.VerifyPassword(dto.CurrentPassword, user.Password))
-            throw new InvalidOperationException("Current password is incorrect.");
-
-        user.RecoveryEmail = dto.NewEmail;
-        user.RecoveryEmailVerified = true;
-        await _unitOfWork.SaveChangesAsync();
-
-        return true;
-    }
 }

@@ -1,7 +1,6 @@
 using FluentAssertions;
 using IntelliCampus.Service;
 using IntelliCampus.Shared.Dtos.Export;
-using IntelliCampus.Shared.Dtos.InstructorAnalytics;
 
 namespace IntelliCampus.UnitTests.Services;
 
@@ -76,26 +75,6 @@ public class PdfExportServiceTests
     }
 
     [Fact]
-    public void ExportCourseAnalytics_ReturnsNonEmptyBytes()
-    {
-        var dto = new CourseAnalyticsExportDto
-        {
-            CourseName = "Math",
-            CourseCode = "MATH101",
-            InstructorName = "Dr. Smith",
-            AssessmentPerformance = [],
-            SubmissionRate = [],
-            WeeklyAttendance = []
-        };
-
-        var result = _sut.ExportCourseAnalytics(dto);
-
-        result.Should().NotBeNull();
-        result.Should().NotBeEmpty();
-        DetectPdf(result).Should().BeTrue();
-    }
-
-    [Fact]
     public void ExportAdminAnalysis_ReturnsNonEmptyBytes()
     {
         var dto = new AdminAnalysisExportDto
@@ -136,13 +115,6 @@ public class PdfExportServiceTests
     public void ExportExamSchedule_NullInput_ThrowsNullReferenceException()
     {
         _sut.Invoking(s => s.ExportExamSchedule(null!))
-            .Should().Throw<NullReferenceException>();
-    }
-
-    [Fact]
-    public void ExportCourseAnalytics_NullInput_ThrowsNullReferenceException()
-    {
-        _sut.Invoking(s => s.ExportCourseAnalytics(null!))
             .Should().Throw<NullReferenceException>();
     }
 
@@ -299,37 +271,6 @@ public class PdfExportServiceTests
     }
 
     [Fact]
-    public void ExportCourseAnalytics_WithAllSections_ReturnsNonEmptyBytes()
-    {
-        var dto = new CourseAnalyticsExportDto
-        {
-            CourseName = "Data Structures",
-            CourseCode = "CS201",
-            InstructorName = "Dr. Smith",
-            AssessmentPerformance =
-            [
-                new AssessmentPerformanceItemDto { Name = "Midterm", Average = 78.5, MaxScore = 100 },
-                new AssessmentPerformanceItemDto { Name = "Final", Average = 82.0, MaxScore = 100 }
-            ],
-            SubmissionRate =
-            [
-                new SubmissionRateItemDto { Name = "On Time", Value = 85 },
-                new SubmissionRateItemDto { Name = "Late", Value = 15 }
-            ],
-            WeeklyAttendance =
-            [
-                new WeeklyAttendanceItemDto { Week = "W1", Present = 30, Absent = 2, Excused = 1 },
-                new WeeklyAttendanceItemDto { Week = "W2", Present = 28, Absent = 4, Excused = 0 }
-            ]
-        };
-
-        var result = _sut.ExportCourseAnalytics(dto);
-
-        result.Should().NotBeNullOrEmpty();
-        DetectPdf(result).Should().BeTrue();
-    }
-
-    [Fact]
     public void ExportAdminAnalysis_WithDepartmentBreakdown_ReturnsNonEmptyBytes()
     {
         var dto = new AdminAnalysisExportDto
@@ -350,57 +291,6 @@ public class PdfExportServiceTests
         };
 
         var result = _sut.ExportAdminAnalysis(dto);
-
-        result.Should().NotBeNullOrEmpty();
-        DetectPdf(result).Should().BeTrue();
-    }
-
-    [Fact]
-    public void ExportCourseAnalytics_OnlyAssessmentPerformance_ReturnsNonEmptyBytes()
-    {
-        var dto = new CourseAnalyticsExportDto
-        {
-            CourseName = "Math", CourseCode = "MATH101", InstructorName = "Dr. Smith",
-            AssessmentPerformance = [new AssessmentPerformanceItemDto { Name = "Midterm", Average = 78.5, MaxScore = 100 }],
-            SubmissionRate = [],
-            WeeklyAttendance = []
-        };
-
-        var result = _sut.ExportCourseAnalytics(dto);
-
-        result.Should().NotBeNullOrEmpty();
-        DetectPdf(result).Should().BeTrue();
-    }
-
-    [Fact]
-    public void ExportCourseAnalytics_OnlySubmissionRate_ReturnsNonEmptyBytes()
-    {
-        var dto = new CourseAnalyticsExportDto
-        {
-            CourseName = "Math", CourseCode = "MATH101", InstructorName = "Dr. Smith",
-            AssessmentPerformance = [],
-            SubmissionRate = [new SubmissionRateItemDto { Name = "On Time", Value = 85 }],
-            WeeklyAttendance = []
-        };
-
-        var result = _sut.ExportCourseAnalytics(dto);
-
-        result.Should().NotBeNullOrEmpty();
-        DetectPdf(result).Should().BeTrue();
-    }
-
-    [Fact]
-    public void ExportCourseAnalytics_OnlyWeeklyAttendance_ReturnsNonEmptyBytes()
-    {
-        var dto = new CourseAnalyticsExportDto
-        {
-            CourseName = "Math", CourseCode = "MATH101", InstructorName = "Dr. Smith",
-            AssessmentPerformance = [],
-            SubmissionRate = [],
-            WeeklyAttendance = [new WeeklyAttendanceItemDto { Week = "W1", Present = 30, Absent = 2, Excused = 1 }]
-        };
-
-        var result = _sut.ExportCourseAnalytics(dto);
 
         result.Should().NotBeNullOrEmpty();
         DetectPdf(result).Should().BeTrue();
