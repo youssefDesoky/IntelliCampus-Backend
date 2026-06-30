@@ -8,5 +8,4 @@ public interface IPdfExportService
     byte[] ExportSchedule(ScheduleExportDto data);
     byte[] ExportExamSchedule(ExamScheduleExportDto data);
     byte[] ExportAdminAnalysis(AdminAnalysisExportDto data);
-    byte[] ExportCourseAnalytics(CourseAnalyticsExportDto data);
 }

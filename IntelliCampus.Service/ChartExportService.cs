@@ -17,16 +17,18 @@ public class ChartExportService : IChartExportService
     {
         if (request.Data.Count == 0) return Array.Empty<byte>();
         using var ms = new MemoryStream();
-        using var doc = SpreadsheetDocument.Create(ms, SpreadsheetDocumentType.Workbook);
-        var workbookPart = doc.AddWorkbookPart();
-        workbookPart.Workbook = new Workbook();
-        var dataSheet = CreateDataSheet(workbookPart, request);
-        var chartSheet = CreateChartSheet(workbookPart, request);
-        var sheets = new Sheets();
-        sheets.Append(dataSheet);
-        sheets.Append(chartSheet);
-        workbookPart.Workbook.Append(sheets);
-        workbookPart.Workbook.Save();
+        using (var doc = SpreadsheetDocument.Create(ms, SpreadsheetDocumentType.Workbook))
+        {
+            var workbookPart = doc.AddWorkbookPart();
+            workbookPart.Workbook = new Workbook();
+            var dataSheet = CreateDataSheet(workbookPart, request);
+            var chartSheet = CreateChartSheet(workbookPart, request);
+            var sheets = new Sheets();
+            sheets.Append(dataSheet);
+            sheets.Append(chartSheet);
+            workbookPart.Workbook.Append(sheets);
+            workbookPart.Workbook.Save();
+        }
         return ms.ToArray();
     }
 

@@ -5,7 +5,6 @@ using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.shared.Dtos.Attendance;
-using IntelliCampus.Shared.Dtos.Export;
 using IntelliCampus.Shared.Dtos.InstructorAnalytics;
 using IntelliCampus.Shared.Params;
 
@@ -19,7 +18,6 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
     private readonly ISessionService _sessionService;
     private readonly IClassService _classService;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IPdfExportService _pdfExportService;
 
     public InstructorAnalyticsService(
         ICourseService courseService,
@@ -27,8 +25,7 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
         IAssignmentService assignmentService,
         ISessionService sessionService,
         IClassService classService,
-        IUnitOfWork unitOfWork,
-        IPdfExportService pdfExportService)
+        IUnitOfWork unitOfWork)
     {
         _courseService = courseService;
         _quizService = quizService;
@@ -36,7 +33,6 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
         _sessionService = sessionService;
         _classService = classService;
         _unitOfWork = unitOfWork;
-        _pdfExportService = pdfExportService;
     }
 
     public async Task<CourseAnalyticsDto> GetCourseAnalyticsAsync(int courseId, int userId)
@@ -56,34 +52,6 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
             SubmissionRate = await BuildSubmissionRateAsync(courseId, instructorId, totalStudents),
             WeeklyAttendance = await BuildWeeklyAttendanceAsync(courseId)
         };
-    }
-
-    public async Task<byte[]> ExportCourseAnalyticsPdfAsync(int courseId, int userId)
-    {
-        var course = await _courseService.GetByIdAsync(courseId);
-        if (course is null)
-            throw new CourseNotFoundException(courseId);
-
-        var instructorId = await ResolveInstructorIdAsync(userId, courseId);
-
-        var instructorRepo = _unitOfWork.GetRepository<Instructor, int>();
-        var instructor = await instructorRepo.GetByIdAsync(userId)
-            ?? throw new InstructorNotFoundException($"Instructor with user id {userId} not found");
-
-        var students = await _courseService.GetStudentsByCourseIdAsync(courseId);
-        var totalStudents = students.Count();
-
-        var dto = new CourseAnalyticsExportDto
-        {
-            CourseName = course.CourseName,
-            CourseCode = course.CourseCode ?? "",
-            InstructorName = instructor.FullName,
-            AssessmentPerformance = await BuildAssessmentPerformanceAsync(courseId, instructorId),
-            SubmissionRate = await BuildSubmissionRateAsync(courseId, instructorId, totalStudents),
-            WeeklyAttendance = await BuildWeeklyAttendanceAsync(courseId)
-        };
-
-        return _pdfExportService.ExportCourseAnalytics(dto);
     }
 
     private async Task<int> ResolveInstructorIdAsync(int userId, int courseId)
@@ -239,7 +207,7 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
                 Absent = g.Sum(s => s.TotalStudents - s.PresentCount),
                 Excused = 0
             })
-            .OrderBy(w => w.Week)
+            .OrderBy(w => ParseWeekNumber(w.Week))
             .ToList();
     }
 
@@ -248,5 +216,11 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
         var diff = (date.Date - earliest.Date).Days;
         var weekNumber = (diff / 7) + 1;
         return $"W{weekNumber}";
+    }
+
+    private static int ParseWeekNumber(string week)
+    {
+        var digits = new string(week?.Skip(1).ToArray() ?? []);
+        return int.TryParse(digits, out var n) ? n : int.MaxValue;
     }
 }

@@ -135,6 +135,19 @@ public class AuthController : ControllerBase
     }
 
     [Authorize]
+    [HttpPost("change-recovery-email/send-code")]
+    public async Task<IActionResult> SendChangeRecoveryEmailCode(SendChangeRecoveryEmailCodeDto dto)
+    {
+        var userId = GetCurrentUserId();
+        if (userId is null)
+            return Unauthorized();
+
+        await _accountRecoveryService.SendChangeRecoveryEmailCodeAsync(userId.Value, dto);
+
+        return Ok(new { message = "Verification code sent to your new recovery email." });
+    }
+
+    [Authorize]
     [HttpPost("change-recovery-email")]
     public async Task<IActionResult> ChangeRecoveryEmail(ChangeRecoveryEmailDto dto)
     {
@@ -142,7 +155,7 @@ public class AuthController : ControllerBase
         if (userId is null)
             return Unauthorized();
 
-        await _authService.ChangeRecoveryEmailAsync(userId.Value, dto);
+        await _accountRecoveryService.ChangeRecoveryEmailAsync(userId.Value, dto);
 
         return Ok(new { message = "Recovery email changed successfully." });
     }

@@ -29,17 +29,6 @@ public class InstructorAnalyticsController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("instructor/course/{courseId}/export")]
-    public async Task<IActionResult> ExportCourseAnalytics(int courseId)
-    {
-        var userId = GetCurrentUserId();
-        if (userId is null)
-            return Unauthorized();
-
-        var pdf = await _analyticsService.ExportCourseAnalyticsPdfAsync(courseId, userId.Value);
-        return File(pdf, "application/pdf", $"CourseAnalytics_{courseId}.pdf");
-    }
-
     private int? GetCurrentUserId()
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

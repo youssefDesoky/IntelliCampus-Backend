@@ -6,7 +6,6 @@ using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Assignment;
 using IntelliCampus.Shared.Dtos.Class;
 using IntelliCampus.Shared.Dtos.Course;
-using IntelliCampus.Shared.Dtos.Export;
 using IntelliCampus.Shared.Dtos.InstructorAnalytics;
 using IntelliCampus.Shared.Dtos.Student;
 using IntelliCampus.Shared.Params;
@@ -25,7 +24,6 @@ public class InstructorAnalyticsServiceTests
     private readonly Mock<ISessionService> _sessionServiceMock;
     private readonly Mock<IClassService> _classServiceMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-    private readonly Mock<IPdfExportService> _pdfExportMock;
     private readonly Mock<IGenericRepository<Instructor, int>> _instructorRepoMock;
     private readonly InstructorAnalyticsService _sut;
 
@@ -37,7 +35,6 @@ public class InstructorAnalyticsServiceTests
         _sessionServiceMock = new Mock<ISessionService>();
         _classServiceMock = new Mock<IClassService>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
-        _pdfExportMock = new Mock<IPdfExportService>();
         _instructorRepoMock = new Mock<IGenericRepository<Instructor, int>>();
 
         _unitOfWorkMock.Setup(u => u.GetRepository<Instructor, int>()).Returns(_instructorRepoMock.Object);
@@ -48,8 +45,7 @@ public class InstructorAnalyticsServiceTests
             _assignmentServiceMock.Object,
             _sessionServiceMock.Object,
             _classServiceMock.Object,
-            _unitOfWorkMock.Object,
-            _pdfExportMock.Object);
+            _unitOfWorkMock.Object);
     }
 
     [Fact]
@@ -223,99 +219,4 @@ public class InstructorAnalyticsServiceTests
         _courseServiceMock.Verify(s => s.GetStudentsByCourseIdAsync(courseId), Times.Once);
     }
 
-    [Fact]
-    public async Task ExportCourseAnalyticsPdfAsync_NonExistingCourse_ThrowsCourseNotFoundException()
-    {
-        _courseServiceMock.Setup(s => s.GetByIdAsync(999)).ReturnsAsync((CourseDto?)null);
-
-        await _sut.Invoking(s => s.ExportCourseAnalyticsPdfAsync(999, 1))
-            .Should().ThrowAsync<CourseNotFoundException>();
-
-        _courseServiceMock.Verify(s => s.GetByIdAsync(999), Times.Once);
-        _instructorRepoMock.Verify(r => r.GetAllAsync(), Times.Never);
-    }
-
-    [Fact]
-    public async Task ExportCourseAnalyticsPdfAsync_ReturnsPdfBytes()
-    {
-        var courseId = 1;
-        var userId = 1;
-        var courseDto = new CourseDto { CourseId = courseId, CourseName = "Math", CourseCode = "MATH101" };
-        var instructor = new Instructor { UserId = userId, FullName = "Dr. Smith" };
-
-        _courseServiceMock.Setup(s => s.GetByIdAsync(courseId)).ReturnsAsync(courseDto);
-        _instructorRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([instructor]);
-        _courseServiceMock.Setup(s => s.GetCoursesByInstructorIdAsync(It.IsAny<CourseQueryParams>()))
-            .ReturnsAsync(new PaginatedResult<CourseDto>(1, 10, 1, [courseDto]));
-        _courseServiceMock.Setup(s => s.GetStudentsByCourseIdAsync(courseId)).ReturnsAsync([]);
-        _quizServiceMock.Setup(s => s.GetByCourseIdAsync(courseId)).ReturnsAsync([]);
-        _assignmentServiceMock.Setup(s => s.GetByCourseIdAsync(courseId, It.IsAny<int?>())).ReturnsAsync([]);
-        _classServiceMock.Setup(s => s.GetByCourseIdAsync(courseId, It.IsAny<ClassQueryParams>())).ReturnsAsync([]);
-        _pdfExportMock.Setup(s => s.ExportCourseAnalytics(It.IsAny<CourseAnalyticsExportDto>())).Returns([1, 2, 3]);
-
-        var result = await _sut.ExportCourseAnalyticsPdfAsync(courseId, userId);
-
-        result.Should().HaveCount(3);
-
-        _courseServiceMock.Verify(s => s.GetByIdAsync(courseId), Times.Once);
-        _instructorRepoMock.Verify(r => r.GetAllAsync(), Times.Exactly(2));
-        _courseServiceMock.Verify(s => s.GetCoursesByInstructorIdAsync(It.IsAny<CourseQueryParams>()), Times.Once);
-        _courseServiceMock.Verify(s => s.GetStudentsByCourseIdAsync(courseId), Times.Once);
-        _quizServiceMock.Verify(s => s.GetByCourseIdAsync(courseId), Times.Once);
-        _assignmentServiceMock.Verify(s => s.GetByCourseIdAsync(courseId, It.IsAny<int?>()), Times.Once);
-        _classServiceMock.Verify(s => s.GetByCourseIdAsync(courseId, It.IsAny<ClassQueryParams>()), Times.Once);
-        _pdfExportMock.Verify(s => s.ExportCourseAnalytics(It.IsAny<CourseAnalyticsExportDto>()), Times.Once);
-        _quizServiceMock.Verify(s => s.GetAllResultsAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
-        _assignmentServiceMock.Verify(s => s.GetAllSubmissionsAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task ExportCourseAnalyticsPdfAsync_InstructorNotFound_ThrowsInstructorNotFoundException()
-    {
-        var courseDto = new CourseDto { CourseId = 1, CourseName = "Math" };
-
-        _courseServiceMock.Setup(s => s.GetByIdAsync(1)).ReturnsAsync(courseDto);
-        _instructorRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
-
-        await _sut.Invoking(s => s.ExportCourseAnalyticsPdfAsync(1, 999))
-            .Should().ThrowAsync<InstructorNotFoundException>();
-
-        _courseServiceMock.Verify(s => s.GetByIdAsync(1), Times.Once);
-        _instructorRepoMock.Verify(r => r.GetAllAsync(), Times.Once);
-        _courseServiceMock.Verify(s => s.GetCoursesByInstructorIdAsync(It.IsAny<CourseQueryParams>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task ExportCourseAnalyticsPdfAsync_NullCourseCode_ReturnsPdfBytes()
-    {
-        var courseId = 1;
-        var userId = 1;
-        var courseDto = new CourseDto { CourseId = courseId, CourseName = "Math", CourseCode = null };
-        var instructor = new Instructor { UserId = userId, FullName = "Dr. Smith" };
-
-        _courseServiceMock.Setup(s => s.GetByIdAsync(courseId)).ReturnsAsync(courseDto);
-        _instructorRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([instructor]);
-        _courseServiceMock.Setup(s => s.GetCoursesByInstructorIdAsync(It.IsAny<CourseQueryParams>()))
-            .ReturnsAsync(new PaginatedResult<CourseDto>(1, 10, 1, [courseDto]));
-        _courseServiceMock.Setup(s => s.GetStudentsByCourseIdAsync(courseId)).ReturnsAsync([]);
-        _quizServiceMock.Setup(s => s.GetByCourseIdAsync(courseId)).ReturnsAsync([]);
-        _assignmentServiceMock.Setup(s => s.GetByCourseIdAsync(courseId, It.IsAny<int?>())).ReturnsAsync([]);
-        _classServiceMock.Setup(s => s.GetByCourseIdAsync(courseId, It.IsAny<ClassQueryParams>())).ReturnsAsync([]);
-        _pdfExportMock.Setup(s => s.ExportCourseAnalytics(It.IsAny<CourseAnalyticsExportDto>())).Returns([1, 2, 3]);
-
-        var result = await _sut.ExportCourseAnalyticsPdfAsync(courseId, userId);
-
-        result.Should().HaveCount(3);
-
-        _courseServiceMock.Verify(s => s.GetByIdAsync(courseId), Times.Once);
-        _instructorRepoMock.Verify(r => r.GetAllAsync(), Times.Exactly(2));
-        _courseServiceMock.Verify(s => s.GetCoursesByInstructorIdAsync(It.IsAny<CourseQueryParams>()), Times.Once);
-        _courseServiceMock.Verify(s => s.GetStudentsByCourseIdAsync(courseId), Times.Once);
-        _quizServiceMock.Verify(s => s.GetByCourseIdAsync(courseId), Times.Once);
-        _assignmentServiceMock.Verify(s => s.GetByCourseIdAsync(courseId, It.IsAny<int?>()), Times.Once);
-        _classServiceMock.Verify(s => s.GetByCourseIdAsync(courseId, It.IsAny<ClassQueryParams>()), Times.Once);
-        _pdfExportMock.Verify(s => s.ExportCourseAnalytics(It.IsAny<CourseAnalyticsExportDto>()), Times.Once);
-        _quizServiceMock.Verify(s => s.GetAllResultsAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
-        _assignmentServiceMock.Verify(s => s.GetAllSubmissionsAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
-    }
 }
