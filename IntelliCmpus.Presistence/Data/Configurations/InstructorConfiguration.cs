@@ -10,6 +10,13 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
     {
         builder.ToTable("Instructors");
 
+        builder.HasKey(i => i.UserId);
+
+        builder.HasOne(i => i.User)
+            .WithOne(u => u.Instructor!)
+            .HasForeignKey<Instructor>(i => i.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.Property(i => i.InstructorCode)
             .HasMaxLength(50);
 
@@ -35,6 +42,5 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
             .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasIndex(i => i.DepartmentId);
-        builder.HasIndex(i => i.FacultyId);
     }
 }

@@ -12,11 +12,11 @@ internal class ProfessorsSpec : BaseSpecifications<Instructor>
              i.InstructorRole == InstructorRole.Lecturer ||
              i.InstructorRole == InstructorRole.AssociateProfessor)
             && (!departmentId.HasValue || i.DepartmentId == departmentId.Value)
-            && (!facultyId.HasValue || i.FacultyId == facultyId.Value))
+            && (!facultyId.HasValue || i.User.FacultyId == facultyId.Value))
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
-        AddInclude("UserRoles.Role");
+        AddInclude("User.UserRoles.Role");
         EnableSplitQuery();
     }
 
@@ -26,11 +26,11 @@ internal class ProfessorsSpec : BaseSpecifications<Instructor>
              i.InstructorRole == InstructorRole.Lecturer ||
              i.InstructorRole == InstructorRole.AssociateProfessor)
             && (!queryParams.DepartmentId.HasValue || i.DepartmentId == queryParams.DepartmentId.Value)
-            && (!queryParams.FacultyId.HasValue || i.FacultyId == queryParams.FacultyId.Value))
+            && (!queryParams.FacultyId.HasValue || i.User.FacultyId == queryParams.FacultyId.Value))
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
-        AddInclude("UserRoles.Role");
+        AddInclude("User.UserRoles.Role");
         EnableSplitQuery();
     }
 }

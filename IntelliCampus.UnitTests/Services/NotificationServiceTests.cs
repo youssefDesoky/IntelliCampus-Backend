@@ -48,7 +48,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task GetByUserIdAsync_ExistingUser_ReturnsPaginatedResult()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var userNotifications = new List<UserNotification>
         {
             new()
@@ -106,7 +106,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task GetByUserIdAsync_EmptyNotifications_ReturnsEmptyData()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
         _userNotificationRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<UserNotification>>())).ReturnsAsync([]);
         _userNotificationRepoMock.Setup(r => r.CountAsync(It.IsAny<ISpecifications<UserNotification>>())).ReturnsAsync(0);
@@ -124,7 +124,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task GetByUserIdAsync_EmptyPage_ReturnsEmptyPaginatedResult()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
         _userNotificationRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<UserNotification>>())).ReturnsAsync([]);
         _userNotificationRepoMock.Setup(r => r.CountAsync(It.IsAny<ISpecifications<UserNotification>>())).ReturnsAsync(0);
@@ -141,7 +141,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task GetByUserIdAsync_FilterByType_ReturnsFilteredResults()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var filtered = new List<UserNotification>
         {
             new()
@@ -169,7 +169,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task GetUnreadAsync_ExistingUser_ReturnsUnread()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
         _userNotificationRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<UserNotification>>())).ReturnsAsync([]);
@@ -197,7 +197,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task GetUnreadAsync_NoUnreadNotifications_ReturnsEmpty()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
         _userNotificationRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<UserNotification>>())).ReturnsAsync([]);
 
@@ -211,7 +211,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task GetUnreadAsync_MixedNotifications_ReturnsOnlyUnread()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var notifications = new List<UserNotification>
         {
             new() { UserNotificationId = 1, UserId = user.UserId, IsRead = true,
@@ -239,7 +239,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task GetSummaryAsync_ExistingUser_ReturnsSummary()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
         _userNotificationRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<UserNotification>>())).ReturnsAsync([]);
@@ -269,7 +269,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task GetSummaryAsync_NoNotifications_ReturnsZeroCounts()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
         _userNotificationRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<UserNotification>>())).ReturnsAsync([]);
 
@@ -285,7 +285,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task GetSummaryAsync_FilterByReadState_ReturnsFilteredSummary()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var all = new List<UserNotification>
         {
             new() { UserNotificationId = 1, UserId = user.UserId, IsRead = true,
@@ -308,7 +308,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task GetSummaryAsync_WithManyNotifications_RecentContainsAtMost5()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var all = new List<UserNotification>();
         for (int i = 1; i <= 10; i++)
         {
@@ -338,7 +338,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task GetUnreadCountAsync_ExistingUser_ReturnsCount()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
         _userNotificationRepoMock.Setup(r => r.CountAsync(It.IsAny<System.Linq.Expressions.Expression<Func<UserNotification, bool>>>())).ReturnsAsync(3);
@@ -368,7 +368,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task MarkAsReadAsync_ExistingNotification_MarksRead()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var un = new UserNotification { UserNotificationId = 1, UserId = user.UserId, IsRead = false };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
@@ -390,7 +390,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task MarkAsReadAsync_NonExistingNotification_ThrowsNotificationNotFoundException()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
         _userNotificationRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<UserNotification>>())).ReturnsAsync((UserNotification?)null);
 
@@ -406,7 +406,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task MarkAsReadAsync_SaveChangesReturnsZero_StillReturnsTrue()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var un = new UserNotification { UserNotificationId = 1, UserId = user.UserId, IsRead = false };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
@@ -430,7 +430,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task MarkAllAsReadAsync_ExistingUser_MarksAllRead()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var unread = new List<UserNotification>
         {
             new() { UserNotificationId = 1, UserId = user.UserId, IsRead = false },
@@ -480,7 +480,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task MarkAllAsReadAsync_NoUnreadNotifications_DoesNotThrow()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
         _userNotificationRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<UserNotification>>())).ReturnsAsync([]);
 
@@ -498,7 +498,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task DeleteAsync_ExistingNotification_DeletesSuccessfully()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var un = new UserNotification { UserNotificationId = 1, UserId = user.UserId };
 
         UserNotification? captured = null;
@@ -537,7 +537,7 @@ public class NotificationServiceTests
     [Fact]
     public async Task DeleteAsync_NonExistingNotification_ThrowsNotificationNotFoundException()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
         _userNotificationRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<UserNotification>>())).ReturnsAsync((UserNotification?)null);
 

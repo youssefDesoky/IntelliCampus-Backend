@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using ClosedXML.Excel;
 using FluentAssertions;
 using IntelliCampus.Domain.Entities;
@@ -120,7 +120,7 @@ public class ExcelImportServiceTests
     [Fact]
     public async Task ImportAsync_WithCreatorUser_LooksUpCreator()
     {
-        var creator = new Student { UserId = 1 };
+        var creator = new User { UserId = 1 };
         _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(creator);
 
         var file = CreateExcelFile(ImportEntityType.Students,
@@ -142,7 +142,7 @@ public class ExcelImportServiceTests
         var role = new Role { RoleName = "Instructor" };
         var userRoleJunction = new UserRoleJunction { IsActive = true, Role = role };
 
-        var creator = new Student
+        var creator = new User
         {
             UserId = 1,
             FacultyId = 1,
@@ -355,7 +355,7 @@ public class ExcelImportServiceTests
         var role = new Role { RoleName = "Instructor" };
         var userRoleJunction = new UserRoleJunction { IsActive = true, Role = role };
 
-        var creator = new Student
+        var creator = new User
         {
             UserId = 1,
             UserRoles = new List<UserRoleJunction> { userRoleJunction }

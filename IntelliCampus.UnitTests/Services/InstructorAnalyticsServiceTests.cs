@@ -67,7 +67,7 @@ public class InstructorAnalyticsServiceTests
         var courseId = 1;
         var userId = 1;
         var courseDto = new CourseDto { CourseId = courseId, CourseName = "Math", CourseCode = "MATH101" };
-        var instructor = new Instructor { UserId = userId, FullName = "Dr. Smith" };
+        var instructor = new Instructor { UserId = userId, User = new User { FullName = "Dr. Smith" } };
 
         _courseServiceMock.Setup(s => s.GetByIdAsync(courseId)).ReturnsAsync(courseDto);
         _instructorRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([instructor]);
@@ -101,7 +101,7 @@ public class InstructorAnalyticsServiceTests
         var courseId = 1;
         var userId = 1;
         var courseDto = new CourseDto { CourseId = courseId, CourseName = "Math", CourseCode = "MATH101" };
-        var instructor = new Instructor { UserId = userId, FullName = "Dr. Smith" };
+        var instructor = new Instructor { UserId = userId, User = new User { FullName = "Dr. Smith" } };
         var quiz = new QuizDto { Id = 1, Title = "Quiz 1", MaxScore = 100 };
         var studentQuiz = new StudentQuizDto { StudentId = 1, QuizId = 1, Score = 85, MaxGrade = 100 };
         var assignment = new AssignmentDto { Id = "1", Title = "HW 1", TotalPoints = 100 };
@@ -153,7 +153,7 @@ public class InstructorAnalyticsServiceTests
         var courseId = 1;
         var userId = 1;
         var courseDto = new CourseDto { CourseId = courseId, CourseName = "Math", CourseCode = "MATH101" };
-        var instructor = new Instructor { UserId = userId, FullName = "Dr. Smith" };
+        var instructor = new Instructor { UserId = userId, User = new User { FullName = "Dr. Smith" } };
         var otherCourse = new CourseDto { CourseId = 2, CourseName = "Physics", CourseCode = "PHY101" };
 
         _courseServiceMock.Setup(s => s.GetByIdAsync(courseId)).ReturnsAsync(courseDto);
@@ -193,7 +193,7 @@ public class InstructorAnalyticsServiceTests
         var courseId = 1;
         var userId = 1;
         var courseDto = new CourseDto { CourseId = courseId, CourseName = "Math" };
-        var instructor = new Instructor { UserId = userId, FullName = "Dr. Smith" };
+        var instructor = new Instructor { UserId = userId, User = new User { FullName = "Dr. Smith" } };
 
         _courseServiceMock.Setup(s => s.GetByIdAsync(courseId)).ReturnsAsync(courseDto);
         _instructorRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([instructor]);

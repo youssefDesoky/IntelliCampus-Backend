@@ -597,7 +597,7 @@ public class BylawService : IBylawService
             IsActive = bylaw.IsActive,
             CreatedAt = bylaw.CreatedAt,
             UploadedByAdminId = bylaw.UploadedByAdminId,
-            UploadedByAdminName = bylaw.UploadedBy?.FullName,
+            UploadedByAdminName = bylaw.UploadedBy?.User?.FullName,
             StudentCount = bylaw.Students?.Count,
             GradeScales = MapGradeScales(bylaw),
             LevelScales = MapLevelScales(bylaw),

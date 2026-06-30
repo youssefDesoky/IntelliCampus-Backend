@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service;
@@ -56,7 +56,7 @@ public class DepartmentServiceTests
         result!.DepartmentId.Should().Be(department.DepartmentId);
         result.DepartmentName.Should().Be(department.DepartmentName);
         result.FacultyName.Should().Be(department.Faculty.FacultyName);
-        result.HeadInstructorName.Should().Be(department.HeadInstructor.FullName);
+        result.HeadInstructorName.Should().Be(department.HeadInstructor.User.FullName);
 
         _departmentRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<ISpecifications<Department>>()), Times.Once);
     }
@@ -163,7 +163,7 @@ public class DepartmentServiceTests
     [Fact]
     public async Task CreateAsync_WithNullFacultyIdAndCreatorHasFaculty_UsesCreatorFaculty()
     {
-        var creator = TestDataFactory.StudentFaker.Generate();
+        var creator = TestDataFactory.UserFaker.Generate();
         creator.FacultyId = 5;
         var dto = TestDataFactory.CreateDepartmentDtoFaker.Generate();
         dto.FacultyId = null;
@@ -195,7 +195,7 @@ public class DepartmentServiceTests
     [Fact]
     public async Task CreateAsync_WithNullFacultyIdAndCreatorWithoutFaculty_DoesNotSetFaculty()
     {
-        var creator = TestDataFactory.StudentFaker.Generate();
+        var creator = TestDataFactory.UserFaker.Generate();
         creator.FacultyId = null;
         var dto = TestDataFactory.CreateDepartmentDtoFaker.Generate();
         dto.FacultyId = null;
@@ -306,7 +306,7 @@ public class DepartmentServiceTests
     [Fact]
     public async Task CreateAsync_WithCreatorUserAndFacultyId_UsesDtoFacultyId()
     {
-        var creator = TestDataFactory.StudentFaker.Generate();
+        var creator = TestDataFactory.UserFaker.Generate();
         creator.FacultyId = 5;
         var dto = TestDataFactory.CreateDepartmentDtoFaker.Generate();
         dto.FacultyId = 10;

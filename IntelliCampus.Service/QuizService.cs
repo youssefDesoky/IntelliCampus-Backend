@@ -467,7 +467,7 @@ public class QuizService : IQuizService
             return new StudentSubmissionDto
             {
                 StudentId = sq.StudentId,
-                StudentName = sq.Student?.FullName,
+                StudentName = sq.Student?.User?.FullName,
                 Score = sq.Score,
                 MaxScore = maxScore,
                 SubmittedAt = sq.SubmittedAt.ToString("dd MM yy HH:mm"),
@@ -587,7 +587,7 @@ public class QuizService : IQuizService
     private static StudentQuizDto MapResultToDto(StudentQuiz sq) => new()
     {
         StudentId = sq.StudentId,
-        StudentName = sq.Student?.FullName,
+        StudentName = sq.Student?.User?.FullName,
         QuizId = sq.QuizId,
         QuizTitle = sq.Quiz?.Title,
         Score = sq.Score,

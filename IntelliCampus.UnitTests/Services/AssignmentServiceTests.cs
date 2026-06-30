@@ -481,7 +481,7 @@ public class AssignmentServiceTests
             SubmittedAt = DateTime.Now,
             Files = [],
             Assignment = assignment,
-            Student = new Student { UserId = 1, FullName = "Test" }
+            Student = new Student { UserId = 1, User = new User { FullName = "Test" } }
         };
 
         _assignmentRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(assignment);
@@ -820,7 +820,7 @@ public class AssignmentServiceTests
             SubmittedAt = DateTime.Now,
             Files = [],
             Assignment = assignment,
-            Student = new Student { UserId = 1, FullName = "Test" }
+            Student = new Student { UserId = 1, User = new User { FullName = "Test" } }
         };
         var gradedSubmission = new StudentAssignment
         {
@@ -832,7 +832,7 @@ public class AssignmentServiceTests
             Grade = 85,
             Feedback = "Good work",
             Assignment = assignment,
-            Student = new Student { UserId = 1, FullName = "Test" }
+            Student = new Student { UserId = 1, User = new User { FullName = "Test" } }
         };
         var dto = new GradeSubmissionDto { StudentAssignmentId = 1, Score = 85, Feedback = "Good work" };
 
@@ -879,7 +879,7 @@ public class AssignmentServiceTests
         {
             StudentAssignmentId = 1, StudentId = 1, AssignmentId = 1,
             SubmittedAt = DateTime.Now, Files = [], Assignment = assignment,
-            Student = new Student { UserId = 1, FullName = "Test" }
+            Student = new Student { UserId = 1, User = new User { FullName = "Test" } }
         };
         var dto = new GradeSubmissionDto { StudentAssignmentId = 1, Score = 85, Feedback = "Good" };
 
@@ -900,7 +900,7 @@ public class AssignmentServiceTests
         {
             StudentAssignmentId = 1, StudentId = 1, AssignmentId = 1,
             SubmittedAt = DateTime.Now, Files = [], Assignment = assignment,
-            Student = new Student { UserId = 1, FullName = "Test" }
+            Student = new Student { UserId = 1, User = new User { FullName = "Test" } }
         };
         var dto = new GradeSubmissionDto { StudentAssignmentId = 1, Score = 150, Feedback = "Good" };
 

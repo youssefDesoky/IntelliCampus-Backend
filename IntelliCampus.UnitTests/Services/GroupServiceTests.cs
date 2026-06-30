@@ -34,8 +34,8 @@ public class GroupServiceTests
     [Fact]
     public async Task CreateGroupAsync_ValidInput_CreatesGroupWithMembers()
     {
-        var creator = TestDataFactory.StudentFaker.Generate();
-        var member = TestDataFactory.StudentFaker.Generate();
+        var creator = TestDataFactory.UserFaker.Generate();
+        var member = TestDataFactory.UserFaker.Generate();
         var memberIds = new List<int> { member.UserId };
         Group? capturedGroup = null;
         var capturedMembers = new List<GroupMember>();
@@ -94,7 +94,7 @@ public class GroupServiceTests
     [Fact]
     public async Task CreateGroupAsync_MemberNotFound_ThrowsUserNotFoundException()
     {
-        var creator = TestDataFactory.StudentFaker.Generate();
+        var creator = TestDataFactory.UserFaker.Generate();
 
         _userRepoMock.Setup(r => r.GetByIdAsync(creator.UserId)).ReturnsAsync(creator);
         _userRepoMock.Setup(r => r.GetByIdAsync(999)).ReturnsAsync((User?)null);
@@ -111,9 +111,9 @@ public class GroupServiceTests
     [Fact]
     public async Task GetUserGroupsAsync_ExistingUser_ReturnsGroups()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var group = new Group { GroupId = 1, Title = "Group 1", CreatedById = user.UserId, CreatedAt = DateTime.UtcNow };
-        var creator = TestDataFactory.StudentFaker.Generate();
+        var creator = TestDataFactory.UserFaker.Generate();
         creator.UserId = user.UserId;
         var memberships = new List<GroupMember>
         {
@@ -153,7 +153,7 @@ public class GroupServiceTests
     [Fact]
     public async Task GetUserGroupsAsync_NoMemberships_ReturnsEmptyList()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
         _groupMemberRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
@@ -168,7 +168,7 @@ public class GroupServiceTests
     [Fact]
     public async Task GetUserGroupsAsync_GroupDeleted_ThrowsGroupNotFoundException()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var memberships = new List<GroupMember>
         {
             new() { GroupId = 999, UserId = user.UserId, JoinedAt = DateTime.UtcNow }
@@ -190,9 +190,9 @@ public class GroupServiceTests
     public async Task GetGroupByIdAsync_ExistingGroup_ReturnsGroupDto()
     {
         var group = new Group { GroupId = 1, Title = "Test Group", CreatedById = 1, Description = "A group", CreatedAt = DateTime.UtcNow };
-        var creator = TestDataFactory.StudentFaker.Generate();
+        var creator = TestDataFactory.UserFaker.Generate();
         creator.UserId = 1;
-        var member = TestDataFactory.StudentFaker.Generate();
+        var member = TestDataFactory.UserFaker.Generate();
         member.UserId = 2;
         var members = new List<GroupMember>
         {
@@ -239,7 +239,7 @@ public class GroupServiceTests
     public async Task GetGroupByIdAsync_MemberWithoutUser_SkipsNullUser()
     {
         var group = new Group { GroupId = 1, Title = "Test", CreatedById = 1, CreatedAt = DateTime.UtcNow };
-        var creator = TestDataFactory.StudentFaker.Generate();
+        var creator = TestDataFactory.UserFaker.Generate();
         creator.UserId = 1;
         var members = new List<GroupMember>
         {

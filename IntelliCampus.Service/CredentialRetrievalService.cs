@@ -5,6 +5,7 @@ using IntelliCampus.Service.Helpers;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Auth;
+using IntelliCampus.Shared.Params;
 using Microsoft.Extensions.Logging;
 
 namespace IntelliCampus.Service;
@@ -27,16 +28,17 @@ public class CredentialRetrievalService : ICredentialRetrievalService
         var spec = new UserByNationalIdSpec(dto.NationalId);
         var user = await Users.GetByIdAsync(spec);
 
-        if (user is not Student student)
+        var student = await _unitOfWork.GetRepository<Student, int>().GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = user.UserId }, lightweight: true));
+        if (student is null)
         {
             await AuditLogAsync(null, "get-credentials", dto.NationalId, false, "User not found or not a student", ipAddress, userAgent);
             throw new InvalidOperationException("Could not verify your details. Please check the information provided.");
         }
 
         var normalizedPhone = PhoneNormalizer.Normalize(dto.PhoneNumber);
-        var storedPhone = PhoneNormalizer.Normalize(student.PhoneNumber);
+        var storedPhone = PhoneNormalizer.Normalize(student.User.PhoneNumber);
 
-        if (normalizedPhone != storedPhone || student.FacultyId != dto.FacultyId || (dto.Level.HasValue && student.Level != dto.Level.Value))
+        if (normalizedPhone != storedPhone || student.User.FacultyId != dto.FacultyId || (dto.Level.HasValue && student.Level != dto.Level.Value))
         {
             await AuditLogAsync(student.UserId, "get-credentials", dto.NationalId, false, "Field mismatch", ipAddress, userAgent);
             throw new InvalidOperationException("Could not verify your details. Please check the information provided.");
@@ -46,7 +48,7 @@ public class CredentialRetrievalService : ICredentialRetrievalService
 
         return new GetCredentialsResponseDto
         {
-            Email = student.Email,
+            Email = student.User.Email,
             Message = "Your password is your National ID. Please change it after logging in."
         };
     }

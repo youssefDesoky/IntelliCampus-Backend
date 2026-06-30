@@ -900,7 +900,7 @@ public class GradeService : IGradeService
             .ToHashSet();
 
         var enrolledStudents = (await Students.GetAllAsync(new StudentSpec(enrolledStudentIds.ToList()), asNoTracking: true))
-            .OrderBy(s => s.FullName)
+            .OrderBy(s => s.User.FullName)
             .ToList();
 
         var courseAssignmentSubmissions = (await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(assignmentIds, true), asNoTracking: true)).ToList();
@@ -1125,7 +1125,7 @@ public class GradeService : IGradeService
         {
             StudentId = student.UserId,
             StudentCode = student.StudentCode ?? "",
-            FullName = student.FullName,
+            FullName = student.User.FullName,
             Assessments = assessments,
             OverallPercent = overallPercent,
             Letter = letter
@@ -1365,7 +1365,7 @@ public class GradeService : IGradeService
         }
 
         var studentMap = (await Students.GetAllAsync(new StudentSpec(allStudentIds.ToList(), lightweight: true), asNoTracking: true))
-            .ToDictionary(s => s.UserId, s => s.FullName);
+            .ToDictionary(s => s.UserId, s => s.User.FullName);
 
         var assignmentPks = assignmentComplaints.Select(c => c.GradeId).ToList();
         var submissions = new List<StudentAssignment>();

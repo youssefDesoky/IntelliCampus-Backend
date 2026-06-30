@@ -15,9 +15,9 @@ namespace IntelliCampus.Service.Specifications
 
             return s =>
                 (!queryParams.DepartmentId.HasValue || s.DepartmentId == queryParams.DepartmentId.Value) &&
-                (!queryParams.FacultyId.HasValue || s.FacultyId == queryParams.FacultyId.Value) &&
+                (!queryParams.FacultyId.HasValue || s.User.FacultyId == queryParams.FacultyId.Value) &&
                 (!queryParams.Level.HasValue || s.Level == queryParams.Level.Value) &&
-                (string.IsNullOrEmpty(queryParams.Search) || s.FullName.Contains(queryParams.Search)) &&
+                (string.IsNullOrEmpty(queryParams.Search) || s.User.FullName.Contains(queryParams.Search)) &&
                 (!parsedStatus.HasValue || s.StudentType == parsedStatus.Value);
         }
     }

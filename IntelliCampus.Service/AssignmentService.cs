@@ -523,7 +523,7 @@ public class AssignmentService(
             Score = submission.Grade!.Value,
             TotalPoints = a.MaxGrade,
             Feedback = submission.Feedback,
-            GradedBy = submission.GradedByInstructor?.FullName,
+            GradedBy = submission.GradedByInstructor?.User?.FullName,
             GradedAt = submission.GradedAt?.ToString("dd MM yyyy HH:mm")
         } : null
     };
@@ -532,7 +532,7 @@ public class AssignmentService(
     {
         Id = sa.StudentAssignmentId.ToString(),
         StudentId = sa.StudentId,
-        StudentName = sa.Student?.FullName,
+        StudentName = sa.Student?.User?.FullName,
         Status = "successful",
         SubmittedAt = sa.SubmittedAt.ToString("dd MM yyyy HH:mm"),
         IsLate = sa.IsLate,
@@ -549,7 +549,7 @@ public class AssignmentService(
             Score = sa.Grade.Value,
             TotalPoints = sa.Assignment.MaxGrade,
             Feedback = sa.Feedback,
-            GradedBy = sa.GradedByInstructor?.FullName,
+            GradedBy = sa.GradedByInstructor?.User?.FullName,
             GradedAt = sa.GradedAt?.ToString("dd MM yyyy HH:mm")
         } : null
     };

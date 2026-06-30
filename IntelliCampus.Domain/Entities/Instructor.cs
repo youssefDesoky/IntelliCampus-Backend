@@ -2,8 +2,9 @@ using IntelliCampus.Domain.Entities.Enums;
 
 namespace IntelliCampus.Domain.Entities;
 
-public class Instructor : User
+public class Instructor
 {
+    public int UserId { get; set; }
     public string? InstructorCode { get; set; }
     public InstructorRole? InstructorRole { get; set; }
     public string? Specialization { get; set; }
@@ -16,6 +17,7 @@ public class Instructor : User
     public string? Secondment { get; set; }
 
     // Navigation properties
+    public User User { get; set; } = null!;
     public Department? Department { get; set; }
     public Room? OfficeHoursRoom { get; set; }
     public ICollection<InstructorMaterial> InstructorMaterials { get; set; } = [];

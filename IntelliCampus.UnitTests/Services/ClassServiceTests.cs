@@ -58,7 +58,7 @@ public class ClassServiceTests
         result.CourseId.Should().Be(classEntity.CourseId);
         result.CourseName.Should().Be(classEntity.Course.CourseName);
         result.InstructorId.Should().Be(classEntity.InstructorId);
-        result.InstructorName.Should().Be(classEntity.Instructor?.FullName);
+        result.InstructorName.Should().Be(classEntity.Instructor?.User.FullName);
 
         _classRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<ISpecifications<Class>>()), Times.Once);
     }

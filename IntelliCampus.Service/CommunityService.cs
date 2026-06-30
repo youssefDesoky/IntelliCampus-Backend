@@ -218,7 +218,7 @@ public class CommunityService : ICommunityService
         var students = course.StudentCourses
             .Select(sc => new StudentData(
                 StudentId: sc.Student.UserId.ToString(),
-                Name: sc.Student.FullName,
+                Name: sc.Student.User.FullName,
                 Performance: CalculatePerformance(sc.Student, course, course.Grades),
                 CompletedTopics: new List<string> { courseCode }
             ))

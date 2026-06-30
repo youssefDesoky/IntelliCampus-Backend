@@ -443,7 +443,7 @@ public class CommunityServiceTests
     public async Task ToggleUpvoteAsync_NewUpvote_AddsVoteAndReturnsTrue()
     {
         var post = new Post { PostId = 1, Content = "test", UserId = 1 };
-        var user = new Student { UserId = 10, FullName = "Test", Email = "test@test.com" };
+        var user = new User { UserId = 10, FullName = "Test", Email = "test@test.com" };
         PostVote? capturedVote = null;
 
         _postRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(post);
@@ -469,7 +469,7 @@ public class CommunityServiceTests
     public async Task ToggleUpvoteAsync_ExistingUpvote_RemovesVoteAndReturnsFalse()
     {
         var post = new Post { PostId = 1, Content = "test", UserId = 1 };
-        var user = new Student { UserId = 10, FullName = "Test", Email = "test@test.com" };
+        var user = new User { UserId = 10, FullName = "Test", Email = "test@test.com" };
         var existingVote = new PostVote { PostVoteId = 1, PostId = 1, UserId = 10 };
 
         _postRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(post);

@@ -63,7 +63,7 @@ public class StudentServiceTests
     public async Task GetByIdAsync_ExistingStudent_ReturnsStudentDto()
     {
         var student = TestDataFactory.StudentFaker.Generate();
-        student.ProfileImage = null;
+        student.User.ProfileImage = null;
 
         _studentRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Student>>())).ReturnsAsync(student);
 
@@ -71,9 +71,9 @@ public class StudentServiceTests
 
         result.StudentId.Should().Be(student.UserId);
         result.UserId.Should().Be(student.UserId);
-        result.NationalId.Should().Be(student.NationalId);
-        result.FullName.Should().Be(student.FullName);
-        result.Email.Should().Be(student.Email);
+        result.NationalId.Should().Be(student.User.NationalId);
+        result.FullName.Should().Be(student.User.FullName);
+        result.Email.Should().Be(student.User.Email);
         result.StudentCode.Should().Be(student.StudentCode);
         result.Level.Should().Be(student.Level);
         result.Gpa.Should().Be(student.Gpa);
@@ -147,11 +147,11 @@ public class StudentServiceTests
         var result = await _sut.CreateAsync(dto);
 
         captured.Should().NotBeNull();
-        captured!.NationalId.Should().Be(dto.NationalId);
-        captured!.FullName.Should().Be(dto.FullName);
-        captured!.Email.Should().Be(dto.Email);
-        captured!.Password.Should().Be("hashed-pass");
-        captured!.FacultyId.Should().Be(1);
+        captured!.User.NationalId.Should().Be(dto.NationalId);
+        captured!.User.FullName.Should().Be(dto.FullName);
+        captured!.User.Email.Should().Be(dto.Email);
+        captured!.User.Password.Should().Be("hashed-pass");
+        captured!.User.FacultyId.Should().Be(1);
         captured!.StudentType.Should().Be(StudentType.Bachelor);
 
         capturedRole.Should().NotBeNull();
@@ -329,8 +329,8 @@ public class StudentServiceTests
 
         captured.Should().NotBeNull();
         captured!.StudentCode.Should().Be("GENCODE");
-        captured!.Email.Should().Be("GENCODE@intellicampus.online");
-        captured!.Password.Should().Be("hashed");
+        captured!.User.Email.Should().Be("GENCODE@intellicampus.online");
+        captured!.User.Password.Should().Be("hashed");
 
         capturedRole.Should().NotBeNull();
         capturedRole!.RoleId.Should().Be(1);
@@ -378,7 +378,7 @@ public class StudentServiceTests
 
         captured.Should().NotBeNull();
         captured!.StudentCode.Should().Be("MYCODE");
-        captured!.Email.Should().Be("myemail@test.com");
+        captured!.User.Email.Should().Be("myemail@test.com");
 
         capturedRole.Should().NotBeNull();
 
@@ -428,8 +428,8 @@ public class StudentServiceTests
         var result = await _sut.UpdateAsync(student.UserId, dto);
 
         captured.Should().NotBeNull();
-        captured!.FullName.Should().Be(dto.FullName);
-        captured!.Email.Should().Be(dto.Email);
+        captured!.User.FullName.Should().Be(dto.FullName);
+        captured!.User.Email.Should().Be(dto.Email);
 
         result.Should().NotBeNull();
         result.FullName.Should().Be(dto.FullName);
@@ -458,7 +458,7 @@ public class StudentServiceTests
     {
         var student = TestDataFactory.StudentFaker.Generate();
         var dto = new UpdateStudentDto { Email = "existing@test.com" };
-        student.Email = "different@test.com";
+        student.User.Email = "different@test.com";
 
         _studentRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Student>>())).ReturnsAsync(student);
         _userRepoMock.Setup(r => r.AnyAsync(It.IsAny<System.Linq.Expressions.Expression<Func<User, bool>>>())).ReturnsAsync(true);

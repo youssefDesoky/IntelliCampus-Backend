@@ -274,7 +274,7 @@ public class SpecializationAllocationService : ISpecializationAllocationService
                 allocations.Add(new StudentAllocationDto
                 {
                     StudentId = student.UserId,
-                    StudentName = student.FullName,
+                    StudentName = student.User.FullName,
                     SpecializationId = specId,
                     SpecializationName = spec.Name,
                     DepartmentId = deptId,
@@ -303,7 +303,7 @@ public class SpecializationAllocationService : ISpecializationAllocationService
                 unallocated.Add(new UnallocatedStudentDto
                 {
                     StudentId = student.UserId,
-                    StudentName = student.FullName,
+                    StudentName = student.User.FullName,
                     Reason = reason
                 });
             }

@@ -124,7 +124,7 @@ public class AttendanceService : IAttendanceService
                 "QR code has expired or is invalid. Ask student to refresh.");
 
         var student = await Students.GetByIdAsync(payload.UserId);
-        var studentName = student?.FullName ?? "Student";
+        var studentName = student?.User?.FullName ?? "Student";
         var studentCode = student?.StudentCode ?? payload.UserId.ToString();
 
         if (student is not null)
@@ -197,7 +197,7 @@ public class AttendanceService : IAttendanceService
 
         if (!isEnrolled)
             throw new InvalidOperationException(
-                $"{student.FullName} is not enrolled in this course.");
+                $"{student.User.FullName} is not enrolled in this course.");
 
         var alreadyRecorded = await Attendances.AnyAsync(
             a => a.StudentId == student.UserId
@@ -205,7 +205,7 @@ public class AttendanceService : IAttendanceService
 
         if (alreadyRecorded)
             throw new InvalidOperationException(
-                $"{student.FullName} is already recorded for this session.");
+                $"{student.User.FullName} is already recorded for this session.");
 
         var attendance = new Attendance
         {
@@ -225,7 +225,7 @@ public class AttendanceService : IAttendanceService
 
         return new AttendanceResultDto
         {
-            StudentName = student.FullName,
+            StudentName = student.User.FullName,
             StudentCode = student.StudentCode ?? dto.StudentCode,
             Status = dto.Status,
             RecordedAt = attendance.Date,
@@ -425,7 +425,7 @@ public class AttendanceService : IAttendanceService
             return new StudentAttendanceSummary
             {
                 StudentCode = sa.FirstOrDefault()?.Student?.StudentCode ?? "",
-                StudentName = sa.FirstOrDefault()?.Student?.FullName,
+                StudentName = sa.FirstOrDefault()?.Student?.User?.FullName,
                 Present = present,
                 Absent = absent,
                 AttendancePercentage = pct,
@@ -525,7 +525,7 @@ public class AttendanceService : IAttendanceService
                 {
                     StudentId = id,
                     StudentCode = student?.StudentCode ?? "",
-                    FullName = student?.FullName ?? "Unknown",
+                    FullName = student?.User?.FullName ?? "Unknown",
                     Status = record is not null ? record.Status : AttendanceStatus.NotRecorded,
                     CheckInTime = record?.Date
                 };
