@@ -1458,5 +1458,585 @@
     "endTime": "12:15",
     "room": "Hall-30",
     "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "MA111-TA1",
+    "classType": "Section",
+    "courseCode": "MA111",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Lab-1",
+    "instructorEmail": "202601010@intellicampus.online"
+  },
+  {
+    "groupCode": "IT111-TA1",
+    "classType": "Section",
+    "courseCode": "IT111",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Lab-2",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "CS111-TA1",
+    "classType": "Section",
+    "courseCode": "CS111",
+    "day": "Tuesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Lab-3",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "MA113-TA1",
+    "classType": "Section",
+    "courseCode": "MA113",
+    "day": "Wednesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Room-101",
+    "instructorEmail": "202601010@intellicampus.online"
+  },
+  {
+    "groupCode": "DS251-TA1",
+    "classType": "Section",
+    "courseCode": "DS251",
+    "day": "Thursday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Room-102",
+    "instructorEmail": "202601003@intellicampus.online"
+  },
+  {
+    "groupCode": "MA111-TA2",
+    "classType": "Section",
+    "courseCode": "MA111",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Lab-3",
+    "instructorEmail": "202601010@intellicampus.online"
+  },
+  {
+    "groupCode": "CS111-TA2",
+    "classType": "Section",
+    "courseCode": "CS111",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Room-101",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "MA113-TA2",
+    "classType": "Section",
+    "courseCode": "MA113",
+    "day": "Tuesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Room-102",
+    "instructorEmail": "202601010@intellicampus.online"
+  },
+  {
+    "groupCode": "DS251-TA2",
+    "classType": "Section",
+    "courseCode": "DS251",
+    "day": "Wednesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Lab-1",
+    "instructorEmail": "202601003@intellicampus.online"
+  },
+  {
+    "groupCode": "CS112-TA2",
+    "classType": "Section",
+    "courseCode": "CS112",
+    "day": "Thursday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Lab-2",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "IS211-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "IS211",
+    "day": "Monday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-5",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "IS231-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "IS231",
+    "day": "Sunday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-5",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "MA214-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "MA214",
+    "day": "Wednesday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-5",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "HU112-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "HU112",
+    "day": "Tuesday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-5",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "HU225-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "HU225",
+    "day": "Thursday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-5",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "MA113-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "MA113",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-1",
+    "instructorEmail": "202601001@intellicampus.online"
+  },
+  {
+    "groupCode": "HU117-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "HU117",
+    "day": "Sunday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-4",
+    "instructorEmail": "202601001@intellicampus.online"
+  },
+  {
+    "groupCode": "HU121-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "HU121",
+    "day": "Tuesday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-4",
+    "instructorEmail": "202601001@intellicampus.online"
+  },
+  {
+    "groupCode": "DS251-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "DS251",
+    "day": "Wednesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-2",
+    "instructorEmail": "202601001@intellicampus.online"
+  },
+  {
+    "groupCode": "CS214-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "CS214",
+    "day": "Thursday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-4",
+    "instructorEmail": "202601001@intellicampus.online"
+  },
+  {
+    "groupCode": "CS352-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "CS352",
+    "day": "Wednesday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-6",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "IS312-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "IS312",
+    "day": "Sunday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-6",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "IS321-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "IS321",
+    "day": "Wednesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-7",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "IS332-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "IS332",
+    "day": "Thursday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-6",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "SIS213-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SIS213",
+    "day": "Monday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-15",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "SHU132-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SHU132",
+    "day": "Sunday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-15",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "SIS334-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SIS334",
+    "day": "Wednesday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-15",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "SDS212-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SDS212",
+    "day": "Tuesday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-15",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS241-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SCS241",
+    "day": "Thursday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-15",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "SHU124-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SHU124",
+    "day": "Sunday",
+    "startTime": "08:00",
+    "endTime": "09:30",
+    "room": "Hall-12",
+    "instructorEmail": "202601003@intellicampus.online"
+  },
+  {
+    "groupCode": "SMA113-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SMA113",
+    "day": "Monday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-13",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "SMA214-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SMA214",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-14",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "SST222-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SST222",
+    "day": "Monday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-14",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "SDS321-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SDS321",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-20",
+    "instructorEmail": "202601005@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS252-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SCS252",
+    "day": "Sunday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-20",
+    "instructorEmail": "202601005@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS253-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SCS253",
+    "day": "Monday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-21",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS254-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SCS254",
+    "day": "Tuesday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-21",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS331-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SCS331",
+    "day": "Thursday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-21",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "SIT221-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SIT221",
+    "day": "Sunday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-25",
+    "instructorEmail": "202601007@intellicampus.online"
+  },
+  {
+    "groupCode": "SIT222-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SIT222",
+    "day": "Monday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-26",
+    "instructorEmail": "202601007@intellicampus.online"
+  },
+  {
+    "groupCode": "SIT324-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SIT324",
+    "day": "Thursday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-26",
+    "instructorEmail": "202601007@intellicampus.online"
+  },
+  {
+    "groupCode": "DS251-LEC-ALT-ALT",
+    "classType": "Lecture",
+    "courseCode": "DS251",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-2",
+    "instructorEmail": "202601001@intellicampus.online"
+  },
+  {
+    "groupCode": "IS312-LEC-ALT-ALT",
+    "classType": "Lecture",
+    "courseCode": "IS312",
+    "day": "Wednesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-6",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "IS321-LEC-ALT-ALT",
+    "classType": "Lecture",
+    "courseCode": "IS321",
+    "day": "Tuesday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-7",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "SIS333-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SIS333",
+    "day": "Thursday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-16",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "SIS212-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SIS212",
+    "day": "Wednesday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-21",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "SIT351-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SIT351",
+    "day": "Wednesday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-26",
+    "instructorEmail": "202601007@intellicampus.online"
+  },
+  {
+    "groupCode": "SIT345-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "SIT345",
+    "day": "Tuesday",
+    "startTime": "16:00",
+    "endTime": "17:30",
+    "room": "Hall-26",
+    "instructorEmail": "202601007@intellicampus.online"
+  },
+  {
+    "groupCode": "IT111-TA2",
+    "classType": "Section",
+    "courseCode": "IT111",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Lab-3",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "MA111-TA3",
+    "classType": "Section",
+    "courseCode": "MA111",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Lab-3",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "IT111-TA3",
+    "classType": "Section",
+    "courseCode": "IT111",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Room-101",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "CS111-TA3",
+    "classType": "Section",
+    "courseCode": "CS111",
+    "day": "Tuesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Room-102",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "MA113-TA3",
+    "classType": "Section",
+    "courseCode": "MA113",
+    "day": "Wednesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Lab-1",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "MA111-TA4",
+    "classType": "Section",
+    "courseCode": "MA111",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Room-101",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "IT111-TA4",
+    "classType": "Section",
+    "courseCode": "IT111",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Room-102",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "CS111-TA4",
+    "classType": "Section",
+    "courseCode": "CS111",
+    "day": "Tuesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Lab-1",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "MA113-TA4",
+    "classType": "Section",
+    "courseCode": "MA113",
+    "day": "Wednesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Lab-2",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "CS112-LEC-ALT",
+    "classType": "Lecture",
+    "courseCode": "CS112",
+    "day": "Sunday",
+    "startTime": "08:00",
+    "endTime": "09:30",
+    "room": "Hall-2",
+    "instructorEmail": "202601001@intellicampus.online"
   }
 ]
