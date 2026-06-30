@@ -107,7 +107,7 @@ public class RegistrationService : IRegistrationService
             CourseName = course.CourseName,
             ClassId = classEntity.ClassId,
             ClassName = $"{classEntity.ClassType}",
-            ProfessorName = lectureClass?.Instructor?.FullName,
+            ProfessorName = lectureClass?.Instructor?.User?.FullName,
             Semester = semester,
             RegisteredAt = studentCourse.RegisteredAt
         };
@@ -126,7 +126,7 @@ public class RegistrationService : IRegistrationService
             ClassId = sc.ClassId,
             ClassName = sc.Class is not null ? $"{sc.Class.ClassType}" : null,
             ProfessorName = sc.Course.Classes
-                .FirstOrDefault(cl => cl.ClassType == ClassType.Lecture)?.Instructor?.FullName,
+                .FirstOrDefault(cl => cl.ClassType == ClassType.Lecture)?.Instructor?.User?.FullName,
             Semester = sc.Semester,
             RegisteredAt = sc.RegisteredAt
         });

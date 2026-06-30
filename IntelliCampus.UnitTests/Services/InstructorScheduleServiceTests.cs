@@ -71,7 +71,7 @@ public class InstructorScheduleServiceTests
         dto.EndTime.Should().NotBeNullOrEmpty();
         dto.Location.Should().Be("Room A");
         dto.Type.Should().Be("lecture");
-        dto.Instructor.Should().Be(instructor.FullName);
+        dto.Instructor.Should().Be(instructor.User.FullName);
         dto.CourseId.Should().Be(1);
         dto.CourseName.Should().Be("Math 101");
 
@@ -165,7 +165,7 @@ public class InstructorScheduleServiceTests
             StartTime = TimeSpan.FromHours(10),
             EndTime = TimeSpan.FromHours(11),
             Room = "Room B",
-            Instructor = new Instructor { UserId = 1, FullName = "Dr. Smith" },
+            Instructor = new Instructor { UserId = 1, User = new User { FullName = "Dr. Smith" } },
             Course = new Course { CourseId = 1, CourseName = "Physics" }
         };
 
@@ -259,7 +259,7 @@ public class InstructorScheduleServiceTests
                 Course = new Course { CourseId = 1, CourseName = "Math" }
             }
         };
-        var instructorDto = new InstructorDto { FullName = instructor.FullName, InstructorCode = "INST001" };
+        var instructorDto = new InstructorDto { FullName = instructor.User.FullName, InstructorCode = "INST001" };
         var pdfBytes = new byte[] { 0x25, 0x50, 0x44, 0x46 };
 
         _instructorRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Instructor>>())).ReturnsAsync(instructor);
@@ -295,7 +295,7 @@ public class InstructorScheduleServiceTests
     public async Task ExportSchedulePdfAsync_EmptySchedule_ReturnsPdfBytes()
     {
         var instructor = TestDataFactory.InstructorFaker.Generate();
-        var instructorDto = new InstructorDto { FullName = instructor.FullName, InstructorCode = "INST001" };
+        var instructorDto = new InstructorDto { FullName = instructor.User.FullName, InstructorCode = "INST001" };
         var pdfBytes = new byte[] { 0x25, 0x50, 0x44, 0x46 };
 
         _instructorRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Instructor>>())).ReturnsAsync(instructor);

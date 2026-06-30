@@ -108,7 +108,7 @@ public class InstructorScheduleService : IInstructorScheduleService
             ClassType.Lab => "activity",
             _ => "lecture"
         },
-        Instructor = c.Instructor?.FullName,
+        Instructor = c.Instructor?.User?.FullName,
         CourseId = c.CourseId,
         CourseName = c.Course?.CourseName,
         StudentId = 0

@@ -546,7 +546,7 @@ public class MaterialServiceTests
         result.CourseId.Should().Be(folder.CourseId);
         result.CourseName.Should().Be(folder.Course.CourseName);
         result.CreatedByInstructorId.Should().Be(folder.CreatedByInstructorId);
-        result.CreatedByInstructorName.Should().Be(folder.CreatedByInstructor.FullName);
+        result.CreatedByInstructorName.Should().Be(folder.CreatedByInstructor.User.FullName);
         result.DisplayOrder.Should().Be(folder.DisplayOrder);
         result.MaterialCount.Should().Be(0);
 
@@ -634,7 +634,7 @@ public class MaterialServiceTests
         result.CourseId.Should().Be(course.CourseId);
         result.CourseName.Should().Be(course.CourseName);
         result.CreatedByInstructorId.Should().Be(instructor.UserId);
-        result.CreatedByInstructorName.Should().Be(instructor.FullName);
+        result.CreatedByInstructorName.Should().Be(instructor.User.FullName);
         result.Description.Should().BeNull();
         result.MaterialCount.Should().Be(0);
 

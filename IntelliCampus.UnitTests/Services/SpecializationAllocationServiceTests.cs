@@ -76,8 +76,8 @@ public class SpecializationAllocationServiceTests
         var course = new Course { CourseId = 1, CreditHours = 3 };
         var bylaw = new Bylaw { BylawId = 1, Settings = new BylawSettings { MinHoursToChooseSpecialization = null } };
 
-        var highGpaStudent = new Student { UserId = 1, FullName = "Alice", Gpa = 3.8, BylawId = 1 };
-        var lowGpaStudent = new Student { UserId = 2, FullName = "Bob", Gpa = 2.5, BylawId = 1 };
+        var highGpaStudent = new Student { UserId = 1, User = new User { FullName = "Alice" }, Gpa = 3.8, BylawId = 1 };
+        var lowGpaStudent = new Student { UserId = 2, User = new User { FullName = "Bob" }, Gpa = 2.5, BylawId = 1 };
 
         var prefs = new List<SpecializationPreference>
         {
@@ -115,7 +115,7 @@ public class SpecializationAllocationServiceTests
         var spec = new Specialization { SpecializationId = 1, Name = "CS", DepartmentId = 1, MaxCapacity = 100, Prerequisites = [] };
         var course = new Course { CourseId = 1, CreditHours = 3 };
 
-        var student = new Student { UserId = 1, FullName = "Charlie", Gpa = 3.0, BylawId = 1 };
+        var student = new Student { UserId = 1, User = new User { FullName = "Charlie" }, Gpa = 3.0, BylawId = 1 };
 
         _studentRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([student]);
         _specRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<Specialization>>())).ReturnsAsync([spec]);
@@ -143,8 +143,8 @@ public class SpecializationAllocationServiceTests
         var course = new Course { CourseId = 1, CreditHours = 3 };
         var bylaw = new Bylaw { BylawId = 1, Settings = new BylawSettings { MinHoursToChooseSpecialization = null } };
 
-        var student1 = new Student { UserId = 1, FullName = "Alice", Gpa = 3.8, BylawId = 1 };
-        var student2 = new Student { UserId = 2, FullName = "Bob", Gpa = 3.5, BylawId = 1 };
+        var student1 = new Student { UserId = 1, User = new User { FullName = "Alice" }, Gpa = 3.8, BylawId = 1 };
+        var student2 = new Student { UserId = 2, User = new User { FullName = "Bob" }, Gpa = 3.5, BylawId = 1 };
 
         var prefs = new List<SpecializationPreference>
         {
@@ -179,7 +179,7 @@ public class SpecializationAllocationServiceTests
         var spec = new Specialization { SpecializationId = 1, Name = "CS", DepartmentId = 1, MaxCapacity = 100, Prerequisites = [prereq] };
         var bylaw = new Bylaw { BylawId = 1, Settings = new BylawSettings { MinHoursToChooseSpecialization = null } };
 
-        var student = new Student { UserId = 1, FullName = "Dave", Gpa = 3.0, BylawId = 1 };
+        var student = new Student { UserId = 1, User = new User { FullName = "Dave" }, Gpa = 3.0, BylawId = 1 };
 
         var prefs = new List<SpecializationPreference>
         {
@@ -211,7 +211,7 @@ public class SpecializationAllocationServiceTests
         var course = new Course { CourseId = 1, CreditHours = 3 };
         var bylaw = new Bylaw { BylawId = 1, Settings = new BylawSettings { MinHoursToChooseSpecialization = null } };
 
-        var studentValid = new Student { UserId = 1, FullName = "Frank", Gpa = 3.0, BylawId = 1 };
+        var studentValid = new Student { UserId = 1, User = new User { FullName = "Frank" }, Gpa = 3.0, BylawId = 1 };
 
         var prefs = new List<SpecializationPreference>
         {
@@ -243,7 +243,7 @@ public class SpecializationAllocationServiceTests
         var course = new Course { CourseId = 1, CreditHours = 3 };
         var bylaw = new Bylaw { BylawId = 1, Settings = new BylawSettings { MinHoursToChooseSpecialization = 30 } };
 
-        var student = new Student { UserId = 1, FullName = "Grace", Gpa = 3.0, BylawId = 1 };
+        var student = new Student { UserId = 1, User = new User { FullName = "Grace" }, Gpa = 3.0, BylawId = 1 };
 
         var prefs = new List<SpecializationPreference>
         {
@@ -277,7 +277,7 @@ public class SpecializationAllocationServiceTests
         var spec = new Specialization { SpecializationId = 1, Name = "CS", DepartmentId = 1, MaxCapacity = 100, Prerequisites = [prereq] };
         var bylaw = new Bylaw { BylawId = 1, Settings = new BylawSettings { MinHoursToChooseSpecialization = null } };
 
-        var student = new Student { UserId = 1, FullName = "Heidi", Gpa = 3.5, BylawId = 1 };
+        var student = new Student { UserId = 1, User = new User { FullName = "Heidi" }, Gpa = 3.5, BylawId = 1 };
 
         var studentCourse = new StudentCourse { StudentId = 1, CourseId = 1, Status = StudentCourseStatus.Completed };
         var grade = new Grade { StudentId = 1, CourseId = 1, Score = 80, MaxScore = 100, Weight = 100, Status = "Graded" };
@@ -313,8 +313,8 @@ public class SpecializationAllocationServiceTests
         var course2 = new Course { CourseId = 2, CreditHours = 3 };
         var bylaw = new Bylaw { BylawId = 1, Settings = new BylawSettings { MinHoursToChooseSpecialization = null } };
 
-        var studentHighGpaLowHours = new Student { UserId = 1, FullName = "Ivan", Gpa = 3.8, BylawId = 1 };
-        var studentLowGpa = new Student { UserId = 2, FullName = "Judy", Gpa = 3.5, BylawId = 1 };
+        var studentHighGpaLowHours = new Student { UserId = 1, User = new User { FullName = "Ivan" }, Gpa = 3.8, BylawId = 1 };
+        var studentLowGpa = new Student { UserId = 2, User = new User { FullName = "Judy" }, Gpa = 3.5, BylawId = 1 };
 
         var prefs = new List<SpecializationPreference>
         {
@@ -348,7 +348,7 @@ public class SpecializationAllocationServiceTests
         var spec = new Specialization { SpecializationId = 1, Name = "CS", DepartmentId = 1, MaxCapacity = 100, Prerequisites = [] };
         var course = new Course { CourseId = 1, CreditHours = 3 };
 
-        var student = new Student { UserId = 1, FullName = "Karl", Gpa = 3.0, BylawId = null };
+        var student = new Student { UserId = 1, User = new User { FullName = "Karl" }, Gpa = 3.0, BylawId = null };
 
         var prefs = new List<SpecializationPreference>
         {

@@ -53,7 +53,7 @@ public class AuthServiceTests
     [Fact]
     public async Task LoginAsync_ValidCredentials_ReturnsAuthResponse()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         user.UserRoles = [new UserRoleJunction { Role = new Role { RoleName = "Student_Bachelor" }, IsActive = true }];
         var dto = new LoginDto { Email = user.Email!, Password = "password123" };
         var expiresAt = DateTime.UtcNow.AddHours(1);
@@ -96,7 +96,7 @@ public class AuthServiceTests
     [Fact]
     public async Task LoginAsync_InvalidPassword_ThrowsUnauthorized()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var dto = new LoginDto { Email = user.Email!, Password = "wrongpassword" };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<User>>())).ReturnsAsync(user);
@@ -114,7 +114,7 @@ public class AuthServiceTests
     [Fact]
     public async Task GetMeAsync_ExistingUser_ReturnsMeResponse()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         user.UserRoles = [new UserRoleJunction { Role = new Role { RoleName = "Student_Bachelor" }, IsActive = true }];
 
         _userRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<User>>())).ReturnsAsync(user);
@@ -149,7 +149,7 @@ public class AuthServiceTests
     [Fact]
     public async Task GetProfileAsync_ExistingUser_ReturnsProfile()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
 
         _userRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<User>>())).ReturnsAsync(user);
 
@@ -182,7 +182,7 @@ public class AuthServiceTests
     [Fact]
     public async Task UpdateProfileAsync_ExistingUser_UpdatesAndReturnsProfile()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var dto = new UpdateProfileDto { FullName = "Updated Name", Address = "New Address" };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<User>>())).ReturnsAsync(user);
@@ -225,7 +225,7 @@ public class AuthServiceTests
     [Fact]
     public async Task UpdateProfileAsync_FullNameIsNull_PartialUpdateOnlyOtherFields()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var originalFullName = user.FullName;
         var dto = new UpdateProfileDto { FullName = null, Address = "New Address", PhoneNumber = null };
 
@@ -254,7 +254,7 @@ public class AuthServiceTests
     [Fact]
     public async Task UpdateProfileAsync_AddressIsNull_PartialUpdateWithoutAddress()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var originalAddress = user.Address;
         var dto = new UpdateProfileDto { FullName = "New Name", Address = null, PhoneNumber = null };
 
@@ -282,7 +282,7 @@ public class AuthServiceTests
     [Fact]
     public async Task UpdateProfileAsync_PhoneNumberIsNotNull_UpdatesPhoneNumber()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var dto = new UpdateProfileDto { FullName = null, Address = null, PhoneNumber = "123-456-7890" };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<User>>())).ReturnsAsync(user);
@@ -307,7 +307,7 @@ public class AuthServiceTests
     [Fact]
     public async Task ChangePasswordAsync_ValidPassword_ChangesAndReturnsTrue()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var dto = new ChangePasswordDto { CurrentPassword = "oldpass", NewPassword = "newpass" };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
@@ -337,7 +337,7 @@ public class AuthServiceTests
     [Fact]
     public async Task ChangePasswordAsync_WrongCurrentPassword_ThrowsInvalidOperation()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var dto = new ChangePasswordDto { CurrentPassword = "wrongpass", NewPassword = "newpass" };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
@@ -373,7 +373,7 @@ public class AuthServiceTests
     [Fact]
     public async Task UpdateProfileImageAsync_ExistingUser_UpdatesAndReturnsProfile()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var fileMock = new Mock<IFormFile>();
 
         _userRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<User>>())).ReturnsAsync(user);

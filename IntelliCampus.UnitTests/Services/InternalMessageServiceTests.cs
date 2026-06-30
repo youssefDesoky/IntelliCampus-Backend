@@ -38,8 +38,8 @@ public class InternalMessageServiceTests
     [Fact]
     public async Task SendMessageAsync_ValidData_SendsAndReturnsDto()
     {
-        var sender = TestDataFactory.StudentFaker.Generate();
-        var recipient = TestDataFactory.StudentFaker.Generate();
+        var sender = TestDataFactory.UserFaker.Generate();
+        var recipient = TestDataFactory.UserFaker.Generate();
         recipient.Email = "recipient@test.com";
 
         InternalMessage? captured = null;
@@ -87,7 +87,7 @@ public class InternalMessageServiceTests
     [Fact]
     public async Task SendMessageAsync_SelfMessage_ThrowsInvalidOperationException()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
 
         _userRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<User>>())).ReturnsAsync(user);
 
@@ -121,7 +121,7 @@ public class InternalMessageServiceTests
     public async Task SendMessageAsync_SenderNotFound_StillSendsSuccessfully()
     {
         var senderId = 1;
-        var recipient = TestDataFactory.StudentFaker.Generate();
+        var recipient = TestDataFactory.UserFaker.Generate();
         recipient.Email = "recipient@test.com";
 
         InternalMessage? captured = null;
@@ -156,8 +156,8 @@ public class InternalMessageServiceTests
     [Fact]
     public async Task SendMessageAsync_NotificationThrows_DoesNotBreakSend()
     {
-        var sender = TestDataFactory.StudentFaker.Generate();
-        var recipient = TestDataFactory.StudentFaker.Generate();
+        var sender = TestDataFactory.UserFaker.Generate();
+        var recipient = TestDataFactory.UserFaker.Generate();
         recipient.Email = "recipient@test.com";
 
         InternalMessage? captured = null;
@@ -191,8 +191,8 @@ public class InternalMessageServiceTests
     [Fact]
     public async Task SendMessageAsync_WithParentMessageId_SetsIsReply()
     {
-        var sender = TestDataFactory.StudentFaker.Generate();
-        var recipient = TestDataFactory.StudentFaker.Generate();
+        var sender = TestDataFactory.UserFaker.Generate();
+        var recipient = TestDataFactory.UserFaker.Generate();
         recipient.Email = "recipient@test.com";
 
         InternalMessage? captured = null;
@@ -345,8 +345,8 @@ public class InternalMessageServiceTests
             new() { MessageId = 1, SenderId = 2, RecipientId = userId, Subject = "Hello", Body = "World", SentAt = DateTime.UtcNow }
         };
 
-        var sender = TestDataFactory.StudentFaker.Generate();
-        var recipient = TestDataFactory.StudentFaker.Generate();
+        var sender = TestDataFactory.UserFaker.Generate();
+        var recipient = TestDataFactory.UserFaker.Generate();
 
         _messageRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<InternalMessage>>())).ReturnsAsync(roots);
         _messageRepoMock.Setup(r => r.CountAsync(It.IsAny<ISpecifications<InternalMessage>>())).ReturnsAsync(1);
@@ -391,8 +391,8 @@ public class InternalMessageServiceTests
             new() { MessageId = 1, SenderId = userId, RecipientId = 2, Subject = "Hello", SentAt = DateTime.UtcNow }
         };
 
-        var sender = TestDataFactory.StudentFaker.Generate();
-        var recipient = TestDataFactory.StudentFaker.Generate();
+        var sender = TestDataFactory.UserFaker.Generate();
+        var recipient = TestDataFactory.UserFaker.Generate();
 
         _messageRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<InternalMessage>>())).ReturnsAsync(roots);
         _userRepoMock.Setup(r => r.GetByIdAsync(userId)).ReturnsAsync(sender);
@@ -434,10 +434,10 @@ public class InternalMessageServiceTests
             new() { MessageId = 2, SenderId = userId, RecipientId = 1, Subject = "Re: Root", Body = "Reply", ParentMessageId = 1, SentAt = DateTime.UtcNow.AddMinutes(5) }
         };
 
-        var senderUser = TestDataFactory.StudentFaker.Generate();
+        var senderUser = TestDataFactory.UserFaker.Generate();
         senderUser.FullName = "Sender";
         senderUser.Email = "sender@test.com";
-        var recipientUser = TestDataFactory.StudentFaker.Generate();
+        var recipientUser = TestDataFactory.UserFaker.Generate();
         recipientUser.FullName = "Recipient";
         recipientUser.Email = "recipient@test.com";
 
@@ -475,8 +475,8 @@ public class InternalMessageServiceTests
             .ReturnsAsync(roots)
             .ReturnsAsync([]);
         _messageRepoMock.Setup(r => r.CountAsync(It.IsAny<ISpecifications<InternalMessage>>())).ReturnsAsync(1);
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(TestDataFactory.StudentFaker.Generate());
-        _userRepoMock.Setup(r => r.GetByIdAsync(userId)).ReturnsAsync(TestDataFactory.StudentFaker.Generate());
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(TestDataFactory.UserFaker.Generate());
+        _userRepoMock.Setup(r => r.GetByIdAsync(userId)).ReturnsAsync(TestDataFactory.UserFaker.Generate());
 
         var result = await _sut.GetInboxMessagesAsync(userId, new MessageQueryParams { PageIndex = 1, PageSize = 10 });
 

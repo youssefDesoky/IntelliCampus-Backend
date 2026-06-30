@@ -42,8 +42,8 @@ public class FriendServiceTests
     [Fact]
     public async Task SendRequestAsync_ValidRequest_CreatesPendingRequest()
     {
-        var sender = Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "Sender");
-        var recipient = Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "Recipient");
+        var sender = Mock.Of<User>(s => s.UserId == 1 && s.FullName == "Sender");
+        var recipient = Mock.Of<User>(s => s.UserId == 2 && s.FullName == "Recipient");
         FriendRequest? capturedRequest = null;
 
         _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(recipient);
@@ -101,7 +101,7 @@ public class FriendServiceTests
     [Fact]
     public async Task SendRequestAsync_PendingRequestAlreadyExists_ThrowsInvalidOperation()
     {
-        var recipient = Mock.Of<Student>(s => s.UserId == 2);
+        var recipient = Mock.Of<User>(s => s.UserId == 2);
         var existingRequests = new List<FriendRequest>
         {
             new() { SenderId = 1, RecipientId = 2, Status = FriendRequestStatus.Pending }
@@ -123,7 +123,7 @@ public class FriendServiceTests
     [Fact]
     public async Task SendRequestAsync_AlreadyFriends_ThrowsInvalidOperation()
     {
-        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<Student>());
+        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<User>());
         _requestRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
         _friendshipRepoMock.Setup(r => r.AnyAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Friendship, bool>>>())).ReturnsAsync(true);
 
@@ -141,8 +141,8 @@ public class FriendServiceTests
     [Fact]
     public async Task SendRequestAsync_ReverseRequestExists_AutoAcceptsAndCreatesFriendship()
     {
-        var sender = Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "Sender");
-        var recipient = Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "Recipient");
+        var sender = Mock.Of<User>(s => s.UserId == 1 && s.FullName == "Sender");
+        var recipient = Mock.Of<User>(s => s.UserId == 2 && s.FullName == "Recipient");
         var reverseRequest = new FriendRequest
         {
             FriendRequestId = 1,
@@ -189,8 +189,8 @@ public class FriendServiceTests
         _requestRepoMock.Setup(r => r.Update(It.IsAny<FriendRequest>()));
         _friendshipRepoMock.Setup(r => r.Add(It.IsAny<Friendship>())).Callback<Friendship>(f => capturedFriendship = f);
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "Sender"));
-        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "Recipient"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1 && s.FullName == "Sender"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 2 && s.FullName == "Recipient"));
 
         var result = await _sut.AcceptRequestAsync(1, 2);
 
@@ -275,8 +275,8 @@ public class FriendServiceTests
         _requestRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(request);
         _requestRepoMock.Setup(r => r.Update(It.IsAny<FriendRequest>())).Callback<FriendRequest>(fr => capturedUpdate = fr);
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "Sender"));
-        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "Recipient"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1 && s.FullName == "Sender"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 2 && s.FullName == "Recipient"));
 
         var result = await _sut.RejectRequestAsync(1, 2);
 
@@ -338,12 +338,12 @@ public class FriendServiceTests
     [Fact]
     public async Task GetPendingRequestsAsync_ExistingUser_ReturnsPendingRequests()
     {
-        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "Recipient"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 2 && s.FullName == "Recipient"));
         _requestRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<FriendRequest>
         {
             new() { FriendRequestId = 1, SenderId = 1, RecipientId = 2, Status = FriendRequestStatus.Pending, CreatedAt = DateTime.UtcNow }
         });
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "Sender"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1 && s.FullName == "Sender"));
 
         var result = await _sut.GetPendingRequestsAsync(2);
 
@@ -375,7 +375,7 @@ public class FriendServiceTests
     [Fact]
     public async Task GetPendingRequestsAsync_NoPendingRequests_ReturnsEmptyList()
     {
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1));
         _requestRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
 
         var result = await _sut.GetPendingRequestsAsync(1);
@@ -390,9 +390,9 @@ public class FriendServiceTests
     {
         var friendships = new List<Friendship> { new() { UserId1 = 1, UserId2 = 2, CreatedAt = DateTime.UtcNow } };
 
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "Me"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1 && s.FullName == "Me"));
         _friendshipRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(friendships);
-        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "Friend" && s.UserRoles == new List<UserRoleJunction>()));
+        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 2 && s.FullName == "Friend" && s.UserRoles == new List<UserRoleJunction>()));
 
         var result = await _sut.GetFriendsAsync(1);
 
@@ -422,7 +422,7 @@ public class FriendServiceTests
     [Fact]
     public async Task GetFriendsAsync_NoFriends_ReturnsEmptyList()
     {
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "Me"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1 && s.FullName == "Me"));
         _friendshipRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
 
         var result = await _sut.GetFriendsAsync(1);
@@ -435,7 +435,7 @@ public class FriendServiceTests
     [Fact]
     public async Task GetFriendsAsync_MissingFriendUser_SkipsNullUser()
     {
-        var user = Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "Me");
+        var user = Mock.Of<User>(s => s.UserId == 1 && s.FullName == "Me");
         var friendships = new List<Friendship> { new() { UserId1 = 1, UserId2 = 2, CreatedAt = DateTime.UtcNow } };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(user);

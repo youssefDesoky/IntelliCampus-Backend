@@ -108,7 +108,7 @@ public partial class GradeServiceTests
         result.Students.Should().HaveCount(1);
         result.Students[0].Assessments.Should().HaveCount(4);
         result.Students[0].StudentId.Should().Be(student.UserId);
-        result.Students[0].FullName.Should().Be(student.FullName);
+        result.Students[0].FullName.Should().Be(student.User.FullName);
         result.Students[0].Letter.Should().Be("C");
         _courseRepoMock.Verify(r => r.GetByIdAsync(course.CourseId), Times.Once);
         _classRepoMock.Verify(r => r.AnyAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Class, bool>>>()), Times.Once);
@@ -183,7 +183,7 @@ public partial class GradeServiceTests
         var course = TestDataFactory.CourseFaker.Generate();
         var studentCourse = new StudentCourse { StudentId = student.UserId, CourseId = course.CourseId, Semester = "Sem1" };
         var pdfBytes = new byte[] { 0x25, 0x50, 0x44, 0x46 };
-        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.FullName, StudentCode = student.StudentCode, FacultyName = "Engineering", Level = 1, DepartmentName = "CS" };
+        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.User.FullName, StudentCode = student.StudentCode, FacultyName = "Engineering", Level = 1, DepartmentName = "CS" };
         _studentRepoMock.Setup(r => r.GetByIdAsync(student.UserId)).ReturnsAsync(student);
         _studentServiceMock.Setup(s => s.GetByIdAsync(student.UserId)).ReturnsAsync(studentDto);
         _studentCourseCompositeRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<StudentCourse>>())).ReturnsAsync([studentCourse]);
@@ -244,7 +244,7 @@ public partial class GradeServiceTests
         var course = TestDataFactory.CourseFaker.Generate();
         var studentCourse = new StudentCourse { StudentId = student.UserId, CourseId = course.CourseId, Semester = "Sem1" };
         var pdfBytes = new byte[] { 0x25, 0x50, 0x44, 0x46 };
-        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.FullName, StudentCode = student.StudentCode, FacultyName = "Engineering", Level = 1, DepartmentName = "CS" };
+        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.User.FullName, StudentCode = student.StudentCode, FacultyName = "Engineering", Level = 1, DepartmentName = "CS" };
         _studentRepoMock.Setup(r => r.GetByIdAsync(student.UserId)).ReturnsAsync(student);
         _studentServiceMock.Setup(s => s.GetByIdAsync(student.UserId)).ReturnsAsync(studentDto);
         _studentCourseCompositeRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<StudentCourse>>())).ReturnsAsync([studentCourse]);

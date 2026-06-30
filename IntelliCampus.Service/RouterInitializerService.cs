@@ -132,7 +132,7 @@ public class RouterInitializerService : IHostedService
         var students = courseStudentCourses
             .Select(sc => new StudentData(
                 StudentId: sc.Student.UserId.ToString(),
-                Name: sc.Student.FullName,
+                Name: sc.Student.User.FullName,
                 Performance: CalculatePerformance(sc.Student, courseGrades),
                 CompletedTopics: new List<string> {
                     courseCode

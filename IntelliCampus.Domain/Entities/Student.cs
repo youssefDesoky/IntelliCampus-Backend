@@ -2,8 +2,9 @@ using IntelliCampus.Domain.Entities.Enums;
 
 namespace IntelliCampus.Domain.Entities;
 
-public class Student : User
+public class Student
 {
+    public int UserId { get; set; }
     public string? StudentCode { get; set; }
     public int? Level { get; set; }
     public int? DepartmentId { get; set; }
@@ -15,6 +16,7 @@ public class Student : User
     public Enums.StudentType StudentType { get; set; }
 
     // Navigation properties
+    public User User { get; set; } = null!;
     public Specialization? Specialization { get; set; }
     public Department? Department { get; set; }
     public Bylaw? Bylaw { get; set; }

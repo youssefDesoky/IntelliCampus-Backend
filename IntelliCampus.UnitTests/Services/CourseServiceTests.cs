@@ -1184,7 +1184,7 @@ public class CourseServiceTests
 
         var student = TestDataFactory.StudentFaker.Generate();
         student.UserId = 100;
-        student.UserRoles = new List<UserRoleJunction>();
+        student.User.UserRoles = new List<UserRoleJunction>();
 
         var classEntity = new Class { ClassId = 5, GroupCode = "CS-L1" };
         var studentCourses = new List<StudentCourse>
@@ -1227,7 +1227,7 @@ public class CourseServiceTests
 
         var student = TestDataFactory.StudentFaker.Generate();
         student.UserId = 100;
-        student.UserRoles = new List<UserRoleJunction>();
+        student.User.UserRoles = new List<UserRoleJunction>();
 
         var studentCourses = new List<StudentCourse>
         {
@@ -1304,6 +1304,6 @@ public class CourseServiceTests
         result.Should().NotBeNull();
         result!.Schedule.Should().Be("Sunday 9:00 AM - 10:30 AM");
         result.Room.Should().Be("Room 101");
-        result.ProfessorName.Should().Be(instructor.FullName);
+        result.ProfessorName.Should().Be(instructor.User.FullName);
     }
 }

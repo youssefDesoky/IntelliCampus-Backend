@@ -273,7 +273,7 @@ public class MaterialService(
             CourseId = folder.CourseId,
             CourseName = course.CourseName,
             CreatedByInstructorId = instructorId,
-            CreatedByInstructorName = instructor?.FullName ?? "Unknown",
+            CreatedByInstructorName = instructor?.User?.FullName ?? "Unknown",
             CreatedAt = folder.CreatedAt,
             DisplayOrder = folder.DisplayOrder,
             MaterialCount = 0
@@ -354,7 +354,7 @@ public class MaterialService(
             CourseId = folder.CourseId,
             CourseName = folder.Course.CourseName,
             CreatedByInstructorId = folder.CreatedByInstructorId,
-            CreatedByInstructorName = folder.CreatedByInstructor.FullName,
+            CreatedByInstructorName = folder.CreatedByInstructor.User.FullName,
             CreatedAt = folder.CreatedAt,
             DisplayOrder = folder.DisplayOrder,
             MaterialCount = folder.Materials.Count

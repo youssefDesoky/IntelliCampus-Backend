@@ -84,6 +84,18 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         Instructors.Add(instructor);
         await _unitOfWork.SaveChangesAsync();
 
+        if (dto.LoanFromDepartmentId.HasValue || dto.LoanFromFacultyId.HasValue || dto.LoanProfessorId is not null)
+        {
+            var loanInstructor = new LoanInstructor
+            {
+                UserId = instructor.UserId,
+                LoanFromDepartmentId = dto.LoanFromDepartmentId,
+                LoanFromFacultyId = dto.LoanFromFacultyId,
+                LoanProfessorId = dto.LoanProfessorId
+            };
+            _unitOfWork.GetRepository<LoanInstructor, int>().Add(loanInstructor);
+        }
+
         await AssignInstructorRoleAsync(instructor.UserId);
 
         if (instructor.DepartmentId.HasValue)
@@ -104,28 +116,29 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         if (instructor is null)
             throw new InstructorNotFoundException(instructorId);
 
-        if (dto.Email is not null && dto.Email != instructor.Email)
+        if (dto.Email is not null && dto.Email != instructor.User.Email)
         {
             if (await Users.AnyAsync(u => u.Email == dto.Email && u.UserId != instructorId))
                 throw new InvalidOperationException("Email already exists.");
-            instructor.Email = dto.Email;
+            instructor.User.Email = dto.Email;
         }
 
-        if (dto.FullName is not null) instructor.FullName = dto.FullName;
-        if (dto.FullNameAr is not null) instructor.FullNameAr = dto.FullNameAr;
-        if (dto.PhoneNumber is not null) instructor.PhoneNumber = dto.PhoneNumber;
-        if (dto.Address is not null) instructor.Address = dto.Address;
-        if (dto.Nationality is not null) instructor.Nationality = dto.Nationality;
+        if (dto.FullName is not null) instructor.User.FullName = dto.FullName;
+        if (dto.FullNameAr is not null) instructor.User.FullNameAr = dto.FullNameAr;
+        if (dto.PhoneNumber is not null) instructor.User.PhoneNumber = dto.PhoneNumber;
+        if (dto.Address is not null) instructor.User.Address = dto.Address;
+        if (dto.Nationality is not null) instructor.User.Nationality = dto.Nationality;
         if (dto.InstructorCode is not null) instructor.InstructorCode = dto.InstructorCode;
         if (dto.InstructorRole is not null) instructor.InstructorRole = ParseInstructorRole(dto.InstructorRole);
         if (dto.Specialization is not null) instructor.Specialization = dto.Specialization;
-        if (dto.FacultyId.HasValue) instructor.FacultyId = dto.FacultyId;
+        if (dto.FacultyId.HasValue) instructor.User.FacultyId = dto.FacultyId;
         if (dto.Status is not null) instructor.Status = ParseStatus(dto.Status);
         if (dto.OfficeHoursRoomId.HasValue) instructor.OfficeHoursRoomId = dto.OfficeHoursRoomId;
-        if (dto.ProfileImage is not null) instructor.ProfileImage = dto.ProfileImage;
+        if (dto.ProfileImage is not null) instructor.User.ProfileImage = dto.ProfileImage;
         if (dto.Secondment is not null) instructor.Secondment = dto.Secondment;
 
-        if (instructor is LoanInstructor loanInstructor)
+        var loanInstructor = await _unitOfWork.GetRepository<LoanInstructor, int>().GetByIdAsync(instructor.UserId);
+        if (loanInstructor is not null)
         {
             if (dto.LoanFromDepartmentId.HasValue) loanInstructor.LoanFromDepartmentId = dto.LoanFromDepartmentId;
             if (dto.LoanFromFacultyId.HasValue) loanInstructor.LoanFromFacultyId = dto.LoanFromFacultyId;
@@ -249,67 +262,32 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
 
     private InstructorDto MapToDto(Instructor instructor)
     {
-        if (instructor is LoanInstructor loanInstructor)
-        {
-            return new LoanInstructorDto
-            {
-                InstructorId = instructor.UserId,
-                NationalId = instructor.NationalId,
-                FullName = instructor.FullName,
-                FullNameAr = instructor.FullNameAr,
-                PhoneNumber = instructor.PhoneNumber,
-                Email = instructor.Email,
-                Address = instructor.Address,
-                Nationality = instructor.Nationality,
-                InstructorCode = instructor.InstructorCode,
-                InstructorRole = instructor.InstructorRole?.ToString(),
-                Specialization = instructor.Specialization,
-                DepartmentId = instructor.DepartmentId,
-                DepartmentName = instructor.Department?.DepartmentName,
-                HireDate = instructor.HireDate?.ToString("dd MM yyyy"),
-                FacultyId = instructor.FacultyId,
-                FacultyName = instructor.Faculty?.FacultyName,
-                Status = instructor.Status?.ToString(),
-                OfficeHoursRoomId = instructor.OfficeHoursRoomId,
-                OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName,
-                ProfileImage = _urlResolver.ResolveProfile(instructor.ProfileImage),
-                ContractStartDate = instructor.ContractStartDate?.ToString("dd MM yyyy"),
-                ContractEndDate = instructor.ContractEndDate?.ToString("dd MM yyyy"),
-                Secondment = instructor.Secondment,
-                LoanFromDepartmentId = loanInstructor.LoanFromDepartmentId,
-                LoanFromDepartmentName = loanInstructor.LoanFromDepartment?.DepartmentName,
-                LoanFromFacultyId = loanInstructor.LoanFromFacultyId,
-                LoanProfessorId = loanInstructor.LoanProfessorId,
-                Roles = instructor.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
-            };
-        }
-
         return new InstructorDto
         {
             InstructorId = instructor.UserId,
-            NationalId = instructor.NationalId,
-            FullName = instructor.FullName,
-            FullNameAr = instructor.FullNameAr,
-            PhoneNumber = instructor.PhoneNumber,
-            Email = instructor.Email,
-            Address = instructor.Address,
-            Nationality = instructor.Nationality,
+            NationalId = instructor.User.NationalId,
+            FullName = instructor.User.FullName,
+            FullNameAr = instructor.User.FullNameAr,
+            PhoneNumber = instructor.User.PhoneNumber,
+            Email = instructor.User.Email,
+            Address = instructor.User.Address,
+            Nationality = instructor.User.Nationality,
             InstructorCode = instructor.InstructorCode,
             InstructorRole = instructor.InstructorRole?.ToString(),
             Specialization = instructor.Specialization,
             DepartmentId = instructor.DepartmentId,
             DepartmentName = instructor.Department?.DepartmentName,
             HireDate = instructor.HireDate?.ToString("dd MM yyyy"),
-            FacultyId = instructor.FacultyId,
-            FacultyName = instructor.Faculty?.FacultyName,
+            FacultyId = instructor.User.FacultyId,
+            FacultyName = instructor.User.Faculty?.FacultyName,
             Status = instructor.Status?.ToString(),
             OfficeHoursRoomId = instructor.OfficeHoursRoomId,
             OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName,
-            ProfileImage = _urlResolver.ResolveProfile(instructor.ProfileImage),
+            ProfileImage = _urlResolver.ResolveProfile(instructor.User.ProfileImage),
             ContractStartDate = instructor.ContractStartDate?.ToString("dd MM yyyy"),
             ContractEndDate = instructor.ContractEndDate?.ToString("dd MM yyyy"),
             Secondment = instructor.Secondment,
-            Roles = instructor.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
+            Roles = instructor.User!.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }
 
@@ -336,37 +314,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
 
     private Instructor BuildInstructorEntity(CreateInstructorDto dto, string email, string password, int? departmentId, int? facultyId, DateTime hireDate, string code)
     {
-        if (dto.LoanFromDepartmentId.HasValue || dto.LoanFromFacultyId.HasValue || dto.LoanProfessorId is not null)
-        {
-            return new LoanInstructor
-            {
-                NationalId = dto.NationalId,
-                FullName = dto.FullName,
-                FullNameAr = dto.FullNameAr,
-                PhoneNumber = dto.PhoneNumber,
-                Email = email,
-                Address = dto.Address,
-                Password = _passwordService.HashPassword(password),
-                Nationality = dto.Nationality,
-                InstructorCode = code,
-                InstructorRole = ParseInstructorRole(dto.InstructorRole),
-                Specialization = dto.Specialization,
-                DepartmentId = departmentId,
-                HireDate = hireDate,
-                FacultyId = facultyId,
-                Status = ParseStatus(dto.Status),
-                OfficeHoursRoomId = dto.OfficeHoursRoomId,
-                ProfileImage = dto.ProfileImage,
-                ContractStartDate = ParseDate(dto.ContractStartDate),
-                ContractEndDate = ParseDate(dto.ContractEndDate),
-                Secondment = dto.Secondment,
-                LoanFromDepartmentId = dto.LoanFromDepartmentId,
-                LoanFromFacultyId = dto.LoanFromFacultyId,
-                LoanProfessorId = dto.LoanProfessorId
-            };
-        }
-
-        return new Instructor
+        var user = new User
         {
             NationalId = dto.NationalId,
             FullName = dto.FullName,
@@ -376,15 +324,20 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             Address = dto.Address,
             Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
+            FacultyId = facultyId,
+            ProfileImage = dto.ProfileImage
+        };
+
+        return new Instructor
+        {
+            User = user,
             InstructorCode = code,
             InstructorRole = ParseInstructorRole(dto.InstructorRole),
             Specialization = dto.Specialization,
             DepartmentId = departmentId,
             HireDate = hireDate,
-            FacultyId = facultyId,
             Status = ParseStatus(dto.Status),
             OfficeHoursRoomId = dto.OfficeHoursRoomId,
-            ProfileImage = dto.ProfileImage,
             ContractStartDate = ParseDate(dto.ContractStartDate),
             ContractEndDate = ParseDate(dto.ContractEndDate),
             Secondment = dto.Secondment

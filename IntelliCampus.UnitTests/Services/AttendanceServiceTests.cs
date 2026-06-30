@@ -209,7 +209,7 @@ public class AttendanceServiceTests
         var result = await _sut.RecordManualAsync(instructor.UserId, dto);
 
         result.Should().NotBeNull();
-        result.StudentName.Should().Be(student.FullName);
+        result.StudentName.Should().Be(student.User.FullName);
         result.StudentCode.Should().Be(student.StudentCode);
         result.Status.Should().Be(AttendanceStatus.Present);
         result.RecordedAt.Should().BeAfter(DateTime.MinValue);
@@ -340,7 +340,7 @@ public class AttendanceServiceTests
         var payloadJson = JsonSerializer.Serialize(new QrPayload
         {
             UserId = student.UserId,
-            Name = student.FullName,
+            Name = student.User.FullName,
             StudentCode = student.StudentCode!,
             Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
             Token = "test-token"
@@ -379,7 +379,7 @@ public class AttendanceServiceTests
         var result = await _sut.ScanQrAsync(instructor.UserId, dto);
 
         result.Should().NotBeNull();
-        result.StudentName.Should().Be(student.FullName);
+        result.StudentName.Should().Be(student.User.FullName);
         result.StudentCode.Should().Be(student.StudentCode);
         result.Status.Should().Be(AttendanceStatus.Present);
         result.RecordedAt.Should().BeAfter(DateTime.MinValue);
@@ -516,7 +516,7 @@ public class AttendanceServiceTests
         var payloadJson = JsonSerializer.Serialize(new QrPayload
         {
             UserId = student.UserId,
-            Name = student.FullName,
+            Name = student.User.FullName,
             StudentCode = student.StudentCode!,
             Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
             Token = "test-token"
@@ -902,7 +902,7 @@ public class AttendanceServiceTests
                 SessionId = 1, ClassId = classEntity.ClassId,
                 Attendances =
                 [
-                    new Attendance { StudentId = student.UserId, Status = AttendanceStatus.Present, Student = new Student { StudentCode = student.StudentCode!, FullName = student.FullName } }
+                    new Attendance { StudentId = student.UserId, Status = AttendanceStatus.Present, Student = new Student { StudentCode = student.StudentCode!, User = new User { FullName = student.User.FullName } } }
                 ]
             },
             new()
@@ -910,7 +910,7 @@ public class AttendanceServiceTests
                 SessionId = 2, ClassId = classEntity.ClassId,
                 Attendances =
                 [
-                    new Attendance { StudentId = student.UserId, Status = AttendanceStatus.Absent, Student = new Student { StudentCode = student.StudentCode!, FullName = student.FullName } }
+                    new Attendance { StudentId = student.UserId, Status = AttendanceStatus.Absent, Student = new Student { StudentCode = student.StudentCode!, User = new User { FullName = student.User.FullName } } }
                 ]
             }
         };
@@ -929,7 +929,7 @@ public class AttendanceServiceTests
         result.BelowThresholdCount.Should().Be(1);
         result.Students.Should().HaveCount(1);
         result.Students[0].StudentCode.Should().Be(student.StudentCode);
-        result.Students[0].StudentName.Should().Be(student.FullName);
+        result.Students[0].StudentName.Should().Be(student.User.FullName);
         result.Students[0].Present.Should().Be(1);
         result.Students[0].Absent.Should().Be(1);
         result.Students[0].AttendancePercentage.Should().Be(50);
@@ -1008,7 +1008,7 @@ public class AttendanceServiceTests
                 SessionId = 1, ClassId = classEntity.ClassId,
                 Attendances =
                 [
-                    new Attendance { StudentId = 1, Status = AttendanceStatus.Present, Student = new Student { UserId = 1, FullName = null!, StudentCode = null } }
+                    new Attendance { StudentId = 1, Status = AttendanceStatus.Present, Student = new Student { UserId = 1, User = new User { FullName = null! }, StudentCode = null } }
                 ]
             }
         };
@@ -1041,7 +1041,7 @@ public class AttendanceServiceTests
                 SessionId = 1, ClassId = classEntity.ClassId,
                 Attendances =
                 [
-                    new Attendance { StudentId = student.UserId, Status = AttendanceStatus.Present, Student = new Student { StudentCode = student.StudentCode!, FullName = student.FullName } }
+                    new Attendance { StudentId = student.UserId, Status = AttendanceStatus.Present, Student = new Student { StudentCode = student.StudentCode!, User = new User { FullName = student.User.FullName } } }
                 ]
             }
         };
@@ -1108,7 +1108,7 @@ public class AttendanceServiceTests
         result.Students.Should().HaveCount(1);
         result.Students[0].StudentId.Should().Be(student.UserId);
         result.Students[0].StudentCode.Should().Be(student.StudentCode);
-        result.Students[0].FullName.Should().Be(student.FullName);
+        result.Students[0].FullName.Should().Be(student.User.FullName);
         result.Students[0].Status.Should().Be(AttendanceStatus.Present);
         result.Students[0].CheckInTime.Should().NotBeNull();
 

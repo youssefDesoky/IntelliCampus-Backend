@@ -747,7 +747,7 @@ public class RegistrationServiceTests
     [Fact]
     public async Task GetStudentRegistrationsAsync_WithRegistrations_ReturnsList()
     {
-        var instructor = new Instructor { UserId = 1, FullName = "Dr. Smith" };
+        var instructor = new Instructor { UserId = 1, User = new User { FullName = "Dr. Smith" } };
         var lectureClass = new Class { ClassId = 1, ClassType = ClassType.Lecture, Instructor = instructor, CourseId = 1 };
         var course = new Course
         {

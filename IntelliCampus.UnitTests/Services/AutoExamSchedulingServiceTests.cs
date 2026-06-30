@@ -262,7 +262,7 @@ public class AutoExamSchedulingServiceTests
         };
         var users = new List<User>
         {
-            new Student { UserId = 1, FullName = "Test Student" }
+            new User { UserId = 1, FullName = "Test Student" }
         };
         var queryParams = new ExamSchedulingQueryParams
         {
@@ -317,7 +317,7 @@ public class AutoExamSchedulingServiceTests
         };
         var users = new List<User>
         {
-            new Student { UserId = 1, FullName = "Test Student" }
+            new User { UserId = 1, FullName = "Test Student" }
         };
         var queryParams = new ExamSchedulingQueryParams
         {
@@ -896,8 +896,8 @@ public class AutoExamSchedulingServiceTests
         };
         var users = new List<User>
         {
-            new Student { UserId = 1, FullName = "Alice" },
-            new Student { UserId = 2, FullName = "Bob" }
+            new User { UserId = 1, FullName = "Alice" },
+            new User { UserId = 2, FullName = "Bob" }
         };
 
         _examRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(exam);
@@ -1050,8 +1050,8 @@ public class AutoExamSchedulingServiceTests
         };
         var users = new List<User>
         {
-            new Student { UserId = 1, FullName = "Alice" },
-            new Student { UserId = 2, FullName = "Bob" }
+            new User { UserId = 1, FullName = "Alice" },
+            new User { UserId = 2, FullName = "Bob" }
         };
 
         _examRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(exam);
@@ -1090,10 +1090,10 @@ public class AutoExamSchedulingServiceTests
         };
         var users = new List<User>
         {
-            new Student { UserId = 1, FullName = "Alice" },
-            new Student { UserId = 2, FullName = "Bob" },
-            new Student { UserId = 3, FullName = "Charlie" },
-            new Student { UserId = 4, FullName = "Diana" },
+            new User { UserId = 1, FullName = "Alice" },
+            new User { UserId = 2, FullName = "Bob" },
+            new User { UserId = 3, FullName = "Charlie" },
+            new User { UserId = 4, FullName = "Diana" },
         };
 
         _examRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(exam);
@@ -1137,8 +1137,8 @@ public class AutoExamSchedulingServiceTests
         };
         var users = new List<User>
         {
-            new Student { UserId = 1, FullName = "Alice" },
-            new Student { UserId = 2, FullName = "Bob" },
+            new User { UserId = 1, FullName = "Alice" },
+            new User { UserId = 2, FullName = "Bob" },
         };
         var oldAssignments = new List<ExamSeatAssignment>
         {
@@ -1184,8 +1184,8 @@ public class AutoExamSchedulingServiceTests
         };
         var users = new List<User>
         {
-            new Student { UserId = 1, FullName = "Alice" },
-            new Student { UserId = 2, FullName = "Bob" }
+            new User { UserId = 1, FullName = "Alice" },
+            new User { UserId = 2, FullName = "Bob" }
         };
 
         _examRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(exam);
@@ -1254,7 +1254,7 @@ public class AutoExamSchedulingServiceTests
         };
         var users = new List<User>
         {
-            new Student { UserId = 1, FullName = "Alice" }
+            new User { UserId = 1, FullName = "Alice" }
         };
 
         _examRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(exam);
@@ -1312,7 +1312,7 @@ public class AutoExamSchedulingServiceTests
         };
         var users = new List<User>
         {
-            new Student { UserId = 1, FullName = "Charlie" }
+            new User { UserId = 1, FullName = "Charlie" }
         };
         var halls = new List<ExamHall>
         {
@@ -1406,7 +1406,7 @@ public class AutoExamSchedulingServiceTests
         };
         var users = new List<User>
         {
-            new Student { UserId = 1, FullName = "Alice" }
+            new User { UserId = 1, FullName = "Alice" }
         };
 
         _examRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(exam);

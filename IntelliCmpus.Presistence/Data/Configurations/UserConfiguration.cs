@@ -10,8 +10,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     {
         builder.HasKey(u => u.UserId);
 
-        builder.UseTptMappingStrategy();
-
         builder.Property(u => u.NationalId)
             .IsRequired()
             .HasMaxLength(20);

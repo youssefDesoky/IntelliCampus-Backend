@@ -123,7 +123,7 @@ public class RoleServiceTests
     [Fact]
     public async Task AssignRoleAsync_RoleNotFound_ThrowsRoleNotFoundException()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "NonExistentRole" };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
@@ -141,7 +141,7 @@ public class RoleServiceTests
     [Fact]
     public async Task AssignRoleAsync_ExistingUserAndRole_CreatesUserRole()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Student_Bachelor";
         var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Student_Bachelor" };
@@ -182,7 +182,7 @@ public class RoleServiceTests
     [Fact]
     public async Task AssignRoleAsync_AlreadyHasRole_ReactivatesExisting()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Instructor";
         var existingJunction = new UserRoleJunction { UserId = user.UserId, RoleId = role.RoleId, IsActive = false, AssignedAt = DateTime.UtcNow.AddDays(-10) };
@@ -220,7 +220,7 @@ public class RoleServiceTests
     [Fact]
     public async Task AssignRoleAsync_StudentRole_CreatesStudentEntity()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Student_Bachelor";
         var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Student_Bachelor" };
@@ -253,7 +253,7 @@ public class RoleServiceTests
     [Fact]
     public async Task AssignRoleAsync_StudentRoleAlreadyExists_DoesNotCreateStudent()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Student_Masters";
         var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Student_Masters" };
@@ -284,7 +284,7 @@ public class RoleServiceTests
     [Fact]
     public async Task AssignRoleAsync_InstructorRole_CreatesInstructorEntity()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Instructor";
         var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Instructor" };
@@ -316,7 +316,7 @@ public class RoleServiceTests
     [Fact]
     public async Task AssignRoleAsync_InstructorRoleAlreadyExists_DoesNotCreateInstructor()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Instructor";
         var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Instructor" };
@@ -347,7 +347,7 @@ public class RoleServiceTests
     [Fact]
     public async Task AssignRoleAsync_AdminRole_CreatesAdminEntity()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Admin_System";
         var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Admin_System" };
@@ -379,7 +379,7 @@ public class RoleServiceTests
     [Fact]
     public async Task AssignRoleAsync_AdminRoleAlreadyExists_DoesNotCreateAdmin()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Admin_Bachelor";
         var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Admin_Bachelor" };

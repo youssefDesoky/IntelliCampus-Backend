@@ -143,7 +143,7 @@ public class ExamScheduleService : IExamScheduleService
 
         var dto = new ExamScheduleExportDto
         {
-            StudentName = student?.FullName ?? "",
+            StudentName = student?.User?.FullName ?? "",
             StudentCode = student?.StudentCode ?? "-",
             Title = "Exam Schedule",
             Items = exams.Select(e => new ExamScheduleItem

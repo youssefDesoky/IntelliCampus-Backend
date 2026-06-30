@@ -1,6 +1,6 @@
 namespace IntelliCampus.Domain.Entities;
 
-public abstract class User
+public class User
 {
     public int UserId { get; set; }
     public string NationalId { get; set; } = null!;
@@ -18,6 +18,9 @@ public abstract class User
     public bool RecoveryEmailVerified { get; set; }
 
     // Navigation properties
+    public Student? Student { get; set; }
+    public Instructor? Instructor { get; set; }
+    public Admin? Admin { get; set; }
     public Faculty? Faculty { get; set; }
     public ICollection<UserRoleJunction> UserRoles { get; set; } = [];
     public ICollection<Post> Posts { get; set; } = [];

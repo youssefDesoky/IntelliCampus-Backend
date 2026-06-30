@@ -10,9 +10,12 @@ public class AdminConfiguration : IEntityTypeConfiguration<Admin>
     {
         builder.ToTable("Admins");
 
-        builder.Property(a => a.AdminId)
-            .ValueGeneratedOnAdd()
-            .UseIdentityColumn(1, 1);
+        builder.HasKey(a => a.UserId);
+
+        builder.HasOne(a => a.User)
+            .WithOne(u => u.Admin!)
+            .HasForeignKey<Admin>(a => a.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(a => a.AdminCode)
             .HasMaxLength(50);

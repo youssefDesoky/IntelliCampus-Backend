@@ -58,24 +58,24 @@ public class AdminServiceTests
     public async Task GetByIdAsync_ExistingAdmin_ReturnsAdminDto()
     {
         var admin = TestDataFactory.AdminFaker.Generate();
-        admin.ProfileImage = "profiles/test.jpg";
+        admin.User.ProfileImage = "profiles/test.jpg";
 
         _adminRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Admin>>())).ReturnsAsync(admin);
 
         var result = await _sut.GetByIdAsync(admin.UserId);
 
-        result.AdminId.Should().Be(admin.AdminId);
+        result.AdminId.Should().Be(admin.UserId);
         result.UserId.Should().Be(admin.UserId);
-        result.NationalId.Should().Be(admin.NationalId);
-        result.FullName.Should().Be(admin.FullName);
-        result.FullNameAr.Should().Be(admin.FullNameAr);
-        result.PhoneNumber.Should().Be(admin.PhoneNumber);
-        result.Email.Should().Be(admin.Email);
-        result.Address.Should().Be(admin.Address);
-        result.Nationality.Should().Be(admin.Nationality);
+        result.NationalId.Should().Be(admin.User.NationalId);
+        result.FullName.Should().Be(admin.User.FullName);
+        result.FullNameAr.Should().Be(admin.User.FullNameAr);
+        result.PhoneNumber.Should().Be(admin.User.PhoneNumber);
+        result.Email.Should().Be(admin.User.Email);
+        result.Address.Should().Be(admin.User.Address);
+        result.Nationality.Should().Be(admin.User.Nationality);
         result.AdminCode.Should().Be(admin.AdminCode);
         result.HireDate.Should().Be(admin.HireDate?.ToString("dd MM yyyy"));
-        result.FacultyId.Should().Be(admin.FacultyId);
+        result.FacultyId.Should().Be(admin.User.FacultyId);
         result.FacultyName.Should().BeNull();
         result.ProfileImage.Should().Be("http://localhost:5000/profiles/test.jpg");
         result.Roles.Should().ContainSingle().Which.Should().Be("SuperAdmin");
@@ -148,7 +148,7 @@ public class AdminServiceTests
 
         var result = await _sut.CreateAsync(dto);
 
-        result.AdminId.Should().Be(captured!.AdminId);
+        result.AdminId.Should().Be(captured!.UserId);
         result.UserId.Should().Be(captured.UserId);
         result.NationalId.Should().Be(dto.NationalId);
         result.FullName.Should().Be(dto.FullName);
@@ -162,18 +162,18 @@ public class AdminServiceTests
         result.FacultyName.Should().BeNull();
         result.ProfileImage.Should().Be("http://localhost:5000/profiles/admin.jpg");
         result.Roles.Should().ContainSingle().Which.Should().Be("Admin_Masters");
-        captured.NationalId.Should().Be(dto.NationalId);
-        captured.FullName.Should().Be(dto.FullName);
-        captured.FullNameAr.Should().Be(dto.FullNameAr);
-        captured.PhoneNumber.Should().Be(dto.PhoneNumber);
-        captured.Email.Should().Be(dto.Email);
-        captured.Address.Should().Be(dto.Address);
-        captured.Password.Should().Be("hashed");
-        captured.Nationality.Should().Be(dto.Nationality);
+        captured.User.NationalId.Should().Be(dto.NationalId);
+        captured.User.FullName.Should().Be(dto.FullName);
+        captured.User.FullNameAr.Should().Be(dto.FullNameAr);
+        captured.User.PhoneNumber.Should().Be(dto.PhoneNumber);
+        captured.User.Email.Should().Be(dto.Email);
+        captured.User.Address.Should().Be(dto.Address);
+        captured.User.Password.Should().Be("hashed");
+        captured.User.Nationality.Should().Be(dto.Nationality);
         captured.AdminCode.Should().Be(dto.AdminCode);
-        captured.FacultyId.Should().Be(1);
-        captured.ProfileImage.Should().Be(dto.ProfileImage);
-        captured.UserRoles.Should().ContainSingle().Which.Role.RoleName.Should().Be("Admin_Masters");
+        captured.User.FacultyId.Should().Be(1);
+        captured.User.ProfileImage.Should().Be(dto.ProfileImage);
+        captured.User.UserRoles.Should().ContainSingle().Which.Role.RoleName.Should().Be("Admin_Masters");
         _userRepoMock.Verify(r => r.AnyAsync(u => u.NationalId == dto.NationalId), Times.Once);
         _userRepoMock.Verify(r => r.AnyAsync(u => u.Email == email), Times.Once);
         _facultyRepoMock.Verify(r => r.GetByIdAsync(1), Times.Once);
@@ -243,7 +243,7 @@ public class AdminServiceTests
 
         await _sut.CreateAsync(dto);
 
-        captured!.Password.Should().Be("hashed");
+        captured!.User.Password.Should().Be("hashed");
         _passwordServiceMock.Verify(p => p.HashPassword(dto.NationalId), Times.Once);
         _passwordServiceMock.Verify(p => p.HashPassword(dto.NationalId), Times.Once);
     }
@@ -254,7 +254,7 @@ public class AdminServiceTests
         var dto = TestDataFactory.CreateAdminDtoFaker.Generate();
         dto.FacultyId = null;
         dto.AdminCode = "CODE123";
-        var creator = new Admin { UserId = 1, FacultyId = 2, NationalId = "123", FullName = "Creator", Email = "creator@test.com", Password = "pwd" };
+        var creator = new User { UserId = 1, FacultyId = 2, NationalId = "123", FullName = "Creator", Email = "creator@test.com", Password = "pwd" };
 
         _userRepoMock.Setup(r => r.AnyAsync(It.IsAny<Expression<Func<User, bool>>>())).ReturnsAsync(false);
         _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(creator);
@@ -267,7 +267,7 @@ public class AdminServiceTests
 
         await _sut.CreateAsync(dto, creatorUserId: 1);
 
-        captured!.FacultyId.Should().Be(2);
+        captured!.User.FacultyId.Should().Be(2);
         _userRepoMock.Verify(r => r.GetByIdAsync(1), Times.Once);
         _facultyRepoMock.Verify(r => r.GetByIdAsync(2), Times.Once);
     }
@@ -308,7 +308,7 @@ public class AdminServiceTests
 
         await _sut.CreateAsync(dto, creatorUserId: 1);
 
-        captured!.FacultyId.Should().BeNull();
+        captured!.User.FacultyId.Should().BeNull();
         _facultyRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<int>()), Times.Never);
     }
 
@@ -426,7 +426,7 @@ public class AdminServiceTests
 
         await _sut.CreateAsync(dto);
 
-        captured!.Email.Should().Be("TESTCODE@intellicampus.online");
+        captured!.User.Email.Should().Be("TESTCODE@intellicampus.online");
     }
 
     [Fact]
@@ -456,7 +456,7 @@ public class AdminServiceTests
     public async Task UpdateAsync_ExistingAdmin_UpdatesAndReturns()
     {
         var admin = TestDataFactory.AdminFaker.Generate();
-        admin.ProfileImage = "profiles/old.jpg";
+        admin.User.ProfileImage = "profiles/old.jpg";
         var dto = new UpdateAdminDto { FullName = "Updated Name" };
 
         _adminRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Admin>>())).ReturnsAsync(admin);
@@ -465,8 +465,8 @@ public class AdminServiceTests
         var result = await _sut.UpdateAsync(admin.UserId, dto);
 
         result.FullName.Should().Be("Updated Name");
-        result.NationalId.Should().Be(admin.NationalId);
-        result.Email.Should().Be(admin.Email);
+        result.NationalId.Should().Be(admin.User.NationalId);
+        result.Email.Should().Be(admin.User.Email);
         result.ProfileImage.Should().Be("http://localhost:5000/profiles/old.jpg");
         _adminRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<ISpecifications<Admin>>()), Times.Once);
     }
@@ -486,7 +486,7 @@ public class AdminServiceTests
     public async Task UpdateAsync_EmailChangedAndNotDuplicate_UpdatesEmail()
     {
         var admin = TestDataFactory.AdminFaker.Generate();
-        admin.Email = "old@test.com";
+        admin.User.Email = "old@test.com";
         var dto = new UpdateAdminDto { Email = "new@test.com" };
 
         _adminRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Admin>>())).ReturnsAsync(admin);
@@ -495,7 +495,7 @@ public class AdminServiceTests
 
         await _sut.UpdateAsync(admin.UserId, dto);
 
-        admin.Email.Should().Be("new@test.com");
+        admin.User.Email.Should().Be("new@test.com");
         _userRepoMock.Verify(r => r.AnyAsync(It.IsAny<Expression<Func<User, bool>>>()), Times.Once);
     }
 
@@ -503,7 +503,7 @@ public class AdminServiceTests
     public async Task UpdateAsync_EmailDuplicate_ThrowsInvalidOperation()
     {
         var admin = TestDataFactory.AdminFaker.Generate();
-        admin.Email = "old@test.com";
+        admin.User.Email = "old@test.com";
         var dto = new UpdateAdminDto { Email = "existing@test.com" };
 
         _adminRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Admin>>())).ReturnsAsync(admin);
@@ -538,14 +538,14 @@ public class AdminServiceTests
 
         var result = await _sut.UpdateAsync(admin.UserId, dto);
 
-        admin.FullName.Should().Be("New FullName");
-        admin.FullNameAr.Should().Be("New FullNameAr");
-        admin.PhoneNumber.Should().Be("123456789");
-        admin.Address.Should().Be("New Address");
-        admin.Nationality.Should().Be("New Nationality");
+        admin.User.FullName.Should().Be("New FullName");
+        admin.User.FullNameAr.Should().Be("New FullNameAr");
+        admin.User.PhoneNumber.Should().Be("123456789");
+        admin.User.Address.Should().Be("New Address");
+        admin.User.Nationality.Should().Be("New Nationality");
         admin.AdminCode.Should().Be("NEWCODE");
-        admin.FacultyId.Should().Be(5);
-        admin.ProfileImage.Should().Be("new-profile.jpg");
+        admin.User.FacultyId.Should().Be(5);
+        admin.User.ProfileImage.Should().Be("new-profile.jpg");
         admin.HireDate.Should().Be(new DateTime(2024, 1, 15));
         _adminRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<ISpecifications<Admin>>()), Times.Once);
     }
@@ -554,7 +554,7 @@ public class AdminServiceTests
     public async Task UpdateAsync_AdminRoleProvidedWithActiveRole_DeactivatesAndAddsNewRole()
     {
         var admin = TestDataFactory.AdminFaker.Generate();
-        admin.UserRoles =
+        admin.User.UserRoles =
         [
             new UserRoleJunction
             {
@@ -575,10 +575,10 @@ public class AdminServiceTests
 
         await _sut.UpdateAsync(admin.UserId, dto);
 
-        admin.UserRoles.Should().HaveCount(2);
-        admin.UserRoles.ElementAt(0).IsActive.Should().BeFalse();
-        admin.UserRoles.ElementAt(1).IsActive.Should().BeTrue();
-        admin.UserRoles.ElementAt(1).Role.RoleName.Should().Be("Admin_Masters");
+        admin.User.UserRoles.Should().HaveCount(2);
+        admin.User.UserRoles.ElementAt(0).IsActive.Should().BeFalse();
+        admin.User.UserRoles.ElementAt(1).IsActive.Should().BeTrue();
+        admin.User.UserRoles.ElementAt(1).Role.RoleName.Should().Be("Admin_Masters");
         _roleRepoMock.Verify(r => r.GetAllAsync(), Times.Once);
     }
 
@@ -586,7 +586,7 @@ public class AdminServiceTests
     public async Task UpdateAsync_AdminRoleProvidedWithoutActiveRole_AddsNewRoleOnly()
     {
         var admin = TestDataFactory.AdminFaker.Generate();
-        admin.UserRoles = [];
+        admin.User.UserRoles = [];
         var dto = new UpdateAdminDto { AdminRole = "phd" };
 
         _adminRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Admin>>())).ReturnsAsync(admin);
@@ -598,9 +598,9 @@ public class AdminServiceTests
 
         await _sut.UpdateAsync(admin.UserId, dto);
 
-        admin.UserRoles.Should().HaveCount(1);
-        admin.UserRoles.Single().IsActive.Should().BeTrue();
-        admin.UserRoles.Single().Role.RoleName.Should().Be("Admin_PhD");
+        admin.User.UserRoles.Should().HaveCount(1);
+        admin.User.UserRoles.Single().IsActive.Should().BeTrue();
+        admin.User.UserRoles.Single().Role.RoleName.Should().Be("Admin_PhD");
         _roleRepoMock.Verify(r => r.GetAllAsync(), Times.Once);
     }
 
@@ -641,7 +641,7 @@ public class AdminServiceTests
     public async Task UpdateAsync_AdminRoleMapping_ResolvesCorrectly(string? adminRole, string expectedRoleName)
     {
         var admin = TestDataFactory.AdminFaker.Generate();
-        admin.UserRoles = [];
+        admin.User.UserRoles = [];
         var dto = new UpdateAdminDto { AdminRole = adminRole };
 
         _adminRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Admin>>())).ReturnsAsync(admin);
@@ -661,13 +661,13 @@ public class AdminServiceTests
         if (adminRole is null)
         {
             _roleRepoMock.Verify(r => r.GetAllAsync(), Times.Never);
-            admin.UserRoles.Should().BeEmpty();
+            admin.User.UserRoles.Should().BeEmpty();
         }
         else
         {
             _roleRepoMock.Verify(r => r.GetAllAsync(), Times.Once);
-            admin.UserRoles.Should().HaveCount(1);
-            admin.UserRoles.Single().Role.RoleName.Should().Be(expectedRoleName);
+            admin.User.UserRoles.Should().HaveCount(1);
+            admin.User.UserRoles.Single().Role.RoleName.Should().Be(expectedRoleName);
         }
     }
 
@@ -679,7 +679,7 @@ public class AdminServiceTests
     public async Task DeleteAsync_NonSuperAdmin_DeletesSuccessfully()
     {
         var admin = TestDataFactory.AdminFaker.Generate();
-        admin.UserRoles = [new UserRoleJunction { Role = new Role { RoleName = "Admin_Bachelor" }, IsActive = true }];
+        admin.User.UserRoles = [new UserRoleJunction { Role = new Role { RoleName = "Admin_Bachelor" }, IsActive = true }];
 
         _adminRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Admin>>())).ReturnsAsync(admin);
         _adminRepoMock.Setup(r => r.Delete(admin));

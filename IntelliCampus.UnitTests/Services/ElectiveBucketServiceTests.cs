@@ -158,8 +158,8 @@ public class ElectiveBucketServiceTests
         ElectiveBucket? saved = null;
         var students = new List<Student>
         {
-            new() { UserId = 10, FullName = "S1" },
-            new() { UserId = 11, FullName = "S2" }
+            new() { UserId = 10, User = new User { FullName = "S1" } },
+            new() { UserId = 11, User = new User { FullName = "S2" } }
         };
 
         _studentRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<Student>>())).ReturnsAsync(students);
@@ -888,7 +888,7 @@ public class ElectiveBucketServiceTests
     [Fact]
     public async Task RecalculateAllProgressAsync_StudentWithBuckets_RecalculatesAll()
     {
-        var student = new Student { UserId = 1, BylawId = 1, DepartmentId = 1, FullName = "Test" };
+        var student = new Student { UserId = 1, BylawId = 1, DepartmentId = 1, User = new User { FullName = "Test" } };
         var buckets = new List<ElectiveBucket>
         {
             new() { ElectiveBucketId = 1, Name = "B1", RequiredCreditHours = 3, ElectiveBucketCourses = new List<ElectiveBucketCourse>() }

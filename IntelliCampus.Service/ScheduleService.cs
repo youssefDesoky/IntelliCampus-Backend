@@ -100,7 +100,7 @@ public class ScheduleService : IScheduleService
                 ClassType.Lab => ScheduleType.Activity,
                 _ => ScheduleType.Lecture
             },
-            InstructorName = cls.Instructor?.FullName,
+            InstructorName = cls.Instructor?.User?.FullName,
             CourseId = cls.CourseId,
             StudentId = studentId,
             ClassId = cls.ClassId,
@@ -137,7 +137,7 @@ public class ScheduleService : IScheduleService
             s.StartTime = cls.StartTime.Value;
             s.EndTime = cls.EndTime.Value;
             s.Location = cls.Room;
-            s.InstructorName = cls.Instructor?.FullName;
+            s.InstructorName = cls.Instructor?.User?.FullName;
             Schedules.Update(s);
         }
 

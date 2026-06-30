@@ -94,7 +94,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         var role = await RolesRepo.GetByIdAsync(new RoleByNameSpec(roleName))
             ?? throw new InvalidOperationException($"Role '{roleName}' not found.");
 
-        var admin = new Admin
+        var user = new User
         {
             NationalId = dto.NationalId,
             FullName = dto.FullName,
@@ -104,13 +104,11 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             Address = dto.Address,
             Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
-            AdminCode = code,
-            HireDate = hireDate,
             FacultyId = facultyId,
             ProfileImage = dto.ProfileImage
         };
 
-        admin.UserRoles =
+        user.UserRoles =
         [
             new UserRoleJunction
             {
@@ -119,6 +117,13 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
                 AssignedAt = EgyptTime.Now
             }
         ];
+
+        var admin = new Admin
+        {
+            User = user,
+            AdminCode = code,
+            HireDate = hireDate,
+        };
 
         Admins.Add(admin);
         await _unitOfWork.SaveChangesAsync();
@@ -134,21 +139,21 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         if (admin is null)
             throw new AdminNotFoundException(adminId);
 
-        if (dto.Email is not null && dto.Email != admin.Email)
+        if (dto.Email is not null && dto.Email != admin.User.Email)
         {
             if (await Users.AnyAsync(u => u.Email == dto.Email && u.UserId != adminId))
                 throw new InvalidOperationException("Email already exists.");
-            admin.Email = dto.Email;
+            admin.User.Email = dto.Email;
         }
 
-        if (dto.FullName is not null) admin.FullName = dto.FullName;
-        if (dto.FullNameAr is not null) admin.FullNameAr = dto.FullNameAr;
-        if (dto.PhoneNumber is not null) admin.PhoneNumber = dto.PhoneNumber;
-        if (dto.Address is not null) admin.Address = dto.Address;
-        if (dto.Nationality is not null) admin.Nationality = dto.Nationality;
+        if (dto.FullName is not null) admin.User.FullName = dto.FullName;
+        if (dto.FullNameAr is not null) admin.User.FullNameAr = dto.FullNameAr;
+        if (dto.PhoneNumber is not null) admin.User.PhoneNumber = dto.PhoneNumber;
+        if (dto.Address is not null) admin.User.Address = dto.Address;
+        if (dto.Nationality is not null) admin.User.Nationality = dto.Nationality;
         if (dto.AdminCode is not null) admin.AdminCode = dto.AdminCode;
-        if (dto.FacultyId.HasValue) admin.FacultyId = dto.FacultyId;
-        if (dto.ProfileImage is not null) admin.ProfileImage = dto.ProfileImage;
+        if (dto.FacultyId.HasValue) admin.User.FacultyId = dto.FacultyId;
+        if (dto.ProfileImage is not null) admin.User.ProfileImage = dto.ProfileImage;
 
         var hireDate = ParseDate(dto.HireDate);
         if (hireDate.HasValue) admin.HireDate = hireDate.Value;
@@ -158,14 +163,14 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             var roleName = ResolveAdminRoleName(dto.AdminRole);
             var newRole = await RolesRepo.GetByIdAsync(new RoleByNameSpec(roleName))
                 ?? throw new InvalidOperationException($"Role '{roleName}' not found.");
-            var activeRole = admin.UserRoles.FirstOrDefault(ur => ur.IsActive);
+            var activeRole = admin.User.UserRoles.FirstOrDefault(ur => ur.IsActive);
             var now = EgyptTime.Now;
             if (activeRole is not null)
             {
                 activeRole.IsActive = false;
                 activeRole.AssignedAt = now;
             }
-            admin.UserRoles.Add(new UserRoleJunction
+            admin.User.UserRoles.Add(new UserRoleJunction
             {
                 Role = newRole,
                 IsActive = true,
@@ -185,7 +190,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         if (admin is null)
             throw new AdminNotFoundException(adminId);
 
-        if (admin.UserRoles.Any(ur => ur.IsActive && ur.Role.RoleName == nameof(UserRole.SuperAdmin)))
+        if (admin.User.UserRoles.Any(ur => ur.IsActive && ur.Role.RoleName == nameof(UserRole.SuperAdmin)))
             throw new InvalidOperationException("Cannot delete the SuperAdmin account.");
 
         Admins.Delete(admin);
@@ -226,21 +231,21 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
     {
         return new AdminDto
         {
-            AdminId = admin.AdminId,
+            AdminId = admin.UserId,
             UserId = admin.UserId,
-            NationalId = admin.NationalId,
-            FullName = admin.FullName,
-            FullNameAr = admin.FullNameAr,
-            PhoneNumber = admin.PhoneNumber,
-            Email = admin.Email,
-            Address = admin.Address,
-            Nationality = admin.Nationality,
+            NationalId = admin.User.NationalId,
+            FullName = admin.User.FullName,
+            FullNameAr = admin.User.FullNameAr,
+            PhoneNumber = admin.User.PhoneNumber,
+            Email = admin.User.Email,
+            Address = admin.User.Address,
+            Nationality = admin.User.Nationality,
             AdminCode = admin.AdminCode,
             HireDate = admin.HireDate?.ToString("dd MM yyyy"),
-            FacultyId = admin.FacultyId,
-            FacultyName = admin.Faculty?.FacultyName,
-            ProfileImage = _urlResolver.ResolveProfile(admin.ProfileImage),
-            Roles = admin.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
+            FacultyId = admin.User.FacultyId,
+            FacultyName = admin.User.Faculty?.FacultyName,
+            ProfileImage = _urlResolver.ResolveProfile(admin.User.ProfileImage),
+            Roles = admin.User.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }
 }

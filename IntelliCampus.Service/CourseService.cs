@@ -424,16 +424,16 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         {
             StudentId = student.UserId,
             UserId = student.UserId,
-            NationalId = student.NationalId,
-            FullName = student.FullName,
-            FullNameAr = student.FullNameAr,
-            PhoneNumber = student.PhoneNumber,
-            Email = student.Email,
-            Address = student.Address,
-            Nationality = student.Nationality,
+            NationalId = student.User.NationalId,
+            FullName = student.User.FullName,
+            FullNameAr = student.User.FullNameAr,
+            PhoneNumber = student.User.PhoneNumber,
+            Email = student.User.Email,
+            Address = student.User.Address,
+            Nationality = student.User.Nationality,
             StudentCode = student.StudentCode,
-            FacultyId = student.FacultyId,
-            FacultyName = student.Faculty?.FacultyName,
+            FacultyId = student.User.FacultyId,
+            FacultyName = student.User.Faculty?.FacultyName,
             Level = student.Level,
             DepartmentId = student.DepartmentId,
             DepartmentName = student.Department?.DepartmentName,
@@ -445,8 +445,8 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             SpecializationId = student.SpecializationId,
             SpecializationName = student.Specialization?.Name,
             StudentType = student.StudentType,
-            ProfileImage = _urlResolver.ResolveProfile(student.ProfileImage),
-            Roles = student.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
+            ProfileImage = _urlResolver.ResolveProfile(student.User.ProfileImage),
+            Roles = student.User.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }
 
@@ -541,7 +541,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             ClassName = className,
             IsElective = course.ElectiveBucketCourses?.Count > 0,
             StudentCourseStatusName = studentCourseStatusName,
-            ProfessorName = lectureClass?.Instructor?.FullName,
+            ProfessorName = lectureClass?.Instructor?.User?.FullName,
             RegistrationStartDate = course.RegistrationStartDate,
             RegistrationEndDate = course.RegistrationEndDate,
             AllowedLevels = course.AllowedLevels is not null

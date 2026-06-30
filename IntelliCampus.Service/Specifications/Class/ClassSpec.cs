@@ -7,33 +7,36 @@ namespace IntelliCampus.Service.Specifications
 {
     internal class ClassSpec : BaseSpecifications<Class>
     {
-        public ClassSpec()
+        private void AddIncludes()
         {
             AddInclude(c => c.Course!);
             AddInclude(c => c.Instructor!);
+            AddInclude("Instructor.User");
+        }
+
+        public ClassSpec()
+        {
+            AddIncludes();
             EnableSplitQuery();
         }
 
         public ClassSpec(int classId)
             : base(c => c.ClassId == classId)
         {
-            AddInclude(c => c.Course!);
-            AddInclude(c => c.Instructor!);
+            AddIncludes();
             EnableSplitQuery();
         }
 
         public ClassSpec(int courseId, bool byCourse, string? classType = null)
             : base(BuildByCourseExpression(courseId, classType))
         {
-            AddInclude(c => c.Course!);
-            AddInclude(c => c.Instructor!);
+            AddIncludes();
             EnableSplitQuery();
         }
 
         public ClassSpec(ClassQueryParams queryParams)
         {
-            AddInclude(c => c.Course!);
-            AddInclude(c => c.Instructor!);
+            AddIncludes();
             EnableSplitQuery();
             AddOrderBy(c => c.ClassId);
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
@@ -42,8 +45,7 @@ namespace IntelliCampus.Service.Specifications
         public ClassSpec(int courseId, bool byCourse, ClassQueryParams queryParams)
             : base(BuildByCourseAndClassTypeExpression(courseId, queryParams))
         {
-            AddInclude(c => c.Course!);
-            AddInclude(c => c.Instructor!);
+            AddIncludes();
             EnableSplitQuery();
             AddOrderBy(c => c.ClassId);
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);

@@ -15,55 +15,36 @@ namespace IntelliCampus.UnitTests.TestHelpers;
 
 public static class TestDataFactory
 {
-    public static Faker<Student> StudentFaker { get; } = new Faker<Student>()
-        .RuleFor(s => s.UserId, f => f.IndexGlobal + 1)
-        .RuleFor(s => s.NationalId, f => f.Random.Replace("##############"))
-        .RuleFor(s => s.FullName, f => f.Name.FullName())
-        .RuleFor(s => s.FullNameAr, f => f.Name.FullName())
-        .RuleFor(s => s.Email, f => f.Internet.Email())
-        .RuleFor(s => s.Password, f => f.Internet.Password())
-        .RuleFor(s => s.PhoneNumber, f => f.Phone.PhoneNumber())
-        .RuleFor(s => s.Address, f => f.Address.FullAddress())
-        .RuleFor(s => s.Nationality, f => f.Address.Country())
-        .RuleFor(s => s.StudentCode, f => f.Random.AlphaNumeric(10))
-        .RuleFor(s => s.Level, f => f.Random.Int(1, 4))
-        .RuleFor(s => s.StudentType, _ => StudentType.Bachelor)
-        .RuleFor(s => s.Program, _ => StudentProgram.General)
-        .RuleFor(s => s.UserRoles, _ => new List<UserRoleJunction>());
-
-    public static Faker<Instructor> InstructorFaker { get; } = new Faker<Instructor>()
-        .RuleFor(i => i.UserId, f => f.IndexGlobal + 1)
-        .RuleFor(i => i.NationalId, f => f.Random.Replace("##############"))
-        .RuleFor(i => i.FullName, f => f.Name.FullName())
-        .RuleFor(i => i.FullNameAr, f => f.Name.FullName())
-        .RuleFor(i => i.Email, f => f.Internet.Email())
-        .RuleFor(i => i.Password, f => f.Internet.Password())
-        .RuleFor(i => i.PhoneNumber, f => f.Phone.PhoneNumber())
-        .RuleFor(i => i.Address, f => f.Address.FullAddress())
-        .RuleFor(i => i.InstructorCode, f => f.Random.AlphaNumeric(10))
-        .RuleFor(i => i.InstructorRole, _ => InstructorRole.Professor)
-        .RuleFor(i => i.UserRoles, _ => new List<UserRoleJunction>());
-
-    public static Faker<Admin> AdminFaker { get; } = new Faker<Admin>()
-        .RuleFor(a => a.UserId, f => f.IndexGlobal + 1)
-        .RuleFor(a => a.NationalId, f => f.Random.Replace("##############"))
-        .RuleFor(a => a.FullName, f => f.Name.FullName())
-        .RuleFor(a => a.FullNameAr, f => f.Name.FullName())
-        .RuleFor(a => a.Email, f => f.Internet.Email())
-        .RuleFor(a => a.Password, f => f.Internet.Password())
-        .RuleFor(a => a.AdminCode, f => f.Random.AlphaNumeric(8))
-        .RuleFor(a => a.UserRoles, _ => new List<UserRoleJunction>
-        {
-            new() { Role = new Role { RoleName = "SuperAdmin" }, IsActive = true }
-        });
-
     public static Faker<User> UserFaker { get; } = new Faker<User>()
         .RuleFor(u => u.UserId, f => f.IndexGlobal + 1)
         .RuleFor(u => u.NationalId, f => f.Random.Replace("##############"))
         .RuleFor(u => u.FullName, f => f.Name.FullName())
+        .RuleFor(u => u.FullNameAr, f => f.Name.FullName())
         .RuleFor(u => u.Email, f => f.Internet.Email())
         .RuleFor(u => u.Password, f => f.Internet.Password())
+        .RuleFor(u => u.PhoneNumber, f => f.Phone.PhoneNumber())
+        .RuleFor(u => u.Address, f => f.Address.FullAddress())
+        .RuleFor(u => u.Nationality, f => f.Address.Country())
         .RuleFor(u => u.UserRoles, _ => new List<UserRoleJunction>());
+
+    public static Faker<Student> StudentFaker { get; } = new Faker<Student>()
+        .RuleFor(s => s.User, f => UserFaker.Generate())
+        .RuleFor(s => s.UserId, (f, s) => s.User!.UserId)
+        .RuleFor(s => s.StudentCode, f => f.Random.AlphaNumeric(10))
+        .RuleFor(s => s.Level, f => f.Random.Int(1, 4))
+        .RuleFor(s => s.StudentType, _ => StudentType.Bachelor)
+        .RuleFor(s => s.Program, _ => StudentProgram.General);
+
+    public static Faker<Instructor> InstructorFaker { get; } = new Faker<Instructor>()
+        .RuleFor(i => i.User, f => UserFaker.Generate())
+        .RuleFor(i => i.UserId, (f, i) => i.User!.UserId)
+        .RuleFor(i => i.InstructorCode, f => f.Random.AlphaNumeric(10))
+        .RuleFor(i => i.InstructorRole, _ => InstructorRole.Professor);
+
+    public static Faker<Admin> AdminFaker { get; } = new Faker<Admin>()
+        .RuleFor(a => a.User, f => UserFaker.Generate())
+        .RuleFor(a => a.UserId, (f, a) => a.User!.UserId)
+        .RuleFor(a => a.AdminCode, f => f.Random.AlphaNumeric(8));
 
     public static Faker<Course> CourseFaker { get; } = new Faker<Course>()
         .RuleFor(c => c.CourseId, f => f.IndexGlobal + 1)
