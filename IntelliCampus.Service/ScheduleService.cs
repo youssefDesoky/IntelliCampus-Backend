@@ -32,6 +32,9 @@ public class ScheduleService : IScheduleService
     private IGenericRepository<Student, int> Students
         => _unitOfWork.GetRepository<Student, int>();
 
+    private IGenericRepository<BylawCourse, int> BylawCourses
+        => _unitOfWork.GetRepository<BylawCourse, int>();
+
     public async Task<ScheduleDto> GetByIdAsync(int scheduleId)
     {
         var spec = new ScheduleSpec(scheduleId, byId: true);
@@ -46,11 +49,13 @@ public class ScheduleService : IScheduleService
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
+        var bylawCourseIds = await GetBylawCourseIdsAsync(student.BylawId);
+
         var spec = queryParams is not null
             ? new ScheduleSpec(studentId, queryParams.PageSize, queryParams.PageIndex)
             : new ScheduleSpec(studentId);
         var schedules = await Schedules.GetAllAsync(spec, asNoTracking: true);
-        return schedules.Select(MapToDto);
+        return FilterByBylaw(schedules, bylawCourseIds).Select(MapToDto);
     }
 
     public async Task<IEnumerable<ScheduleDto>> GetByStudentIdAndTypeAsync(int studentId, ScheduleType type, ScheduleQueryParams? queryParams = null)
@@ -59,11 +64,13 @@ public class ScheduleService : IScheduleService
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
+        var bylawCourseIds = await GetBylawCourseIdsAsync(student.BylawId);
+
         var spec = queryParams is not null
             ? new ScheduleSpec(studentId, type, queryParams)
             : new ScheduleSpec(studentId, type);
         var schedules = await Schedules.GetAllAsync(spec, asNoTracking: true);
-        return schedules.Select(MapToDto);
+        return FilterByBylaw(schedules, bylawCourseIds).Select(MapToDto);
     }
 
     public async Task<IEnumerable<ScheduleDto>> GetByStudentIdAndTypesAsync(int studentId, ScheduleQueryParams queryParams)
@@ -72,9 +79,30 @@ public class ScheduleService : IScheduleService
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
+        var bylawCourseIds = await GetBylawCourseIdsAsync(student.BylawId);
+
         var spec = new ScheduleSpec(studentId, queryParams);
         var schedules = await Schedules.GetAllAsync(spec, asNoTracking: true);
-        return schedules.Select(MapToDto);
+        return FilterByBylaw(schedules, bylawCourseIds).Select(MapToDto);
+    }
+
+    private async Task<List<int>> GetBylawCourseIdsAsync(int? bylawId)
+    {
+        if (bylawId is null)
+            return [];
+
+        return (await BylawCourses.GetAllAsync(new BylawCourseSpec(bylawId.Value, false), asNoTracking: true))
+            .Select(bc => bc.CourseId)
+            .Distinct()
+            .ToList();
+    }
+
+    private static IEnumerable<Schedule> FilterByBylaw(IEnumerable<Schedule> schedules, List<int> bylawCourseIds)
+    {
+        if (bylawCourseIds.Count == 0)
+            return schedules;
+
+        return schedules.Where(s => s.CourseId is null || bylawCourseIds.Contains(s.CourseId.Value));
     }
 
     public async Task SyncFromCourseRegistrationAsync(int studentId, int classId)

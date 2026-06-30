@@ -7,7 +7,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Roles = "Student_Bachelor,Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin,Instructor")]
 public class SpecializationController : ControllerBase
 {
     private readonly ISpecializationService _specializationService;

@@ -25,7 +25,7 @@ public class SpecializationPreferenceController : ControllerBase
     }
 
     [HttpGet("eligibility")]
-    [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
+    [Authorize(Roles = "Student_Bachelor")]
     public async Task<ActionResult<SpecializationPreferenceEligibilityDto>> GetEligibility()
     {
         var result = await _specializationPreferenceService.GetEligibilityAsync(GetStudentId());
@@ -33,7 +33,7 @@ public class SpecializationPreferenceController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
+    [Authorize(Roles = "Student_Bachelor")]
     public async Task<ActionResult<SpecializationPreferenceDto>> GetPreferences()
     {
         var result = await _specializationPreferenceService.GetPreferencesAsync(GetStudentId());
@@ -41,7 +41,7 @@ public class SpecializationPreferenceController : ControllerBase
     }
 
     [HttpPut]
-    [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
+    [Authorize(Roles = "Student_Bachelor")]
     public async Task<IActionResult> SavePreferences([FromBody] SaveSpecializationPreferenceDto dto)
     {
         await _specializationPreferenceService.SavePreferencesAsync(GetStudentId(), dto);

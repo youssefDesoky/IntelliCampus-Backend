@@ -115,7 +115,7 @@ public class GradeService : IGradeService
         var final = courseGrades.FirstOrDefault(g => g.GradeType == GradeType.Final && g.Status == "Graded");
 
         if (gradedAssignments.Count == 0 && gradedQuizzes.Count == 0 && midterm is null && final is null)
-            throw new GradeNotFoundException(courseId);
+            return new CourseGradeDto();
 
         var history = new List<GradeHistoryItemDto>();
 

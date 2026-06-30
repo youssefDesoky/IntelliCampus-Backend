@@ -48,6 +48,9 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     private IGenericRepository<Instructor, int> Instructors
         => _unitOfWork.GetRepository<Instructor, int>();
 
+    private IGenericRepository<BylawCourse, int> BylawCourses
+        => _unitOfWork.GetRepository<BylawCourse, int>();
+
     public async Task<CourseDto?> GetByIdAsync(int courseId)
     {
         var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
@@ -82,6 +85,32 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
+    public async Task<PaginatedResult<CourseDto>> GetActiveCoursesByStudentBylawAsync(int studentId, CourseQueryParams queryParams)
+    {
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var bylawId = student.BylawId;
+        if (bylawId is null)
+            return new PaginatedResult<CourseDto>(queryParams.PageIndex, 0, 0, new List<CourseDto>());
+
+        var bylawCourseIds = (await BylawCourses.GetAllAsync(new BylawCourseSpec(bylawId.Value, false), asNoTracking: true))
+            .Select(bc => bc.CourseId)
+            .Distinct()
+            .ToList();
+
+        if (bylawCourseIds.Count == 0)
+            return new PaginatedResult<CourseDto>(queryParams.PageIndex, 0, 0, new List<CourseDto>());
+
+        queryParams.IsActiveOnly = true;
+        var spec = new CourseSpec(bylawCourseIds, queryParams, CourseIncludeLevel.Light);
+        var courses = await Courses.GetAllAsync(spec, asNoTracking: true);
+        var dataToReturn = courses.Select(c => MapToDto(c)).ToList();
+
+        return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, bylawCourseIds.Count, dataToReturn);
+    }
+
     public async Task<PaginatedResult<CourseDto>> GetCoursesByStudentIdAsync(CourseQueryParams queryParams)
     {
         var studentId = queryParams.StudentId ?? throw new ArgumentNullException(nameof(queryParams.StudentId));
@@ -97,6 +126,32 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         var totalCount = await Courses.CountAsync(countSpec);
 
         return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
+    }
+
+    public async Task<PaginatedResult<CourseDto>> GetCoursesByStudentBylawAsync(CourseQueryParams queryParams)
+    {
+        var studentId = queryParams.StudentId ?? throw new ArgumentNullException(nameof(queryParams.StudentId));
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var bylawId = student.BylawId;
+        if (bylawId is null)
+            return new PaginatedResult<CourseDto>(queryParams.PageIndex, 0, 0, new List<CourseDto>());
+
+        var bylawCourseIds = (await BylawCourses.GetAllAsync(new BylawCourseSpec(bylawId.Value, false), asNoTracking: true))
+            .Select(bc => bc.CourseId)
+            .Distinct()
+            .ToList();
+
+        if (bylawCourseIds.Count == 0)
+            return new PaginatedResult<CourseDto>(queryParams.PageIndex, 0, 0, new List<CourseDto>());
+
+        var gradeScales = student.Bylaw?.GradeScales;
+        var courses = await Courses.GetAllAsync(new CourseSpec(bylawCourseIds, queryParams, CourseIncludeLevel.Student), asNoTracking: true);
+        var dataToReturn = courses.Select(c => MapToDto(c, studentId, gradeScales)).ToList();
+
+        return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, bylawCourseIds.Count, dataToReturn);
     }
 
     public async Task<StudentAllCoursesDto> GetAllStudentCoursesAsync(int studentId)
@@ -294,6 +349,46 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         var totalCount = await Courses.CountAsync(countSpec);
         var items = dataToReturn.ToList();
         return new PaginatedResult<CoursePrerequisiteDto>(queryParams.PageIndex, items.Count, totalCount, items);
+    }
+
+    public async Task<PaginatedResult<CoursePrerequisiteDto>> GetAllWithPrerequisitesByStudentBylawAsync(int studentId, CourseQueryParams queryParams)
+    {
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var bylawId = student.BylawId;
+        if (bylawId is null)
+            return new PaginatedResult<CoursePrerequisiteDto>(queryParams.PageIndex, 0, 0, new List<CoursePrerequisiteDto>());
+
+        var bylawCourseIds = (await BylawCourses.GetAllAsync(new BylawCourseSpec(bylawId.Value, false), asNoTracking: true))
+            .Select(bc => bc.CourseId)
+            .Distinct()
+            .ToList();
+
+        if (bylawCourseIds.Count == 0)
+            return new PaginatedResult<CoursePrerequisiteDto>(queryParams.PageIndex, 0, 0, new List<CoursePrerequisiteDto>());
+
+        var spec = new CourseSpec(bylawCourseIds, queryParams, CourseIncludeLevel.Light);
+        var courses = await Courses.GetAllAsync(spec, asNoTracking: true);
+        var dataToReturn = courses.Select(c => new CoursePrerequisiteDto
+        {
+            CourseId = c.CourseId,
+            CourseName = c.CourseName,
+            CourseCode = c.CourseCode,
+            CreditHours = c.CreditHours,
+            Prerequisites = c.Prerequisites?
+                .Select(p => p.PrerequisiteCourse)
+                .Where(p => p is not null)
+                .Select(p => new PrerequisiteItemDto
+                {
+                    Code = p!.CourseCode ?? p.CourseId.ToString(),
+                    Title = p.CourseName
+                })
+                .ToList() ?? []
+        });
+        var items = dataToReturn.ToList();
+        return new PaginatedResult<CoursePrerequisiteDto>(queryParams.PageIndex, items.Count, bylawCourseIds.Count, items);
     }
 
     public async Task<IEnumerable<CoursePrerequisiteDto>?> GetPrerequisitesAsync(int courseId)
