@@ -2038,5 +2038,205 @@
     "endTime": "09:30",
     "room": "Hall-2",
     "instructorEmail": "202601001@intellicampus.online"
+  },
+  {
+    "groupCode": "CS501-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS501",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-30",
+    "instructorEmail": "202601001@intellicampus.online"
+  },
+  {
+    "groupCode": "CS502-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS502",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-31",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "CS503-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS503",
+    "day": "Tuesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-32",
+    "instructorEmail": "202601003@intellicampus.online"
+  },
+  {
+    "groupCode": "CS504-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS504",
+    "day": "Wednesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-33",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "CS511-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS511",
+    "day": "Thursday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-34",
+    "instructorEmail": "202601005@intellicampus.online"
+  },
+  {
+    "groupCode": "CS521-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS521",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-35",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "CS598-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS598",
+    "day": "Monday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-36",
+    "instructorEmail": "202601007@intellicampus.online"
+  },
+  {
+    "groupCode": "CS701-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS701",
+    "day": "Tuesday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-37",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "CS702-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS702",
+    "day": "Wednesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-38",
+    "instructorEmail": "202601001@intellicampus.online"
+  },
+  {
+    "groupCode": "CS703-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS703",
+    "day": "Thursday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-39",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "CS704-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS704",
+    "day": "Sunday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-40",
+    "instructorEmail": "202601003@intellicampus.online"
+  },
+  {
+    "groupCode": "CS711-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS711",
+    "day": "Monday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-41",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "CS712-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS712",
+    "day": "Tuesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-42",
+    "instructorEmail": "202601005@intellicampus.online"
+  },
+  {
+    "groupCode": "CS512-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS512",
+    "day": "Wednesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-43",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "CS721-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS721",
+    "day": "Thursday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-44",
+    "instructorEmail": "202601007@intellicampus.online"
+  },
+  {
+    "groupCode": "CS722-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS722",
+    "day": "Sunday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-45",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "CS731-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS731",
+    "day": "Monday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Hall-46",
+    "instructorEmail": "202601001@intellicampus.online"
+  },
+  {
+    "groupCode": "CS741-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS741",
+    "day": "Tuesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Hall-47",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "CS742-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS742",
+    "day": "Wednesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Hall-48",
+    "instructorEmail": "202601003@intellicampus.online"
+  },
+  {
+    "groupCode": "CS799-LEC",
+    "classType": "Lecture",
+    "courseCode": "CS799",
+    "day": "Thursday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Hall-49",
+    "instructorEmail": "202601004@intellicampus.online"
   }
 ]

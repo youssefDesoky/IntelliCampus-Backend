@@ -22,8 +22,9 @@ namespace IntelliCampus.Service.Specifications
                                 && p.PrerequisiteCourse.CourseCode.Contains(queryParams.Search)))))
                 && (!queryParams.StudentId.HasValue
                     || c.StudentCourses.Any(sc => sc.StudentId == queryParams.StudentId.Value
-                        && (queryParams.StudentStatuses == null || queryParams.StudentStatuses.Contains(sc.Status)))
-            );
+                        && (queryParams.StudentStatuses == null || queryParams.StudentStatuses.Contains(sc.Status))))
+                && (!queryParams.ExcludeInstructorId.HasValue
+                    || !c.Classes.Any(cl => cl.InstructorId == queryParams.ExcludeInstructorId.Value));
         }
     }
 }

@@ -848,10 +848,30 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Schedules.AnyAsync()) return;
         var currentSemester = SemesterHelper.GetCurrentSemester();
-        var studentCourses = await _dbContext.Set<StudentCourse>()
+
+        var students = await _dbContext.Students.ToListAsync();
+        var studentBylawMap = students.ToDictionary(s => s.UserId, s => s.BylawId);
+        var bylawIds = students.Where(s => s.BylawId.HasValue).Select(s => s.BylawId!.Value).Distinct().ToList();
+        var bylawCourseGroups = await _dbContext.Set<BylawCourse>()
+            .Where(bc => bylawIds.Contains(bc.BylawId))
+            .ToListAsync();
+        var bylawCourseSet = bylawCourseGroups
+            .GroupBy(bc => bc.BylawId)
+            .ToDictionary(g => g.Key, g => g.Select(bc => bc.CourseId).ToHashSet());
+
+        var studentCourses = (await _dbContext.Set<StudentCourse>()
             .Where(sc => sc.Semester == currentSemester)
             .Include(sc => sc.Course)
-            .ToListAsync();
+            .ToListAsync())
+            .Where(sc =>
+            {
+                if (!studentBylawMap.TryGetValue(sc.StudentId, out var bylawId) || bylawId is null)
+                    return true;
+                if (!bylawCourseSet.TryGetValue(bylawId.Value, out var courseIds))
+                    return false;
+                return courseIds.Contains(sc.CourseId);
+            })
+            .ToList();
         var allClasses = await _dbContext.Classes.Include(c => c.Instructor).ToListAsync();
         var schedules = new List<Schedule>();
         var scheduledSlots = new List<(int StudentId, DayOfWeekEnum Day, TimeSpan StartTime, TimeSpan EndTime)>();

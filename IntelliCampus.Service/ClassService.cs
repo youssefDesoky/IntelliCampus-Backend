@@ -12,9 +12,10 @@ using IntelliCampus.Service.Specifications;
 
 namespace IntelliCampus.Service;
 
-public class ClassService(IUnitOfWork unitOfWork) : IClassService
+public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleService) : IClassService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IScheduleService _scheduleService = scheduleService;
 
     private IGenericRepository<Class, int> Classes
         => _unitOfWork.GetRepository<Class, int>();
@@ -238,6 +239,8 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         Classes.Update(classEntity);
         await _unitOfWork.SaveChangesAsync();
 
+        await _scheduleService.SyncFromClassUpdateAsync(classId);
+
         var reloadSpec = new ClassSpec(classId);
         var reloadedClass = await Classes.GetByIdAsync(reloadSpec);
 
@@ -261,6 +264,8 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         classEntity.InstructorId = instructorId;
         Classes.Update(classEntity);
         await _unitOfWork.SaveChangesAsync();
+
+        await _scheduleService.SyncFromClassUpdateAsync(classId);
 
         var reloadSpec = new ClassSpec(classId);
         var reloadedClass = await Classes.GetByIdAsync(reloadSpec);
