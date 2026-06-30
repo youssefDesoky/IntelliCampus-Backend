@@ -24,7 +24,7 @@ public class InstructorScheduleController(IInstructorScheduleService instructorS
     [HttpGet("{classId:int}")]
     public async Task<IActionResult> GetScheduleById(int classId)
     {
-        var result = await instructorScheduleService.GetScheduleByIdAsync(classId);
+        var result = await instructorScheduleService.GetScheduleByIdAsync(classId, UserId);
         return Ok(result);
     }
 

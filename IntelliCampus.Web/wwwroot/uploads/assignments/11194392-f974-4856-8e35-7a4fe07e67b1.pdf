@@ -1,0 +1,43 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Pages /Kids [4 0 R] /Count 1 >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 1 0 R /Resources << /Font << /F1 2 0 R /F2 3 0 R >> >> /MediaBox [0 0 842 595] /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 356 >>
+stream
+0.2 0.4 0.6 rg BT /F2 20 Tf 50 533.0 Td (IntelliCampus) Tj ET 0 0 0 rg
+0 0 0 rg BT /F2 16 Tf 50 513.0 Td (Weekly Schedule) Tj ET
+0 0 0 RG 1 w 50 495.0 m 792 495.0 l S
+0 0 0 rg BT /F2 11 Tf 50 474.0 Td (Name: Youssef Ahmed Mohamed Desoky) Tj ET
+BT /F1 11 Tf 667.9 474.0 Td (ID: 20230100002) Tj ET
+BT /F1 9 Tf 50 445.0 Td (No schedule items.) Tj ET
+Q
+
+endstream
+endobj
+6 0 obj
+<< /Type /Catalog /Pages 1 0 R >>
+endobj
+xref
+0 7
+0000000000 65535 f
+0000000010 00000 n
+0000000070 00000 n
+0000000143 00000 n
+0000000221 00000 n
+0000000360 00000 n
+0000000773 00000 n
+trailer
+<< /Size 7 /Root 6 0 R >>
+startxref
+825
+%%EOF
