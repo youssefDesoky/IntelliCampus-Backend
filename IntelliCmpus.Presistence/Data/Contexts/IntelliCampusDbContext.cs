@@ -60,6 +60,7 @@ public class IntelliCampusDbContext : DbContext
     // Notifications
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<DeviceToken> DeviceTokens { get; set; }
+    public DbSet<UserNotificationSettings> UserNotificationSettings { get; set; }
 
     // Announcements
     public DbSet<Announcement> Announcements { get; set; }

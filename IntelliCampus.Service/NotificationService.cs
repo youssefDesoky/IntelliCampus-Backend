@@ -156,21 +156,31 @@ public class NotificationService : INotificationService
         Notifications.Add(notification);
         await _unitOfWork.SaveChangesAsync();
 
-        var userNotification = new UserNotification
+        var settingsRepo = _unitOfWork.GetRepository<UserNotificationSettings, int>();
+        var allSettings = await settingsRepo.GetAllAsync();
+        var setting = allSettings.FirstOrDefault(s => s.UserId == userId);
+        var inAppEnabled = setting?.InAppNotificationsEnabled ?? true;
+        var pushEnabled = setting?.PushNotificationsEnabled ?? false;
+
+        if (inAppEnabled)
         {
-            UserId = userId,
-            NotificationId = notification.NotificationId,
-            IsRead = false,
-            Notification = notification
-        };
+            var userNotification = new UserNotification
+            {
+                UserId = userId,
+                NotificationId = notification.NotificationId,
+                IsRead = false,
+                Notification = notification
+            };
 
-        UserNotifications.Add(userNotification);
+            UserNotifications.Add(userNotification);
 
-        await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
-        _notificationStreamService.Publish(userId, MapToDto(userNotification));
+            _notificationStreamService.Publish(userId, MapToDto(userNotification));
+        }
 
-        await DispatchPushAsync(notification, [userId]);
+        if (pushEnabled)
+            await DispatchPushAsync(notification, [userId]);
     }
 
     public async Task SendToManyAsync(
@@ -183,6 +193,16 @@ public class NotificationService : INotificationService
     {
         var userIdList = userIds.ToList();
         if (userIdList.Count == 0) return;
+
+        var settingsRepo = _unitOfWork.GetRepository<UserNotificationSettings, int>();
+        var allSettings = await settingsRepo.GetAllAsync();
+        var usersWithInAppEnabled = allSettings
+            .Where(s => userIdList.Contains(s.UserId))
+            .ToDictionary(s => s.UserId, s => s.InAppNotificationsEnabled);
+        var usersWithPushEnabled = allSettings
+            .Where(s => userIdList.Contains(s.UserId) && s.PushNotificationsEnabled)
+            .Select(s => s.UserId)
+            .ToHashSet();
 
         var notification = new Notification
         {
@@ -201,6 +221,9 @@ public class NotificationService : INotificationService
 
         foreach (var userId in userIdList)
         {
+            var inAppEnabled = usersWithInAppEnabled.GetValueOrDefault(userId, true);
+            if (!inAppEnabled) continue;
+
             var userNotification = new UserNotification
             {
                 UserId = userId,
@@ -220,7 +243,8 @@ public class NotificationService : INotificationService
             _notificationStreamService.Publish(userNotification.UserId, MapToDto(userNotification));
         }
 
-        await DispatchPushAsync(notification, userIdList);
+        if (usersWithPushEnabled.Count > 0)
+            await DispatchPushAsync(notification, usersWithPushEnabled);
     }
 
     private static NotificationDto MapToDto(UserNotification un) => new()

@@ -237,5 +237,11 @@ public sealed class SpecializationPreferenceNotFoundException : NotFoundExceptio
     public SpecializationPreferenceNotFoundException(string message) : base(message) { }
 }
 
+public sealed class BroadcastAnnouncementNotFoundException : NotFoundException
+{
+    public BroadcastAnnouncementNotFoundException(int id) : base($"Broadcast announcement With Id {id} Is Not Found") { }
+    public BroadcastAnnouncementNotFoundException(string message) : base(message) { }
+}
+
 
 }

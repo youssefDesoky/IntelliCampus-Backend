@@ -138,10 +138,6 @@ public class DataSeed : IDataSeed
             await SeedAnnouncementCommentsAsync();
             await _dbContext.SaveChangesAsync();
 
-            // Depends on Admin
-            await SeedBroadcastAnnouncementsAsync();
-            await _dbContext.SaveChangesAsync();
-
             // Depends on Courses, Rooms
             await SeedExamsAsync();
             await _dbContext.SaveChangesAsync();
@@ -1398,23 +1394,6 @@ public class DataSeed : IDataSeed
 
     // ---- Broadcast Announcements ----
 
-    private async Task SeedBroadcastAnnouncementsAsync()
-    {
-        if (await _dbContext.BroadcastAnnouncements.AnyAsync()) return;
-        var items = await ReadJsonAsync<BroadcastAnnouncementSeedDto>("broadcast-announcements.json");
-        foreach (var dto in items)
-        {
-            var senderId = _userIds.GetValueOrDefault(dto.SenderEmail);
-            if (senderId == 0) continue;
-            _dbContext.BroadcastAnnouncements.Add(new BroadcastAnnouncement
-            {
-                SenderId = senderId,
-                Title = dto.Title,
-                CreatedAt = ParseDateOffset(dto.CreatedAtOffset)
-            });
-        }
-    }
-
     // ---- Sessions ----
 
     private async Task SeedSessionsAsync()
@@ -1741,13 +1720,6 @@ public class DataSeed : IDataSeed
         public string Content { get; init; } = "";
         public string CreatedAtOffset { get; init; } = "";
         public string UpdatedAtOffset { get; init; } = "";
-    }
-
-    private record BroadcastAnnouncementSeedDto
-    {
-        public string SenderEmail { get; init; } = "";
-        public string Title { get; init; } = "";
-        public string CreatedAtOffset { get; init; } = "";
     }
 
     private record ExamDto

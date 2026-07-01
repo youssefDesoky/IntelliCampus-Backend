@@ -25,6 +25,7 @@ public class User
     public ICollection<UserRoleJunction> UserRoles { get; set; } = [];
     public ICollection<Post> Posts { get; set; } = [];
     public ICollection<Comment> Comments { get; set; } = [];
+    public UserNotificationSettings? NotificationSettings { get; set; }
     public ICollection<UserNotification> UserNotifications { get; set; } = [];
     public ICollection<GroupMember> GroupMembers { get; set; } = [];
     public ICollection<PostVote> PostVotes { get; set; } = [];
