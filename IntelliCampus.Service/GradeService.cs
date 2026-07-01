@@ -59,6 +59,9 @@ public class GradeService : IGradeService
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
 
+    private IGenericRepository<CourseWorkWeight, int> CourseWorkWeights
+        => _unitOfWork.GetRepository<CourseWorkWeight, int>();
+
     // Student
 
     public async Task<int> GetCourseWorkAsync(int studentId, int courseId)
@@ -77,10 +80,23 @@ public class GradeService : IGradeService
         var courseGrades = await Grades.GetAllAsync(new GradeSpec(studentId, courseId), asNoTracking: true);
         var midterm = courseGrades.FirstOrDefault(g => g.GradeType == GradeType.Midterm && g.Status == "Graded");
 
-        var (assignQuizContrib, midtermContrib, _) = CalculateWeightedContributions(
-            assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax, midterm, null);
+        var courseWorkWeight = await CourseWorkWeights.GetByIdAsync(courseId);
+        var midtermWeight = courseWorkWeight?.MidtermWeight ?? midterm?.Weight ?? 0;
+        var assignmentWeight = courseWorkWeight?.AssignmentWeight ?? 0;
+        var quizWeight = courseWorkWeight?.QuizWeight ?? 0;
 
-        return (int)Math.Round(assignQuizContrib + midtermContrib, 0);
+        if (courseWorkWeight is null)
+        {
+            var (aqContrib, mtContrib, _) = CalculateWeightedContributions(
+                assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax, midterm, null);
+            return (int)Math.Round(aqContrib + mtContrib, 0);
+        }
+
+        var (assignmentContrib, quizContrib, midContrib, _) = CalculateContributions(
+            assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax,
+            assignmentWeight, quizWeight, midtermWeight, 0, midterm, null);
+
+        return (int)Math.Round(assignmentContrib + quizContrib + midContrib, 0);
     }
 
     public async Task<CourseGradeDto?> GetCourseGradeAsync(int studentId, int courseId)
@@ -198,6 +214,16 @@ public class GradeService : IGradeService
         var (assignTotalScore, assignTotalMax) = ComputeAssignmentGrade(gradedAssignments, assignments);
         var (quizTotalScore, quizTotalMax) = ComputeQuizGrade(gradedQuizzes, quizzes);
 
+        var courseWorkWeight = await CourseWorkWeights.GetByIdAsync(courseId);
+        var studentBylawSettings = student.Bylaw?.Settings;
+
+        var assignWeight = courseWorkWeight?.AssignmentWeight ?? assignTotalMax;
+        var quizWeight = courseWorkWeight?.QuizWeight ?? quizTotalMax;
+        var midtermDisplayWeight = courseWorkWeight?.MidtermWeight ?? midterm?.Weight ?? 0;
+        var finalDisplayWeight = courseWorkWeight is not null
+            ? (studentBylawSettings?.FinalExamGrade ?? final?.Weight ?? 0)
+            : (final?.Weight ?? 0);
+
         var breakdown = new List<AssessmentBreakdownDto>();
         if (gradedAssignments.Count > 0)
         {
@@ -207,7 +233,7 @@ public class GradeService : IGradeService
                 Category = "Assignments",
                 TotalScore = assignTotalScore,
                 TotalMaxScore = assignTotalMax,
-                TotalWeight = assignTotalMax,
+                TotalWeight = assignWeight,
                 Percent = ap,
                 Status = "Graded"
             });
@@ -220,7 +246,7 @@ public class GradeService : IGradeService
                 Category = "Quizzes",
                 TotalScore = quizTotalScore,
                 TotalMaxScore = quizTotalMax,
-                TotalWeight = quizTotalMax,
+                TotalWeight = quizWeight,
                 Percent = qp,
                 Status = "Graded"
             });
@@ -233,7 +259,7 @@ public class GradeService : IGradeService
                 Category = "Midterm",
                 TotalScore = midterm.Score,
                 TotalMaxScore = midterm.MaxScore,
-                TotalWeight = midterm.Weight,
+                TotalWeight = midtermDisplayWeight,
                 Percent = mp,
                 Status = midterm.Status
             });
@@ -246,20 +272,47 @@ public class GradeService : IGradeService
                 Category = "Final",
                 TotalScore = final.Score,
                 TotalMaxScore = final.MaxScore,
-                TotalWeight = final.Weight,
+                TotalWeight = finalDisplayWeight,
                 Percent = fp,
                 Status = final.Status
             });
         }
 
-        var (assignQuizContrib, midtermContrib, finalContrib) = CalculateWeightedContributions(
-            assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax, midterm, final);
+        decimal overallPercent;
+        decimal midtermWeight;
+        decimal finalWeight;
+        decimal assignQuizWeight;
+        decimal assignQuizContrib = 0;
+        decimal midtermContrib = 0;
+        decimal finalContrib = 0;
 
-        var overallPercent = Math.Round(assignQuizContrib + midtermContrib + finalContrib, 0);
+        if (courseWorkWeight is not null)
+        {
+            var (assignmentContrib, quizContrib, mtContrib, fnContrib) = CalculateContributions(
+                assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax,
+                courseWorkWeight.AssignmentWeight, courseWorkWeight.QuizWeight,
+                courseWorkWeight.MidtermWeight, studentBylawSettings?.FinalExamGrade ?? final?.Weight ?? 0,
+                midterm, final);
 
-        var midtermWeight = midterm?.Weight ?? 0;
-        var finalWeight = final?.Weight ?? 0;
-        var assignQuizWeight = 100 - midtermWeight - finalWeight;
+            assignQuizContrib = assignmentContrib + quizContrib;
+            midtermContrib = mtContrib;
+            finalContrib = fnContrib;
+            overallPercent = Math.Round(assignQuizContrib + midtermContrib + finalContrib, 0);
+            midtermWeight = courseWorkWeight.MidtermWeight;
+            finalWeight = studentBylawSettings?.FinalExamGrade ?? final?.Weight ?? 0;
+            assignQuizWeight = courseWorkWeight.AssignmentWeight + courseWorkWeight.QuizWeight;
+        }
+        else
+        {
+            (assignQuizContrib, midtermContrib, finalContrib) = CalculateWeightedContributions(
+                assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax, midterm, final);
+
+            overallPercent = Math.Round(assignQuizContrib + midtermContrib + finalContrib, 0);
+            midtermWeight = midterm?.Weight ?? 0;
+            finalWeight = final?.Weight ?? 0;
+            assignQuizWeight = 100 - midtermWeight - finalWeight;
+        }
+
         overallPercent = await ApplyBylawGradeRulesAsync(studentId, courseId,
             assignQuizWeight, midtermWeight, finalWeight,
             assignQuizContrib, midtermContrib, finalContrib, overallPercent);
@@ -386,6 +439,8 @@ public class GradeService : IGradeService
         var bylawSettings = student?.Bylaw?.Settings;
         var gradeScales = student?.Bylaw?.GradeScales;
 
+        var allCourseWorkWeights = (await CourseWorkWeights.GetAllAsync()).ToDictionary(w => w.CourseId);
+
         var result = new List<TranscriptCourseDto>();
 
         foreach (var sc in studentCourses)
@@ -412,26 +467,59 @@ public class GradeService : IGradeService
 
             if (hasCoursework)
             {
-                var (assignQuizContrib, midtermContrib, finalContrib) = CalculateWeightedContributions(
-                    assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax, midterm, final);
+                allCourseWorkWeights.TryGetValue(courseId, out var courseWorkWeight);
 
-                courseworkStr = Math.Round(assignQuizContrib + midtermContrib, 0).ToString();
-
-                if (final is not null)
+                if (courseWorkWeight is not null)
                 {
-                    var overall = Math.Round(assignQuizContrib + midtermContrib + finalContrib, 0);
-                    var midtermWeight = midterm?.Weight ?? 0;
-                    var finalWeight = final?.Weight ?? 0;
-                    var assignQuizWeight = 100 - midtermWeight - finalWeight;
-                    overall = ApplyBylawGradeRules(bylawSettings, gradeScales, failedCourseIds, courseId,
-                        assignQuizWeight, midtermWeight, finalWeight,
-                        assignQuizContrib, midtermContrib, finalContrib, overall);
-                    totalGradeStr = overall.ToString();
-                    letter = ResolveGradeScale(gradeScales, overall);
+                    var (assignmentContrib, quizContrib, midContrib, fnContrib) = CalculateContributions(
+                        assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax,
+                        courseWorkWeight.AssignmentWeight, courseWorkWeight.QuizWeight,
+                        courseWorkWeight.MidtermWeight, bylawSettings?.FinalExamGrade ?? final?.Weight ?? 0,
+                        midterm, final);
+
+                    var coursework = assignmentContrib + quizContrib + midContrib;
+                    courseworkStr = Math.Round(coursework, 0).ToString();
+
+                    if (final is not null)
+                    {
+                        var overall = Math.Round(coursework + fnContrib, 0);
+                        var assignQuizW = courseWorkWeight.AssignmentWeight + courseWorkWeight.QuizWeight;
+                        var midtermW = courseWorkWeight.MidtermWeight;
+                        var finalW = bylawSettings?.FinalExamGrade ?? final?.Weight ?? 0;
+                        overall = ApplyBylawGradeRules(bylawSettings, gradeScales, failedCourseIds, courseId,
+                            assignQuizW, midtermW, finalW,
+                            assignmentContrib + quizContrib, midContrib, fnContrib, overall);
+                        totalGradeStr = overall.ToString();
+                        letter = ResolveGradeScale(gradeScales, overall);
+                    }
+                    else
+                    {
+                        totalGradeStr = "-";
+                    }
                 }
                 else
                 {
-                    totalGradeStr = "-";
+                    var (assignQuizContrib, midtermContrib, finalContrib) = CalculateWeightedContributions(
+                        assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax, midterm, final);
+
+                    courseworkStr = Math.Round(assignQuizContrib + midtermContrib, 0).ToString();
+
+                    if (final is not null)
+                    {
+                        var overall = Math.Round(assignQuizContrib + midtermContrib + finalContrib, 0);
+                        var midtermWeight = midterm?.Weight ?? 0;
+                        var finalWeight = final?.Weight ?? 0;
+                        var assignQuizWeight = 100 - midtermWeight - finalWeight;
+                        overall = ApplyBylawGradeRules(bylawSettings, gradeScales, failedCourseIds, courseId,
+                            assignQuizWeight, midtermWeight, finalWeight,
+                            assignQuizContrib, midtermContrib, finalContrib, overall);
+                        totalGradeStr = overall.ToString();
+                        letter = ResolveGradeScale(gradeScales, overall);
+                    }
+                    else
+                    {
+                        totalGradeStr = "-";
+                    }
                 }
             }
 
@@ -828,6 +916,7 @@ public class GradeService : IGradeService
 
         var data = await LoadCourseGradesOverviewDataAsync(courseId);
         var assessmentMap = BuildAssessmentMap(data.Assignments, data.Quizzes, data.CourseGrades);
+        var courseWorkWeight = await CourseWorkWeights.GetByIdAsync(courseId);
 
         var allOverallPercents = new List<double>();
         var passCount = 0;
@@ -838,7 +927,7 @@ public class GradeService : IGradeService
             var dto = ProcessStudentGrade(student,
                 data.CourseAssignmentSubmissions, data.CourseQuizSubmissions, data.CourseGrades,
                 data.AssignmentsById, data.QuizzesById, data.FailedCourseStudentIds,
-                courseId, ref assessmentMap);
+                courseId, ref assessmentMap, courseWorkWeight);
             allOverallPercents.Add(dto.OverallPercent);
             if (dto.Letter != "-" && dto.Letter != "F" && dto.Letter != "Con" && dto.Letter != "W" && dto.Letter != "I")
                 passCount++;
@@ -980,7 +1069,8 @@ public class GradeService : IGradeService
         Dictionary<int, Quiz> quizzesById,
         HashSet<int> failedCourseStudentIds,
         int courseId,
-        ref Dictionary<string, (List<double> Percents, int Count, string Type, double MaxScore)> assessmentMap)
+        ref Dictionary<string, (List<double> Percents, int Count, string Type, double MaxScore)> assessmentMap,
+        CourseWorkWeight? courseWorkWeight = null)
     {
         var (assignTotalScore, assignTotalMax) = (0m, 0m);
         foreach (var sa in courseAssignmentSubmissions)
@@ -1013,6 +1103,9 @@ public class GradeService : IGradeService
         var studentSubmissions = courseAssignmentSubmissions
             .Where(sa => sa.StudentId == student.UserId && sa.Grade.HasValue)
             .ToList();
+
+        var midtermDisplayWeight = courseWorkWeight?.MidtermWeight ?? midterm?.Weight ?? 0;
+        var finalDisplayWeight = student.Bylaw?.Settings?.FinalExamGrade ?? final?.Weight ?? 0;
 
         foreach (var sa in studentSubmissions)
         {
@@ -1070,7 +1163,7 @@ public class GradeService : IGradeService
                 Type = GradeType.Midterm.ToString(),
                 Score = (double)midterm.Score,
                 MaxScore = (double)midterm.MaxScore,
-                Weight = (double)midterm.Weight,
+                Weight = (double)midtermDisplayWeight,
                 Percent = pct
             });
             if (assessmentMap.TryGetValue(key, out var entry))
@@ -1090,7 +1183,7 @@ public class GradeService : IGradeService
                 Type = GradeType.Final.ToString(),
                 Score = (double)final.Score,
                 MaxScore = (double)final.MaxScore,
-                Weight = (double)final.Weight,
+                Weight = (double)finalDisplayWeight,
                 Percent = pct
             });
             if (assessmentMap.TryGetValue(key, out var entry))
@@ -1100,13 +1193,41 @@ public class GradeService : IGradeService
             }
         }
 
-        var (assignQuizContrib, midtermContrib, finalContrib) = CalculateWeightedContributions(
-            assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax, midterm, final);
+        decimal overallDecimal;
+        decimal midtermWeight;
+        decimal finalWeight;
+        decimal assignQuizWeight;
+        decimal assignQuizContrib;
+        decimal midtermContrib;
+        decimal finalContrib;
 
-        var overallDecimal = assignQuizContrib + midtermContrib + finalContrib;
-        var midtermWeight = midterm?.Weight ?? 0;
-        var finalWeight = final?.Weight ?? 0;
-        var assignQuizWeight = 100 - midtermWeight - finalWeight;
+        var bylawSettingsForWeights = student.Bylaw?.Settings;
+        if (courseWorkWeight is not null)
+        {
+            var (aContrib, qContrib, mContrib, fContrib) = CalculateContributions(
+                assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax,
+                courseWorkWeight.AssignmentWeight, courseWorkWeight.QuizWeight,
+                courseWorkWeight.MidtermWeight, bylawSettingsForWeights?.FinalExamGrade ?? final?.Weight ?? 0,
+                midterm, final);
+
+            assignQuizContrib = aContrib + qContrib;
+            midtermContrib = mContrib;
+            finalContrib = fContrib;
+            overallDecimal = assignQuizContrib + midtermContrib + finalContrib;
+            midtermWeight = courseWorkWeight.MidtermWeight;
+            finalWeight = bylawSettingsForWeights?.FinalExamGrade ?? final?.Weight ?? 0;
+            assignQuizWeight = courseWorkWeight.AssignmentWeight + courseWorkWeight.QuizWeight;
+        }
+        else
+        {
+            (assignQuizContrib, midtermContrib, finalContrib) = CalculateWeightedContributions(
+                assignTotalScore, assignTotalMax, quizTotalScore, quizTotalMax, midterm, final);
+
+            overallDecimal = assignQuizContrib + midtermContrib + finalContrib;
+            midtermWeight = midterm?.Weight ?? 0;
+            finalWeight = final?.Weight ?? 0;
+            assignQuizWeight = 100 - midtermWeight - finalWeight;
+        }
 
         if (student.Bylaw is not null)
         {
@@ -1496,6 +1617,131 @@ public class GradeService : IGradeService
     // In-memory variants of the per-course scoring helpers above, operating on
     // data that was batch-loaded once for all of the student's courses. These
     // replace the N+1 round-trips the transcript loop used to perform.
+    // CourseWork weight configuration
+
+    public async Task<CourseWorkWeightDto?> GetCourseWorkWeightAsync(int courseId, int instructorId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
+        var teaches = await Classes.AnyAsync(c => c.CourseId == courseId && c.InstructorId == instructorId);
+        if (!teaches)
+            throw new InvalidOperationException("Not authorized.");
+
+        var weight = await CourseWorkWeights.GetByIdAsync(courseId);
+        if (weight is null) return null;
+
+        return new CourseWorkWeightDto
+        {
+            CourseId = weight.CourseId,
+            QuizWeight = weight.QuizWeight,
+            AssignmentWeight = weight.AssignmentWeight,
+            MidtermWeight = weight.MidtermWeight
+        };
+    }
+
+    public async Task<CourseWorkWeightDto> SetCourseWorkWeightAsync(int courseId, int instructorId, UpdateCourseWorkWeightDto dto)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
+        var isProfessor = await Classes.AnyAsync(c =>
+            c.CourseId == courseId && c.InstructorId == instructorId && c.ClassType == ClassType.Lecture);
+        if (!isProfessor)
+            throw new InvalidOperationException("Not authorized. Only the course professor can manage coursework weights.");
+
+        var totalCoursework = dto.QuizWeight + dto.AssignmentWeight + dto.MidtermWeight;
+
+        var enrolledStudentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(courseId, true), asNoTracking: true)).ToList();
+        if (enrolledStudentCourses.Count > 0)
+        {
+            var anyStudent = await Students.GetByIdAsync(enrolledStudentCourses[0].StudentId);
+            var bylawCourseWork = anyStudent?.Bylaw?.Settings?.CourseWorkGrade;
+            if (bylawCourseWork.HasValue && totalCoursework != bylawCourseWork.Value)
+                throw new InvalidOperationException(
+                    $"Coursework weights ({totalCoursework}) must equal the bylaw's course work grade ({bylawCourseWork.Value}).");
+        }
+
+        var existing = await CourseWorkWeights.GetByIdAsync(courseId);
+        if (existing is not null)
+        {
+            existing.QuizWeight = dto.QuizWeight;
+            existing.AssignmentWeight = dto.AssignmentWeight;
+            existing.MidtermWeight = dto.MidtermWeight;
+            CourseWorkWeights.Update(existing);
+        }
+        else
+        {
+            existing = new CourseWorkWeight
+            {
+                CourseId = courseId,
+                QuizWeight = dto.QuizWeight,
+                AssignmentWeight = dto.AssignmentWeight,
+                MidtermWeight = dto.MidtermWeight
+            };
+            CourseWorkWeights.Add(existing);
+        }
+
+        await _unitOfWork.SaveChangesAsync();
+
+        return new CourseWorkWeightDto
+        {
+            CourseId = existing.CourseId,
+            QuizWeight = existing.QuizWeight,
+            AssignmentWeight = existing.AssignmentWeight,
+            MidtermWeight = existing.MidtermWeight
+        };
+    }
+
+    // Weight resolution helpers
+
+    private static (decimal AssignmentWeight, decimal QuizWeight, decimal MidtermWeight, decimal FinalWeight) ResolveGradeWeights(
+        CourseWorkWeight? courseWorkWeight,
+        Grade? midterm, Grade? final,
+        BylawSettings? bylawSettings,
+        decimal assignTotalMax, decimal quizTotalMax)
+    {
+        if (courseWorkWeight is not null)
+        {
+            var finalWeight = bylawSettings?.FinalExamGrade ?? final?.Weight ?? 0;
+            return (courseWorkWeight.AssignmentWeight, courseWorkWeight.QuizWeight, courseWorkWeight.MidtermWeight, finalWeight);
+        }
+
+        var midtermWeight = midterm?.Weight ?? 0;
+        var finalWeightLegacy = final?.Weight ?? 0;
+        var assignQuizWeight = 100m - midtermWeight - finalWeightLegacy;
+        if (assignQuizWeight < 0) assignQuizWeight = 0;
+
+        var totalMax = assignTotalMax + quizTotalMax;
+        var assignmentWeight = totalMax > 0 ? assignQuizWeight * assignTotalMax / totalMax : assignQuizWeight / 2;
+        var quizWeight = totalMax > 0 ? assignQuizWeight * quizTotalMax / totalMax : assignQuizWeight / 2;
+
+        return (assignmentWeight, quizWeight, midtermWeight, finalWeightLegacy);
+    }
+
+    private static (decimal AssignmentContrib, decimal QuizContrib, decimal MidtermContrib, decimal FinalContrib) CalculateContributions(
+        decimal assignTotalScore, decimal assignTotalMax,
+        decimal quizTotalScore, decimal quizTotalMax,
+        decimal assignmentWeight, decimal quizWeight, decimal midtermWeight, decimal finalWeight,
+        Grade? midterm, Grade? final)
+    {
+        var assignmentPct = assignTotalMax > 0 ? assignTotalScore / assignTotalMax * 100 : 0;
+        var assignmentContrib = assignmentPct * assignmentWeight / 100;
+
+        var quizPct = quizTotalMax > 0 ? quizTotalScore / quizTotalMax * 100 : 0;
+        var quizContrib = quizPct * quizWeight / 100;
+
+        var midtermPct = midterm is not null && midterm.MaxScore > 0 ? midterm.Score / midterm.MaxScore * 100 : 0;
+        var midtermContrib = midtermPct * midtermWeight / 100;
+
+        var finalPct = final is not null && final.MaxScore > 0 ? final.Score / final.MaxScore * 100 : 0;
+        var finalContrib = finalPct * finalWeight / 100;
+
+        return (assignmentContrib, quizContrib, midtermContrib, finalContrib);
+    }
+
     private static (decimal TotalScore, decimal TotalMax) ComputeAssignmentScores(
         int courseId,
         Dictionary<int, Dictionary<int, decimal>> assignmentsMaxByCourse,
