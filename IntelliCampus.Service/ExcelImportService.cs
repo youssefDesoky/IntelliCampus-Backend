@@ -295,10 +295,15 @@ public class ExcelImportService : IExcelImportService
 
         var gradesRepo = _unitOfWork.GetRepository<Grade, int>();
 
+        var courseId = int.Parse(row.Cell(2).GetString().Trim());
+        var courseForGuard = await Courses.GetByIdAsync(courseId);
+        if (courseForGuard is null || courseForGuard.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+
         var grade = new Grade
         {
             StudentId = int.Parse(row.Cell(1).GetString().Trim()),
-            CourseId = int.Parse(row.Cell(2).GetString().Trim()),
+            CourseId = courseId,
             Title = row.Cell(3).GetString().Trim(),
             Score = ParseDecimal(row.Cell(4).GetString()),
             MaxScore = ParseDecimal(row.Cell(5).GetString()),

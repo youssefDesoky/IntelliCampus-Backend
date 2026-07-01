@@ -10,7 +10,7 @@ namespace IntelliCampus.Service_Abstraction;
 
 public interface ICourseService
 {
-    Task<CourseDto?> GetByIdAsync(int courseId);
+    Task<CourseDto?> GetByIdAsync(int courseId, int? studentId = null);
     Task<PaginatedResult<CourseDto>> GetAllAsync(CourseQueryParams queryParams);
     Task<PaginatedResult<CourseDto>> GetActiveCoursesAsync(CourseQueryParams queryParams);
     Task<PaginatedResult<CourseDto>> GetActiveCoursesByStudentBylawAsync(int studentId, CourseQueryParams queryParams);
@@ -30,4 +30,5 @@ public interface ICourseService
     Task<CourseRegistrationSettingsDto?> GetRegistrationSettingsAsync(int courseId);
     Task<ExcelImportResultDto> UploadGradesAsync(int courseId, IFormFile file, int? userId);
     Task<StudentAllCoursesDto> GetAllStudentCoursesAsync(int studentId);
+    Task<CourseDto> ReactivateCourseAsync(int oldCourseId);
 }

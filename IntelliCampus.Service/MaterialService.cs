@@ -28,6 +28,14 @@ public class MaterialService(
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
 
+    private async Task EnsureCourseActiveAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null) throw new KeyNotFoundException("Course not found.");
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+    }
+
     private IGenericRepository<Class, int> Classes
         => _unitOfWork.GetRepository<Class, int>();
 
@@ -106,6 +114,9 @@ public class MaterialService(
 
         if (course is null)
             throw new CourseNotFoundException("Course not found.");
+
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
 
         // Verify the instructor teaches at least one class in this course
         var instructorTeachesCourse = await Classes.AnyAsync(c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
@@ -191,6 +202,8 @@ public class MaterialService(
         if (!isOwner)
             throw new InvalidOperationException("You are not authorized to delete this material.");
 
+        await EnsureCourseActiveAsync(material.CourseId!.Value);
+
         Materials.Delete(material);
         await _unitOfWork.SaveChangesAsync();
 
@@ -238,6 +251,9 @@ public class MaterialService(
         var course = await Courses.GetByIdAsync(dto.CourseId);
         if (course is null)
             throw new CourseNotFoundException("Course not found.");
+
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
 
         // Verify the instructor teaches at least one class in this course
         var instructorTeachesCourse = await Classes.AnyAsync(c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
@@ -294,6 +310,8 @@ public class MaterialService(
         if (!canEdit)
             throw new InvalidOperationException("You are not authorized to edit this folder.");
 
+        await EnsureCourseActiveAsync(folder.CourseId);
+
         folder.Name = name;
         folder.Description = description;
         Folders.Update(folder);
@@ -309,9 +327,12 @@ public class MaterialService(
         if (folder is null)
             throw new FolderNotFoundException();
 
-        // Check if the instructor created this folder
-        if (folder.CreatedByInstructorId != instructorId)
+        // Allow deletion if the instructor created this folder or teaches the course
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == folder.CourseId && c.InstructorId == instructorId);
+        if (folder.CreatedByInstructorId != instructorId && !teachesCourse)
             throw new InvalidOperationException("You are not authorized to delete this folder.");
+
+        await EnsureCourseActiveAsync(folder.CourseId);
 
         // Delete materials in this folder
         if (folder.Materials.Count > 0)

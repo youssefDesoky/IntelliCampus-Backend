@@ -38,6 +38,14 @@ public class RegistrationService : IRegistrationService
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
 
+    private async Task EnsureCourseActiveAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null) throw new KeyNotFoundException("Course not found.");
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+    }
+
     private IGenericRepository<Class, int> Classes
         => _unitOfWork.GetRepository<Class, int>();
 
@@ -55,6 +63,9 @@ public class RegistrationService : IRegistrationService
         var course = await Courses.GetByIdAsync(dto.CourseId);
         if (course is null)
             throw new CourseNotFoundException($"Course with ID {dto.CourseId} not found.");
+
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
 
         var classEntity = await ResolveClassForRegistrationAsync(dto, dto.CourseId);
 
@@ -140,6 +151,8 @@ public class RegistrationService : IRegistrationService
         if (registration is null)
             throw new InvalidOperationException($"Registration not found for student {studentId} in course {courseId}.");
 
+        await EnsureCourseActiveAsync(courseId);
+
         StudentCourses.Delete(registration);
         await _unitOfWork.SaveChangesAsync();
 
@@ -156,6 +169,8 @@ public class RegistrationService : IRegistrationService
 
         if (studentCourse is null)
             throw new InvalidOperationException($"Registration not found for student {studentId} in course {courseId}.");
+
+        await EnsureCourseActiveAsync(courseId);
 
         var classEntity = await Classes.GetByIdAsync(newClassId);
         if (classEntity is null || classEntity.CourseId != courseId)

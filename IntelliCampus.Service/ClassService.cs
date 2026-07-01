@@ -32,6 +32,14 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
     private IGenericRepository<StudentCourse, (int, int)> StudentCourses
         => _unitOfWork.GetRepository<StudentCourse, (int, int)>();
 
+    private async Task EnsureCourseActiveAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null) throw new CourseNotFoundException(courseId);
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+    }
+
     public async Task<ClassDto?> GetByIdAsync(int classId)
     {
         var spec = new ClassSpec(classId);
@@ -73,6 +81,9 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
 
         if (course is null)
             throw new CourseNotFoundException(dto.CourseId);
+
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
 
         // Only two Lecture classes per course
         if (classType == ClassType.Lecture)
@@ -151,6 +162,9 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+
         if (classType == ClassType.Lecture)
         {
             var count = await Classes.CountAsync(c => c.CourseId == courseId && c.ClassType == ClassType.Lecture);
@@ -209,6 +223,9 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         if (classEntity is null)
             throw new ClassNotFoundException(classId);
 
+        if (classEntity.Course?.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+
         DayOfWeekEnum? day = null;
         TimeSpan? startTime = null;
 
@@ -264,6 +281,9 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         if (classEntity is null)
             throw new ClassNotFoundException(classId);
 
+        if (classEntity.Course?.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+
         var instructor = await Instructors.GetByIdAsync(instructorId);
         if (instructor is null)
             throw new InstructorNotFoundException(instructorId);
@@ -288,6 +308,8 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
 
         if (classEntity is null)
             throw new ClassNotFoundException(classId);
+
+        await EnsureCourseActiveAsync(classEntity.CourseId);
 
         var studentCourses = await StudentCourses.GetAllAsync(
             new StudentCourseIdsSpec(classId, byClass: ""), asNoTracking: false);

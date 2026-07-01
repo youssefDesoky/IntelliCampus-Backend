@@ -46,6 +46,14 @@ public class AttendanceService : IAttendanceService
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
 
+    private async Task EnsureCourseActiveAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null) throw new KeyNotFoundException("Course not found.");
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+    }
+
     private IGenericRepository<QrToken, int> QrTokens
         => _unitOfWork.GetRepository<QrToken, int>();
 
@@ -102,6 +110,8 @@ public class AttendanceService : IAttendanceService
         var classEntity = await Classes.GetByIdAsync(session.ClassId);
         if (classEntity?.InstructorId != instructorId)
             throw new InvalidOperationException("Not authorized.");
+
+        await EnsureCourseActiveAsync(classEntity.CourseId);
 
         QrPayload payload;
         try
@@ -186,6 +196,8 @@ public class AttendanceService : IAttendanceService
         if (classEntity?.InstructorId != instructorId)
             throw new InvalidOperationException("Not authorized.");
 
+        await EnsureCourseActiveAsync(classEntity.CourseId);
+
         var student = await Students.GetByIdAsync(new StudentSpec(dto.StudentCode, byCode: true));
         if (student is null)
             throw new InvalidOperationException($"Student with code '{dto.StudentCode}' not found.");
@@ -242,6 +254,8 @@ public class AttendanceService : IAttendanceService
         var classEntity = await Classes.GetByIdAsync(session.ClassId);
         if (classEntity?.InstructorId != instructorId)
             throw new InvalidOperationException("Not authorized.");
+
+        await EnsureCourseActiveAsync(classEntity.CourseId);
 
         var studentCodes = dto.Records.Select(r => r.StudentCode).Distinct().ToList();
         var students = (await Students.GetAllAsync(new StudentSpec(studentCodes, byCodes: true), asNoTracking: true))

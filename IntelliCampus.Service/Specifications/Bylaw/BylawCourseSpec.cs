@@ -30,6 +30,9 @@ internal class BylawCourseSpec : BaseSpecifications<BylawCourse>
     public BylawCourseSpec(int bylawId, bool _ = false)
         : base(bc => bc.BylawId == bylawId) { }
 
+    public BylawCourseSpec(int courseId, bool byCourseId, bool _ = false)
+        : base(bc => bc.CourseId == courseId) { }
+
     // Batch load by BylawCourseId list (with Course include)
     public BylawCourseSpec(List<int> bylawCourseIds, bool byPk)
         : base(bc => bylawCourseIds.Contains(bc.BylawCourseId))

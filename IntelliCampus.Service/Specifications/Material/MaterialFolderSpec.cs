@@ -9,6 +9,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(f => f.Course!);
             AddInclude(f => f.CreatedByInstructor!);
+            AddInclude("CreatedByInstructor.User");
             AddInclude(f => f.Materials!);
             EnableSplitQuery();
         }
@@ -18,6 +19,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(f => f.Course!);
             AddInclude(f => f.CreatedByInstructor!);
+            AddInclude("CreatedByInstructor.User");
             AddInclude(f => f.Materials!);
             EnableSplitQuery();
             AddOrderBy(f => f.DisplayOrder);

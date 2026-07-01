@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service.Specifications;
@@ -27,6 +28,14 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
 
+    private async Task EnsureCourseActiveAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null) throw new KeyNotFoundException("Course not found.");
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+    }
+
     public async Task<PaginatedResult<AnnouncementDto>> GetCourseAnnouncementsAsync(int courseId, AnnouncementQueryParams queryParams)
     {
         var course = await Courses.GetByIdAsync(courseId);
@@ -54,11 +63,14 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
         return MapToDto(announcement);
     }
 
-    public async Task<AnnouncementDto> CreateAsync(int courseId, int senderId, AnnouncementContentDto dto, string? fileUrl, long? fileSize)
+    public async Task<AnnouncementDto> CreateAsync(int courseId, int senderId, AnnouncementContentDto dto, List<(string FileUrl, long FileSize)>? files = null)
     {
         var course = await Courses.GetByIdAsync(courseId);
         if (course is null)
             throw new CourseNotFoundException(courseId);
+
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
 
         var now = EgyptTime.Now;
         var announcement = new Announcement
@@ -73,18 +85,19 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
         Announcements.Add(announcement);
         await _unitOfWork.SaveChangesAsync();
 
-        if (fileUrl is not null)
+        if (files?.Count > 0)
         {
-            var attachment = new AnnouncementAttachment
+            foreach (var (fileUrl, fileSize) in files)
             {
-                AnnouncementId = announcement.AnnouncementId,
-                FileName = Path.GetFileName(fileUrl),
-                FileUrl = fileUrl,
-                FileType = GetFileType(fileUrl),
-                FileSize = fileSize ?? 0
-            };
-
-            Attachments.Add(attachment);
+                Attachments.Add(new AnnouncementAttachment
+                {
+                    AnnouncementId = announcement.AnnouncementId,
+                    FileName = Path.GetFileName(fileUrl),
+                    FileUrl = fileUrl,
+                    FileType = GetFileType(fileUrl),
+                    FileSize = fileSize
+                });
+            }
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -102,7 +115,43 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
         if (announcement.SenderId != senderId)
             throw new UnauthorizedAccessException("You are not authorized to update this announcement.");
 
+        await EnsureCourseActiveAsync(announcement.CourseId);
+
         announcement.Content = content;
+        announcement.UpdatedAt = EgyptTime.Now;
+
+        Announcements.Update(announcement);
+        await _unitOfWork.SaveChangesAsync();
+
+        return MapToDto(announcement);
+    }
+
+    public async Task<AnnouncementDto> PinAsync(int announcementId)
+    {
+        var announcement = await Announcements.GetByIdAsync(announcementId);
+        if (announcement is null)
+            throw new AnnouncementNotFoundException(announcementId);
+
+        await EnsureCourseActiveAsync(announcement.CourseId);
+
+        announcement.IsPinned = true;
+        announcement.UpdatedAt = EgyptTime.Now;
+
+        Announcements.Update(announcement);
+        await _unitOfWork.SaveChangesAsync();
+
+        return MapToDto(announcement);
+    }
+
+    public async Task<AnnouncementDto> UnpinAsync(int announcementId)
+    {
+        var announcement = await Announcements.GetByIdAsync(announcementId);
+        if (announcement is null)
+            throw new AnnouncementNotFoundException(announcementId);
+
+        await EnsureCourseActiveAsync(announcement.CourseId);
+
+        announcement.IsPinned = false;
         announcement.UpdatedAt = EgyptTime.Now;
 
         Announcements.Update(announcement);
@@ -116,6 +165,8 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
         var announcement = await Announcements.GetByIdAsync(announcementId);
         if (announcement is null)
             throw new AnnouncementNotFoundException(announcementId);
+
+        await EnsureCourseActiveAsync(announcement.CourseId);
 
         Announcements.Delete(announcement);
         await _unitOfWork.SaveChangesAsync();
@@ -212,11 +263,12 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
             },
             Date = announcement.CreatedAt,
             Content = announcement.Content,
+            IsPinned = announcement.IsPinned,
             Attachments = announcement.Attachments.Select(a => new AttachmentDto
             {
                 Id = a.AnnouncementAttachmentId.ToString(),
                 Name = a.FileName,
-                Url = _urlResolver.Resolve(a.FileUrl),
+                Url = a.FileUrl,
                 FileType = a.FileType,
                 FileSize = a.FileSize
             }).ToList(),
