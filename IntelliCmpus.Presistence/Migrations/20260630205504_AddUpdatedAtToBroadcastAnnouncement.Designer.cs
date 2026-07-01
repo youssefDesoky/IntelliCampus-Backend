@@ -4,6 +4,7 @@ using IntelliCampus.Presistence.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260630205504_AddUpdatedAtToBroadcastAnnouncement")]
+    partial class AddUpdatedAtToBroadcastAnnouncement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -686,34 +689,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.HasIndex("PrerequisiteCourseId");
 
                     b.ToTable("CoursePrerequisites");
-                });
-
-            modelBuilder.Entity("IntelliCampus.Domain.Entities.CourseWorkWeight", b =>
-                {
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("AssignmentWeight")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<decimal>("MidtermWeight")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<decimal>("QuizWeight")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)")
-                        .HasDefaultValue(0m);
-
-                    b.HasKey("CourseId");
-
-                    b.ToTable("CourseWorkWeights");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Department", b =>
@@ -2648,35 +2623,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.ToTable("UserNotifications");
                 });
 
-            modelBuilder.Entity("IntelliCampus.Domain.Entities.UserNotificationSettings", b =>
-                {
-                    b.Property<int>("UserNotificationSettingsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserNotificationSettingsId"));
-
-                    b.Property<bool>("InAppNotificationsEnabled")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<bool>("PushNotificationsEnabled")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserNotificationSettingsId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("UserNotificationSettings");
-                });
-
             modelBuilder.Entity("IntelliCampus.Domain.Entities.UserRoleJunction", b =>
                 {
                     b.Property<int>("UserId")
@@ -3093,17 +3039,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("PrerequisiteCourse");
-                });
-
-            modelBuilder.Entity("IntelliCampus.Domain.Entities.CourseWorkWeight", b =>
-                {
-                    b.HasOne("IntelliCampus.Domain.Entities.Course", "Course")
-                        .WithOne("CourseWorkWeight")
-                        .HasForeignKey("IntelliCampus.Domain.Entities.CourseWorkWeight", "CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Department", b =>
@@ -3924,17 +3859,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("IntelliCampus.Domain.Entities.UserNotificationSettings", b =>
-                {
-                    b.HasOne("IntelliCampus.Domain.Entities.User", "User")
-                        .WithOne("NotificationSettings")
-                        .HasForeignKey("IntelliCampus.Domain.Entities.UserNotificationSettings", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("IntelliCampus.Domain.Entities.UserRoleJunction", b =>
                 {
                     b.HasOne("IntelliCampus.Domain.Entities.Role", "Role")
@@ -4001,8 +3925,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("Assignments");
 
                     b.Navigation("Classes");
-
-                    b.Navigation("CourseWorkWeight");
 
                     b.Navigation("ElectiveBucketCourses");
 
@@ -4175,8 +4097,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("GroupMembers");
 
                     b.Navigation("Instructor");
-
-                    b.Navigation("NotificationSettings");
 
                     b.Navigation("PostVotes");
 

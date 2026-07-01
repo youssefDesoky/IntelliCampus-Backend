@@ -4,6 +4,7 @@ using IntelliCampus.Presistence.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260630235049_CreateUserNotificationSettings")]
+    partial class CreateUserNotificationSettings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -686,34 +689,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.HasIndex("PrerequisiteCourseId");
 
                     b.ToTable("CoursePrerequisites");
-                });
-
-            modelBuilder.Entity("IntelliCampus.Domain.Entities.CourseWorkWeight", b =>
-                {
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("AssignmentWeight")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<decimal>("MidtermWeight")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<decimal>("QuizWeight")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)")
-                        .HasDefaultValue(0m);
-
-                    b.HasKey("CourseId");
-
-                    b.ToTable("CourseWorkWeights");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Department", b =>
@@ -3095,17 +3070,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("PrerequisiteCourse");
                 });
 
-            modelBuilder.Entity("IntelliCampus.Domain.Entities.CourseWorkWeight", b =>
-                {
-                    b.HasOne("IntelliCampus.Domain.Entities.Course", "Course")
-                        .WithOne("CourseWorkWeight")
-                        .HasForeignKey("IntelliCampus.Domain.Entities.CourseWorkWeight", "CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-                });
-
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Department", b =>
                 {
                     b.HasOne("IntelliCampus.Domain.Entities.Faculty", "Faculty")
@@ -4001,8 +3965,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("Assignments");
 
                     b.Navigation("Classes");
-
-                    b.Navigation("CourseWorkWeight");
 
                     b.Navigation("ElectiveBucketCourses");
 

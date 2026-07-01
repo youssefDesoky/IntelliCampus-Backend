@@ -1,6 +1,8 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.Domain.Helpers;
 using IntelliCampus.Domain.Interfaces;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Dashboard;
@@ -62,7 +64,6 @@ public class DashboardService : IDashboardService
         var studentCourseRepo = _unitOfWork.GetRepository<StudentCourse, (int, int)>();
         var attendanceRepo = _unitOfWork.GetRepository<Attendance, int>();
         var gradeRepo = _unitOfWork.GetRepository<Grade, int>();
-        var announcementRepo = _unitOfWork.GetRepository<Announcement, int>();
 
         var activeCourses = await studentCourseRepo.CountAsync(
             sc => sc.StudentId == studentId && sc.Status == StudentCourseStatus.InProgress);
@@ -77,36 +78,18 @@ public class DashboardService : IDashboardService
         var studentCourses = (await studentCourseRepo.GetAllAsync(new StudentCourseIdsSpec(studentId), asNoTracking: true)).ToList();
         var courseIds = studentCourses.Select(sc => sc.CourseId).ToList();
 
-        var latestNews = new List<LatestNewsItemDto>();
-        if (courseIds.Count > 0)
-        {
-            var announcements = await announcementRepo.GetAllAsync(new AnnouncementsByCoursesSpec(courseIds), asNoTracking: true);
-            latestNews = announcements
-                .Take(5)
-                .Select(a => new LatestNewsItemDto
-                {
-                    Id = a.AnnouncementId,
-                    Title = a.Content.Length > 150 ? a.Content[..150] + "..." : a.Content,
-                    Course = a.Course?.CourseName ?? "",
-                    Kind = "Course",
-                    Date = a.CreatedAt
-                })
-                .ToList();
-
-            var broadcastRepo = _unitOfWork.GetRepository<BroadcastAnnouncement, int>();
-            var broadcastItems = (await broadcastRepo.GetAllAsync(new BroadcastSpec(), asNoTracking: true))
-                .Select(b => new LatestNewsItemDto
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                    Course = "General",
-                    Kind = "Broadcast",
-                    Date = b.CreatedAt
-                })
-                .ToList();
-            latestNews.AddRange(broadcastItems);
-            latestNews = latestNews.OrderByDescending(n => n.Date).Take(7).ToList();
-        }
+        var broadcastRepo = _unitOfWork.GetRepository<BroadcastAnnouncement, int>();
+        var latestNews = (await broadcastRepo.GetAllAsync(new BroadcastSpec(), asNoTracking: true))
+            .Select(b => new LatestNewsItemDto
+            {
+                Id = b.Id,
+                Title = b.Title,
+                Course = "General",
+                Kind = "Broadcast",
+                Date = b.CreatedAt,
+                UpdatedAt = b.UpdatedAt,
+            })
+            .ToList();
 
         var attendances = (await attendanceRepo.GetAllAsync(new AttendanceSpec(studentId), asNoTracking: true)).ToList();
         var grades = (await gradeRepo.GetAllAsync(new GradeSpec(studentId), asNoTracking: true)).ToList();
@@ -173,7 +156,6 @@ public class DashboardService : IDashboardService
         var classRepo = _unitOfWork.GetRepository<Class, int>();
         var sessionRepo = _unitOfWork.GetRepository<Session, int>();
         var attendanceRepo = _unitOfWork.GetRepository<Attendance, int>();
-        var announcementRepo = _unitOfWork.GetRepository<Announcement, int>();
         var broadcastRepo = _unitOfWork.GetRepository<BroadcastAnnouncement, int>();
         var studentCourseRepo = _unitOfWork.GetRepository<StudentCourse, (int, int)>();
 
@@ -207,38 +189,17 @@ public class DashboardService : IDashboardService
                 : 0.0;
         }
 
-        var latestNews = new List<LatestNewsItemDto>();
-        if (courseIds.Count > 0)
-        {
-            var announcements = await announcementRepo.GetAllAsync(new AnnouncementsByCoursesSpec(courseIds));
-            latestNews = announcements
-                .Take(5)
-                .Select(a => new LatestNewsItemDto
-                {
-                    Id = a.AnnouncementId,
-                    Title = a.Content.Length > 150 ? a.Content[..150] + "..." : a.Content,
-                    Course = a.Course?.CourseName ?? "",
-                    Kind = "Course",
-                    Date = a.CreatedAt
-                })
-                .ToList();
-        }
-
-        var broadcasts = await broadcastRepo.GetAllAsync();
-        var broadcastItems = broadcasts
-            .OrderByDescending(b => b.CreatedAt)
-            .Take(5)
+        var latestNews = (await broadcastRepo.GetAllAsync(new BroadcastSpec(), asNoTracking: true))
             .Select(b => new LatestNewsItemDto
             {
                 Id = b.Id,
                 Title = b.Title,
                 Course = "General",
                 Kind = "Broadcast",
-                Date = b.CreatedAt
+                Date = b.CreatedAt,
+                UpdatedAt = b.UpdatedAt,
             })
             .ToList();
-        latestNews.AddRange(broadcastItems);
-        latestNews = latestNews.OrderByDescending(n => n.Date).Take(7).ToList();
 
         var attendanceTrend = new List<AttendanceTrendPointDto>();
         if (sessionIds.Count > 0)
@@ -281,7 +242,7 @@ public class DashboardService : IDashboardService
 
     private static List<string> GetRecentSemesters(int yearsBack)
     {
-        var now = DateTime.UtcNow;
+        var now = EgyptTime.Now;
         var result = new List<string>();
         for (int y = now.Year - yearsBack; y <= now.Year; y++)
         {
@@ -340,7 +301,7 @@ public class DashboardService : IDashboardService
             new() { Name = "Inactive", Value = await coursesRepo.CountAsync(c => c.Status == CourseStatus.Inactive) },
         };
 
-        var now = DateTime.UtcNow;
+        var now = EgyptTime.Now;
         var yearAgo = now.AddYears(-1);
         var attendances = (await attendanceRepo.GetAllAsync(new AttendanceSpec(yearAgo, now), asNoTracking: true)).ToList();
         var grades = (await gradeRepo.GetAllAsync(new GradeSpec(yearAgo, now), asNoTracking: true)).ToList();
@@ -360,6 +321,7 @@ public class DashboardService : IDashboardService
                 Course = "General",
                 Kind = "Broadcast",
                 Date = b.CreatedAt,
+                UpdatedAt = b.UpdatedAt,
             })
             .ToList();
 
@@ -517,7 +479,7 @@ public class DashboardService : IDashboardService
         {
             SenderId = senderId,
             Title = title,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = EgyptTime.Now,
         };
         var repo = _unitOfWork.GetRepository<BroadcastAnnouncement, int>();
         repo.Add(broadcast);
@@ -529,6 +491,41 @@ public class DashboardService : IDashboardService
             Course = "General",
             Kind = "Broadcast",
             Date = broadcast.CreatedAt,
+            UpdatedAt = broadcast.CreatedAt,
         };
+    }
+
+    public async Task<LatestNewsItemDto> UpdateNewsAsync(int id, int senderId, string title)
+    {
+        var repo = _unitOfWork.GetRepository<BroadcastAnnouncement, int>();
+        var broadcast = await repo.GetByIdAsync(id);
+        if (broadcast is null)
+            throw new BroadcastAnnouncementNotFoundException(id);
+
+        broadcast.Title = title;
+        broadcast.UpdatedAt = EgyptTime.Now;
+        repo.Update(broadcast);
+        await _unitOfWork.SaveChangesAsync();
+
+        return new LatestNewsItemDto
+        {
+            Id = broadcast.Id,
+            Title = broadcast.Title,
+            Course = "General",
+            Kind = "Broadcast",
+            Date = broadcast.CreatedAt,
+            UpdatedAt = broadcast.UpdatedAt,
+        };
+    }
+
+    public async Task DeleteNewsAsync(int id)
+    {
+        var repo = _unitOfWork.GetRepository<BroadcastAnnouncement, int>();
+        var broadcast = await repo.GetByIdAsync(id);
+        if (broadcast is null)
+            throw new BroadcastAnnouncementNotFoundException(id);
+
+        repo.Delete(broadcast);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

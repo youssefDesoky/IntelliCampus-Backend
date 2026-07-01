@@ -61,6 +61,7 @@ public class IntelliCampusDbContext : DbContext
     // Notifications
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<DeviceToken> DeviceTokens { get; set; }
+    public DbSet<UserNotificationSettings> UserNotificationSettings { get; set; }
 
     // Announcements
     public DbSet<Announcement> Announcements { get; set; }
@@ -110,6 +111,9 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<SecurityAuditLog> SecurityAuditLogs { get; set; }
     public DbSet<EmailVerificationCode> EmailVerificationCodes { get; set; }
     public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+
+    // CourseWork weight configuration
+    public DbSet<CourseWorkWeight> CourseWorkWeights { get; set; }
 
     // Elective Buckets
     public DbSet<ElectiveBucket> ElectiveBuckets { get; set; }

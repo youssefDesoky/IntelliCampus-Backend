@@ -22,6 +22,7 @@ public class LatestNewsItemDto
     public string Course { get; set; } = string.Empty;
     public string Kind { get; set; } = "Course";
     public DateTime Date { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }
 
 public class AttendanceTrendPointDto

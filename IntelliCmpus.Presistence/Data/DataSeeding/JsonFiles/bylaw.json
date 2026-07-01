@@ -28,8 +28,8 @@
     "probationThreshold": 2.0,
     "probationRegistrationLimit": 15,
     "minCreditHoursForGraduationProject": 90,
-    "courseWorkGrade": 20,
-    "finalExamGrade": 40
+    "courseWorkGrade": 40,
+    "finalExamGrade": 60
   },
   {
     "name": "FCIAI Grading Policy - Master",

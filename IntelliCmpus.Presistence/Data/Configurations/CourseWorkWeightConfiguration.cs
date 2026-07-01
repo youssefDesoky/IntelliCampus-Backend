@@ -8,22 +8,23 @@ public class CourseWorkWeightConfiguration : IEntityTypeConfiguration<CourseWork
 {
     public void Configure(EntityTypeBuilder<CourseWorkWeight> builder)
     {
-        builder.HasKey(w => w.CourseWorkWeightId);
+        builder.HasKey(w => w.CourseId);
 
         builder.Property(w => w.QuizWeight)
-            .HasPrecision(5, 2);
+            .HasPrecision(10, 2)
+            .HasDefaultValue(0);
 
         builder.Property(w => w.AssignmentWeight)
-            .HasPrecision(5, 2);
+            .HasPrecision(10, 2)
+            .HasDefaultValue(0);
 
         builder.Property(w => w.MidtermWeight)
-            .HasPrecision(5, 2);
+            .HasPrecision(10, 2)
+            .HasDefaultValue(0);
 
         builder.HasOne(w => w.Course)
-            .WithOne()
+            .WithOne(c => c.CourseWorkWeight)
             .HasForeignKey<CourseWorkWeight>(w => w.CourseId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasIndex(w => w.CourseId).IsUnique();
     }
 }

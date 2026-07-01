@@ -30,7 +30,7 @@ public class MessagesController(IInternalMessageService messageService) : Contro
     public async Task<IActionResult> GetSent([FromQuery] MessageQueryParams queryParams)
         => Ok(await messageService.GetSentMessagesAsync(UserId, queryParams));
 
-    [HttpPut("{id}")]
+    [HttpPut("{id}/read")]
     public async Task<IActionResult> MarkAsRead(int id)
     {
         await messageService.MarkAsReadAsync(UserId, id);

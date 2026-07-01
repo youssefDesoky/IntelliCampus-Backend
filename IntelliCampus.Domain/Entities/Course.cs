@@ -35,4 +35,5 @@ public class Course
     public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
     public ICollection<ElectiveBucketCourse> ElectiveBucketCourses { get; set; } = new List<ElectiveBucketCourse>();
     public ICollection<Note> Notes { get; set; } = new List<Note>();
+    public CourseWorkWeight? CourseWorkWeight { get; set; }
 }
