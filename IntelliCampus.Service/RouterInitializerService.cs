@@ -72,7 +72,7 @@ public class RouterInitializerService : IHostedService
     {
         var courses = (await uow.GetRepository<Course, int>()
             .GetAllAsync(new CourseRouterSpec(), asNoTracking: true)).ToList();
-        var allStudentCourses = (await uow.GetRepository<StudentCourse, int>()
+        var allStudentCourses = (await uow.GetRepository<StudentCourse, (int, int)>()
             .GetAllAsync(new StudentCourseWithStudentSpec(), asNoTracking: true)).ToList();
         var allGrades = (await uow.GetRepository<Grade, int>()
             .GetAllAsync(specifications: null, asNoTracking: true)).ToList();

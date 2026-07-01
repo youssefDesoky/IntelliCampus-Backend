@@ -61,8 +61,8 @@ public class AssignmentService(
     private IGenericRepository<Class, int> Classes
         => _unitOfWork.GetRepository<Class, int>();
 
-    private IGenericRepository<StudentCourse, int> StudentCourses
-        => _unitOfWork.GetRepository<StudentCourse, int>();
+    private IGenericRepository<StudentCourse, (int, int)> StudentCourses
+        => _unitOfWork.GetRepository<StudentCourse, (int, int)>();
 
     private IGenericRepository<Reminder, int> Reminders
         => _unitOfWork.GetRepository<Reminder, int>();

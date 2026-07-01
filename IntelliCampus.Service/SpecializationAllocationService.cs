@@ -35,7 +35,7 @@ public class SpecializationAllocationService : ISpecializationAllocationService
             Bylaws = (await _unitOfWork.GetRepository<Bylaw, int>().GetAllAsync(specifications: null, asNoTracking: true)).ToList(),
             Preferences = (await _unitOfWork.GetRepository<SpecializationPreference, int>()
                 .GetAllAsync(specifications: null, asNoTracking: true)).ToList(),
-            StudentCourses = (await _unitOfWork.GetRepository<StudentCourse, int>()
+            StudentCourses = (await _unitOfWork.GetRepository<StudentCourse, (int, int)>()
                 .GetAllAsync(specifications: null, asNoTracking: true)).ToList(),
             Grades = (await _unitOfWork.GetRepository<Grade, int>()
                 .GetAllAsync(specifications: null, asNoTracking: true)).ToList(),

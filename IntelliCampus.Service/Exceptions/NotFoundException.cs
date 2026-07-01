@@ -115,6 +115,11 @@
         public FriendRequestNotFoundException(string message) : base(message) { }
     }
 
+    public sealed class FriendshipNotFoundException : NotFoundException
+    {
+        public FriendshipNotFoundException(string message) : base(message) { }
+    }
+
     public sealed class ChatMessageNotFoundException : NotFoundException
     {
         public ChatMessageNotFoundException(int id) : base($"Message With Id {id} Is Not Found") { }

@@ -8,6 +8,7 @@ public class Meeting
     public string RoomName { get; set; } = null!;
     public int CourseId { get; set; }
     public int? InstructorId { get; set; }
+    public bool IsActive { get; set; } = true;
 
     public Course Course { get; set; } = null!;
     public Instructor? Instructor { get; set; }

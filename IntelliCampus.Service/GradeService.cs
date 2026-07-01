@@ -1382,7 +1382,7 @@ public class GradeService : IGradeService
             complaint.StudentId,
             NotificationType.GradeComplaintReviewed,
             $"Your grade complaint for '{title}' has been reviewed by your instructor.",
-            clickUrl: $"/courses/{courseId}");
+            clickUrl: $"/courses/{courseId}/grades");
 
         return MapComplaintToDto(complaint, title);
     }
@@ -1619,7 +1619,7 @@ public class GradeService : IGradeService
             complaint.StudentId,
             NotificationType.GradeComplaintReviewed,
             $"Your grade complaint for '{title}' has been {dto.Status} by your instructor.",
-            clickUrl: $"/courses/{courseId}");
+            clickUrl: $"/courses/{courseId}/grades");
 
         return MapComplaintToDto(complaint, title);
     }

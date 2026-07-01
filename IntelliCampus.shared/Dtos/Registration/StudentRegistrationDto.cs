@@ -8,6 +8,8 @@ public class StudentRegistrationDto
     public int? ClassId { get; set; }
     public string? ClassName { get; set; }
     public string? ProfessorName { get; set; }
+    public string? Schedule { get; set; }
+    public string? Room { get; set; }
     public string? Semester { get; set; }
     public DateTime RegisteredAt { get; set; }
 }

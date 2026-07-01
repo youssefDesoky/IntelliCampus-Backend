@@ -21,8 +21,8 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
         _examScheduleService = examScheduleService;
     }
 
-    private IGenericRepository<StudentCourse, int> StudentCoursesRepo
-        => _unitOfWork.GetRepository<StudentCourse, int>();
+    private IGenericRepository<StudentCourse, (int, int)> StudentCoursesRepo
+        => _unitOfWork.GetRepository<StudentCourse, (int, int)>();
     private IGenericRepository<Exam, int> ExamsRepo
         => _unitOfWork.GetRepository<Exam, int>();
     private IGenericRepository<Student, int> StudentsRepo

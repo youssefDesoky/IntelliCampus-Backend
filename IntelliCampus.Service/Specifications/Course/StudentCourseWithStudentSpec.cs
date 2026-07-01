@@ -7,6 +7,7 @@ namespace IntelliCampus.Service.Specifications
         public StudentCourseWithStudentSpec()
         {
             AddInclude(sc => sc.Student);
+            AddInclude("Student.User");
         }
     }
 }

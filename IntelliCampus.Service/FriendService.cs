@@ -29,14 +29,37 @@ public class FriendService : IFriendService
     private IGenericRepository<User, int> Users
         => _unitOfWork.GetRepository<User, int>();
 
-    public async Task<FriendRequestDto> SendRequestAsync(int senderId, int recipientId)
-    {
-        if (senderId == recipientId)
-            throw new InvalidOperationException("Cannot send friend request to yourself");
+    private IGenericRepository<Student, int> Students
+        => _unitOfWork.GetRepository<Student, int>();
 
-        var recipient = await Users.GetByIdAsync(recipientId);
+    public async Task<FriendRequestDto> SendRequestAsync(int senderId, string recipientInput)
+    {
+        User? recipient = null;
+
+        if (int.TryParse(recipientInput, out var parsedId))
+        {
+            recipient = await Users.GetByIdAsync(parsedId);
+        }
+
+        if (recipient == null)
+        {
+            recipient = (await Users.GetAllAsync(new UserByNationalIdSpec(recipientInput), asNoTracking: true)).FirstOrDefault();
+        }
+
+        if (recipient == null)
+        {
+            var student = (await Students.GetAllAsync(new StudentSpec(recipientInput, byCode: true), asNoTracking: true)).FirstOrDefault();
+            if (student?.User != null)
+                recipient = student.User;
+        }
+
         if (recipient == null)
             throw new UserNotFoundException("Recipient not found");
+
+        var recipientId = recipient.UserId;
+
+        if (senderId == recipientId)
+            throw new InvalidOperationException("Cannot send friend request to yourself");
 
         var existingRequest = await FriendRequests.AnyAsync(fr =>
             fr.SenderId == senderId && fr.RecipientId == recipientId &&
@@ -190,6 +213,17 @@ public class FriendService : IFriendService
         }).ToList();
 
         return friendDtos.OrderBy(f => f.FullName);
+    }
+
+    public async Task DeleteFriendAsync(int userId, int friendId)
+    {
+        var min = Math.Min(userId, friendId);
+        var max = Math.Max(userId, friendId);
+        var friendship = (await Friendships.GetAllAsync()).FirstOrDefault(f => f.UserId1 == min && f.UserId2 == max);
+        if (friendship == null)
+            throw new FriendshipNotFoundException("Friendship not found");
+        Friendships.Delete(friendship);
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<bool> AreFriendsAsync(int userId1, int userId2)
