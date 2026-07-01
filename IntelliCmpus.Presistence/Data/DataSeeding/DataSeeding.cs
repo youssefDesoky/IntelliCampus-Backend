@@ -803,7 +803,8 @@ public class DataSeed : IDataSeed
                     assignedClasses.Add(cls);
                 }
 
-                var status = sem == currentSemester
+                var recentlySeededCourses = new[] { "IT212" };
+                var status = sem == currentSemester || recentlySeededCourses.Contains(dto.CourseCode)
                     ? StudentCourseStatus.InProgress
                     : StudentCourseStatus.Completed;
 

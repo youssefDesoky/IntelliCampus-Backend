@@ -60,7 +60,7 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
         if (!await instructorRepo.AnyAsync(i => i.UserId == userId))
             throw new InstructorNotFoundException($"Instructor with user id {userId} not found");
 
-        var instructorCourses = await _courseService.GetCoursesByInstructorIdAsync(new CourseQueryParams { InstructorId = userId });
+        var instructorCourses = await _courseService.GetCoursesByInstructorIdAsync(new CourseQueryParams { InstructorId = userId, PageSize = 50 });
         if (!instructorCourses.Data.Any(c => c.CourseId == courseId))
             throw new ForbiddenException("Instructor is not assigned to this course");
 

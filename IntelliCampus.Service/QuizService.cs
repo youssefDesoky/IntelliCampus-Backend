@@ -511,7 +511,13 @@ public class QuizService : IQuizService
             foreach (var r in existingResults)
             {
                 if (dto.QuestionScores.TryGetValue(r.QuestionId, out var manualScore))
+                {
+                    var qIdx = int.Parse(r.QuestionId.Substring(1)) - 1;
+                    if (qIdx >= 0 && qIdx < allQuestions.Count && manualScore > allQuestions[qIdx].Points)
+                        throw new InvalidOperationException(
+                            $"Score for question {r.QuestionId} ({allQuestions[qIdx].Points} pts) cannot exceed its maximum points ({allQuestions[qIdx].Points}).");
                     r.EarnedPoints = manualScore;
+                }
                 newTotal += r.EarnedPoints;
             }
         }

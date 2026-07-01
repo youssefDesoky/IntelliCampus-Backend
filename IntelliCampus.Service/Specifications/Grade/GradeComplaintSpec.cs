@@ -22,11 +22,11 @@ public class GradeComplaintSpec : BaseSpecifications<GradeComplaint>
     }
 
     // GetByCourseIdAsync - instructor views complaints for a course
+    // Course filtering is done in-memory via BelongsToCourse since GradeId is polymorphic
     public GradeComplaintSpec(int courseId, bool byCourse, bool unused)
-        : base(c => c.Grade!.CourseId == courseId)
+        : base(null)
     {
         AddInclude(c => c.Student!);
-        AddInclude(c => c.Grade!);
         EnableSplitQuery();
     }
 }

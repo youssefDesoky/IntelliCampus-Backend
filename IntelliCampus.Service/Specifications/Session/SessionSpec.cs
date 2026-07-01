@@ -10,6 +10,7 @@ public class SessionSpec : BaseSpecifications<Session>
     {
         AddInclude(s => s.Attendances!);
         AddInclude(s => s.Class!);
+        AddInclude($"{nameof(Session.Class)}.{nameof(Class.StudentCourses)}");
         EnableSplitQuery();
         AddOrderByDescending(s => s.Date);
     }
@@ -19,6 +20,7 @@ public class SessionSpec : BaseSpecifications<Session>
     {
         AddInclude(s => s.Attendances!);
         AddInclude(s => s.Class!);
+        AddInclude($"{nameof(Session.Class)}.{nameof(Class.StudentCourses)}");
         EnableSplitQuery();
     }
 
@@ -27,6 +29,7 @@ public class SessionSpec : BaseSpecifications<Session>
     {
         AddInclude(s => s.Attendances!);
         AddInclude(s => s.Class!);
+        AddInclude($"{nameof(Session.Class)}.{nameof(Class.StudentCourses)}");
         EnableSplitQuery();
         AddOrderByDescending(s => s.Date);
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);

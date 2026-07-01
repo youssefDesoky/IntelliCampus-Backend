@@ -17,6 +17,7 @@
   { "courseCode": "IS231", "courseType": "Department", "bylawType": "Bachelor" },
   { "courseCode": "IS312", "courseType": "Specialization", "bylawType": "Bachelor" },
   { "courseCode": "IS321", "courseType": "Specialization", "bylawType": "Bachelor" },
+  { "courseCode": "IT212", "courseType": "Department", "bylawType": "Bachelor" },
   { "courseCode": "CS251", "courseType": "Faculty", "bylawType": "Bachelor" },
   { "courseCode": "IS411", "courseType": "Elective", "bylawType": "Bachelor" },
   { "courseCode": "CS481", "courseType": "Elective", "bylawType": "Bachelor" },

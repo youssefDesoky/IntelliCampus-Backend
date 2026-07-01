@@ -27,6 +27,7 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<Specialization> Specializations { get; set; }
     public DbSet<SpecializationPrerequisite> SpecializationPrerequisites { get; set; }
     public DbSet<Grade> Grades { get; set; }
+    public DbSet<CourseWorkWeight> CourseWorkWeights { get; set; }
     public DbSet<GradeComplaint> GradeComplaints { get; set; }
     public DbSet<Exam> Exams { get; set; }
     public DbSet<ExamHall> ExamHalls { get; set; }
