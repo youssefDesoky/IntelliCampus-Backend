@@ -49,7 +49,10 @@ namespace IntelliCampus.Service.Specifications
         }
 
         public CourseSpec(List<int> courseIds, CourseQueryParams queryParams, CourseIncludeLevel includeLevel = CourseIncludeLevel.Full)
-            : base(c => courseIds.Contains(c.CourseId))
+            : base(c => courseIds.Contains(c.CourseId)
+                && (string.IsNullOrEmpty(queryParams.Search)
+                    || c.CourseName.Contains(queryParams.Search)
+                    || (c.CourseCode != null && c.CourseCode.Contains(queryParams.Search))))
         {
             switch (includeLevel)
             {
@@ -65,7 +68,10 @@ namespace IntelliCampus.Service.Specifications
         }
 
         public CourseSpec(List<int> courseIds, CourseQueryParams queryParams, bool forCount)
-            : base(c => courseIds.Contains(c.CourseId))
+            : base(c => courseIds.Contains(c.CourseId)
+                && (string.IsNullOrEmpty(queryParams.Search)
+                    || c.CourseName.Contains(queryParams.Search)
+                    || (c.CourseCode != null && c.CourseCode.Contains(queryParams.Search))))
         {
         }
 

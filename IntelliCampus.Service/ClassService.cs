@@ -29,6 +29,9 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
     private IGenericRepository<Room, int> Rooms
         => _unitOfWork.GetRepository<Room, int>();
 
+    private IGenericRepository<StudentCourse, (int, int)> StudentCourses
+        => _unitOfWork.GetRepository<StudentCourse, (int, int)>();
+
     public async Task<ClassDto?> GetByIdAsync(int classId)
     {
         var spec = new ClassSpec(classId);
@@ -71,13 +74,13 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         if (course is null)
             throw new CourseNotFoundException(dto.CourseId);
 
-        // Only one Lecture class per course
+        // Only two Lecture classes per course
         if (classType == ClassType.Lecture)
         {
             var count = await Classes.CountAsync(c => c.CourseId == dto.CourseId && c.ClassType == ClassType.Lecture);
 
-            if (count > 0)
-                throw new InvalidOperationException("A lecture class already exists for this course. Only one lecture is allowed per course.");
+            if (count >= 2)
+                throw new InvalidOperationException("Maximum of two lectures allowed per course.");
         }
 
         // Resolve instructor by name
@@ -102,6 +105,9 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         {
             ParseSchedule(dto.Schedule, out day, out startTime);
         }
+
+        var endTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : (TimeSpan?)null;
+        await ValidateNoTimeOverlapAsync(dto.CourseId, classType, day, startTime, endTime);
 
         // Generate group code (e.g. CS-L1, IS-S1, IS-S2)
         var groupCode = await GenerateGroupCodeAsync(course, classType);
@@ -148,8 +154,8 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         if (classType == ClassType.Lecture)
         {
             var count = await Classes.CountAsync(c => c.CourseId == courseId && c.ClassType == ClassType.Lecture);
-            if (count > 0)
-                throw new InvalidOperationException("A lecture class already exists for this course.");
+            if (count >= 2)
+                throw new InvalidOperationException("Maximum of two lectures allowed per course.");
         }
 
         int? instructorId = null;
@@ -170,6 +176,9 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         if (!string.IsNullOrWhiteSpace(schedule))
             ParseSchedule(schedule, out day, out startTime);
 
+        var endTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : (TimeSpan?)null;
+        await ValidateNoTimeOverlapAsync(courseId, classType, day, startTime, endTime);
+
         var groupCode = await GenerateGroupCodeAsync(course, classType);
 
         var classEntity = new Class
@@ -178,7 +187,7 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             ClassType = classType,
             Day = day,
             StartTime = startTime,
-            EndTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : null,
+            EndTime = endTime,
             Room = room,
             CourseId = courseId,
             InstructorId = instructorId
@@ -279,6 +288,15 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
 
         if (classEntity is null)
             throw new ClassNotFoundException(classId);
+
+        var studentCourses = await StudentCourses.GetAllAsync(
+            new StudentCourseIdsSpec(classId, byClass: ""), asNoTracking: false);
+
+        foreach (var sc in studentCourses)
+        {
+            sc.ClassId = null;
+            StudentCourses.Update(sc);
+        }
 
         Classes.Delete(classEntity);
         await _unitOfWork.SaveChangesAsync();
@@ -434,6 +452,32 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             InstructorId = classEntity.InstructorId,
             InstructorName = classEntity.Instructor?.User?.FullName
         };
+    }
+
+    private async Task ValidateNoTimeOverlapAsync(int courseId, ClassType classType, DayOfWeekEnum? day, TimeSpan? startTime, TimeSpan? endTime, int? excludeClassId = null)
+    {
+        if (day == null || startTime == null || endTime == null)
+            return;
+
+        var classTypeStr = classType.ToString();
+        var existing = await Classes.GetAllAsync(
+            new ClassSpec(courseId, byCourse: true, classTypeStr), asNoTracking: true);
+
+        foreach (var cls in existing)
+        {
+            if (excludeClassId.HasValue && cls.ClassId == excludeClassId.Value)
+                continue;
+            if (cls.Day != day.Value || cls.StartTime == null || cls.EndTime == null)
+                continue;
+
+            if (startTime.Value < cls.EndTime.Value && endTime.Value > cls.StartTime.Value)
+            {
+                var typeName = classTypeStr.ToLower();
+                var dayName = day.Value.ToString();
+                throw new InvalidOperationException(
+                    $"Time conflict: new {typeName} on {dayName} overlaps with an existing {typeName}. Please choose a different time or day.");
+            }
+        }
     }
 
     private static InstructorDto MapInstructorToDto(Instructor instructor)

@@ -1,6 +1,7 @@
 using IntelliCampus.Domain.Constants;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.Domain.Helpers;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
@@ -25,6 +26,7 @@ public class AttendanceExcuseService : IAttendanceExcuseService
     private IGenericRepository<Session, int> Sessions => _unitOfWork.GetRepository<Session, int>();
     private IGenericRepository<Class, int> Classes => _unitOfWork.GetRepository<Class, int>();
     private IGenericRepository<Student, int> Students => _unitOfWork.GetRepository<Student, int>();
+    private IGenericRepository<Attendance, int> Attendances => _unitOfWork.GetRepository<Attendance, int>();
 
     public async Task<AttendanceExcuseDto> SubmitAsync(int studentId, int courseId, SubmitExcuseFormDto dto, CancellationToken ct = default)
     {
@@ -138,6 +140,30 @@ public class AttendanceExcuseService : IAttendanceExcuseService
 
         excuse.Status = status;
         Excuses.Update(excuse);
+
+        if (status == ExcuseStatus.Approved)
+        {
+            var existing = (await Attendances.GetAllAsync(
+                new AttendanceSpec(session.SessionId, new HashSet<int> { excuse.StudentId }),
+                asNoTracking: true)).FirstOrDefault();
+
+            if (existing is not null)
+            {
+                existing.Status = AttendanceStatus.Excused;
+                Attendances.Update(existing);
+            }
+            else
+            {
+                Attendances.Add(new Attendance
+                {
+                    StudentId = excuse.StudentId,
+                    SessionId = session.SessionId,
+                    Status = AttendanceStatus.Excused,
+                    Date = EgyptTime.Now
+                });
+            }
+        }
+
         await _unitOfWork.SaveChangesAsync();
 
         return MapToDto(excuse);

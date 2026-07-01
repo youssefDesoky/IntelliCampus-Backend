@@ -347,7 +347,8 @@ public class AttendanceService : IAttendanceService
             TotalStudents = s.Attendances?.Count ?? 0,
             PresentCount = s.Attendances?
                 .Count(a => a.StudentId == studentId
-                         && (a.Status == AttendanceStatus.Present)) ?? 0
+                         && (a.Status == AttendanceStatus.Present
+                          || a.Status == AttendanceStatus.Excused)) ?? 0
         });
     }
 
@@ -378,10 +379,11 @@ public class AttendanceService : IAttendanceService
             ClassId = s.ClassId,
             ClassName = s.Class?.GroupCode,
             SessionType = s.SessionType,
-            TotalStudents = s.Attendances?.Count ?? 0,
+            TotalStudents = s.Class?.StudentCourses?.Count ?? s.Attendances?.Count ?? 0,
             PresentCount = s.Attendances?
                 .Count(a => a.StudentId == studentId
-                         && (a.Status == AttendanceStatus.Present)) ?? 0
+                         && (a.Status == AttendanceStatus.Present
+                          || a.Status == AttendanceStatus.Excused)) ?? 0
         }).ToList();
         var countSpec = new SessionCountSpec(classIds);
         var totalCount = await Sessions.CountAsync(countSpec);

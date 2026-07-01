@@ -315,7 +315,7 @@ public class GradeService : IGradeService
 
         overallPercent = await ApplyBylawGradeRulesAsync(studentId, courseId,
             assignQuizWeight, midtermWeight, finalWeight,
-            assignQuizContrib, midtermContrib, finalContrib, overallPercent);
+            aC + qC, mC, fC, overallPercent);
 
         var (letter, gpa) = await ResolveGradeScaleAsync(studentId, overallPercent);
 
@@ -1235,7 +1235,7 @@ public class GradeService : IGradeService
                 student.Bylaw.Settings, student.Bylaw.GradeScales,
                 failedCourseStudentIds, courseId,
                 assignQuizWeight, midtermWeight, finalWeight,
-                assignQuizContrib, midtermContrib, finalContrib, overallDecimal);
+                aC + qC, mC, fC, overallDecimal);
         }
 
         var overallPercent = Math.Round((double)overallDecimal, 0);
@@ -1469,54 +1469,74 @@ public class GradeService : IGradeService
         var allComplaints = await Complaints.GetAllAsync(
             new GradeComplaintSpec(courseId, byCourse: true, unused: true), asNoTracking: true);
 
-        var assignmentComplaints = new List<GradeComplaint>();
-        var quizComplaints = new List<GradeComplaint>();
-        var gradeComplaints = new List<GradeComplaint>();
         var allStudentIds = new HashSet<int>();
+        var rawAssignmentComplaints = new List<GradeComplaint>();
+        var rawQuizComplaints = new List<GradeComplaint>();
+        var rawGradeComplaints = new List<GradeComplaint>();
 
         foreach (var c in allComplaints)
         {
             allStudentIds.Add(c.StudentId);
             switch (c.ComplaintType.ToLowerInvariant())
             {
-                case "assignment": assignmentComplaints.Add(c); break;
-                case "quiz": quizComplaints.Add(c); break;
-                default: gradeComplaints.Add(c); break;
+                case "assignment": rawAssignmentComplaints.Add(c); break;
+                case "quiz": rawQuizComplaints.Add(c); break;
+                default: rawGradeComplaints.Add(c); break;
             }
         }
 
         var studentMap = (await Students.GetAllAsync(new StudentSpec(allStudentIds.ToList(), lightweight: true), asNoTracking: true))
             .ToDictionary(s => s.UserId, s => s.User.FullName);
 
-        var assignmentPks = assignmentComplaints.Select(c => c.GradeId).ToList();
+        // --- Filter assignment complaints by course ---
+        var assignmentComplaints = new List<GradeComplaint>();
         var submissions = new List<StudentAssignment>();
         var assignTitles = new Dictionary<int, string>();
+        var assignmentPks = rawAssignmentComplaints.Select(c => c.GradeId).ToList();
         if (assignmentPks.Count > 0)
         {
             submissions = (await StudentAssignments.GetAllAsync(
                 new StudentAssignmentSpec(assignmentPks, "batch"), asNoTracking: true)).ToList();
             var assignIds = submissions.Select(s => s.AssignmentId).ToHashSet();
-            var assignments = await Assignments.GetAllAsync(new AssignmentSpec(assignIds.ToList()), asNoTracking: true);
+            var assignments = await Assignments.GetAllAsync(new AssignmentSpec(assignIds.ToList(), byIds: true), asNoTracking: true);
             var assignById = assignments.ToDictionary(a => a.AssignmentId);
+            var courseAssignIds = assignments.Where(a => a.CourseId == courseId).Select(a => a.AssignmentId).ToHashSet();
             foreach (var s in submissions)
+            {
+                if (!courseAssignIds.Contains(s.AssignmentId)) continue;
                 if (assignById.TryGetValue(s.AssignmentId, out var a))
                     assignTitles[s.StudentAssignmentId] = a.Title;
+            }
+            var validPks = assignTitles.Keys.ToHashSet();
+            assignmentComplaints = rawAssignmentComplaints.Where(c => validPks.Contains(c.GradeId)).ToList();
         }
 
-        var quizPks = quizComplaints.Select(c => c.GradeId).ToList();
-        var quizSubmissions = new List<StudentQuiz>();
+        // --- Filter quiz complaints by course ---
+        var quizComplaints = new List<GradeComplaint>();
         var quizTitles = new Dictionary<int, string>();
+        var quizPks = rawQuizComplaints.Select(c => c.GradeId).ToList();
         if (quizPks.Count > 0)
         {
-            var quizzes = await Quizzes.GetAllAsync(new QuizSpec(quizPks), asNoTracking: true);
-            foreach (var q in quizzes)
+            var quizzes = await Quizzes.GetAllAsync(new QuizSpec(quizPks, byIds: true), asNoTracking: true);
+            var courseQuizIds = quizzes.Where(q => q.CourseId == courseId).Select(q => q.QuizId).ToHashSet();
+            foreach (var q in quizzes.Where(q => q.CourseId == courseId))
                 quizTitles[q.QuizId] = q.Title;
+            quizComplaints = rawQuizComplaints.Where(c => courseQuizIds.Contains(c.GradeId)).ToList();
         }
 
-        var gradePks = gradeComplaints.Select(c => c.GradeId).ToList();
+        // --- Filter grade complaints by course ---
+        var gradeComplaints = new List<GradeComplaint>();
         var grades = new List<Grade>();
+        var gradePks = rawGradeComplaints.Select(c => c.GradeId).ToList();
         if (gradePks.Count > 0)
-            grades = (await Grades.GetAllAsync(new GradeSpec(gradePks, true), asNoTracking: true)).ToList();
+        {
+            grades = (await Grades.GetAllAsync(new GradeSpec(gradePks, true), asNoTracking: true))
+                .Where(g => g.CourseId == courseId).ToList();
+            var validGradeIds = grades.Select(g => g.GradeId).ToHashSet();
+            gradeComplaints = rawGradeComplaints.Where(c => validGradeIds.Contains(c.GradeId)).ToList();
+        }
+
+        var quizSubmissions = new List<StudentQuiz>();
 
         return (assignmentComplaints, quizComplaints, gradeComplaints,
                 studentMap, submissions, assignTitles, quizSubmissions, quizTitles, grades);
@@ -1932,26 +1952,43 @@ public class GradeService : IGradeService
         return overallPercent;
     }
 
-    private static (decimal AssignQuizContrib, decimal MidtermContrib, decimal FinalContrib) CalculateWeightedContributions(
+    private async Task<(decimal MidtermW, decimal FinalW, decimal QuizW, decimal AssignW)> ResolveCourseWeightsAsync(int courseId, Grade? midterm, Grade? final)
+    {
+        var existing = (await CourseWorkWeights.GetAllAsync()).FirstOrDefault(w => w.CourseId == courseId);
+        if (existing is not null)
+        {
+            var finalWeight = 100m - existing.QuizWeight - existing.AssignmentWeight - existing.MidtermWeight;
+            if (finalWeight < 0) finalWeight = 0;
+            return (existing.MidtermWeight, finalWeight, existing.QuizWeight, existing.AssignmentWeight);
+        }
+        var midtermW = midterm?.Weight ?? 0;
+        var finalW = final?.Weight ?? 0;
+        var assignQuizW = 100m - midtermW - finalW;
+        if (assignQuizW < 0) assignQuizW = 0;
+        return (midtermW, finalW, assignQuizW / 2, assignQuizW / 2);
+    }
+
+    private static (decimal AssignContrib, decimal QuizContrib, decimal MidtermContrib, decimal FinalContrib) CalculateWeightedContributions(
         decimal assignTotalScore, decimal assignTotalMax,
         decimal quizTotalScore, decimal quizTotalMax,
-        Grade? midterm, Grade? final)
+        decimal midtermScore, decimal midtermMax,
+        decimal finalScore, decimal finalMax,
+        decimal midtermWeight, decimal finalWeight,
+        decimal quizWeight, decimal assignmentWeight)
     {
-        var assignQuizWeight = 100m - (midterm?.Weight ?? 0) - (final?.Weight ?? 0);
-        if (assignQuizWeight < 0) assignQuizWeight = 0;
+        var assignPct = assignTotalMax > 0 ? assignTotalScore / assignTotalMax * 100 : 0;
+        var assignContrib = assignPct * assignmentWeight / 100;
 
-        var assignQuizTotalScore = assignTotalScore + quizTotalScore;
-        var assignQuizTotalMax = assignTotalMax + quizTotalMax;
-        var assignQuizPct = assignQuizTotalMax > 0 ? assignQuizTotalScore / assignQuizTotalMax * 100 : 0;
-        var assignQuizContrib = assignQuizPct * assignQuizWeight / 100;
+        var quizPct = quizTotalMax > 0 ? quizTotalScore / quizTotalMax * 100 : 0;
+        var quizContrib = quizPct * quizWeight / 100;
 
-        var midtermPct = midterm is not null && midterm.MaxScore > 0 ? midterm.Score / midterm.MaxScore * 100 : 0;
-        var midtermContrib = midtermPct * (midterm?.Weight ?? 0) / 100;
+        var midtermPct = midtermMax > 0 ? midtermScore / midtermMax * 100 : 0;
+        var midtermContrib = midtermPct * midtermWeight / 100;
 
-        var finalPct = final is not null && final.MaxScore > 0 ? final.Score / final.MaxScore * 100 : 0;
-        var finalContrib = finalPct * (final?.Weight ?? 0) / 100;
+        var finalPct = finalMax > 0 ? finalScore / finalMax * 100 : 0;
+        var finalContrib = finalPct * finalWeight / 100;
 
-        return (assignQuizContrib, midtermContrib, finalContrib);
+        return (assignContrib, quizContrib, midtermContrib, finalContrib);
     }
 
     private async Task<(string Letter, decimal Gpa)> ResolveGradeScaleAsync(int studentId, decimal percent)
@@ -2014,7 +2051,7 @@ public class GradeService : IGradeService
         {
             var submissions = await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(assignPks, "batch"), asNoTracking: true);
             var assignIds = submissions.Select(s => s.AssignmentId).ToHashSet();
-            var assignments = await Assignments.GetAllAsync(new AssignmentSpec(assignIds.ToList()), asNoTracking: true);
+            var assignments = await Assignments.GetAllAsync(new AssignmentSpec(assignIds.ToList(), byIds: true), asNoTracking: true);
             var titleById = assignments.ToDictionary(a => a.AssignmentId, a => a.Title);
             foreach (var s in submissions)
             {
@@ -2024,7 +2061,7 @@ public class GradeService : IGradeService
 
         if (quizPks.Count > 0)
         {
-            var quizzes = await Quizzes.GetAllAsync(new QuizSpec(quizPks), asNoTracking: true);
+            var quizzes = await Quizzes.GetAllAsync(new QuizSpec(quizPks, byIds: true), asNoTracking: true);
             foreach (var q in quizzes)
             {
                 result[q.QuizId] = q.Title;
@@ -2145,7 +2182,17 @@ public class GradeService : IGradeService
         if (!teaches)
             throw new InvalidOperationException("Not authorized.");
 
-        return new CourseWorkWeightDto { QuizWeight = 0, AssignmentWeight = 0, MidtermWeight = 0 };
+        var existing = await CourseWorkWeights.GetAllAsync();
+        var weight = existing.FirstOrDefault(w => w.CourseId == courseId);
+        if (weight is null)
+            return new CourseWorkWeightDto { QuizWeight = 0, AssignmentWeight = 0, MidtermWeight = 0 };
+
+        return new CourseWorkWeightDto
+        {
+            QuizWeight = weight.QuizWeight,
+            AssignmentWeight = weight.AssignmentWeight,
+            MidtermWeight = weight.MidtermWeight
+        };
     }
 
     public async Task SetCourseWorkWeightAsync(int courseId, int instructorId, CourseWorkWeightDto dto)
@@ -2157,5 +2204,25 @@ public class GradeService : IGradeService
         var teaches = await Classes.AnyAsync(c => c.CourseId == courseId && c.InstructorId == instructorId);
         if (!teaches)
             throw new InvalidOperationException("Not authorized.");
+
+        var existing = (await CourseWorkWeights.GetAllAsync()).FirstOrDefault(w => w.CourseId == courseId);
+        if (existing is not null)
+        {
+            existing.QuizWeight = dto.QuizWeight;
+            existing.AssignmentWeight = dto.AssignmentWeight;
+            existing.MidtermWeight = dto.MidtermWeight;
+            CourseWorkWeights.Update(existing);
+        }
+        else
+        {
+            CourseWorkWeights.Add(new CourseWorkWeight
+            {
+                CourseId = courseId,
+                QuizWeight = dto.QuizWeight,
+                AssignmentWeight = dto.AssignmentWeight,
+                MidtermWeight = dto.MidtermWeight
+            });
+        }
+        await _unitOfWork.SaveChangesAsync();
     }
 }

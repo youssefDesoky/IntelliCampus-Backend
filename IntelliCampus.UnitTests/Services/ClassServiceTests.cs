@@ -18,6 +18,7 @@ public class ClassServiceTests
     private readonly Mock<IGenericRepository<Course, int>> _courseRepoMock;
     private readonly Mock<IGenericRepository<Instructor, int>> _instructorRepoMock;
     private readonly Mock<IGenericRepository<Room, int>> _roomRepoMock;
+    private readonly Mock<IGenericRepository<StudentCourse, (int, int)>> _studentCourseRepoMock;
     private readonly ClassService _sut;
 
     public ClassServiceTests()
@@ -28,11 +29,13 @@ public class ClassServiceTests
         _courseRepoMock = new Mock<IGenericRepository<Course, int>>();
         _instructorRepoMock = new Mock<IGenericRepository<Instructor, int>>();
         _roomRepoMock = new Mock<IGenericRepository<Room, int>>();
+        _studentCourseRepoMock = new Mock<IGenericRepository<StudentCourse, (int, int)>>();
 
         _unitOfWorkMock.Setup(u => u.GetRepository<Class, int>()).Returns(_classRepoMock.Object);
         _unitOfWorkMock.Setup(u => u.GetRepository<Course, int>()).Returns(_courseRepoMock.Object);
         _unitOfWorkMock.Setup(u => u.GetRepository<Instructor, int>()).Returns(_instructorRepoMock.Object);
         _unitOfWorkMock.Setup(u => u.GetRepository<Room, int>()).Returns(_roomRepoMock.Object);
+        _unitOfWorkMock.Setup(u => u.GetRepository<StudentCourse, (int, int)>()).Returns(_studentCourseRepoMock.Object);
 
         _sut = new ClassService(_unitOfWorkMock.Object);
     }
@@ -167,11 +170,11 @@ public class ClassServiceTests
         var course = TestDataFactory.CourseFaker.Generate();
 
         _courseRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Course>>())).ReturnsAsync(course);
-        _classRepoMock.Setup(r => r.CountAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Class, bool>>>())).ReturnsAsync(1);
+        _classRepoMock.Setup(r => r.CountAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Class, bool>>>())).ReturnsAsync(2);
 
         await _sut.Invoking(s => s.CreateAsync(dto))
             .Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("A lecture class already exists for this course. Only one lecture is allowed per course.");
+            .WithMessage("Maximum of two lectures allowed per course.");
 
         _courseRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<ISpecifications<Course>>()), Times.Once);
         _classRepoMock.Verify(r => r.CountAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Class, bool>>>()), Times.Once);
@@ -185,6 +188,7 @@ public class ClassServiceTests
         var classEntity = TestDataFactory.ClassFaker.Generate();
 
         _classRepoMock.Setup(r => r.GetByIdAsync(classEntity.ClassId)).ReturnsAsync(classEntity);
+        _studentCourseRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<StudentCourse>>(), It.IsAny<bool>())).ReturnsAsync([]);
         _classRepoMock.Setup(r => r.Delete(classEntity));
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
 
@@ -280,11 +284,11 @@ public class ClassServiceTests
         var course = TestDataFactory.CourseFaker.Generate();
 
         _courseRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Course>>())).ReturnsAsync(course);
-        _classRepoMock.Setup(r => r.CountAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Class, bool>>>())).ReturnsAsync(1);
+        _classRepoMock.Setup(r => r.CountAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Class, bool>>>())).ReturnsAsync(2);
 
         await _sut.Invoking(s => s.CreateLectureAsync(dto))
             .Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("A lecture class already exists for this course.");
+            .WithMessage("Maximum of two lectures allowed per course.");
 
         _courseRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<ISpecifications<Course>>()), Times.Once);
         _classRepoMock.Verify(r => r.CountAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Class, bool>>>()), Times.Once);
