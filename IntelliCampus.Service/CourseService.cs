@@ -39,11 +39,17 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     private IGenericRepository<CoursePrerequisite, int> Prerequisites
         => _unitOfWork.GetRepository<CoursePrerequisite, int>();
 
+    private IGenericRepository<Grade, int> GradesRepo
+        => _unitOfWork.GetRepository<Grade, int>();
+
     private IGenericRepository<Student, int> Students
         => _unitOfWork.GetRepository<Student, int>();
 
     private IGenericRepository<Instructor, int> Instructors
         => _unitOfWork.GetRepository<Instructor, int>();
+
+    private IGenericRepository<BylawCourse, int> BylawCourses
+        => _unitOfWork.GetRepository<BylawCourse, int>();
 
     public async Task<CourseDto?> GetByIdAsync(int courseId)
     {
@@ -79,6 +85,32 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
     }
 
+    public async Task<PaginatedResult<CourseDto>> GetActiveCoursesByStudentBylawAsync(int studentId, CourseQueryParams queryParams)
+    {
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var bylawId = student.BylawId;
+        if (bylawId is null)
+            return new PaginatedResult<CourseDto>(queryParams.PageIndex, 0, 0, new List<CourseDto>());
+
+        var bylawCourseIds = (await BylawCourses.GetAllAsync(new BylawCourseSpec(bylawId.Value, false), asNoTracking: true))
+            .Select(bc => bc.CourseId)
+            .Distinct()
+            .ToList();
+
+        if (bylawCourseIds.Count == 0)
+            return new PaginatedResult<CourseDto>(queryParams.PageIndex, 0, 0, new List<CourseDto>());
+
+        queryParams.IsActiveOnly = true;
+        var spec = new CourseSpec(bylawCourseIds, queryParams, CourseIncludeLevel.Light);
+        var courses = await Courses.GetAllAsync(spec, asNoTracking: true);
+        var dataToReturn = courses.Select(c => MapToDto(c)).ToList();
+
+        return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, bylawCourseIds.Count, dataToReturn);
+    }
+
     public async Task<PaginatedResult<CourseDto>> GetCoursesByStudentIdAsync(CourseQueryParams queryParams)
     {
         var studentId = queryParams.StudentId ?? throw new ArgumentNullException(nameof(queryParams.StudentId));
@@ -94,6 +126,76 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         var totalCount = await Courses.CountAsync(countSpec);
 
         return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
+    }
+
+    public async Task<PaginatedResult<CourseDto>> GetCoursesByStudentBylawAsync(CourseQueryParams queryParams)
+    {
+        var studentId = queryParams.StudentId ?? throw new ArgumentNullException(nameof(queryParams.StudentId));
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var bylawId = student.BylawId;
+        if (bylawId is null)
+            return new PaginatedResult<CourseDto>(queryParams.PageIndex, 0, 0, new List<CourseDto>());
+
+        var bylawCourseIds = (await BylawCourses.GetAllAsync(new BylawCourseSpec(bylawId.Value, false), asNoTracking: true))
+            .Select(bc => bc.CourseId)
+            .Distinct()
+            .ToList();
+
+        if (bylawCourseIds.Count == 0)
+            return new PaginatedResult<CourseDto>(queryParams.PageIndex, 0, 0, new List<CourseDto>());
+
+        var gradeScales = student.Bylaw?.GradeScales;
+        var courses = await Courses.GetAllAsync(new CourseSpec(bylawCourseIds, queryParams, CourseIncludeLevel.Student), asNoTracking: true);
+        var dataToReturn = courses.Select(c => MapToDto(c, studentId, gradeScales)).ToList();
+
+        return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, bylawCourseIds.Count, dataToReturn);
+    }
+
+    public async Task<StudentAllCoursesDto> GetAllStudentCoursesAsync(int studentId)
+    {
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }, lightweight: true));
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var gradeScales = student.Bylaw?.GradeScales;
+
+        var allStudentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(studentId), asNoTracking: true)).ToList();
+        var courseIds = allStudentCourses.Select(sc => sc.CourseId).Distinct().ToList();
+        if (courseIds.Count == 0)
+            return new StudentAllCoursesDto();
+
+        var queryParams = new CourseQueryParams { PageSize = courseIds.Count };
+        var courses = await Courses.GetAllAsync(new CourseSpec(courseIds, queryParams, CourseIncludeLevel.Light), asNoTracking: true);
+        var courseDict = courses.ToDictionary(c => c.CourseId);
+
+        var allGrades = (await GradesRepo.GetAllAsync(new GradeSpec(studentId), asNoTracking: true))
+            .GroupBy(g => g.CourseId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        var inProgress = new List<CourseDto>();
+        var completed = new List<CourseDto>();
+
+        foreach (var sc in allStudentCourses)
+        {
+            if (!courseDict.TryGetValue(sc.CourseId, out var course)) continue;
+
+            var courseGrades = allGrades.GetValueOrDefault(sc.CourseId) ?? [];
+            var dto = MapToDto(course, studentId, gradeScales, courseGrades, sc);
+
+            if (sc.Status is StudentCourseStatus.Registered or StudentCourseStatus.InProgress)
+                inProgress.Add(dto);
+            else
+                completed.Add(dto);
+        }
+
+        return new StudentAllCoursesDto
+        {
+            InProgress = inProgress,
+            Completed = completed
+        };
     }
 
     public async Task<PaginatedResult<CourseDto>> GetCoursesByInstructorIdAsync(CourseQueryParams queryParams)
@@ -249,6 +351,46 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         return new PaginatedResult<CoursePrerequisiteDto>(queryParams.PageIndex, items.Count, totalCount, items);
     }
 
+    public async Task<PaginatedResult<CoursePrerequisiteDto>> GetAllWithPrerequisitesByStudentBylawAsync(int studentId, CourseQueryParams queryParams)
+    {
+        var student = await Students.GetByIdAsync(new StudentSpec(new CourseQueryParams { StudentId = studentId }));
+        if (student is null)
+            throw new StudentNotFoundException(studentId);
+
+        var bylawId = student.BylawId;
+        if (bylawId is null)
+            return new PaginatedResult<CoursePrerequisiteDto>(queryParams.PageIndex, 0, 0, new List<CoursePrerequisiteDto>());
+
+        var bylawCourseIds = (await BylawCourses.GetAllAsync(new BylawCourseSpec(bylawId.Value, false), asNoTracking: true))
+            .Select(bc => bc.CourseId)
+            .Distinct()
+            .ToList();
+
+        if (bylawCourseIds.Count == 0)
+            return new PaginatedResult<CoursePrerequisiteDto>(queryParams.PageIndex, 0, 0, new List<CoursePrerequisiteDto>());
+
+        var spec = new CourseSpec(bylawCourseIds, queryParams, CourseIncludeLevel.Light);
+        var courses = await Courses.GetAllAsync(spec, asNoTracking: true);
+        var dataToReturn = courses.Select(c => new CoursePrerequisiteDto
+        {
+            CourseId = c.CourseId,
+            CourseName = c.CourseName,
+            CourseCode = c.CourseCode,
+            CreditHours = c.CreditHours,
+            Prerequisites = c.Prerequisites?
+                .Select(p => p.PrerequisiteCourse)
+                .Where(p => p is not null)
+                .Select(p => new PrerequisiteItemDto
+                {
+                    Code = p!.CourseCode ?? p.CourseId.ToString(),
+                    Title = p.CourseName
+                })
+                .ToList() ?? []
+        });
+        var items = dataToReturn.ToList();
+        return new PaginatedResult<CoursePrerequisiteDto>(queryParams.PageIndex, items.Count, bylawCourseIds.Count, items);
+    }
+
     public async Task<IEnumerable<CoursePrerequisiteDto>?> GetPrerequisitesAsync(int courseId)
     {
         var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
@@ -377,16 +519,16 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         {
             StudentId = student.UserId,
             UserId = student.UserId,
-            NationalId = student.NationalId,
-            FullName = student.FullName,
-            FullNameAr = student.FullNameAr,
-            PhoneNumber = student.PhoneNumber,
-            Email = student.Email,
-            Address = student.Address,
-            Nationality = student.Nationality,
+            NationalId = student.User.NationalId,
+            FullName = student.User.FullName,
+            FullNameAr = student.User.FullNameAr,
+            PhoneNumber = student.User.PhoneNumber,
+            Email = student.User.Email,
+            Address = student.User.Address,
+            Nationality = student.User.Nationality,
             StudentCode = student.StudentCode,
-            FacultyId = student.FacultyId,
-            FacultyName = student.Faculty?.FacultyName,
+            FacultyId = student.User.FacultyId,
+            FacultyName = student.User.Faculty?.FacultyName,
             Level = student.Level,
             DepartmentId = student.DepartmentId,
             DepartmentName = student.Department?.DepartmentName,
@@ -398,8 +540,8 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             SpecializationId = student.SpecializationId,
             SpecializationName = student.Specialization?.Name,
             StudentType = student.StudentType,
-            ProfileImage = _urlResolver.ResolveProfile(student.ProfileImage),
-            Roles = student.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
+            ProfileImage = _urlResolver.ResolveProfile(student.User.ProfileImage),
+            Roles = student.User.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }
 
@@ -439,17 +581,18 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         return string.Concat(parts.Select(p => char.ToUpperInvariant(p[0])));
     }
 
-    private static CourseDto MapToDto(Course course, int? studentId = null, List<GradeScaleItem>? gradeScales = null)
+    private static CourseDto MapToDto(Course course, int? studentId = null, List<GradeScaleItem>? gradeScales = null,
+        List<Grade>? preloadedGrades = null, StudentCourse? preloadedStudentCourse = null)
     {
         var currentSemester = SemesterHelper.GetCurrentSemester();
 
         var (_, _, attendancePercent) = ComputeAttendanceData(course, studentId);
-        var (avgGrade, gradeLetter, courseWork) = ComputeCourseGradeData(course, studentId, gradeScales);
+        var (avgGrade, gradeLetter, courseWork) = ComputeCourseGradeData(course, studentId, gradeScales, preloadedGrades);
         var (schedule, room) = BuildScheduleInfo(course);
-        var (classId, className, studentCourseStatusName) = GetStudentCourseInfo(course, studentId);
+        var (classId, className, studentCourseStatusName) = GetStudentCourseInfo(course, studentId, preloadedStudentCourse);
 
         var lectureClass = course.Classes?.FirstOrDefault(cl => cl.ClassType == ClassType.Lecture);
-        var numStudents = course.StudentCourses?.Count ?? 0;
+        var numStudents = preloadedStudentCourse is not null ? 0 : (course.StudentCourses?.Count ?? 0);
 
         var allSessions = course.Classes?.SelectMany(cl => cl.Sessions) ?? [];
         var now = EgyptTime.Now;
@@ -493,7 +636,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             ClassName = className,
             IsElective = course.ElectiveBucketCourses?.Count > 0,
             StudentCourseStatusName = studentCourseStatusName,
-            ProfessorName = lectureClass?.Instructor?.FullName,
+            ProfessorName = lectureClass?.Instructor?.User?.FullName,
             RegistrationStartDate = course.RegistrationStartDate,
             RegistrationEndDate = course.RegistrationEndDate,
             AllowedLevels = course.AllowedLevels is not null
@@ -525,10 +668,10 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     }
 
     private static (decimal? AvgGrade, string? GradeLetter, decimal? CourseWork) ComputeCourseGradeData(
-        Course course, int? studentId, List<GradeScaleItem>? gradeScales)
+        Course course, int? studentId, List<GradeScaleItem>? gradeScales, List<Grade>? preloadedGrades = null)
     {
-        var courseGrades = course.Grades ?? [];
-        if (studentId.HasValue)
+        var courseGrades = preloadedGrades ?? (course.Grades ?? []);
+        if (studentId.HasValue && preloadedGrades is null)
             courseGrades = courseGrades.Where(g => g.StudentId == studentId.Value).ToList();
 
         decimal? avgGrade;
@@ -590,14 +733,14 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     }
 
     private static (int? ClassId, string? ClassName, string? StudentCourseStatusName) GetStudentCourseInfo(
-        Course course, int? studentId)
+        Course course, int? studentId, StudentCourse? preloadedStudentCourse = null)
     {
         int? classId = null;
         string? className = null;
         string? studentCourseStatusName = null;
         if (studentId.HasValue)
         {
-            var studentCourse = course.StudentCourses?
+            var studentCourse = preloadedStudentCourse ?? course.StudentCourses?
                 .FirstOrDefault(sc => sc.StudentId == studentId.Value);
             if (studentCourse is not null)
             {

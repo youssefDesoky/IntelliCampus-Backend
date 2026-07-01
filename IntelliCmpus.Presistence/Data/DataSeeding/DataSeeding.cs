@@ -138,10 +138,6 @@ public class DataSeed : IDataSeed
             await SeedAnnouncementCommentsAsync();
             await _dbContext.SaveChangesAsync();
 
-            // Depends on Admin
-            await SeedBroadcastAnnouncementsAsync();
-            await _dbContext.SaveChangesAsync();
-
             // Depends on Courses, Rooms
             await SeedExamsAsync();
             await _dbContext.SaveChangesAsync();
@@ -259,7 +255,8 @@ public class DataSeed : IDataSeed
     {
         foreach (var roleName in roleNames)
         {
-            if (_roleCache.TryGetValue(roleName, out var role))
+            if (_roleCache.TryGetValue(roleName, out var role)
+                && !user.UserRoles.Any(ur => ur.RoleId == role.RoleId))
             {
                 user.UserRoles.Add(new UserRoleJunction
                 {
@@ -404,10 +401,9 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Admins.AnyAsync()) return;
         var items = await ReadJsonAsync<AdminDto>("admin.json");
-        var created = new List<(AdminDto, Admin)>();
         foreach (var dto in items)
         {
-            var entity = new Admin
+            var user = new User
             {
                 NationalId = dto.NationalId,
                 FullName = dto.FullName,
@@ -419,17 +415,20 @@ public class DataSeed : IDataSeed
                 Password = _passwordService.HashPassword(dto.Password),
                 MustChangePassword = true,
                 FacultyId = _facultyId,
+            };
+            _dbContext.Users.Add(user);
+            await _dbContext.SaveChangesAsync();
+
+            var entity = new Admin
+            {
+                User = user,
                 AdminCode = dto.AdminCode,
                 HireDate = EgyptTime.Now
             };
             _dbContext.Admins.Add(entity);
-            created.Add((dto, entity));
-        }
-        await _dbContext.SaveChangesAsync();
-        foreach (var (dto, entity) in created)
-        {
-            await AddUserRolesAsync(entity, dto.Roles);
-            _userIds[dto.Email] = entity.UserId;
+
+            await AddUserRolesAsync(user, dto.Roles);
+            _userIds[dto.Email] = user.UserId;
         }
         await _dbContext.SaveChangesAsync();
     }
@@ -440,21 +439,34 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Instructors.AnyAsync()) return;
         var items = await ReadJsonAsync<InstructorDto>("instructors.json");
-        var created = new List<(InstructorDto, Instructor)>();
         foreach (var dto in items)
         {
+            User? user = null;
+            if (_userIds.TryGetValue(dto.Email, out var existingUserId))
+                user = await _dbContext.Users.FindAsync(existingUserId);
+
+            if (user is null)
+            {
+                user = new User
+                {
+                    NationalId = dto.NationalId,
+                    FullName = dto.FullName,
+                    FullNameAr = dto.FullNameAr,
+                    Email = dto.Email,
+                    PhoneNumber = dto.PhoneNumber,
+                    Address = dto.Address,
+                    Nationality = dto.Nationality,
+                    Password = _passwordService.HashPassword(dto.Password),
+                    MustChangePassword = true,
+                    FacultyId = _facultyId,
+                };
+                _dbContext.Users.Add(user);
+                await _dbContext.SaveChangesAsync();
+            }
+
             var entity = new Instructor
             {
-                NationalId = dto.NationalId,
-                FullName = dto.FullName,
-                FullNameAr = dto.FullNameAr,
-                Email = dto.Email,
-                PhoneNumber = dto.PhoneNumber,
-                Address = dto.Address,
-                Nationality = dto.Nationality,
-                Password = _passwordService.HashPassword(dto.Password),
-                MustChangePassword = true,
-                FacultyId = _facultyId,
+                User = user,
                 InstructorCode = dto.InstructorCode,
                 InstructorRole = Enum.Parse<InstructorRole>(dto.InstructorRole),
                 Specialization = dto.Specialization,
@@ -463,13 +475,9 @@ public class DataSeed : IDataSeed
                 Status = !string.IsNullOrEmpty(dto.Status) && Enum.TryParse<InstructorStatus>(dto.Status, true, out var status) ? status : InstructorStatus.Employed
             };
             _dbContext.Instructors.Add(entity);
-            created.Add((dto, entity));
-        }
-        await _dbContext.SaveChangesAsync();
-        foreach (var (dto, entity) in created)
-        {
-            await AddUserRolesAsync(entity, dto.Roles);
-            _userIds[dto.Email] = entity.UserId;
+
+            await AddUserRolesAsync(user, dto.Roles);
+            _userIds[dto.Email] = user.UserId;
         }
         await _dbContext.SaveChangesAsync();
     }
@@ -677,7 +685,6 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Students.AnyAsync()) return;
         var items = await ReadJsonAsync<StudentDto>("students.json");
-        var created = new List<(StudentDto, Student)>();
         foreach (var dto in items)
         {
             var studentType = Enum.TryParse<StudentType>(dto.StudentType, out var st) ? st : StudentType.Bachelor;
@@ -689,19 +696,34 @@ public class DataSeed : IDataSeed
                 StudentType.Diploma => "Diploma",
                 _ => "Bachelor"
             };
+
+            User? user = null;
+            if (_userIds.TryGetValue(dto.Email, out var existingUserId))
+                user = await _dbContext.Users.FindAsync(existingUserId);
+
+            if (user is null)
+            {
+                user = new User
+                {
+                    NationalId = dto.NationalId,
+                    FullName = dto.FullName,
+                    FullNameAr = dto.FullNameAr,
+                    Email = dto.Email,
+                    PhoneNumber = dto.PhoneNumber,
+                    Address = dto.Address,
+                    Nationality = dto.Nationality,
+                    Password = _passwordService.HashPassword(dto.Password),
+                    MustChangePassword = true,
+                    FacultyId = _facultyId,
+                };
+                _dbContext.Users.Add(user);
+                await _dbContext.SaveChangesAsync();
+            }
+
             var entity = new Student
             {
-                NationalId = dto.NationalId,
+                User = user,
                 StudentCode = dto.StudentCode,
-                FullName = dto.FullName,
-                FullNameAr = dto.FullNameAr,
-                Email = dto.Email,
-                PhoneNumber = dto.PhoneNumber,
-                Address = dto.Address,
-                Nationality = dto.Nationality,
-                Password = _passwordService.HashPassword(dto.Password),
-                MustChangePassword = true,
-                FacultyId = _facultyId,
                 Level = dto.Level,
                 DepartmentId = dto.DepartmentName != null ? _departmentIds.GetValueOrDefault(dto.DepartmentName) : null,
                 BylawId = _bylawIdsByType.GetValueOrDefault(bylawTypeName),
@@ -712,13 +734,9 @@ public class DataSeed : IDataSeed
                 Program = Enum.TryParse<StudentProgram>(dto.Program, out var prog) ? prog : null
             };
             _dbContext.Students.Add(entity);
-            created.Add((dto, entity));
-        }
-        await _dbContext.SaveChangesAsync();
-        foreach (var (dto, entity) in created)
-        {
-            await AddUserRolesAsync(entity, dto.Roles);
-            _userIds[dto.Email] = entity.UserId;
+
+            await AddUserRolesAsync(user, dto.Roles);
+            _userIds[dto.Email] = user.UserId;
         }
         await _dbContext.SaveChangesAsync();
     }
@@ -826,10 +844,30 @@ public class DataSeed : IDataSeed
     {
         if (await _dbContext.Schedules.AnyAsync()) return;
         var currentSemester = SemesterHelper.GetCurrentSemester();
-        var studentCourses = await _dbContext.Set<StudentCourse>()
+
+        var students = await _dbContext.Students.ToListAsync();
+        var studentBylawMap = students.ToDictionary(s => s.UserId, s => s.BylawId);
+        var bylawIds = students.Where(s => s.BylawId.HasValue).Select(s => s.BylawId!.Value).Distinct().ToList();
+        var bylawCourseGroups = await _dbContext.Set<BylawCourse>()
+            .Where(bc => bylawIds.Contains(bc.BylawId))
+            .ToListAsync();
+        var bylawCourseSet = bylawCourseGroups
+            .GroupBy(bc => bc.BylawId)
+            .ToDictionary(g => g.Key, g => g.Select(bc => bc.CourseId).ToHashSet());
+
+        var studentCourses = (await _dbContext.Set<StudentCourse>()
             .Where(sc => sc.Semester == currentSemester)
             .Include(sc => sc.Course)
-            .ToListAsync();
+            .ToListAsync())
+            .Where(sc =>
+            {
+                if (!studentBylawMap.TryGetValue(sc.StudentId, out var bylawId) || bylawId is null)
+                    return true;
+                if (!bylawCourseSet.TryGetValue(bylawId.Value, out var courseIds))
+                    return false;
+                return courseIds.Contains(sc.CourseId);
+            })
+            .ToList();
         var allClasses = await _dbContext.Classes.Include(c => c.Instructor).ToListAsync();
         var schedules = new List<Schedule>();
         var scheduledSlots = new List<(int StudentId, DayOfWeekEnum Day, TimeSpan StartTime, TimeSpan EndTime)>();
@@ -874,7 +912,7 @@ public class DataSeed : IDataSeed
                     ClassType.Lab => ScheduleType.Activity,
                     _ => ScheduleType.Lecture
                 },
-                InstructorName = cls.Instructor?.FullName,
+                InstructorName = cls.Instructor?.User?.FullName,
                 CourseId = sc.CourseId,
                 ClassId = sc.ClassId,
                 StudentId = sc.StudentId
@@ -1356,23 +1394,6 @@ public class DataSeed : IDataSeed
 
     // ---- Broadcast Announcements ----
 
-    private async Task SeedBroadcastAnnouncementsAsync()
-    {
-        if (await _dbContext.BroadcastAnnouncements.AnyAsync()) return;
-        var items = await ReadJsonAsync<BroadcastAnnouncementSeedDto>("broadcast-announcements.json");
-        foreach (var dto in items)
-        {
-            var senderId = _userIds.GetValueOrDefault(dto.SenderEmail);
-            if (senderId == 0) continue;
-            _dbContext.BroadcastAnnouncements.Add(new BroadcastAnnouncement
-            {
-                SenderId = senderId,
-                Title = dto.Title,
-                CreatedAt = ParseDateOffset(dto.CreatedAtOffset)
-            });
-        }
-    }
-
     // ---- Sessions ----
 
     private async Task SeedSessionsAsync()
@@ -1699,13 +1720,6 @@ public class DataSeed : IDataSeed
         public string Content { get; init; } = "";
         public string CreatedAtOffset { get; init; } = "";
         public string UpdatedAtOffset { get; init; } = "";
-    }
-
-    private record BroadcastAnnouncementSeedDto
-    {
-        public string SenderEmail { get; init; } = "";
-        public string Title { get; init; } = "";
-        public string CreatedAtOffset { get; init; } = "";
     }
 
     private record ExamDto

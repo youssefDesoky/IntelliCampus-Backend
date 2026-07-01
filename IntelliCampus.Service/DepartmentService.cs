@@ -211,7 +211,7 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
             Description = department.Description,
             DescriptionAr = department.DescriptionAr,
             InstructorId = department.InstructorId,
-            HeadInstructorName = department.HeadInstructor?.FullName,
+            HeadInstructorName = department.HeadInstructor?.User?.FullName,
             FacultyId = department.FacultyId,
             FacultyName = department.Faculty?.FacultyName,
             MaxCapacity = department.MaxCapacity

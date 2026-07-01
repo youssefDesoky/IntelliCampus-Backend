@@ -10,8 +10,8 @@ namespace IntelliCampus.Service.Specifications
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
-        AddInclude(i => i.Faculty!);
-        AddInclude("UserRoles.Role");
+        AddInclude(i => i.User.Faculty!);
+        AddInclude("User.UserRoles.Role");
         EnableSplitQuery();
     }
 
@@ -20,7 +20,7 @@ namespace IntelliCampus.Service.Specifications
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
-        AddInclude("UserRoles.Role");
+        AddInclude("User.UserRoles.Role");
         EnableSplitQuery();
     }
 
@@ -29,8 +29,8 @@ namespace IntelliCampus.Service.Specifications
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
-        AddInclude(i => i.Faculty!);
-        AddInclude("UserRoles.Role");
+        AddInclude(i => i.User.Faculty!);
+        AddInclude("User.UserRoles.Role");
         EnableSplitQuery();
     }
 
@@ -39,23 +39,23 @@ namespace IntelliCampus.Service.Specifications
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
-        AddInclude("UserRoles.Role");
+        AddInclude("User.UserRoles.Role");
         EnableSplitQuery();
-        AddOrderBy(i => i.FullName);
+        AddOrderBy(i => i.User.FullName);
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 
     public InstructorSpec(InstructorQueryParams queryParams)
         : base(i =>
             (!queryParams.DepartmentId.HasValue || i.DepartmentId == queryParams.DepartmentId.Value) &&
-            (!queryParams.FacultyId.HasValue || i.FacultyId == queryParams.FacultyId.Value))
+            (!queryParams.FacultyId.HasValue || i.User.FacultyId == queryParams.FacultyId.Value))
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
-        AddInclude(i => i.Faculty!);
-        AddInclude("UserRoles.Role");
+        AddInclude(i => i.User.Faculty!);
+        AddInclude("User.UserRoles.Role");
         EnableSplitQuery();
-        AddOrderBy(i => i.FullName);
+        AddOrderBy(i => i.User.FullName);
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
 }

@@ -71,7 +71,7 @@ public class InstructorScheduleServiceTests
         dto.EndTime.Should().NotBeNullOrEmpty();
         dto.Location.Should().Be("Room A");
         dto.Type.Should().Be("lecture");
-        dto.Instructor.Should().Be(instructor.FullName);
+        dto.Instructor.Should().Be(instructor.User.FullName);
         dto.CourseId.Should().Be(1);
         dto.CourseName.Should().Be("Math 101");
 
@@ -159,18 +159,19 @@ public class InstructorScheduleServiceTests
         {
             ClassId = 1,
             CourseId = 1,
+            InstructorId = 1,
             ClassType = ClassType.Lecture,
             Day = DayOfWeekEnum.Wednesday,
             StartTime = TimeSpan.FromHours(10),
             EndTime = TimeSpan.FromHours(11),
             Room = "Room B",
-            Instructor = new Instructor { UserId = 1, FullName = "Dr. Smith" },
+            Instructor = new Instructor { UserId = 1, User = new User { FullName = "Dr. Smith" } },
             Course = new Course { CourseId = 1, CourseName = "Physics" }
         };
 
         _classRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Class>>())).ReturnsAsync(classEntity);
 
-        var result = await _sut.GetScheduleByIdAsync(1);
+        var result = await _sut.GetScheduleByIdAsync(1, 1);
 
         result.ScheduleId.Should().Be(1);
         result.Title.Should().Be("Physics");
@@ -191,7 +192,25 @@ public class InstructorScheduleServiceTests
     {
         _classRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Class>>())).ReturnsAsync((Class?)null);
 
-        await _sut.Invoking(s => s.GetScheduleByIdAsync(999)).Should().ThrowAsync<ClassNotFoundException>();
+        await _sut.Invoking(s => s.GetScheduleByIdAsync(999, 1)).Should().ThrowAsync<ClassNotFoundException>();
+
+        _classRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<ISpecifications<Class>>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetScheduleByIdAsync_NotOwned_ThrowsUnauthorizedAccessException()
+    {
+        var classEntity = new Class
+        {
+            ClassId = 1,
+            CourseId = 1,
+            InstructorId = 2,
+            ClassType = ClassType.Lecture
+        };
+
+        _classRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Class>>())).ReturnsAsync(classEntity);
+
+        await _sut.Invoking(s => s.GetScheduleByIdAsync(1, 1)).Should().ThrowAsync<UnauthorizedAccessException>();
 
         _classRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<ISpecifications<Class>>()), Times.Once);
     }
@@ -199,20 +218,22 @@ public class InstructorScheduleServiceTests
     [Fact]
     public async Task GetScheduleByIdAsync_NullTimes_ReturnsEmptyTimeStrings()
     {
+        var instructor = TestDataFactory.InstructorFaker.Generate();
         var classEntity = new Class
         {
             ClassId = 1,
+            InstructorId = instructor.UserId,
             ClassType = ClassType.Lecture,
             Day = DayOfWeekEnum.Monday,
             StartTime = null,
             EndTime = null,
-            Instructor = TestDataFactory.InstructorFaker.Generate(),
+            Instructor = instructor,
             Course = TestDataFactory.CourseFaker.Generate()
         };
 
         _classRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Class>>())).ReturnsAsync(classEntity);
 
-        var result = await _sut.GetScheduleByIdAsync(1);
+        var result = await _sut.GetScheduleByIdAsync(1, instructor.UserId);
 
         result.StartTime.Should().BeEmpty();
         result.EndTime.Should().BeEmpty();
@@ -238,7 +259,7 @@ public class InstructorScheduleServiceTests
                 Course = new Course { CourseId = 1, CourseName = "Math" }
             }
         };
-        var instructorDto = new InstructorDto { FullName = instructor.FullName, InstructorCode = "INST001" };
+        var instructorDto = new InstructorDto { FullName = instructor.User.FullName, InstructorCode = "INST001" };
         var pdfBytes = new byte[] { 0x25, 0x50, 0x44, 0x46 };
 
         _instructorRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Instructor>>())).ReturnsAsync(instructor);
@@ -274,7 +295,7 @@ public class InstructorScheduleServiceTests
     public async Task ExportSchedulePdfAsync_EmptySchedule_ReturnsPdfBytes()
     {
         var instructor = TestDataFactory.InstructorFaker.Generate();
-        var instructorDto = new InstructorDto { FullName = instructor.FullName, InstructorCode = "INST001" };
+        var instructorDto = new InstructorDto { FullName = instructor.User.FullName, InstructorCode = "INST001" };
         var pdfBytes = new byte[] { 0x25, 0x50, 0x44, 0x46 };
 
         _instructorRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Instructor>>())).ReturnsAsync(instructor);

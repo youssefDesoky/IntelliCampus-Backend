@@ -13,7 +13,9 @@ public interface ICourseService
     Task<CourseDto?> GetByIdAsync(int courseId);
     Task<PaginatedResult<CourseDto>> GetAllAsync(CourseQueryParams queryParams);
     Task<PaginatedResult<CourseDto>> GetActiveCoursesAsync(CourseQueryParams queryParams);
+    Task<PaginatedResult<CourseDto>> GetActiveCoursesByStudentBylawAsync(int studentId, CourseQueryParams queryParams);
     Task<PaginatedResult<CourseDto>> GetCoursesByStudentIdAsync(CourseQueryParams queryParams);
+    Task<PaginatedResult<CourseDto>> GetCoursesByStudentBylawAsync(CourseQueryParams queryParams);
     Task<PaginatedResult<CourseDto>> GetCoursesByInstructorIdAsync(CourseQueryParams queryParams);
     Task<CourseDto> CreateAsync(CreateCourseDto dto);
     Task<CourseDto?> UpdateAsync(int courseId, CreateCourseDto dto);
@@ -22,8 +24,10 @@ public interface ICourseService
     Task<bool> DeleteAsync(int courseId);
     Task<IEnumerable<CoursePrerequisiteDto>?> GetPrerequisitesAsync(int courseId);
     Task<PaginatedResult<CoursePrerequisiteDto>> GetAllWithPrerequisitesAsync(CourseQueryParams queryParams);
+    Task<PaginatedResult<CoursePrerequisiteDto>> GetAllWithPrerequisitesByStudentBylawAsync(int studentId, CourseQueryParams queryParams);
     Task<IEnumerable<StudentDto>> GetStudentsByCourseIdAsync(int courseId);
     Task<CourseDto> UpdateRegistrationSettingsAsync(int courseId, UpdateCourseRegistrationSettingsDto dto);
     Task<CourseRegistrationSettingsDto?> GetRegistrationSettingsAsync(int courseId);
     Task<ExcelImportResultDto> UploadGradesAsync(int courseId, IFormFile file, int? userId);
+    Task<StudentAllCoursesDto> GetAllStudentCoursesAsync(int studentId);
 }

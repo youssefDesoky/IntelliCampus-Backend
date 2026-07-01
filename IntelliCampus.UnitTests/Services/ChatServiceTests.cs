@@ -29,8 +29,8 @@ public class ChatServiceTests
     [Fact]
     public async Task SendMessageAsync_CreatesAndReturnsMessage()
     {
-        var user1 = TestDataFactory.StudentFaker.Generate();
-        var user2 = TestDataFactory.StudentFaker.Generate();
+        var user1 = TestDataFactory.UserFaker.Generate();
+        var user2 = TestDataFactory.UserFaker.Generate();
         ChatMessage? captured = null;
 
         _messageRepoMock.Setup(r => r.Add(It.IsAny<ChatMessage>())).Callback<ChatMessage>(m => captured = m);
@@ -68,8 +68,8 @@ public class ChatServiceTests
     [Fact]
     public async Task GetChatHistoryAsync_ValidUsers_ReturnsMessages()
     {
-        var user1 = TestDataFactory.StudentFaker.Generate();
-        var user2 = TestDataFactory.StudentFaker.Generate();
+        var user1 = TestDataFactory.UserFaker.Generate();
+        var user2 = TestDataFactory.UserFaker.Generate();
         var messages = new List<ChatMessage>
         {
             new() { MessageId = 1, SenderId = user1.UserId.ToString(), RecipientId = user2.UserId.ToString(), Content = "Hi", Timestamp = DateTime.UtcNow }
@@ -104,8 +104,8 @@ public class ChatServiceTests
         ChatMessage? captured = null;
 
         _messageRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(msg);
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "User1"));
-        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "User2"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1 && s.FullName == "User1"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 2 && s.FullName == "User2"));
         _messageRepoMock.Setup(r => r.Delete(It.IsAny<ChatMessage>())).Callback<ChatMessage>(m => captured = m);
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
 
@@ -136,8 +136,8 @@ public class ChatServiceTests
         var msg = new ChatMessage { MessageId = 1, SenderId = "1", RecipientId = "2", Content = "Original" };
 
         _messageRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(msg);
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "User1"));
-        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "User2"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1 && s.FullName == "User1"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 2 && s.FullName == "User2"));
         _messageRepoMock.Setup(r => r.Update(msg));
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
 
@@ -172,8 +172,8 @@ public class ChatServiceTests
         };
 
         _messageRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(messages);
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "User1"));
-        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "User2"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1 && s.FullName == "User1"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 2 && s.FullName == "User2"));
 
         var result = await _sut.GetGroupChatHistoryAsync("group1");
 
@@ -221,8 +221,8 @@ public class ChatServiceTests
         _messageRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<ChatMessage>());
         _messageRepoMock.Setup(r => r.Update(msg));
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "Sender"));
-        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "Recipient"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1 && s.FullName == "Sender"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 2 && s.FullName == "Recipient"));
 
         var result = await _sut.PinMessageAsync("1", "1");
 
@@ -282,8 +282,8 @@ public class ChatServiceTests
         _messageRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(msg);
         _messageRepoMock.Setup(r => r.Update(msg));
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "Sender"));
-        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "Recipient"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1 && s.FullName == "Sender"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 2 && s.FullName == "Recipient"));
 
         var result = await _sut.UnpinMessageAsync("1", "1");
 
@@ -337,8 +337,8 @@ public class ChatServiceTests
     [Fact]
     public async Task SendMessageAsync_WithGroupName_CreatesMessageWithGroupName()
     {
-        var user1 = TestDataFactory.StudentFaker.Generate();
-        var user2 = TestDataFactory.StudentFaker.Generate();
+        var user1 = TestDataFactory.UserFaker.Generate();
+        var user2 = TestDataFactory.UserFaker.Generate();
         ChatMessage? captured = null;
 
         _messageRepoMock.Setup(r => r.Add(It.IsAny<ChatMessage>())).Callback<ChatMessage>(m => captured = m);
@@ -384,8 +384,8 @@ public class ChatServiceTests
         _messageRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<ChatMessage>());
         _messageRepoMock.Setup(r => r.Update(It.IsAny<ChatMessage>()));
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "Sender"));
-        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "Recipient"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1 && s.FullName == "Sender"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 2 && s.FullName == "Recipient"));
 
         var result = await _sut.PinMessageAsync("1", "1");
 
@@ -413,8 +413,8 @@ public class ChatServiceTests
         _messageRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<ChatMessage> { oldPinned, msg });
         _messageRepoMock.Setup(r => r.Update(It.IsAny<ChatMessage>()));
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "Sender"));
-        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "Recipient"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1 && s.FullName == "Sender"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 2 && s.FullName == "Recipient"));
 
         var result = await _sut.PinMessageAsync("1", "2");
 
@@ -443,8 +443,8 @@ public class ChatServiceTests
         _messageRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<ChatMessage> { oldPinned, msg });
         _messageRepoMock.Setup(r => r.Update(It.IsAny<ChatMessage>()));
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "Sender"));
-        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "Recipient"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1 && s.FullName == "Sender"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 2 && s.FullName == "Recipient"));
 
         var result = await _sut.PinMessageAsync("1", "2");
 
@@ -482,8 +482,8 @@ public class ChatServiceTests
         _messageRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(msg);
         _messageRepoMock.Setup(r => r.Update(msg));
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
-        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 1 && s.FullName == "Sender"));
-        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<Student>(s => s.UserId == 2 && s.FullName == "Recipient"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 1 && s.FullName == "Sender"));
+        _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(Mock.Of<User>(s => s.UserId == 2 && s.FullName == "Recipient"));
 
         var result = await _sut.UnpinMessageAsync("1", "1");
 
@@ -537,7 +537,7 @@ public class ChatServiceTests
     [Fact]
     public async Task GetChatHistoryAsync_User2NotFound_ThrowsUserNotFoundException()
     {
-        var user1 = TestDataFactory.StudentFaker.Generate();
+        var user1 = TestDataFactory.UserFaker.Generate();
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user1.UserId)).ReturnsAsync(user1);
         _userRepoMock.Setup(r => r.GetByIdAsync(999)).ReturnsAsync((User?)null);

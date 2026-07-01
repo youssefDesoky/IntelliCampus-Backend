@@ -12,6 +12,7 @@ public class CourseQueryParams
     public string? Search { get; set; }
     public bool IncludeCourses { get; set; }
     public bool IsActiveOnly { get; set; }
+    public int? ExcludeInstructorId { get; set; }
 
     public List<StudentCourseStatus>? StudentStatuses => Status?.ToLowerInvariant() switch
     {

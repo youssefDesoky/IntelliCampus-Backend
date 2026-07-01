@@ -117,12 +117,23 @@ public class InternalMessageService : IInternalMessageService
         var message = await _unitOfWork.GetRepository<InternalMessage, int>().GetByIdAsync(spec)
             ?? throw new InternalMessageNotFoundException(messageId);
 
-        if (message.RecipientId != userId)
-            throw new ForbiddenException("Only the recipient can mark a message as read");
+        var threadId = message.ParentMessageId ?? message.MessageId;
+        var repo = _unitOfWork.GetRepository<InternalMessage, int>();
 
-        message.IsRead = true;
-        message.ReadAt = EgyptTime.Now;
-        await _unitOfWork.SaveChangesAsync();
+        var allMessages = new List<InternalMessage> { message };
+        var replies = await repo.GetAllAsync(InternalMessageSpec.RepliesToRoots([threadId], userId), asNoTracking: false);
+        allMessages.AddRange(replies);
+
+        var changed = false;
+        foreach (var msg in allMessages.Where(m => m.RecipientId == userId && !m.IsRead))
+        {
+            msg.IsRead = true;
+            msg.ReadAt = EgyptTime.Now;
+            changed = true;
+        }
+
+        if (changed)
+            await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task DeleteMessageAsync(int userId, int messageId)

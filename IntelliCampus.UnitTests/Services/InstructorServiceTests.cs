@@ -60,12 +60,12 @@ public class InstructorServiceTests
         var result = await _sut.GetByIdAsync(instructor.UserId);
 
         result.InstructorId.Should().Be(instructor.UserId);
-        result.NationalId.Should().Be(instructor.NationalId);
-        result.FullName.Should().Be(instructor.FullName);
-        result.FullNameAr.Should().Be(instructor.FullNameAr);
-        result.PhoneNumber.Should().Be(instructor.PhoneNumber);
-        result.Email.Should().Be(instructor.Email);
-        result.Address.Should().Be(instructor.Address);
+        result.NationalId.Should().Be(instructor.User.NationalId);
+        result.FullName.Should().Be(instructor.User.FullName);
+        result.FullNameAr.Should().Be(instructor.User.FullNameAr);
+        result.PhoneNumber.Should().Be(instructor.User.PhoneNumber);
+        result.Email.Should().Be(instructor.User.Email);
+        result.Address.Should().Be(instructor.User.Address);
         result.InstructorCode.Should().Be(instructor.InstructorCode);
         result.InstructorRole.Should().Be(instructor.InstructorRole?.ToString());
         result.ProfileImage.Should().Be("http://localhost:5000/images/default-avatar.jpg");
@@ -161,8 +161,8 @@ public class InstructorServiceTests
         result.InstructorRole.Should().Be("Professor");
 
         capturedInstructor.Should().NotBeNull();
-        capturedInstructor!.FullName.Should().Be(dto.FullName);
-        capturedInstructor.Email.Should().Be(dto.Email);
+        capturedInstructor!.User.FullName.Should().Be(dto.FullName);
+        capturedInstructor.User.Email.Should().Be(dto.Email);
         capturedInstructor.InstructorRole.Should().Be(InstructorRole.Professor);
 
         capturedUserRole.Should().NotBeNull();
@@ -258,7 +258,7 @@ public class InstructorServiceTests
 
         result.Email.Should().Be("AUTO123@intellicampus.online");
         capturedInstructor.Should().NotBeNull();
-        capturedInstructor!.Email.Should().Be("AUTO123@intellicampus.online");
+        capturedInstructor!.User.Email.Should().Be("AUTO123@intellicampus.online");
 
         _userRepoMock.Verify(r => r.AnyAsync(It.IsAny<Expression<Func<User, bool>>>()), Times.Exactly(2));
         _codeGenerationMock.Verify(c => c.GenerateInstructorCodeAsync(1, It.IsAny<DateTime>()), Times.Once);

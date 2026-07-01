@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
@@ -440,7 +440,7 @@ public class ExamScheduleServiceTests
     public async Task ExportExamSchedulePdfAsync_ExistingStudent_ReturnsPdfBytes()
     {
         var student = TestDataFactory.StudentFaker.Generate();
-        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.FullName, StudentCode = student.StudentCode };
+        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.User.FullName, StudentCode = student.StudentCode };
         var schedules = new List<ExamSchedule>();
         var pdfBytes = new byte[] { 0x25, 0x50, 0x44, 0x46 };
 
@@ -476,7 +476,7 @@ public class ExamScheduleServiceTests
     public async Task ExportExamSchedulePdfAsync_WithSchedules_IncludesItems()
     {
         var student = TestDataFactory.StudentFaker.Generate();
-        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.FullName, StudentCode = student.StudentCode };
+        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.User.FullName, StudentCode = student.StudentCode };
         var schedules = new List<ExamSchedule>
         {
             new()

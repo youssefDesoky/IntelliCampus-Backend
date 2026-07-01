@@ -10,6 +10,13 @@ public class LoanInstructorConfiguration : IEntityTypeConfiguration<LoanInstruct
     {
         builder.ToTable("LoanInstructors");
 
+        builder.HasKey(li => li.UserId);
+
+        builder.HasOne(li => li.Instructor)
+            .WithMany()
+            .HasForeignKey(li => li.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.Property(li => li.LoanProfessorId)
             .HasMaxLength(50);
 

@@ -97,7 +97,7 @@ public class RouterInitializerServiceTests
         var course = new Course { CourseId = 5, CourseCode = null, CourseName = "No Code" };
         courseRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<Course>>())).ReturnsAsync([course]);
 
-        var student = new Student { UserId = 1, FullName = "Test", NationalId = "NID", Email = "t@t.com", Password = "pwd" };
+        var student = new Student { UserId = 1, User = new User { FullName = "Test", NationalId = "NID", Email = "t@t.com", Password = "pwd" } };
         studentCourseRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<StudentCourse>>()))
             .ReturnsAsync([new StudentCourse { CourseId = 5, Student = student }]);
         gradeRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<Grade>>())).ReturnsAsync([]);
@@ -130,7 +130,7 @@ public class RouterInitializerServiceTests
         var course = new Course { CourseId = 1, CourseCode = "CS101", CourseName = "CS 101" };
         courseRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<Course>>())).ReturnsAsync([course]);
 
-        var student = new Student { UserId = 1, FullName = "Test", NationalId = "NID", Email = "t@t.com", Password = "pwd" };
+        var student = new Student { UserId = 1, User = new User { FullName = "Test", NationalId = "NID", Email = "t@t.com", Password = "pwd" } };
         studentCourseRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<StudentCourse>>()))
             .ReturnsAsync([new StudentCourse { CourseId = 1, Student = student }]);
         gradeRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<Grade>>())).ReturnsAsync([]);
@@ -171,7 +171,7 @@ public class RouterInitializerServiceTests
 
         courseRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<Course>>())).ReturnsAsync(courses);
 
-        var student = new Student { UserId = 1, FullName = "Test", NationalId = "NID", Email = "t@t.com", Password = "pwd" };
+        var student = new Student { UserId = 1, User = new User { FullName = "Test", NationalId = "NID", Email = "t@t.com", Password = "pwd" } };
         studentCourseRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<StudentCourse>>()))
             .ReturnsAsync([new StudentCourse { CourseId = 1, Student = student }]);
         gradeRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<Grade>>())).ReturnsAsync([]);

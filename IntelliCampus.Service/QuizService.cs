@@ -15,11 +15,13 @@ public class QuizService : IQuizService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly INotificationService _notificationService;
+    private readonly IReminderService _reminderService;
 
-    public QuizService(IUnitOfWork unitOfWork, INotificationService notificationService)
+    public QuizService(IUnitOfWork unitOfWork, INotificationService notificationService, IReminderService reminderService)
     {
         _unitOfWork = unitOfWork;
         _notificationService = notificationService;
+        _reminderService = reminderService;
     }
 
     private IGenericRepository<Quiz, int> Quizzes
@@ -39,6 +41,12 @@ public class QuizService : IQuizService
 
     private IGenericRepository<Student, int> Students
         => _unitOfWork.GetRepository<Student, int>();
+
+    private IGenericRepository<Reminder, int> Reminders
+        => _unitOfWork.GetRepository<Reminder, int>();
+
+    private IGenericRepository<StudentCourse, int> StudentCourses
+        => _unitOfWork.GetRepository<StudentCourse, int>();
 
     public async Task<QuizHistoryItemDto?> GetByIdAsync(int quizId, int studentId)
     {
@@ -187,6 +195,37 @@ public class QuizService : IQuizService
         Quizzes.Add(quiz);
         await _unitOfWork.SaveChangesAsync();
 
+        var registered = (await StudentCourses.GetAllAsync(
+            new StudentCourseIdsSpec(parsedCourseId, true), asNoTracking: true))
+            .Select(sc => sc.StudentId)
+            .Distinct()
+            .ToList();
+
+        foreach (var studentId in registered)
+        {
+            Reminders.Add(new Reminder
+            {
+                StudentId = studentId,
+                Title = $"Quiz due: {quiz.Title}",
+                Date = quiz.DueDate,
+                Type = ReminderType.Quiz,
+                Location = null,
+                Priority = "medium"
+            });
+        }
+
+        await _unitOfWork.SaveChangesAsync();
+
+        if (registered.Count > 0)
+        {
+            await _notificationService.SendToManyAsync(
+                registered,
+                NotificationType.NewQuizPosted,
+                $"A new quiz \"{quiz.Title}\" has been posted. Due: {quiz.DueDate:g}",
+                "New Quiz Available",
+                $"/courses/{parsedCourseId}/quizzes/practice?quizId={quiz.QuizId}");
+        }
+
         var spec = new QuizSpec(quiz.QuizId);
         var result = await Quizzes.GetByIdAsync(spec);
         return MapToDto(result!);
@@ -285,13 +324,16 @@ public class QuizService : IQuizService
         if (!teachesCourse)
             throw new InvalidOperationException("Not authorized.");
 
+        var existingQuestions = await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quizId), asNoTracking: true);
+        var existingPoints = existingQuestions.Sum(q => q.Points);
         var newPoints = questions.Sum(q => q.Points);
+        var totalPoints = existingPoints + newPoints;
 
-        if (newPoints != quiz.MaxGrade)
+        if (totalPoints != quiz.MaxGrade)
         {
-            var diff = newPoints - quiz.MaxGrade;
+            var diff = totalPoints - quiz.MaxGrade;
             var direction = diff > 0 ? "more" : "less";
-            throw new InvalidOperationException($"Quiz max grade is {quiz.MaxGrade} but questions total {newPoints} ({Math.Abs(diff)} points {direction}).");
+            throw new InvalidOperationException($"Quiz max grade is {quiz.MaxGrade} but questions total {totalPoints} ({Math.Abs(diff)} points {direction}).");
         }
 
         foreach (var q in questions)
@@ -309,6 +351,37 @@ public class QuizService : IQuizService
         }
 
         await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<List<object>> GetQuestionsAsync(int quizId, int instructorId, string courseId)
+    {
+        if (!int.TryParse(courseId, out var parsedCourseId))
+            throw new CourseNotFoundException(courseId);
+
+        var course = await Courses.GetByIdAsync(parsedCourseId);
+        if (course is null)
+            throw new CourseNotFoundException(parsedCourseId);
+
+        var spec = new QuizSpec(quizId);
+        var quiz = await Quizzes.GetByIdAsync(spec);
+        if (quiz is null || quiz.CourseId != parsedCourseId)
+            throw new QuizNotFoundException(quizId);
+
+        var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
+        if (!teachesCourse)
+            throw new InvalidOperationException("Not authorized.");
+
+        var questions = await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quizId), asNoTracking: true);
+        return questions.Select(q => new
+        {
+            Id = q.Id,
+            QuizId = q.QuizId,
+            Type = q.Type,
+            Prompt = q.Prompt,
+            Options = q.Options is not null ? System.Text.Json.JsonSerializer.Deserialize<List<string>>(q.Options) : null,
+            Points = q.Points,
+            CorrectAnswer = q.CorrectAnswer
+        }).Select(x => (object)x).ToList();
     }
 
     public async Task DeleteQuestionAsync(int questionId, int instructorId, string courseId)
@@ -361,15 +434,47 @@ public class QuizService : IQuizService
         var subsSpec = new StudentQuizSpec(quizId, allResults: true);
         var submissions = await StudentQuizzes.GetAllAsync(subsSpec, asNoTracking: true);
 
-        return submissions.Select(sq => new StudentSubmissionDto
+        return submissions.Select(sq =>
         {
-            StudentId = sq.StudentId,
-            StudentName = sq.Student?.FullName,
-            Score = sq.Score,
-            MaxScore = maxScore,
-            SubmittedAt = sq.SubmittedAt.ToString("dd MM yy HH:mm"),
-            Answers = sq.AnswersJson is not null ? JsonSerializer.Deserialize<Dictionary<string, object>>(sq.AnswersJson) : null,
-            QuestionResults = sq.QuestionResultsJson is not null ? JsonSerializer.Deserialize<List<QuestionResultDto>>(sq.QuestionResultsJson) : null
+            var answers = sq.AnswersJson is not null
+                ? JsonSerializer.Deserialize<Dictionary<string, object>>(sq.AnswersJson)
+                : null;
+            var results = sq.QuestionResultsJson is not null
+                ? JsonSerializer.Deserialize<List<QuestionResultDto>>(sq.QuestionResultsJson)
+                : null;
+            var resultsByQId = results?.ToDictionary(r => r.QuestionId) ?? new();
+
+            var answerDetails = new List<SubmissionAnswerDetailDto>();
+            for (int i = 0; i < allQuestions.Count; i++)
+            {
+                var q = allQuestions[i];
+                var qId = "q" + (i + 1);
+                var result = resultsByQId.GetValueOrDefault(qId);
+                answerDetails.Add(new SubmissionAnswerDetailDto
+                {
+                    QuestionId = qId,
+                    Type = q.Type,
+                    Prompt = q.Prompt,
+                    Options = q.Options is not null ? JsonSerializer.Deserialize<List<string>>(q.Options) : null,
+                    Points = q.Points,
+                    StudentAnswer = answers?.TryGetValue(qId, out var val) == true ? val?.ToString() : null,
+                    CorrectAnswer = q.CorrectAnswer,
+                    AutoScore = result?.EarnedPoints,
+                    Score = result?.EarnedPoints
+                });
+            }
+
+            return new StudentSubmissionDto
+            {
+                StudentId = sq.StudentId,
+                StudentName = sq.Student?.User?.FullName,
+                Score = sq.Score,
+                MaxScore = maxScore,
+                SubmittedAt = sq.SubmittedAt.ToString("dd MM yy HH:mm"),
+                Answers = answers,
+                QuestionResults = results,
+                AnswerDetails = answerDetails
+            };
         }).ToList();
     }
 
@@ -482,7 +587,7 @@ public class QuizService : IQuizService
     private static StudentQuizDto MapResultToDto(StudentQuiz sq) => new()
     {
         StudentId = sq.StudentId,
-        StudentName = sq.Student?.FullName,
+        StudentName = sq.Student?.User?.FullName,
         QuizId = sq.QuizId,
         QuizTitle = sq.Quiz?.Title,
         Score = sq.Score,
@@ -494,7 +599,9 @@ public class QuizService : IQuizService
     public async Task<QuizSubmitResponseDto?> SubmitPracticeQuizAsync(int studentId, string courseId, SubmitQuizDto dto)
     {
         var (course, quiz, allQ, qResults, bType, now, existing, answersJson, resultsJson) = await GradePracticeSubmission(studentId, courseId, dto);
-        return await BuildSubmitResponse(studentId, courseId, dto, course, quiz, allQ, qResults, bType, now, existing, answersJson, resultsJson);
+        var response = await BuildSubmitResponse(studentId, courseId, dto, course, quiz, allQ, qResults, bType, now, existing, answersJson, resultsJson);
+        await _reminderService.MarkSubmissionCompletedAsync(studentId, ReminderType.Quiz, quiz.DueDate);
+        return response;
     }
 
     public async Task<PracticeQuizDto?> GetPracticeQuizAsync(int studentId, string courseId, QuizQueryParams queryParams)
@@ -862,7 +969,7 @@ public class QuizService : IQuizService
 
     private async Task<QuizSubmitResponseDto> BuildSubmitResponse(int studentId, string courseId, SubmitQuizDto dto, Course course, Quiz quiz, List<Question> allQ, List<QuestionResultDto> qResults, Dictionary<string, (int Answered, int Total, decimal Score)> bType, DateTime now, StudentQuiz? existing, string answersJson, string resultsJson)
     {
-        decimal? finalScore = null;
+        decimal? finalScore = qResults.Sum(q => q.EarnedPoints);
 
         if (existing is not null)
         {
@@ -908,7 +1015,7 @@ public class QuizService : IQuizService
             studentId,
             NotificationType.QuizSubmitted,
             $"Your quiz '{quiz.Title}' was submitted successfully.",
-            clickUrl: $"/courses/{courseId}/quizzes/{quiz.QuizId}");
+            clickUrl: $"/courses/{courseId}/quizzes/practice?quizId={quiz.QuizId}&review=graded");
 
         var maxS = allQ.Sum(q => q.Points);
         return new QuizSubmitResponseDto

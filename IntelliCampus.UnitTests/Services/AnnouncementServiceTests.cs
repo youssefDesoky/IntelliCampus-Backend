@@ -118,7 +118,7 @@ public class AnnouncementServiceTests
     public async Task GetByIdAsync_WithAllNavigationProperties_MapsCorrectly()
     {
         var course = new Course { CourseId = 1, CourseCode = "CS101" };
-        var sender = TestDataFactory.StudentFaker.Generate();
+        var sender = TestDataFactory.UserFaker.Generate();
         sender.ProfileImage = "profiles/sender.jpg";
         var attachment = new AnnouncementAttachment
         {
@@ -128,7 +128,7 @@ public class AnnouncementServiceTests
             FileType = "pdf",
             FileSize = 2048
         };
-        var commentUser = TestDataFactory.StudentFaker.Generate();
+        var commentUser = TestDataFactory.UserFaker.Generate();
         commentUser.ProfileImage = "profiles/commenter.jpg";
         var comment = new AnnouncementComment
         {
@@ -190,7 +190,7 @@ public class AnnouncementServiceTests
         _announcementRepoMock.Setup(r => r.Add(It.IsAny<Announcement>())).Callback<Announcement>(a => captured = a);
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
         _announcementRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Announcement>>()))
-            .ReturnsAsync(new Announcement { AnnouncementId = 1, CourseId = course.CourseId, Content = "Hello", Sender = new Student { UserId = 1, FullName = "Sender" }, Course = course });
+            .ReturnsAsync(new Announcement { AnnouncementId = 1, CourseId = course.CourseId, Content = "Hello", Sender = new User { UserId = 1, FullName = "Sender" }, Course = course });
 
         var result = await _sut.CreateAsync(course.CourseId, 1, dto, null, null);
 
@@ -233,7 +233,7 @@ public class AnnouncementServiceTests
         _attachmentRepoMock.Setup(r => r.Add(It.IsAny<AnnouncementAttachment>())).Callback<AnnouncementAttachment>(a => capturedAttachment = a);
         _unitOfWorkMock.SetupSequence(u => u.SaveChangesAsync()).ReturnsAsync(1).ReturnsAsync(1);
         _announcementRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Announcement>>()))
-            .ReturnsAsync(new Announcement { AnnouncementId = 1, CourseId = course.CourseId, Content = "Hello", Sender = new Student { UserId = 1, FullName = "Sender" }, Course = course });
+            .ReturnsAsync(new Announcement { AnnouncementId = 1, CourseId = course.CourseId, Content = "Hello", Sender = new User { UserId = 1, FullName = "Sender" }, Course = course });
 
         var result = await _sut.CreateAsync(course.CourseId, 1, dto, fileUrl, 2048);
 
@@ -259,7 +259,7 @@ public class AnnouncementServiceTests
         _attachmentRepoMock.Setup(r => r.Add(It.IsAny<AnnouncementAttachment>())).Callback<AnnouncementAttachment>(a => capturedAttachment = a);
         _unitOfWorkMock.SetupSequence(u => u.SaveChangesAsync()).ReturnsAsync(1).ReturnsAsync(1);
         _announcementRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Announcement>>()))
-            .ReturnsAsync(new Announcement { AnnouncementId = 1, CourseId = course.CourseId, Content = "Hello", Sender = new Student { UserId = 1, FullName = "Sender" }, Course = course });
+            .ReturnsAsync(new Announcement { AnnouncementId = 1, CourseId = course.CourseId, Content = "Hello", Sender = new User { UserId = 1, FullName = "Sender" }, Course = course });
 
         var result = await _sut.CreateAsync(course.CourseId, 1, dto, fileUrl, null);
 
@@ -359,7 +359,7 @@ public class AnnouncementServiceTests
     public async Task AddCommentAsync_ExistingAnnouncement_AddsComment()
     {
         var announcement = TestDataFactory.AnnouncementFaker.Generate();
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
 
         _announcementRepoMock.Setup(r => r.GetByIdAsync(announcement.AnnouncementId)).ReturnsAsync(announcement);
         AnnouncementComment? captured = null;
@@ -415,7 +415,7 @@ public class AnnouncementServiceTests
     public async Task AddCommentAsync_WithUserProfileImage_ResolvesProfile()
     {
         var announcement = TestDataFactory.AnnouncementFaker.Generate();
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         user.ProfileImage = "profiles/test.jpg";
 
         _announcementRepoMock.Setup(r => r.GetByIdAsync(announcement.AnnouncementId)).ReturnsAsync(announcement);
@@ -482,7 +482,7 @@ public class AnnouncementServiceTests
     [Fact]
     public async Task EditCommentAsync_OwnComment_EditsSuccessfully()
     {
-        var user = TestDataFactory.StudentFaker.Generate();
+        var user = TestDataFactory.UserFaker.Generate();
         var comment = new AnnouncementComment { AnnouncementCommentId = 1, UserId = user.UserId, Content = "Old", User = user };
 
         _commentRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<AnnouncementComment>>())).ReturnsAsync(comment);

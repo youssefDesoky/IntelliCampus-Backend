@@ -48,10 +48,18 @@ namespace IntelliCampus.Service.Specifications
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }
 
-        public CourseSpec(List<int> courseIds, CourseQueryParams queryParams)
+        public CourseSpec(List<int> courseIds, CourseQueryParams queryParams, CourseIncludeLevel includeLevel = CourseIncludeLevel.Full)
             : base(c => courseIds.Contains(c.CourseId))
         {
-            AddFullIncludes();
+            switch (includeLevel)
+            {
+                case CourseIncludeLevel.Light:
+                    AddLightIncludes();
+                    break;
+                default:
+                    AddFullIncludes();
+                    break;
+            }
             AddOrderBy(c => c.CourseCode);
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
         }

@@ -6,7 +6,7 @@ namespace IntelliCampus.Service.Specifications
     internal class DepartmentByNameSpec : BaseSpecifications<Department>
     {
         public DepartmentByNameSpec(string name)
-            : base(d => d.DepartmentName.Equals(name, StringComparison.OrdinalIgnoreCase))
+            : base(d => d.DepartmentName.ToLower() == name.ToLower())
         {
         }
     }

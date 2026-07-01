@@ -131,7 +131,7 @@ public class GradeService : IGradeService
         var final = courseGrades.FirstOrDefault(g => g.GradeType == GradeType.Final && g.Status == "Graded");
 
         if (gradedAssignments.Count == 0 && gradedQuizzes.Count == 0 && midterm is null && final is null)
-            throw new GradeNotFoundException(courseId);
+            return new CourseGradeDto();
 
         var history = new List<GradeHistoryItemDto>();
 
@@ -989,7 +989,7 @@ public class GradeService : IGradeService
             .ToHashSet();
 
         var enrolledStudents = (await Students.GetAllAsync(new StudentSpec(enrolledStudentIds.ToList()), asNoTracking: true))
-            .OrderBy(s => s.FullName)
+            .OrderBy(s => s.User.FullName)
             .ToList();
 
         var courseAssignmentSubmissions = (await StudentAssignments.GetAllAsync(new StudentAssignmentSpec(assignmentIds, true), asNoTracking: true)).ToList();
@@ -1246,7 +1246,7 @@ public class GradeService : IGradeService
         {
             StudentId = student.UserId,
             StudentCode = student.StudentCode ?? "",
-            FullName = student.FullName,
+            FullName = student.User.FullName,
             Assessments = assessments,
             OverallPercent = overallPercent,
             Letter = letter
@@ -1486,7 +1486,7 @@ public class GradeService : IGradeService
         }
 
         var studentMap = (await Students.GetAllAsync(new StudentSpec(allStudentIds.ToList(), lightweight: true), asNoTracking: true))
-            .ToDictionary(s => s.UserId, s => s.FullName);
+            .ToDictionary(s => s.UserId, s => s.User.FullName);
 
         var assignmentPks = assignmentComplaints.Select(c => c.GradeId).ToList();
         var submissions = new List<StudentAssignment>();
@@ -2133,5 +2133,29 @@ public class GradeService : IGradeService
 
         var firstDigit = digits[0] - '0';
         return firstDigit >= 1 && firstDigit <= 5 ? firstDigit : null;
+    }
+
+    public async Task<CourseWorkWeightDto> GetCourseWorkWeightAsync(int courseId, int instructorId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
+        var teaches = await Classes.AnyAsync(c => c.CourseId == courseId && c.InstructorId == instructorId);
+        if (!teaches)
+            throw new InvalidOperationException("Not authorized.");
+
+        return new CourseWorkWeightDto { QuizWeight = 0, AssignmentWeight = 0, MidtermWeight = 0 };
+    }
+
+    public async Task SetCourseWorkWeightAsync(int courseId, int instructorId, CourseWorkWeightDto dto)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
+        var teaches = await Classes.AnyAsync(c => c.CourseId == courseId && c.InstructorId == instructorId);
+        if (!teaches)
+            throw new InvalidOperationException("Not authorized.");
     }
 }

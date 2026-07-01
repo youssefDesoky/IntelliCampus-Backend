@@ -72,3 +72,5 @@ IntelliCampus.Web.csproj
 server_err.txt
 server_log.txt
 /IntelliCampus.Web/appsettings.json
+/IntelliCampus.Web/IntelliCampus.Web.csproj
+/IntelliCmpus.Presistence/IntelliCampus.Presistence.csproj

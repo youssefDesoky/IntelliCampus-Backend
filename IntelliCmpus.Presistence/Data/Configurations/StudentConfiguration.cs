@@ -10,6 +10,13 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
     {
         builder.ToTable("Students");
 
+        builder.HasKey(s => s.UserId);
+
+        builder.HasOne(s => s.User)
+            .WithOne(u => u.Student!)
+            .HasForeignKey<Student>(s => s.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.Property(s => s.StudentCode)
             .HasMaxLength(50);
 
@@ -39,7 +46,6 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .HasDefaultValue(IntelliCampus.Domain.Entities.Enums.StudentType.Bachelor);
 
         builder.HasIndex(s => s.DepartmentId);
-        builder.HasIndex(s => s.FacultyId);
         builder.HasIndex(s => s.Level);
         builder.HasIndex(s => s.StudentType);
         builder.HasIndex(s => s.StudentCode);

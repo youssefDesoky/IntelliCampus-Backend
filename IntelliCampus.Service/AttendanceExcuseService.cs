@@ -163,7 +163,7 @@ public class AttendanceExcuseService : IAttendanceExcuseService
     {
         ExcuseId = e.ExcuseId,
         StudentCode = e.Student?.StudentCode ?? "",
-        StudentName = e.Student?.FullName,
+        StudentName = e.Student?.User?.FullName,
         SessionId = e.SessionId,
         Reason = e.Reason,
         Status = e.Status,
@@ -184,7 +184,7 @@ public class AttendanceExcuseService : IAttendanceExcuseService
         if (student is not null)
         {
             dto.StudentCode = student.StudentCode ?? "";
-            dto.StudentName = student.FullName;
+            dto.StudentName = student.User.FullName;
         }
         return dto;
     }

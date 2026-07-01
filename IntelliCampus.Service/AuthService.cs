@@ -93,22 +93,18 @@ public class AuthService(
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage)
         };
 
-        if (user is Instructor)
+        var instructorProfile = await _unitOfWork.GetRepository<Instructor, int>().GetByIdAsync(new InstructorSpec(userId));
+        if (instructorProfile is not null)
         {
-            var instructorSpec = new InstructorSpec(userId);
-            var instructor = await _unitOfWork.GetRepository<Instructor, int>().GetByIdAsync(instructorSpec);
-            if (instructor is not null)
-            {
-                dto.InstructorCode = instructor.InstructorCode;
-                dto.InstructorRole = instructor.InstructorRole?.ToString();
-                dto.Specialization = instructor.Specialization;
-                dto.DepartmentId = instructor.DepartmentId;
-                dto.DepartmentName = instructor.Department?.DepartmentName;
-                dto.HireDate = instructor.HireDate?.ToString("dd MM yyyy");
-                dto.Status = instructor.Status?.ToString();
-                dto.OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName;
-                dto.OfficeHoursRoomLocation = instructor.OfficeHoursRoom?.Location;
-            }
+            dto.InstructorCode = instructorProfile.InstructorCode;
+            dto.InstructorRole = instructorProfile.InstructorRole?.ToString();
+            dto.Specialization = instructorProfile.Specialization;
+            dto.DepartmentId = instructorProfile.DepartmentId;
+            dto.DepartmentName = instructorProfile.Department?.DepartmentName;
+            dto.HireDate = instructorProfile.HireDate?.ToString("dd MM yyyy");
+            dto.Status = instructorProfile.Status?.ToString();
+            dto.OfficeHoursRoomName = instructorProfile.OfficeHoursRoom?.RoomName;
+            dto.OfficeHoursRoomLocation = instructorProfile.OfficeHoursRoom?.Location;
         }
 
         return dto;
@@ -149,22 +145,18 @@ public class AuthService(
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage)
         };
 
-        if (user is Instructor)
+        var instructorProfile = await _unitOfWork.GetRepository<Instructor, int>().GetByIdAsync(new InstructorSpec(userId));
+        if (instructorProfile is not null)
         {
-            var instructorSpec = new InstructorSpec(userId);
-            var instructor = await _unitOfWork.GetRepository<Instructor, int>().GetByIdAsync(instructorSpec);
-            if (instructor is not null)
-            {
-                profileDto.InstructorCode = instructor.InstructorCode;
-                profileDto.InstructorRole = instructor.InstructorRole?.ToString();
-                profileDto.Specialization = instructor.Specialization;
-                profileDto.DepartmentId = instructor.DepartmentId;
-                profileDto.DepartmentName = instructor.Department?.DepartmentName;
-                profileDto.HireDate = instructor.HireDate?.ToString("dd MM yyyy");
-                profileDto.Status = instructor.Status?.ToString();
-                profileDto.OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName;
-                profileDto.OfficeHoursRoomLocation = instructor.OfficeHoursRoom?.Location;
-            }
+            profileDto.InstructorCode = instructorProfile.InstructorCode;
+            profileDto.InstructorRole = instructorProfile.InstructorRole?.ToString();
+            profileDto.Specialization = instructorProfile.Specialization;
+            profileDto.DepartmentId = instructorProfile.DepartmentId;
+            profileDto.DepartmentName = instructorProfile.Department?.DepartmentName;
+            profileDto.HireDate = instructorProfile.HireDate?.ToString("dd MM yyyy");
+            profileDto.Status = instructorProfile.Status?.ToString();
+            profileDto.OfficeHoursRoomName = instructorProfile.OfficeHoursRoom?.RoomName;
+            profileDto.OfficeHoursRoomLocation = instructorProfile.OfficeHoursRoom?.Location;
         }
 
         return profileDto;
@@ -199,22 +191,18 @@ public class AuthService(
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage)
         };
 
-        if (user is Instructor)
+        var instructorProfile = await _unitOfWork.GetRepository<Instructor, int>().GetByIdAsync(new InstructorSpec(userId));
+        if (instructorProfile is not null)
         {
-            var instructorSpec = new InstructorSpec(userId);
-            var instructor = await _unitOfWork.GetRepository<Instructor, int>().GetByIdAsync(instructorSpec);
-            if (instructor is not null)
-            {
-                dto.InstructorCode = instructor.InstructorCode;
-                dto.InstructorRole = instructor.InstructorRole?.ToString();
-                dto.Specialization = instructor.Specialization;
-                dto.DepartmentId = instructor.DepartmentId;
-                dto.DepartmentName = instructor.Department?.DepartmentName;
-                dto.HireDate = instructor.HireDate?.ToString("dd MM yyyy");
-                dto.Status = instructor.Status?.ToString();
-                dto.OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName;
-                dto.OfficeHoursRoomLocation = instructor.OfficeHoursRoom?.Location;
-            }
+            dto.InstructorCode = instructorProfile.InstructorCode;
+            dto.InstructorRole = instructorProfile.InstructorRole?.ToString();
+            dto.Specialization = instructorProfile.Specialization;
+            dto.DepartmentId = instructorProfile.DepartmentId;
+            dto.DepartmentName = instructorProfile.Department?.DepartmentName;
+            dto.HireDate = instructorProfile.HireDate?.ToString("dd MM yyyy");
+            dto.Status = instructorProfile.Status?.ToString();
+            dto.OfficeHoursRoomName = instructorProfile.OfficeHoursRoom?.RoomName;
+            dto.OfficeHoursRoomLocation = instructorProfile.OfficeHoursRoom?.Location;
         }
 
         return dto;
@@ -231,23 +219,6 @@ public class AuthService(
             throw new InvalidOperationException("Current password is incorrect.");
 
         user.Password = _passwordService.HashPassword(dto.NewPassword);
-        await _unitOfWork.SaveChangesAsync();
-
-        return true;
-    }
-
-    public async Task<bool> ChangeRecoveryEmailAsync(int userId, ChangeRecoveryEmailDto dto)
-    {
-        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(userId);
-
-        if (user is null)
-            throw new UserNotFoundException(userId);
-
-        if (!_passwordService.VerifyPassword(dto.CurrentPassword, user.Password))
-            throw new InvalidOperationException("Current password is incorrect.");
-
-        user.RecoveryEmail = dto.NewEmail;
-        user.RecoveryEmailVerified = true;
         await _unitOfWork.SaveChangesAsync();
 
         return true;

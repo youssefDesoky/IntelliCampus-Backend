@@ -26,7 +26,7 @@ public class TokenServiceTests
         optionsMock.Setup(o => o.Value).Returns(settings);
         var sut = new TokenService(optionsMock.Object);
 
-        var user = new Student
+        var user = new User
         {
             UserId = 1,
             Email = "test@test.com",
@@ -58,7 +58,7 @@ public class TokenServiceTests
     public void GenerateToken_UserWithNoActiveRoles_OmitsRoleClaims()
     {
         var (sut, optionsMock) = CreateSut();
-        var user = new Student
+        var user = new User
         {
             UserId = 1,
             Email = "test@test.com",
@@ -80,7 +80,7 @@ public class TokenServiceTests
     public void GenerateToken_MultipleActiveRoles_IncludesAllRoles()
     {
         var (sut, optionsMock) = CreateSut();
-        var user = new Student
+        var user = new User
         {
             UserId = 1,
             Email = "test@test.com",
@@ -104,7 +104,7 @@ public class TokenServiceTests
     public void GenerateToken_ClaimsContainCorrectUserData()
     {
         var (sut, optionsMock) = CreateSut();
-        var user = new Student
+        var user = new User
         {
             UserId = 42,
             Email = "user@test.com",
@@ -126,7 +126,7 @@ public class TokenServiceTests
     public void GenerateToken_ExpiresInSpecifiedDuration()
     {
         var (sut, optionsMock) = CreateSut();
-        var user = new Student
+        var user = new User
         {
             UserId = 1,
             Email = "test@test.com",
@@ -146,7 +146,7 @@ public class TokenServiceTests
     public void GenerateToken_EachCallGeneratesUniqueJti()
     {
         var (sut, optionsMock) = CreateSut();
-        var user = new Student
+        var user = new User
         {
             UserId = 1,
             Email = "test@test.com",
@@ -171,7 +171,7 @@ public class TokenServiceTests
     public void GenerateToken_IncludesIssuerAndAudience()
     {
         var (sut, optionsMock) = CreateSut();
-        var user = new Student
+        var user = new User
         {
             UserId = 1,
             Email = "test@test.com",
@@ -191,7 +191,7 @@ public class TokenServiceTests
     public void GenerateToken_WithNullEmail_ThrowsArgumentNullException()
     {
         var (sut, optionsMock) = CreateSut();
-        var user = new Student
+        var user = new User
         {
             UserId = 1,
             Email = null!,
@@ -209,7 +209,7 @@ public class TokenServiceTests
     public void GenerateToken_WithNullFullName_ThrowsArgumentNullException()
     {
         var (sut, optionsMock) = CreateSut();
-        var user = new Student
+        var user = new User
         {
             UserId = 1,
             Email = "test@test.com",
@@ -236,7 +236,7 @@ public class TokenServiceTests
         var optionsMock = new Mock<IOptions<JwtSettings>>();
         optionsMock.Setup(o => o.Value).Returns(settings);
         var sut = new TokenService(optionsMock.Object);
-        var user = new Student
+        var user = new User
         {
             UserId = 1,
             Email = "test@test.com",
@@ -263,7 +263,7 @@ public class TokenServiceTests
         var optionsMock = new Mock<IOptions<JwtSettings>>();
         optionsMock.Setup(o => o.Value).Returns(settings);
         var sut = new TokenService(optionsMock.Object);
-        var user = new Student
+        var user = new User
         {
             UserId = 1,
             Email = "test@test.com",
@@ -281,7 +281,7 @@ public class TokenServiceTests
     public void GenerateToken_UserWithEmptyRolesList_OmitsRoleClaims()
     {
         var (sut, optionsMock) = CreateSut();
-        var user = new Student
+        var user = new User
         {
             UserId = 1,
             Email = "test@test.com",

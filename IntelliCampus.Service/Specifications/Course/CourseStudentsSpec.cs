@@ -13,7 +13,7 @@ internal sealed class CourseStudentsSpec : BaseSpecifications<StudentCourse>
         AddInclude("Student.Department");
         AddInclude("Student.Bylaw");
         AddInclude("Student.Specialization");
-        AddInclude("Student.UserRoles.Role");
+        AddInclude("Student.User.UserRoles.Role");
         EnableSplitQuery();
     }
 }

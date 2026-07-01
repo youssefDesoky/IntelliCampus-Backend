@@ -138,20 +138,20 @@ public class StudentService : IStudentService
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
-        if (dto.Email is not null && dto.Email != student.Email)
+        if (dto.Email is not null && dto.Email != student.User.Email)
         {
             if (await Users.AnyAsync(u => u.Email == dto.Email && u.UserId != studentId))
                 throw new InvalidOperationException("Email already exists.");
-            student.Email = dto.Email;
+            student.User.Email = dto.Email;
         }
 
-        if (dto.FullName is not null) student.FullName = dto.FullName;
-        if (dto.FullNameAr is not null) student.FullNameAr = dto.FullNameAr;
-        if (dto.PhoneNumber is not null) student.PhoneNumber = dto.PhoneNumber;
-        if (dto.Address is not null) student.Address = dto.Address;
-        if (dto.Nationality is not null) student.Nationality = dto.Nationality;
+        if (dto.FullName is not null) student.User.FullName = dto.FullName;
+        if (dto.FullNameAr is not null) student.User.FullNameAr = dto.FullNameAr;
+        if (dto.PhoneNumber is not null) student.User.PhoneNumber = dto.PhoneNumber;
+        if (dto.Address is not null) student.User.Address = dto.Address;
+        if (dto.Nationality is not null) student.User.Nationality = dto.Nationality;
         if (dto.StudentCode is not null) student.StudentCode = dto.StudentCode;
-        if (dto.FacultyId.HasValue) student.FacultyId = dto.FacultyId;
+        if (dto.FacultyId.HasValue) student.User.FacultyId = dto.FacultyId;
         if (dto.Level.HasValue) student.Level = dto.Level;
 
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentId, dto.DepartmentName);
@@ -166,7 +166,7 @@ public class StudentService : IStudentService
         if (dto.Program.HasValue)
             student.Program = dto.Program;
         if (dto.SpecializationId.HasValue) student.SpecializationId = dto.SpecializationId.Value;
-        if (dto.ProfileImage is not null) student.ProfileImage = dto.ProfileImage == "" ? null : dto.ProfileImage;
+        if (dto.ProfileImage is not null) student.User.ProfileImage = dto.ProfileImage == "" ? null : dto.ProfileImage;
 
         var enrollmentDate = ParseEnrollmentDate(dto.EnrollmentDate);
         if (enrollmentDate.HasValue) student.EnrollmentDate = enrollmentDate.Value;
@@ -327,16 +327,16 @@ public class StudentService : IStudentService
         {
             StudentId = student.UserId,
             UserId = student.UserId,
-            NationalId = student.NationalId,
-            FullName = student.FullName,
-            FullNameAr = student.FullNameAr,
-            PhoneNumber = student.PhoneNumber,
-            Email = student.Email,
-            Address = student.Address,
-            Nationality = student.Nationality,
+            NationalId = student.User.NationalId,
+            FullName = student.User.FullName,
+            FullNameAr = student.User.FullNameAr,
+            PhoneNumber = student.User.PhoneNumber,
+            Email = student.User.Email,
+            Address = student.User.Address,
+            Nationality = student.User.Nationality,
             StudentCode = student.StudentCode,
-            FacultyId = student.FacultyId,
-            FacultyName = student.Faculty?.FacultyName,
+            FacultyId = student.User.FacultyId,
+            FacultyName = student.User.Faculty?.FacultyName,
             Level = student.Level,
             DepartmentId = student.DepartmentId,
             DepartmentName = student.Department?.DepartmentName,
@@ -348,14 +348,15 @@ public class StudentService : IStudentService
             SpecializationId = student.SpecializationId,
             SpecializationName = student.Specialization?.Name,
             StudentType = student.StudentType,
-            ProfileImage = _urlResolver.ResolveProfile(student.ProfileImage),
-            Roles = student.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
+            ProfileImage = _urlResolver.ResolveProfile(student.User.ProfileImage),
+            Roles = student.User!.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
             Courses = student.StudentCourses?.Select(sc => new StudentCourseDto
             {
                 Id = sc.CourseId,
                 Title = sc.Course.CourseName,
                 CourseName = sc.Course.CourseName,
                 CreditHours = effectiveCredits?.GetValueOrDefault(sc.CourseId, sc.Course.CreditHours) ?? sc.Course.CreditHours,
+                Status = sc.Status.ToString(),
                 Notes = sc.Course.Notes
                     .Where(n => n.StudentId == student.UserId)
                     .Select(n => new StudentCourseNoteDto
@@ -413,7 +414,7 @@ public class StudentService : IStudentService
 
     private Student BuildStudentEntity(CreateStudentDto dto, string email, string password, int? departmentId, int? facultyId, DateTime enrollmentDate, string code, int? bylawId, StudentType studentType)
     {
-        return new Student
+        var user = new User
         {
             NationalId = dto.NationalId,
             FullName = dto.FullName,
@@ -424,16 +425,21 @@ public class StudentService : IStudentService
             Password = _passwordService.HashPassword(password),
             Nationality = dto.Nationality,
             MustChangePassword = true,
-            StudentCode = code,
             FacultyId = facultyId,
+            ProfileImage = dto.ProfileImage
+        };
+
+        return new Student
+        {
+            User = user,
+            StudentCode = code,
             StudentType = studentType,
             Level = dto.Level,
             DepartmentId = departmentId,
             BylawId = bylawId,
             EnrollmentDate = enrollmentDate,
             Program = dto.Program,
-            SpecializationId = dto.SpecializationId,
-            ProfileImage = dto.ProfileImage
+            SpecializationId = dto.SpecializationId
         };
     }
 

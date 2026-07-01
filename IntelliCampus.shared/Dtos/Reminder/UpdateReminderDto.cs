@@ -9,4 +9,5 @@ public class UpdateReminderDto
     public string Category { get; } = "personal";
 
     public string Priority { get; set; } = default!;
+    public string SubmissionState { get; set; } = "unsubmitted";
 }

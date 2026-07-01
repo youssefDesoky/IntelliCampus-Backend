@@ -257,7 +257,7 @@ public class ScheduleServiceTests
         captured.CourseId.Should().Be(classEntity.CourseId);
         captured.StudentId.Should().Be(student.UserId);
         captured.ClassId.Should().Be(classEntity.ClassId);
-        captured.InstructorName.Should().Be(classEntity.Instructor?.FullName);
+        captured.InstructorName.Should().Be(classEntity.Instructor?.User?.FullName);
         captured.Date.Should().Be(DateTime.MinValue);
 
         _classRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<ISpecifications<Class>>()), Times.Once);
@@ -515,7 +515,7 @@ public class ScheduleServiceTests
     public async Task ExportSchedulePdfAsync_ExistingStudent_ReturnsPdfBytes()
     {
         var student = TestDataFactory.StudentFaker.Generate();
-        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.FullName, StudentCode = student.StudentCode };
+        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.User.FullName, StudentCode = student.StudentCode };
         var pdfBytes = new byte[] { 0x25, 0x50, 0x44, 0x46 };
 
         _studentServiceMock.Setup(s => s.GetByIdAsync(student.UserId)).ReturnsAsync(studentDto);
@@ -538,7 +538,7 @@ public class ScheduleServiceTests
     public async Task ExportSchedulePdfAsync_PdfExportThrows_WrapsException()
     {
         var student = TestDataFactory.StudentFaker.Generate();
-        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.FullName, StudentCode = student.StudentCode };
+        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.User.FullName, StudentCode = student.StudentCode };
 
         _studentServiceMock.Setup(s => s.GetByIdAsync(student.UserId)).ReturnsAsync(studentDto);
         _studentRepoMock.Setup(r => r.GetByIdAsync(student.UserId)).ReturnsAsync(student);
@@ -560,7 +560,7 @@ public class ScheduleServiceTests
     public async Task ExportSchedulePdfAsync_WithTypeFilter_ReturnsPdfBytes()
     {
         var student = TestDataFactory.StudentFaker.Generate();
-        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.FullName, StudentCode = student.StudentCode };
+        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.User.FullName, StudentCode = student.StudentCode };
         var pdfBytes = new byte[] { 0x25, 0x50, 0x44, 0x46 };
         var queryParams = new IntelliCampus.Shared.Params.ScheduleQueryParams { Types = [ScheduleType.Lecture] };
 
@@ -605,7 +605,7 @@ public class ScheduleServiceTests
     public async Task ExportSchedulePdfAsync_EmptySchedules_ReturnsPdfBytes()
     {
         var student = TestDataFactory.StudentFaker.Generate();
-        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.FullName, StudentCode = student.StudentCode };
+        var studentDto = new IntelliCampus.Shared.Dtos.Student.StudentDto { UserId = student.UserId, FullName = student.User.FullName, StudentCode = student.StudentCode };
         var pdfBytes = new byte[] { 0x25, 0x50, 0x44, 0x46 };
 
         _studentServiceMock.Setup(s => s.GetByIdAsync(student.UserId)).ReturnsAsync(studentDto);

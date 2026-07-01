@@ -12,9 +12,10 @@ using IntelliCampus.Service.Specifications;
 
 namespace IntelliCampus.Service;
 
-public class ClassService(IUnitOfWork unitOfWork) : IClassService
+public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleService) : IClassService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IScheduleService _scheduleService = scheduleService;
 
     private IGenericRepository<Class, int> Classes
         => _unitOfWork.GetRepository<Class, int>();
@@ -238,6 +239,8 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         Classes.Update(classEntity);
         await _unitOfWork.SaveChangesAsync();
 
+        await _scheduleService.SyncFromClassUpdateAsync(classId);
+
         var reloadSpec = new ClassSpec(classId);
         var reloadedClass = await Classes.GetByIdAsync(reloadSpec);
 
@@ -261,6 +264,8 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
         classEntity.InstructorId = instructorId;
         Classes.Update(classEntity);
         await _unitOfWork.SaveChangesAsync();
+
+        await _scheduleService.SyncFromClassUpdateAsync(classId);
 
         var reloadSpec = new ClassSpec(classId);
         var reloadedClass = await Classes.GetByIdAsync(reloadSpec);
@@ -427,70 +432,37 @@ public class ClassService(IUnitOfWork unitOfWork) : IClassService
             CourseId = classEntity.CourseId,
             CourseName = classEntity.Course.CourseName,
             InstructorId = classEntity.InstructorId,
-            InstructorName = classEntity.Instructor?.FullName
+            InstructorName = classEntity.Instructor?.User?.FullName
         };
     }
 
     private static InstructorDto MapInstructorToDto(Instructor instructor)
     {
-        if (instructor is LoanInstructor loanInstructor)
-        {
-            return new LoanInstructorDto
-            {
-                InstructorId = instructor.UserId,
-                NationalId = instructor.NationalId,
-                FullName = instructor.FullName,
-                FullNameAr = instructor.FullNameAr,
-                PhoneNumber = instructor.PhoneNumber,
-                Email = instructor.Email,
-                Address = instructor.Address,
-                Nationality = instructor.Nationality,
-                InstructorCode = instructor.InstructorCode,
-                InstructorRole = instructor.InstructorRole?.ToString(),
-                Specialization = instructor.Specialization,
-                DepartmentId = instructor.DepartmentId,
-                DepartmentName = instructor.Department?.DepartmentName,
-                HireDate = instructor.HireDate?.ToString("dd MM yyyy"),
-                FacultyId = instructor.FacultyId,
-                FacultyName = instructor.Faculty?.FacultyName,
-                Status = instructor.Status?.ToString(),
-                OfficeHoursRoomId = instructor.OfficeHoursRoomId,
-                OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName,
-                ContractStartDate = instructor.ContractStartDate?.ToString("dd MM yyyy"),
-                ContractEndDate = instructor.ContractEndDate?.ToString("dd MM yyyy"),
-                Secondment = instructor.Secondment,
-                LoanFromDepartmentId = loanInstructor.LoanFromDepartmentId,
-                LoanFromFacultyId = loanInstructor.LoanFromFacultyId,
-                LoanProfessorId = loanInstructor.LoanProfessorId,
-                Roles = instructor.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
-            };
-        }
-
         return new InstructorDto
         {
             InstructorId = instructor.UserId,
-            NationalId = instructor.NationalId,
-            FullName = instructor.FullName,
-            FullNameAr = instructor.FullNameAr,
-            PhoneNumber = instructor.PhoneNumber,
-            Email = instructor.Email,
-            Address = instructor.Address,
-            Nationality = instructor.Nationality,
+            NationalId = instructor.User.NationalId,
+            FullName = instructor.User.FullName,
+            FullNameAr = instructor.User.FullNameAr,
+            PhoneNumber = instructor.User.PhoneNumber,
+            Email = instructor.User.Email,
+            Address = instructor.User.Address,
+            Nationality = instructor.User.Nationality,
             InstructorCode = instructor.InstructorCode,
             InstructorRole = instructor.InstructorRole?.ToString(),
             Specialization = instructor.Specialization,
             DepartmentId = instructor.DepartmentId,
             DepartmentName = instructor.Department?.DepartmentName,
             HireDate = instructor.HireDate?.ToString("dd MM yyyy"),
-            FacultyId = instructor.FacultyId,
-            FacultyName = instructor.Faculty?.FacultyName,
+            FacultyId = instructor.User.FacultyId,
+            FacultyName = instructor.User.Faculty?.FacultyName,
             Status = instructor.Status?.ToString(),
             OfficeHoursRoomId = instructor.OfficeHoursRoomId,
             OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName,
             ContractStartDate = instructor.ContractStartDate?.ToString("dd MM yyyy"),
             ContractEndDate = instructor.ContractEndDate?.ToString("dd MM yyyy"),
             Secondment = instructor.Secondment,
-            Roles = instructor.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
+            Roles = instructor.User.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }
 

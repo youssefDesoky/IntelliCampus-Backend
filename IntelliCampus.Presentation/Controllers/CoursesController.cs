@@ -38,6 +38,21 @@ public class CoursesController : ControllerBase
     [Authorize]
     public async Task<ActionResult<PaginatedResult<CourseDto>>> GetActive([FromQuery] CourseQueryParams queryParams)
     {
+        var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+        var userId = GetCurrentUserId();
+
+        if (roles.Any(r => r == "Instructor" || r.StartsWith("Instructor_")))
+        {
+            if (userId.HasValue)
+                queryParams.ExcludeInstructorId = userId.Value;
+        }
+
+        if (userId.HasValue && roles.Any(r => r.StartsWith("Student_")))
+        {
+            var studentCourses = await _courseService.GetActiveCoursesByStudentBylawAsync(userId.Value, queryParams);
+            return Ok(studentCourses);
+        }
+
         var courses = await _courseService.GetActiveCoursesAsync(queryParams);
         return Ok(courses);
     }
@@ -51,6 +66,14 @@ public class CoursesController : ControllerBase
         return Ok(courses);
     }
 
+    [HttpGet("student/{studentId}/all")]
+    [Authorize]
+    public async Task<ActionResult<StudentAllCoursesDto>> GetStudentAllCourses(int studentId)
+    {
+        var result = await _courseService.GetAllStudentCoursesAsync(studentId);
+        return Ok(result);
+    }
+
     [HttpGet("my-courses")]
     [Authorize(Roles = "Student_Bachelor,Student_Masters,Student_PhD,Student_Diploma")]
     public async Task<ActionResult<PaginatedResult<CourseDto>>> GetMyStudentCourses([FromQuery] CourseQueryParams queryParams)
@@ -60,7 +83,7 @@ public class CoursesController : ControllerBase
             return Unauthorized();
 
         queryParams.StudentId = userId.Value;
-        var courses = await _courseService.GetCoursesByStudentIdAsync(queryParams);
+        var courses = await _courseService.GetCoursesByStudentBylawAsync(queryParams);
         return Ok(courses);
     }
 
@@ -90,6 +113,15 @@ public class CoursesController : ControllerBase
     [Authorize]
     public async Task<ActionResult<PaginatedResult<CoursePrerequisiteDto>>> GetAllWithPrerequisites([FromQuery] CourseQueryParams queryParams)
     {
+        var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+        var userId = GetCurrentUserId();
+
+        if (userId.HasValue && roles.Any(r => r.StartsWith("Student_")))
+        {
+            var studentResult = await _courseService.GetAllWithPrerequisitesByStudentBylawAsync(userId.Value, queryParams);
+            return Ok(studentResult);
+        }
+
         var result = await _courseService.GetAllWithPrerequisitesAsync(queryParams);
         return Ok(result);
     }

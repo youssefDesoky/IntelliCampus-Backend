@@ -48,12 +48,14 @@ public class InstructorScheduleService : IInstructorScheduleService
         return schedules;
     }
 
-    public async Task<ScheduleDto> GetScheduleByIdAsync(int classId)
+    public async Task<ScheduleDto> GetScheduleByIdAsync(int classId, int userId)
     {
         var spec = new ClassByIdSpec(classId);
         var cls = await Classes.GetByIdAsync(spec);
         if (cls is null)
             throw new ClassNotFoundException(classId);
+        if (cls.InstructorId != userId)
+            throw new UnauthorizedAccessException("You do not have access to this class.");
 
         return MapToDto(cls);
     }
@@ -106,7 +108,7 @@ public class InstructorScheduleService : IInstructorScheduleService
             ClassType.Lab => "activity",
             _ => "lecture"
         },
-        Instructor = c.Instructor?.FullName,
+        Instructor = c.Instructor?.User?.FullName,
         CourseId = c.CourseId,
         CourseName = c.Course?.CourseName,
         StudentId = 0

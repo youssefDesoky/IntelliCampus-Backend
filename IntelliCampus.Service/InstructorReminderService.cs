@@ -97,6 +97,7 @@ public class InstructorReminderService(IUnitOfWork unitOfWork) : IInstructorRemi
         reminder.Type = ReminderType.Custom;
         reminder.Location = dto.Location;
         reminder.Priority = string.IsNullOrWhiteSpace(dto.Priority) ? "low" : dto.Priority;
+        reminder.State = Enum.TryParse<SubmissionState>(dto.SubmissionState, ignoreCase: true, out var parsed) ? parsed : SubmissionState.Unsubmitted;
 
         Reminders.Update(reminder);
         await _unitOfWork.SaveChangesAsync();
@@ -139,7 +140,8 @@ public class InstructorReminderService(IUnitOfWork unitOfWork) : IInstructorRemi
             DueAt = reminder.Date,
             Location = reminder.Location ?? string.Empty,
             Category = category,
-            Priority = reminder.Priority ?? "low"
+            Priority = reminder.Priority ?? "low",
+            SubmissionState = reminder.State.ToString().ToLowerInvariant()
         };
     }
 }

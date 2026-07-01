@@ -48,41 +48,16 @@ public class PdfExportService : IPdfExportService
             return doc.GetBytes();
         }
 
-        public byte[] ExportCourseAnalytics(CourseAnalyticsExportDto data)
+        private static string SvgArc(float cx, float cy, float r, float startAngleDeg, float endAngleDeg)
         {
-            var doc = new PdfDoc();
-            doc.AddHeader("IntelliCampus", $"Course Analytics");
-            doc.AddInfoLine($"Course: {data.CourseName} ({data.CourseCode})");
-            doc.AddInfoLine($"Instructor: {data.InstructorName}");
-
-            if (data.AssessmentPerformance.Count > 0)
-            {
-                doc.AddTable(
-                    ["Assessment", "Average", "Max Score"],
-                    data.AssessmentPerformance.Select(a => new[] { a.Name, a.Average.ToString("F1"), a.MaxScore.ToString("F1") }),
-                    (0.18f, 0.35f, 0.55f),
-                    centredHeaders: ["Average", "Max Score"]);
-            }
-
-            if (data.SubmissionRate.Count > 0)
-            {
-                doc.AddTable(
-                    ["Status", "Percentage"],
-                    data.SubmissionRate.Select(s => new[] { s.Name, $"{s.Value}%" }),
-                    (0.18f, 0.35f, 0.55f),
-                    centredHeaders: ["Percentage"]);
-            }
-
-            if (data.WeeklyAttendance.Count > 0)
-            {
-                doc.AddTable(
-                    ["Week", "Present", "Absent", "Excused"],
-                    data.WeeklyAttendance.Select(w => new[] { w.Week, w.Present.ToString(), w.Absent.ToString(), w.Excused.ToString() }),
-                    (0.18f, 0.35f, 0.55f),
-                    centredHeaders: ["Present", "Absent", "Excused"]);
-            }
-
-            return doc.GetBytes();
+            double startRad = startAngleDeg * Math.PI / 180;
+            double endRad = endAngleDeg * Math.PI / 180;
+            float x1 = cx + r * (float)Math.Cos(startRad);
+            float y1 = cy + r * (float)Math.Sin(startRad);
+            float x2 = cx + r * (float)Math.Cos(endRad);
+            float y2 = cy + r * (float)Math.Sin(endRad);
+            bool large = (endAngleDeg - startAngleDeg) > 180;
+            return $"M {cx},{cy} L {x1},{y1} A {r},{r} 0 {(large ? 1 : 0)},1 {x2},{y2} Z";
         }
 
         public byte[] ExportAdminAnalysis(AdminAnalysisExportDto data)
