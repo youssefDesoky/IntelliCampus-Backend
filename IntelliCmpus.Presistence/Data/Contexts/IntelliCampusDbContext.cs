@@ -112,9 +112,6 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<EmailVerificationCode> EmailVerificationCodes { get; set; }
     public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
-    // CourseWork weight configuration
-    public DbSet<CourseWorkWeight> CourseWorkWeights { get; set; }
-
     // Elective Buckets
     public DbSet<ElectiveBucket> ElectiveBuckets { get; set; }
     public DbSet<ElectiveBucketCourse> ElectiveBucketCourses { get; set; }

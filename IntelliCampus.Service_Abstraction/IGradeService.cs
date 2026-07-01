@@ -41,8 +41,8 @@ public interface IGradeService
     Task<IEnumerable<GradeDto>> GetByStudentAndCourseAsync(int instructorId, int studentId, int courseId);
 
     // CourseWork weight configuration
-    Task<CourseWorkWeightDto?> GetCourseWorkWeightAsync(int courseId, int instructorId);
-    Task<CourseWorkWeightDto> SetCourseWorkWeightAsync(int courseId, int instructorId, UpdateCourseWorkWeightDto dto);
+    Task<CourseWorkWeightDto> GetCourseWorkWeightAsync(int courseId, int instructorId);
+    Task SetCourseWorkWeightAsync(int courseId, int instructorId, CourseWorkWeightDto dto);
 
     // Complaints
     Task<GradeComplaintResponseDto> FileComplaintAsync(int studentId, GradeComplaintDto dto);
@@ -50,6 +50,4 @@ public interface IGradeService
     Task<GradeComplaintResponseDto?> ReviewComplaintAsync(int complaintId, int instructorId);
     Task<IEnumerable<InstructorGradeComplaintDto>> GetCourseComplaintsAsync(int courseId, int instructorId);
     Task<GradeComplaintResponseDto?> UpdateComplaintStatusAsync(int complaintId, int instructorId, ReviewComplaintDto dto);
-    Task<CourseWorkWeightDto> GetCourseWorkWeightAsync(int courseId, int instructorId);
-    Task SetCourseWorkWeightAsync(int courseId, int instructorId, CourseWorkWeightDto dto);
 }

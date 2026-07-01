@@ -315,7 +315,7 @@ public class GradeService : IGradeService
 
         overallPercent = await ApplyBylawGradeRulesAsync(studentId, courseId,
             assignQuizWeight, midtermWeight, finalWeight,
-            aC + qC, mC, fC, overallPercent);
+            assignQuizContrib, midtermContrib, finalContrib, overallPercent);
 
         var (letter, gpa) = await ResolveGradeScaleAsync(studentId, overallPercent);
 
@@ -1235,7 +1235,7 @@ public class GradeService : IGradeService
                 student.Bylaw.Settings, student.Bylaw.GradeScales,
                 failedCourseStudentIds, courseId,
                 assignQuizWeight, midtermWeight, finalWeight,
-                aC + qC, mC, fC, overallDecimal);
+                assignQuizContrib, midtermContrib, finalContrib, overallDecimal);
         }
 
         var overallPercent = Math.Round((double)overallDecimal, 0);
@@ -1637,84 +1637,6 @@ public class GradeService : IGradeService
     // In-memory variants of the per-course scoring helpers above, operating on
     // data that was batch-loaded once for all of the student's courses. These
     // replace the N+1 round-trips the transcript loop used to perform.
-    // CourseWork weight configuration
-
-    public async Task<CourseWorkWeightDto?> GetCourseWorkWeightAsync(int courseId, int instructorId)
-    {
-        var course = await Courses.GetByIdAsync(courseId);
-        if (course is null)
-            throw new CourseNotFoundException(courseId);
-
-        var teaches = await Classes.AnyAsync(c => c.CourseId == courseId && c.InstructorId == instructorId);
-        if (!teaches)
-            throw new InvalidOperationException("Not authorized.");
-
-        var weight = await CourseWorkWeights.GetByIdAsync(courseId);
-        if (weight is null) return null;
-
-        return new CourseWorkWeightDto
-        {
-            CourseId = weight.CourseId,
-            QuizWeight = weight.QuizWeight,
-            AssignmentWeight = weight.AssignmentWeight,
-            MidtermWeight = weight.MidtermWeight
-        };
-    }
-
-    public async Task<CourseWorkWeightDto> SetCourseWorkWeightAsync(int courseId, int instructorId, UpdateCourseWorkWeightDto dto)
-    {
-        var course = await Courses.GetByIdAsync(courseId);
-        if (course is null)
-            throw new CourseNotFoundException(courseId);
-
-        var isProfessor = await Classes.AnyAsync(c =>
-            c.CourseId == courseId && c.InstructorId == instructorId && c.ClassType == ClassType.Lecture);
-        if (!isProfessor)
-            throw new InvalidOperationException("Not authorized. Only the course professor can manage coursework weights.");
-
-        var totalCoursework = dto.QuizWeight + dto.AssignmentWeight + dto.MidtermWeight;
-
-        var enrolledStudentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(courseId, true), asNoTracking: true)).ToList();
-        if (enrolledStudentCourses.Count > 0)
-        {
-            var anyStudent = await Students.GetByIdAsync(enrolledStudentCourses[0].StudentId);
-            var bylawCourseWork = anyStudent?.Bylaw?.Settings?.CourseWorkGrade;
-            if (bylawCourseWork.HasValue && totalCoursework != bylawCourseWork.Value)
-                throw new InvalidOperationException(
-                    $"Coursework weights ({totalCoursework}) must equal the bylaw's course work grade ({bylawCourseWork.Value}).");
-        }
-
-        var existing = await CourseWorkWeights.GetByIdAsync(courseId);
-        if (existing is not null)
-        {
-            existing.QuizWeight = dto.QuizWeight;
-            existing.AssignmentWeight = dto.AssignmentWeight;
-            existing.MidtermWeight = dto.MidtermWeight;
-            CourseWorkWeights.Update(existing);
-        }
-        else
-        {
-            existing = new CourseWorkWeight
-            {
-                CourseId = courseId,
-                QuizWeight = dto.QuizWeight,
-                AssignmentWeight = dto.AssignmentWeight,
-                MidtermWeight = dto.MidtermWeight
-            };
-            CourseWorkWeights.Add(existing);
-        }
-
-        await _unitOfWork.SaveChangesAsync();
-
-        return new CourseWorkWeightDto
-        {
-            CourseId = existing.CourseId,
-            QuizWeight = existing.QuizWeight,
-            AssignmentWeight = existing.AssignmentWeight,
-            MidtermWeight = existing.MidtermWeight
-        };
-    }
-
     // Weight resolution helpers
 
     private static (decimal AssignmentWeight, decimal QuizWeight, decimal MidtermWeight, decimal FinalWeight) ResolveGradeWeights(
@@ -1968,27 +1890,33 @@ public class GradeService : IGradeService
         return (midtermW, finalW, assignQuizW / 2, assignQuizW / 2);
     }
 
-    private static (decimal AssignContrib, decimal QuizContrib, decimal MidtermContrib, decimal FinalContrib) CalculateWeightedContributions(
+    private static (decimal AssignQuizContrib, decimal MidtermContrib, decimal FinalContrib) CalculateWeightedContributions(
         decimal assignTotalScore, decimal assignTotalMax,
         decimal quizTotalScore, decimal quizTotalMax,
-        decimal midtermScore, decimal midtermMax,
-        decimal finalScore, decimal finalMax,
-        decimal midtermWeight, decimal finalWeight,
-        decimal quizWeight, decimal assignmentWeight)
+        Grade? midterm, Grade? final)
     {
+        var midtermWeight = midterm?.Weight ?? 0;
+        var finalWeight = final?.Weight ?? 0;
+        var assignQuizWeight = 100 - midtermWeight - finalWeight;
+        if (assignQuizWeight < 0) assignQuizWeight = 0;
+
+        var totalMax = assignTotalMax + quizTotalMax;
+        var assignmentWeight = totalMax > 0 ? assignQuizWeight * assignTotalMax / totalMax : assignQuizWeight / 2;
+        var quizWeight = totalMax > 0 ? assignQuizWeight * quizTotalMax / totalMax : assignQuizWeight / 2;
+
         var assignPct = assignTotalMax > 0 ? assignTotalScore / assignTotalMax * 100 : 0;
         var assignContrib = assignPct * assignmentWeight / 100;
 
         var quizPct = quizTotalMax > 0 ? quizTotalScore / quizTotalMax * 100 : 0;
         var quizContrib = quizPct * quizWeight / 100;
 
-        var midtermPct = midtermMax > 0 ? midtermScore / midtermMax * 100 : 0;
+        var midtermPct = midterm is not null && midterm.MaxScore > 0 ? midterm.Score / midterm.MaxScore * 100 : 0;
         var midtermContrib = midtermPct * midtermWeight / 100;
 
-        var finalPct = finalMax > 0 ? finalScore / finalMax * 100 : 0;
+        var finalPct = final is not null && final.MaxScore > 0 ? final.Score / final.MaxScore * 100 : 0;
         var finalContrib = finalPct * finalWeight / 100;
 
-        return (assignContrib, quizContrib, midtermContrib, finalContrib);
+        return (assignContrib + quizContrib, midtermContrib, finalContrib);
     }
 
     private async Task<(string Letter, decimal Gpa)> ResolveGradeScaleAsync(int studentId, decimal percent)
@@ -2182,13 +2110,13 @@ public class GradeService : IGradeService
         if (!teaches)
             throw new InvalidOperationException("Not authorized.");
 
-        var existing = await CourseWorkWeights.GetAllAsync();
-        var weight = existing.FirstOrDefault(w => w.CourseId == courseId);
+        var weight = await CourseWorkWeights.GetByIdAsync(courseId);
         if (weight is null)
-            return new CourseWorkWeightDto { QuizWeight = 0, AssignmentWeight = 0, MidtermWeight = 0 };
+            return new CourseWorkWeightDto { CourseId = courseId, QuizWeight = 0, AssignmentWeight = 0, MidtermWeight = 0 };
 
         return new CourseWorkWeightDto
         {
+            CourseId = weight.CourseId,
             QuizWeight = weight.QuizWeight,
             AssignmentWeight = weight.AssignmentWeight,
             MidtermWeight = weight.MidtermWeight
@@ -2201,11 +2129,24 @@ public class GradeService : IGradeService
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
-        var teaches = await Classes.AnyAsync(c => c.CourseId == courseId && c.InstructorId == instructorId);
-        if (!teaches)
-            throw new InvalidOperationException("Not authorized.");
+        var isProfessor = await Classes.AnyAsync(c =>
+            c.CourseId == courseId && c.InstructorId == instructorId && c.ClassType == ClassType.Lecture);
+        if (!isProfessor)
+            throw new InvalidOperationException("Not authorized. Only the course professor can manage coursework weights.");
 
-        var existing = (await CourseWorkWeights.GetAllAsync()).FirstOrDefault(w => w.CourseId == courseId);
+        var totalCoursework = dto.QuizWeight + dto.AssignmentWeight + dto.MidtermWeight;
+
+        var enrolledStudentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(courseId, true), asNoTracking: true)).ToList();
+        if (enrolledStudentCourses.Count > 0)
+        {
+            var anyStudent = await Students.GetByIdAsync(enrolledStudentCourses[0].StudentId);
+            var bylawCourseWork = anyStudent?.Bylaw?.Settings?.CourseWorkGrade;
+            if (bylawCourseWork.HasValue && totalCoursework != bylawCourseWork.Value)
+                throw new InvalidOperationException(
+                    $"Coursework weights ({totalCoursework}) must equal the bylaw's course work grade ({bylawCourseWork.Value}).");
+        }
+
+        var existing = await CourseWorkWeights.GetByIdAsync(courseId);
         if (existing is not null)
         {
             existing.QuizWeight = dto.QuizWeight;
