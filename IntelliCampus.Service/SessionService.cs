@@ -23,6 +23,8 @@ public class SessionService : ISessionService
     private IGenericRepository<Session, int> Sessions => _unitOfWork.GetRepository<Session, int>();
     private IGenericRepository<Class, int> Classes => _unitOfWork.GetRepository<Class, int>();
     private IGenericRepository<Course, int> Courses => _unitOfWork.GetRepository<Course, int>();
+    private IGenericRepository<StudentCourse, (int, int)> StudentCourses => _unitOfWork.GetRepository<StudentCourse, (int, int)>();
+    private IGenericRepository<Attendance, int> AttendancesRepo => _unitOfWork.GetRepository<Attendance, int>();
 
     private async Task EnsureCourseActiveAsync(int courseId)
     {
@@ -32,22 +34,42 @@ public class SessionService : ISessionService
             throw new InvalidOperationException("This course is finalized and read-only.");
     }
 
-    public async Task<SessionDto> GetByIdAsync(int sessionId)
-    {
-        var spec = new SessionSpec(sessionId);
-        var session = await Sessions.GetByIdAsync(spec) ?? throw new SessionNotFoundException(sessionId);
-        return MapToDto(session);
-    }
-
     public async Task<IEnumerable<SessionDto>> GetByClassIdAsync(int classId)
     {
         var classEntity = await Classes.GetByIdAsync(classId);
         if (classEntity is null)
             throw new ClassNotFoundException(classId);
 
+        var totalStudents = await StudentCourses.CountAsync(sc => sc.CourseId == classEntity.CourseId
+            && sc.Status == StudentCourseStatus.InProgress);
+
         var spec = new SessionSpec(classId, byClass: true);
         var sessions = await Sessions.GetAllAsync(spec, asNoTracking: true);
-        return sessions.Select(MapToDto);
+        var sessionList = sessions.ToList();
+
+        var sessionIds = sessionList.Select(s => s.SessionId).ToHashSet();
+        List<Attendance> attendanceCounts = [];
+        if (sessionIds.Count > 0)
+            attendanceCounts = (await AttendancesRepo.GetAllAsync(
+                new AttendanceSessionSpec(sessionIds), asNoTracking: true)).ToList();
+
+        var presentLookup = attendanceCounts
+            .GroupBy(a => a.SessionId)
+            .ToDictionary(g => g.Key, g => g.Count(a => a.Status == AttendanceStatus.Present
+                                                      || a.Status == AttendanceStatus.Excused));
+
+        return sessionList.Select(s => MapToDto(s, totalStudents,
+            presentLookup.GetValueOrDefault(s.SessionId, 0)));
+    }
+
+    public async Task<SessionDto> GetByIdAsync(int sessionId)
+    {
+        var presentCount = await AttendancesRepo.CountAsync(a => a.SessionId == sessionId
+            && (a.Status == AttendanceStatus.Present || a.Status == AttendanceStatus.Excused));
+
+        var spec = new SessionSpec(sessionId);
+        var session = await Sessions.GetByIdAsync(spec) ?? throw new SessionNotFoundException(sessionId);
+        return MapToDto(session, null, presentCount);
     }
 
     public async Task<SessionDto> CreateAsync(int instructorId, CreateSessionDto dto)
@@ -97,7 +119,7 @@ public class SessionService : ISessionService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    private static SessionDto MapToDto(Session s) => new()
+    private static SessionDto MapToDto(Session s, int? totalStudents = null, int? presentCount = null) => new()
     {
         SessionId = s.SessionId,
         Date = s.Date,
@@ -107,8 +129,8 @@ public class SessionService : ISessionService
         ClassId = s.ClassId,
         ClassName = s.Class?.GroupCode,
         SessionType = s.SessionType,
-        TotalStudents = s.Class?.StudentCourses?.Count ?? s.Attendances?.Count ?? 0,
-        PresentCount = s.Attendances?.Count(a => a.Status == AttendanceStatus.Present
-                                              || a.Status == AttendanceStatus.Excused) ?? 0
+        TotalStudents = totalStudents ?? s.Class?.StudentCourses?.Count ?? s.Attendances?.Count ?? 0,
+        PresentCount = presentCount ?? s.Attendances?.Count(a => a.Status == AttendanceStatus.Present
+                                                              || a.Status == AttendanceStatus.Excused) ?? 0
     };
 }

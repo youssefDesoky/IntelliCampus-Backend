@@ -37,7 +37,16 @@ namespace IntelliCmpus.Presistence.Repositories
             return await query.ToListAsync();
         }
         public async Task<TEntity?> GetByIdAsync(TKey id) 
-            => await _dbContext.Set<TEntity>().FindAsync(id);
+        {
+            if (id is System.Runtime.CompilerServices.ITuple tuple)
+            {
+                var keyValues = new object?[tuple.Length];
+                for (int i = 0; i < tuple.Length; i++)
+                    keyValues[i] = tuple[i];
+                return await _dbContext.Set<TEntity>().FindAsync(keyValues);
+            }
+            return await _dbContext.Set<TEntity>().FindAsync(id);
+        }
         public async Task<TEntity?> GetByIdAsync( ISpecifications<TEntity> specifications) 
             => await SpecificationBuilder.BuildQuery(_dbContext.Set<TEntity>(), specifications).FirstOrDefaultAsync();
         public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate)

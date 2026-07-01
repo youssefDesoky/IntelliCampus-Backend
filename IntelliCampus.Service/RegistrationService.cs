@@ -29,8 +29,8 @@ public class RegistrationService : IRegistrationService
         _bylawService = bylawService;
     }
 
-    private IGenericRepository<StudentCourse, int> StudentCourses
-        => _unitOfWork.GetRepository<StudentCourse, int>();
+    private IGenericRepository<StudentCourse, (int, int)> StudentCourses
+        => _unitOfWork.GetRepository<StudentCourse, (int, int)>();
 
     private IGenericRepository<Student, int> Students
         => _unitOfWork.GetRepository<Student, int>();
@@ -138,6 +138,10 @@ public class RegistrationService : IRegistrationService
             ClassName = sc.Class is not null ? $"{sc.Class.ClassType}" : null,
             ProfessorName = sc.Course.Classes
                 .FirstOrDefault(cl => cl.ClassType == ClassType.Lecture)?.Instructor?.User?.FullName,
+            Schedule = sc.Class?.Day.HasValue == true && sc.Class.StartTime.HasValue && sc.Class.EndTime.HasValue
+                ? $"{sc.Class.Day} {EgyptTime.Today.Add(sc.Class.StartTime.Value):h:mm tt} - {EgyptTime.Today.Add(sc.Class.EndTime.Value):h:mm tt}"
+                : null,
+            Room = sc.Class?.Room,
             Semester = sc.Semester,
             RegisteredAt = sc.RegisteredAt
         });

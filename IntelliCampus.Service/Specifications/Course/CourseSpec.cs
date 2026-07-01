@@ -83,6 +83,7 @@ namespace IntelliCampus.Service.Specifications
             AddInclude(c => c.StudentCourses!);
             AddInclude(c => c.Grades!);
             AddInclude("StudentCourses.Student");
+            AddInclude("StudentCourses.Student.User");
             AddInclude("StudentCourses.Class");
             AddInclude("Classes.Instructor");
             AddInclude("Classes.Instructor.User");

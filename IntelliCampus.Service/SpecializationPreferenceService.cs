@@ -27,8 +27,8 @@ public class SpecializationPreferenceService : ISpecializationPreferenceService
     private IGenericRepository<Bylaw, int> Bylaws
         => _unitOfWork.GetRepository<Bylaw, int>();
 
-    private IGenericRepository<StudentCourse, int> StudentCourses
-        => _unitOfWork.GetRepository<StudentCourse, int>();
+    private IGenericRepository<StudentCourse, (int, int)> StudentCourses
+        => _unitOfWork.GetRepository<StudentCourse, (int, int)>();
 
     private IGenericRepository<Department, int> Departments
         => _unitOfWork.GetRepository<Department, int>();
