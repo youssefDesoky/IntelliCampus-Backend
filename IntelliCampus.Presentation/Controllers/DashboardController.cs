@@ -57,4 +57,21 @@ public class DashboardController : ControllerBase
         var news = await _dashboardService.PublishNewsAsync(userId, dto.Title);
         return Ok(news);
     }
+
+    [HttpPut("admin/news/{id:int}")]
+    [Authorize(Roles = "SuperAdmin,Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,Admin_AcademicStaff")]
+    public async Task<ActionResult<LatestNewsItemDto>> UpdateNews(int id, [FromBody] PublishNewsDto dto)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var news = await _dashboardService.UpdateNewsAsync(id, userId, dto.Title);
+        return Ok(news);
+    }
+
+    [HttpDelete("admin/news/{id:int}")]
+    [Authorize(Roles = "SuperAdmin,Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,Admin_AcademicStaff")]
+    public async Task<ActionResult> DeleteNews(int id)
+    {
+        await _dashboardService.DeleteNewsAsync(id);
+        return NoContent();
+    }
 }

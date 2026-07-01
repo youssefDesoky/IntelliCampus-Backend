@@ -356,6 +356,7 @@ public class StudentService : IStudentService
                 Title = sc.Course.CourseName,
                 CourseName = sc.Course.CourseName,
                 CreditHours = effectiveCredits?.GetValueOrDefault(sc.CourseId, sc.Course.CreditHours) ?? sc.Course.CreditHours,
+                Status = sc.Status.ToString(),
                 Notes = sc.Course.Notes
                     .Where(n => n.StudentId == student.UserId)
                     .Select(n => new StudentCourseNoteDto
