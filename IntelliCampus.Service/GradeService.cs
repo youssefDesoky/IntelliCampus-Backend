@@ -59,6 +59,21 @@ public class GradeService : IGradeService
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
 
+    private async Task EnsureCourseActiveAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null) throw new KeyNotFoundException("Course not found.");
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+    }
+
+    private async Task EnsureStudentEnrollmentActiveAsync(int studentId, int courseId)
+    {
+        var enrollment = await _unitOfWork.GetRepository<StudentCourse, (int, int)>().GetByIdAsync((studentId, courseId));
+        if (enrollment is null || (enrollment.Status != StudentCourseStatus.InProgress && enrollment.Status != StudentCourseStatus.Registered))
+            throw new InvalidOperationException("This course has ended and is read-only.");
+    }
+
     private IGenericRepository<CourseWorkWeight, int> CourseWorkWeights
         => _unitOfWork.GetRepository<CourseWorkWeight, int>();
 
@@ -1298,6 +1313,13 @@ public class GradeService : IGradeService
             _ => throw new InvalidOperationException($"Unknown complaint type: {dto.ComplaintType}")
         };
 
+        var complaintCourseId = await ResolveComplaintCourseIdAsync(dto.GradeId, dto.ComplaintType);
+        if (complaintCourseId.HasValue)
+        {
+            await EnsureCourseActiveAsync(complaintCourseId.Value);
+            await EnsureStudentEnrollmentActiveAsync(studentId, complaintCourseId!.Value);
+        }
+
         var alreadyFiled = await Complaints.AnyAsync(c => c.GradeId == dto.GradeId && c.StudentId == studentId && c.Status == ComplaintStatus.Pending);
         if (alreadyFiled)
             throw new InvalidOperationException("You already have a pending complaint for this grade.");
@@ -1862,6 +1884,22 @@ public class GradeService : IGradeService
         {
             var hasFailedBefore = await StudentCourses.AnyAsync(sc =>
                 sc.StudentId == studentId && sc.CourseId == courseId && sc.Status == StudentCourseStatus.Failed);
+
+            if (!hasFailedBefore)
+            {
+                var course = await Courses.GetByIdAsync(courseId);
+                var courseCode = course?.CourseCode;
+                if (!string.IsNullOrWhiteSpace(courseCode))
+                {
+                    var passingThreshold = settings.MinPassingFinalExamGrade ?? 50m;
+                    hasFailedBefore = await Grades.AnyAsync(g =>
+                        g.StudentId == studentId &&
+                        g.Course!.CourseCode == courseCode &&
+                        g.GradeType == GradeType.Final &&
+                        g.Score < passingThreshold);
+                }
+            }
+
             if (hasFailedBefore)
             {
                 var scale = student?.Bylaw?.GradeScales?
@@ -2128,6 +2166,9 @@ public class GradeService : IGradeService
         var course = await Courses.GetByIdAsync(courseId);
         if (course is null)
             throw new CourseNotFoundException(courseId);
+
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
 
         var isProfessor = await Classes.AnyAsync(c =>
             c.CourseId == courseId && c.InstructorId == instructorId && c.ClassType == ClassType.Lecture);

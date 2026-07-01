@@ -22,6 +22,15 @@ public class SessionService : ISessionService
 
     private IGenericRepository<Session, int> Sessions => _unitOfWork.GetRepository<Session, int>();
     private IGenericRepository<Class, int> Classes => _unitOfWork.GetRepository<Class, int>();
+    private IGenericRepository<Course, int> Courses => _unitOfWork.GetRepository<Course, int>();
+
+    private async Task EnsureCourseActiveAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null) throw new KeyNotFoundException("Course not found.");
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+    }
 
     public async Task<SessionDto> GetByIdAsync(int sessionId)
     {
@@ -48,6 +57,7 @@ public class SessionService : ISessionService
             var classEntity = await Classes.GetByIdAsync(dto.ClassId);
             if (classEntity is null)
                 throw new ClassNotFoundException(dto.ClassId);
+            await EnsureCourseActiveAsync(classEntity.CourseId);
             if (classEntity.InstructorId != instructorId)
                 throw new InvalidOperationException("Not authorized.");
 

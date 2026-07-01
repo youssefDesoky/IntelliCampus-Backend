@@ -27,8 +27,8 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
 
-    private IGenericRepository<StudentCourse, int> StudentCourses
-        => _unitOfWork.GetRepository<StudentCourse, int>();
+    private IGenericRepository<StudentCourse, (int StudentId, int CourseId)> StudentCourses
+        => _unitOfWork.GetRepository<StudentCourse, (int StudentId, int CourseId)>();
 
     private IGenericRepository<Class, int> Classes
         => _unitOfWork.GetRepository<Class, int>();
@@ -51,14 +51,17 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     private IGenericRepository<BylawCourse, int> BylawCourses
         => _unitOfWork.GetRepository<BylawCourse, int>();
 
-    public async Task<CourseDto?> GetByIdAsync(int courseId)
+    private IGenericRepository<CourseWorkWeight, int> CourseWorkWeights
+        => _unitOfWork.GetRepository<CourseWorkWeight, int>();
+
+    public async Task<CourseDto?> GetByIdAsync(int courseId, int? studentId = null)
     {
         var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
 
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
-        return MapToDto(course);
+        return MapToDto(course, studentId);
     }
 
     public async Task<PaginatedResult<CourseDto>> GetAllAsync(CourseQueryParams queryParams)
@@ -476,7 +479,110 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         if (file is null || file.Length is 0)
             throw new ArgumentException("No file uploaded.");
 
-        return await _excelImportService.ImportAsync(ImportEntityType.Grades, file, null, userId);
+        var result = await _excelImportService.ImportAsync(ImportEntityType.Grades, file, null, userId);
+
+        await CheckAndDeactivateIfAllGradedAsync(courseId);
+
+        return result;
+    }
+
+    public async Task CheckAndDeactivateIfAllGradedAsync(int courseId)
+    {
+        var activeEnrollments = (await StudentCourses.GetAllAsync(
+            new StudentCourseIdsSpec(courseId, true, StudentCourseStatus.InProgress), asNoTracking: false)).ToList();
+
+        if (!activeEnrollments.Any())
+            return;
+
+        var grades = await GradesRepo.GetAllAsync(new GradeSpec(courseId, true), asNoTracking: true);
+
+        var allGraded = activeEnrollments.All(sc =>
+            grades.Any(g => g.StudentId == sc.StudentId && g.GradeType == GradeType.Final && g.Status == "Graded"));
+
+        if (!allGraded)
+            return;
+
+        foreach (var sc in activeEnrollments)
+            sc.Status = StudentCourseStatus.Completed;
+
+        await _unitOfWork.SaveChangesAsync();
+
+        await DeactivateAsync(courseId);
+    }
+
+    public async Task<CourseDto> ReactivateCourseAsync(int oldCourseId)
+    {
+        var oldCourse = await Courses.GetByIdAsync(new CourseSpec(oldCourseId));
+        if (oldCourse is null)
+            throw new CourseNotFoundException(oldCourseId);
+
+        var newCourse = new Course
+        {
+            CourseCode = oldCourse.CourseCode,
+            CourseCodeAr = oldCourse.CourseCodeAr,
+            Description = oldCourse.Description,
+            DescriptionAr = oldCourse.DescriptionAr,
+            CourseName = oldCourse.CourseName,
+            CourseNameAr = oldCourse.CourseNameAr,
+            CreditHours = oldCourse.CreditHours,
+            Status = CourseStatus.Active,
+            DepartmentId = oldCourse.DepartmentId,
+            RegistrationStartDate = oldCourse.RegistrationStartDate,
+            RegistrationEndDate = oldCourse.RegistrationEndDate,
+            AllowedLevels = oldCourse.AllowedLevels,
+            AllowedDepartmentIds = oldCourse.AllowedDepartmentIds
+        };
+
+        Courses.Add(newCourse);
+        await _unitOfWork.SaveChangesAsync();
+
+        // Copy prerequisites
+        if (oldCourse.Prerequisites?.Count > 0)
+        {
+            foreach (var prereq in oldCourse.Prerequisites)
+            {
+                Prerequisites.Add(new CoursePrerequisite
+                {
+                    CourseId = newCourse.CourseId,
+                    PrerequisiteCourseId = prereq.PrerequisiteCourseId
+                });
+            }
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        // Copy CourseWorkWeight
+        var oldWeight = (await CourseWorkWeights.GetAllAsync()).FirstOrDefault(w => w.CourseId == oldCourseId);
+        if (oldWeight is not null)
+        {
+            CourseWorkWeights.Add(new CourseWorkWeight
+            {
+                CourseId = newCourse.CourseId,
+                QuizWeight = oldWeight.QuizWeight,
+                AssignmentWeight = oldWeight.AssignmentWeight,
+                MidtermWeight = oldWeight.MidtermWeight
+            });
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        // Add new BylawCourse entry for the new course (keep old one for transcript/history)
+        var oldBylawCourses = await BylawCourses.GetAllAsync(
+            new BylawCourseSpec(oldCourseId, byCourseId: true), asNoTracking: true);
+        foreach (var bc in oldBylawCourses)
+        {
+            BylawCourses.Add(new BylawCourse
+            {
+                BylawId = bc.BylawId,
+                CourseId = newCourse.CourseId,
+                CourseType = bc.CourseType,
+                CreditHours = bc.CreditHours,
+                AllowedDepartmentIds = bc.AllowedDepartmentIds
+            });
+        }
+        if (oldBylawCourses.Any())
+            await _unitOfWork.SaveChangesAsync();
+
+        var result = await Courses.GetByIdAsync(new CourseSpec(newCourse.CourseId));
+        return MapToDto(result!);
     }
 
     public async Task<bool> DeleteAsync(int courseId)

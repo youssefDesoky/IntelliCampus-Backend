@@ -83,7 +83,7 @@ public class CoursesController : ControllerBase
             return Unauthorized();
 
         queryParams.StudentId = userId.Value;
-        var courses = await _courseService.GetCoursesByStudentBylawAsync(queryParams);
+        var courses = await _courseService.GetCoursesByStudentIdAsync(queryParams);
         return Ok(courses);
     }
 
@@ -139,7 +139,11 @@ public class CoursesController : ControllerBase
     [Authorize]
     public async Task<ActionResult<CourseDto>> GetById(int id)
     {
-        var course = await _courseService.GetByIdAsync(id);
+        var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+        var userId = GetCurrentUserId();
+        var isStudent = userId.HasValue && roles.Any(r => r.StartsWith("Student_"));
+
+        var course = await _courseService.GetByIdAsync(id, isStudent ? userId : null);
 
         return Ok(course);
     }
@@ -203,6 +207,14 @@ public class CoursesController : ControllerBase
         return NoContent();
     }
 
+    [HttpPost("{id}/reactivate")]
+    [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
+    public async Task<ActionResult<CourseDto>> Reactivate(int id)
+    {
+        var course = await _courseService.ReactivateCourseAsync(id);
+        return CreatedAtAction(nameof(GetById), new { id = course.CourseId }, course);
+    }
+
     [HttpPatch("{id}/deactivate")]
     [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     public async Task<IActionResult> Deactivate(int id)
@@ -242,40 +254,40 @@ public class CoursesController : ControllerBase
     [Authorize(Roles = "Instructor,Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
     [RequestSizeLimit(50 * 1024 * 1024)]
     [RequestFormLimits(MultipartBodyLengthLimit = 50 * 1024 * 1024)]
-    public async Task<ActionResult<AnnouncementDto>> CreateAnnouncement(int courseId, [FromForm] AnnouncementContentDto dto, IFormFile? file)
+    public async Task<ActionResult<AnnouncementDto>> CreateAnnouncement(int courseId, [FromForm] AnnouncementContentDto dto, List<IFormFile>? attachments = null)
     {
         var senderId = GetCurrentUserId();
         if (senderId is null)
             return Unauthorized();
 
-        string? fileUrl = null;
-        long? fileSize = null;
-
-        if (file is not null)
+        var files = new List<(string FileUrl, long FileSize)>();
+        if (attachments?.Count > 0)
         {
-            if (file.Length > 50 * 1024 * 1024)
-                return BadRequest(new { message = "File size exceeds the 50 MB limit." });
-
             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "announcements");
             Directory.CreateDirectory(uploadsFolder);
 
-            var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-            fileSize = file.Length;
+            foreach (var file in attachments)
+            {
+                if (file.Length > 50 * 1024 * 1024)
+                    return BadRequest(new { message = $"File '{file.FileName}' exceeds the 50 MB limit." });
 
-            await using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, useAsync: true);
-            await file.CopyToAsync(stream);
+                var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-            fileUrl = $"/announcements/{uniqueFileName}";
+                await using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, useAsync: true);
+                await file.CopyToAsync(stream);
+
+                files.Add(($"/announcements/{uniqueFileName}", file.Length));
+            }
         }
 
-        var announcement = await _announcementService.CreateAsync(courseId, senderId.Value, dto, fileUrl, fileSize);
+        var announcement = await _announcementService.CreateAsync(courseId, senderId.Value, dto, files.Count > 0 ? files : null);
         return CreatedAtAction(nameof(GetAnnouncementById), new { courseId, announcementId = announcement.Id }, announcement);
     }
 
     [HttpPut("{courseId}/announcements/{announcementId}")]
     [Authorize(Roles = "Instructor,Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
-    public async Task<ActionResult<AnnouncementDto>> UpdateAnnouncement(int courseId, int announcementId, [FromBody] AnnouncementContentDto dto)
+    public async Task<ActionResult<AnnouncementDto>> UpdateAnnouncement(int courseId, int announcementId, [FromForm] AnnouncementContentDto dto)
     {
         var senderId = GetCurrentUserId();
         if (senderId is null)
@@ -283,6 +295,20 @@ public class CoursesController : ControllerBase
 
         var updated = await _announcementService.UpdateAsync(announcementId, senderId.Value, dto.Content);
         return Ok(updated);
+    }
+
+    [HttpPatch("{courseId}/announcements/{announcementId}/pin")]
+    [Authorize(Roles = "Instructor,Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
+    public async Task<ActionResult<AnnouncementDto>> PinAnnouncement(int courseId, int announcementId, [FromBody] System.Text.Json.JsonElement body)
+    {
+        if (!body.TryGetProperty("isPinned", out var isPinnedProp) || isPinnedProp.ValueKind != System.Text.Json.JsonValueKind.True && isPinnedProp.ValueKind != System.Text.Json.JsonValueKind.False)
+            return BadRequest("isPinned must be a boolean.");
+
+        var announcement = isPinnedProp.GetBoolean()
+            ? await _announcementService.PinAsync(announcementId)
+            : await _announcementService.UnpinAsync(announcementId);
+
+        return Ok(announcement);
     }
 
     [HttpDelete("{courseId}/announcements/{announcementId}")]

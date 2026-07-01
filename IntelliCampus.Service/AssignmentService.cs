@@ -28,6 +28,21 @@ public class AssignmentService(
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
 
+    private async Task EnsureCourseActiveAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null) throw new KeyNotFoundException("Course not found.");
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+    }
+
+    private async Task EnsureStudentEnrollmentActiveAsync(int studentId, int courseId)
+    {
+        var enrollment = await _unitOfWork.GetRepository<StudentCourse, (int, int)>().GetByIdAsync((studentId, courseId));
+        if (enrollment is null || (enrollment.Status != StudentCourseStatus.InProgress && enrollment.Status != StudentCourseStatus.Registered))
+            throw new InvalidOperationException("This course has ended and is read-only.");
+    }
+
     private IGenericRepository<Student, int> Students
         => _unitOfWork.GetRepository<Student, int>();
 
@@ -126,6 +141,9 @@ public class AssignmentService(
         if (course is null)
             throw new CourseNotFoundException(dto.CourseId);
 
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+
         var instructorTeachesCourse = await Classes.AnyAsync(
             c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
 
@@ -194,6 +212,8 @@ public class AssignmentService(
         if (assignment is null)
             throw new AssignmentNotFoundException(assignmentId);
 
+        await EnsureCourseActiveAsync(assignment.CourseId);
+
         var instructorTeachesCourse = await Classes.AnyAsync(
             c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
 
@@ -244,6 +264,9 @@ public class AssignmentService(
         var assignment = await Assignments.GetByIdAsync(spec);
         if (assignment is null)
             throw new AssignmentNotFoundException(assignmentId);
+
+        await EnsureCourseActiveAsync(assignment.CourseId);
+
         var instructorTeachesCourse = await Classes.AnyAsync(
             c => c.CourseId == assignment.CourseId && c.InstructorId == instructorId);
 
@@ -392,6 +415,9 @@ public class AssignmentService(
         var assignment = await Assignments.GetByIdAsync(assignmentId);
         if (assignment is null)
             throw new AssignmentNotFoundException(assignmentId);
+
+        await EnsureCourseActiveAsync(assignment.CourseId);
+        await EnsureStudentEnrollmentActiveAsync(studentId, assignment.CourseId);
 
         var existingSpec = new StudentAssignmentSpec(studentId, assignmentId);
         var existing = await StudentAssignments.GetByIdAsync(existingSpec);

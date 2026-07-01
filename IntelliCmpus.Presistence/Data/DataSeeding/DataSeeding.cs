@@ -1009,12 +1009,18 @@ public class DataSeed : IDataSeed
     private async Task SeedGradesAsync()
     {
         if (await _dbContext.Grades.AnyAsync()) return;
+        var activeCourses = await _dbContext.Set<StudentCourse>()
+            .Where(sc => sc.Status == StudentCourseStatus.InProgress)
+            .Select(sc => sc.CourseId)
+            .Distinct()
+            .ToListAsync();
         var items = await ReadJsonAsync<GradeDto>("grades.json");
         foreach (var dto in items)
         {
             var studentId = _userIds.GetValueOrDefault(dto.StudentEmail);
             var courseId = _courseIds.GetValueOrDefault(dto.CourseCode);
             if (studentId == 0 || courseId == 0) continue;
+            if (activeCourses.Contains(courseId)) continue;
             _dbContext.Grades.Add(new Grade
             {
                 StudentId = studentId,

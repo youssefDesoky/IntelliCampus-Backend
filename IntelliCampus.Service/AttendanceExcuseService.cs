@@ -28,8 +28,29 @@ public class AttendanceExcuseService : IAttendanceExcuseService
     private IGenericRepository<Student, int> Students => _unitOfWork.GetRepository<Student, int>();
     private IGenericRepository<Attendance, int> Attendances => _unitOfWork.GetRepository<Attendance, int>();
 
+    private IGenericRepository<Course, int> Courses
+        => _unitOfWork.GetRepository<Course, int>();
+
+    private async Task EnsureCourseActiveAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null) throw new KeyNotFoundException("Course not found.");
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+    }
+
+    private async Task EnsureStudentEnrollmentActiveAsync(int studentId, int courseId)
+    {
+        var enrollment = await _unitOfWork.GetRepository<StudentCourse, (int, int)>().GetByIdAsync((studentId, courseId));
+        if (enrollment is null || (enrollment.Status != StudentCourseStatus.InProgress && enrollment.Status != StudentCourseStatus.Registered))
+            throw new InvalidOperationException("This course has ended and is read-only.");
+    }
+
     public async Task<AttendanceExcuseDto> SubmitAsync(int studentId, int courseId, SubmitExcuseFormDto dto, CancellationToken ct = default)
     {
+        await EnsureCourseActiveAsync(courseId);
+        await EnsureStudentEnrollmentActiveAsync(studentId, courseId);
+
         var session = await Sessions.GetByIdAsync(dto.SessionId);
         if (session is null)
             throw new SessionNotFoundException("Session not found.");

@@ -36,6 +36,21 @@ public class QuizService : IQuizService
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
 
+    private async Task EnsureCourseActiveAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null) throw new KeyNotFoundException("Course not found.");
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+    }
+
+    private async Task EnsureStudentEnrollmentActiveAsync(int studentId, int courseId)
+    {
+        var enrollment = await _unitOfWork.GetRepository<StudentCourse, (int, int)>().GetByIdAsync((studentId, courseId));
+        if (enrollment is null || (enrollment.Status != StudentCourseStatus.InProgress && enrollment.Status != StudentCourseStatus.Registered))
+            throw new InvalidOperationException("This course has ended and is read-only.");
+    }
+
     private IGenericRepository<Question, int> QuestionsRepo
         => _unitOfWork.GetRepository<Question, int>();
 
@@ -128,6 +143,9 @@ public class QuizService : IQuizService
         if (course is null)
             throw new CourseNotFoundException(dto.CourseId);
 
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == dto.CourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
             throw new InvalidOperationException("Not authorized to create quizzes for this course.");
@@ -158,6 +176,8 @@ public class QuizService : IQuizService
         if (quiz is null)
             throw new QuizNotFoundException(quizId);
 
+        await EnsureCourseActiveAsync(quiz.CourseId);
+
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
             throw new InvalidOperationException("Not authorized.");
@@ -175,6 +195,9 @@ public class QuizService : IQuizService
         var course = await Courses.GetByIdAsync(parsedCourseId);
         if (course is null)
             throw new CourseNotFoundException(parsedCourseId);
+
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
 
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == parsedCourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
@@ -240,6 +263,9 @@ public class QuizService : IQuizService
         if (course is null)
             throw new CourseNotFoundException(parsedCourseId);
 
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+
         var spec = new QuizSpec(quizId);
         var quiz = await Quizzes.GetByIdAsync(spec);
         if (quiz is null)
@@ -265,6 +291,9 @@ public class QuizService : IQuizService
         var course = await Courses.GetByIdAsync(parsedCourseId);
         if (course is null)
             throw new CourseNotFoundException(parsedCourseId);
+
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
 
         var spec = new QuizSpec(quizId);
         var quiz = await Quizzes.GetByIdAsync(spec);
@@ -319,6 +348,8 @@ public class QuizService : IQuizService
 
         if (quiz.CourseId != parsedCourseId)
             throw new QuizNotFoundException(quizId);
+
+        await EnsureCourseActiveAsync(quiz.CourseId);
 
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
@@ -392,6 +423,9 @@ public class QuizService : IQuizService
         var course = await Courses.GetByIdAsync(parsedCourseId);
         if (course is null)
             throw new CourseNotFoundException(parsedCourseId);
+
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
 
         var question = await QuestionsRepo.GetByIdAsync(questionId);
         if (question is null)
@@ -495,6 +529,8 @@ public class QuizService : IQuizService
         var teachesCourse = await Classes.AnyAsync(c => c.CourseId == quiz.CourseId && c.InstructorId == instructorId);
         if (!teachesCourse)
             throw new InvalidOperationException("Not authorized.");
+
+        await EnsureStudentEnrollmentActiveAsync(studentId, quiz.CourseId);
 
         var existing = await StudentQuizzes.GetByIdAsync(new StudentQuizSpec(studentId, quizId));
         if (existing is null)
@@ -950,6 +986,12 @@ public class QuizService : IQuizService
         var quiz = await Quizzes.GetByIdAsync(dto.QuizId);
         if (quiz is null)
             throw new QuizNotFoundException(dto.QuizId);
+
+        var quizCourse = await Courses.GetByIdAsync(quiz.CourseId);
+        if (quizCourse is null || quizCourse.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+
+        await EnsureStudentEnrollmentActiveAsync(studentId, quiz.CourseId);
 
         var now = EgyptTime.Now;
         var quizEndTime = quiz.StartDate.AddMinutes(quiz.DurationMinutes);

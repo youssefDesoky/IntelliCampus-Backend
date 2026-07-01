@@ -50,6 +50,7 @@ namespace IntelliCampus.Service.Specifications
 
         public CourseSpec(List<int> courseIds, CourseQueryParams queryParams, CourseIncludeLevel includeLevel = CourseIncludeLevel.Full)
             : base(c => courseIds.Contains(c.CourseId)
+                && (!queryParams.IsActiveOnly || c.Status == CourseStatus.Active)
                 && (string.IsNullOrEmpty(queryParams.Search)
                     || c.CourseName.Contains(queryParams.Search)
                     || (c.CourseCode != null && c.CourseCode.Contains(queryParams.Search))))
@@ -84,6 +85,7 @@ namespace IntelliCampus.Service.Specifications
             AddInclude("StudentCourses.Student");
             AddInclude("StudentCourses.Class");
             AddInclude("Classes.Instructor");
+            AddInclude("Classes.Instructor.User");
             AddInclude("Classes.Sessions.Attendances");
             AddInclude("Prerequisites.PrerequisiteCourse");
             AddInclude(c => c.ElectiveBucketCourses!);
@@ -98,6 +100,7 @@ namespace IntelliCampus.Service.Specifications
             AddInclude("StudentCourses.Class");
             AddInclude(c => c.Classes!);
             AddInclude("Classes.Instructor");
+            AddInclude("Classes.Instructor.User");
             EnableSplitQuery();
         }
 
@@ -106,6 +109,7 @@ namespace IntelliCampus.Service.Specifications
             AddInclude(c => c.Department!);
             AddInclude(c => c.Classes!);
             AddInclude("Classes.Instructor");
+            AddInclude("Classes.Instructor.User");
             AddInclude("Prerequisites.PrerequisiteCourse");
             AddInclude(c => c.ElectiveBucketCourses!);
             EnableSplitQuery();
