@@ -108,7 +108,14 @@ public class GradesController(IGradeService gradeService) : ControllerBase
     [Authorize(Roles = "Instructor")]
     public async Task<IActionResult> SetCourseWorkWeight(int courseId, [FromBody] CourseWorkWeightDto dto)
     {
-        await gradeService.SetCourseWorkWeightAsync(courseId, UserId, dto);
-        return Ok();
+        try
+        {
+            await gradeService.SetCourseWorkWeightAsync(courseId, UserId, dto);
+            return Ok();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }

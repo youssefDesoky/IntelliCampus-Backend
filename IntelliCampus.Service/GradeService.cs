@@ -2136,15 +2136,30 @@ public class GradeService : IGradeService
 
         var totalCoursework = dto.QuizWeight + dto.AssignmentWeight + dto.MidtermWeight;
 
+        decimal? bylawCourseWork = null;
+
         var enrolledStudentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(courseId, true), asNoTracking: true)).ToList();
         if (enrolledStudentCourses.Count > 0)
         {
-            var anyStudent = await Students.GetByIdAsync(enrolledStudentCourses[0].StudentId);
-            var bylawCourseWork = anyStudent?.Bylaw?.Settings?.CourseWorkGrade;
-            if (bylawCourseWork.HasValue && totalCoursework != bylawCourseWork.Value)
-                throw new InvalidOperationException(
-                    $"Coursework weights ({totalCoursework}) must equal the bylaw's course work grade ({bylawCourseWork.Value}).");
+            var studentSpec = new StudentSpec(new CourseQueryParams { StudentId = enrolledStudentCourses[0].StudentId });
+            var anyStudent = await Students.GetByIdAsync(studentSpec);
+            bylawCourseWork = anyStudent?.Bylaw?.Settings?.CourseWorkGrade;
         }
+        else
+        {
+            var bylawCourse = (await _unitOfWork.GetRepository<BylawCourse, int>().GetAllAsync())
+                .FirstOrDefault(bc => bc.CourseId == courseId);
+            if (bylawCourse is not null)
+            {
+                var bylawSpec = new BylawSpec(bylawCourse.BylawId);
+                var bylaw = await _unitOfWork.GetRepository<Bylaw, int>().GetByIdAsync(bylawSpec);
+                bylawCourseWork = bylaw?.Settings?.CourseWorkGrade;
+            }
+        }
+
+        if (bylawCourseWork.HasValue && totalCoursework != bylawCourseWork.Value)
+            throw new InvalidOperationException(
+                $"Coursework weights ({totalCoursework}) must equal the bylaw's course work grade ({bylawCourseWork.Value}).");
 
         var existing = await CourseWorkWeights.GetByIdAsync(courseId);
         if (existing is not null)
