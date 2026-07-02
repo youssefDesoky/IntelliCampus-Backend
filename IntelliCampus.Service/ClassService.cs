@@ -122,6 +122,9 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         var endTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : (TimeSpan?)null;
         await ValidateNoTimeOverlapAsync(dto.CourseId, classType, day, startTime, endTime);
 
+        if (instructorId.HasValue)
+            await ValidateInstructorTimeConflictAsync(instructorId.Value, day, startTime, endTime);
+
         await ValidateCapacityAgainstRoomAsync(dto.RoomId, dto.Capacity);
 
         // Generate group code (e.g. CS-L1, IS-S1, IS-S2)
@@ -197,6 +200,9 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
 
         var endTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : (TimeSpan?)null;
         await ValidateNoTimeOverlapAsync(courseId, classType, day, startTime, endTime);
+
+        if (instructorId.HasValue)
+            await ValidateInstructorTimeConflictAsync(instructorId.Value, day, startTime, endTime);
 
         await ValidateCapacityAgainstRoomAsync(roomId, capacity);
 
@@ -275,6 +281,9 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
 
         await ValidateCapacityAgainstRoomAsync(classEntity.RoomId, classEntity.Capacity);
 
+        if (classEntity.InstructorId.HasValue && classEntity.Day is not null && classEntity.StartTime is not null && classEntity.EndTime is not null)
+            await ValidateInstructorTimeConflictAsync(classEntity.InstructorId.Value, classEntity.Day, classEntity.StartTime, classEntity.EndTime, excludeClassId: classId);
+
         Classes.Update(classEntity);
         await _unitOfWork.SaveChangesAsync();
 
@@ -302,6 +311,9 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             throw new InstructorNotFoundException(instructorId);
 
         ValidateInstructorRoleForClassType(instructor, classEntity.ClassType);
+
+        if (classEntity.Day is not null && classEntity.StartTime is not null && classEntity.EndTime is not null)
+            await ValidateInstructorTimeConflictAsync(instructorId, classEntity.Day, classEntity.StartTime, classEntity.EndTime, excludeClassId: classId);
 
         classEntity.InstructorId = instructorId;
         Classes.Update(classEntity);
@@ -539,11 +551,36 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         }
     }
 
+    private async Task ValidateInstructorTimeConflictAsync(int instructorId, DayOfWeekEnum? day, TimeSpan? startTime, TimeSpan? endTime, int? excludeClassId = null)
+    {
+        if (day is null || startTime is null || endTime is null)
+            return;
+
+        var existing = await Classes.GetAllAsync(
+            new ClassByInstructorSpec(instructorId), asNoTracking: true);
+
+        foreach (var cls in existing)
+        {
+            if (excludeClassId.HasValue && cls.ClassId == excludeClassId.Value)
+                continue;
+            if (cls.Day != day.Value || cls.StartTime is null || cls.EndTime is null)
+                continue;
+
+            if (startTime.Value < cls.EndTime.Value && endTime.Value > cls.StartTime.Value)
+            {
+                var dayName = day.Value.ToString();
+                throw new InvalidOperationException(
+                    $"Instructor already has a class scheduled on {dayName} at {cls.StartTime.Value:hh\\:mm}–{cls.EndTime.Value:hh\\:mm}. Please choose a different time or assign a different instructor.");
+            }
+        }
+    }
+
     private static InstructorDto MapInstructorToDto(Instructor instructor)
     {
         return new InstructorDto
         {
             InstructorId = instructor.UserId,
+            UserId = instructor.UserId,
             NationalId = instructor.User.NationalId,
             FullName = instructor.User.FullName,
             FullNameAr = instructor.User.FullNameAr,

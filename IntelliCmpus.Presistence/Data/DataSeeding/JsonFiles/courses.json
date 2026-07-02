@@ -426,7 +426,8 @@
     "descriptionAr": "مشروع التخرج: تطبيق المهارات المكتسبة لتطوير نظام معلومات متكامل.",
     "creditHours": 3,
     "status": "Active",
-    "departmentName": "Information Systems"
+    "departmentName": "Information Systems",
+    "isProject": true
   },
   {
     "courseCode": "IS437",
@@ -1009,7 +1010,8 @@
     "descriptionAr": "مشروع تخرج في علم البيانات: تنفيذ مشروع علم بيانات متكامل.",
     "creditHours": 3,
     "status": "Active",
-    "departmentName": "Data Science"
+    "departmentName": "Data Science",
+    "isProject": true
   },
   {
     "courseCode": "SIS418",
@@ -1306,7 +1308,8 @@
     "descriptionAr": "مشروع تخرج في هندسة البرمجيات: مشروع تطوير برمجيات متكامل.",
     "creditHours": 3,
     "status": "Active",
-    "departmentName": "Software Engineering"
+    "departmentName": "Software Engineering",
+    "isProject": true
   },
   {
     "courseCode": "SCS432",
@@ -1526,7 +1529,8 @@
     "descriptionAr": "مشروع تخرج في الأمن السيبراني: تنفيذ مشروع أمني متكامل.",
     "creditHours": 3,
     "status": "Active",
-    "departmentName": "Networks and Cyber Security"
+    "departmentName": "Networks and Cyber Security",
+    "isProject": true
   },
   {
     "courseCode": "SLB311",
@@ -1702,7 +1706,8 @@
     "descriptionAr": "مشروع الماجستير الختامي: تطبيق المعرفة المتقدمة لحل مشكلة حاسوبية كبيرة.",
     "creditHours": 3,
     "status": "Active",
-    "departmentName": "Information Systems"
+    "departmentName": "Information Systems",
+    "isProject": true
   },
   {
     "courseCode": "CS701",
@@ -1834,6 +1839,7 @@
     "descriptionAr": "أطروحة الدكتوراه: مساهمة بحثية أصلية تحت إشراف هيئة التدريس، تنتهي بمناقشة الأطروحة.",
     "creditHours": 12,
     "status": "Active",
-    "departmentName": "Information Systems"
+    "departmentName": "Information Systems",
+    "isProject": true
   }
 ]

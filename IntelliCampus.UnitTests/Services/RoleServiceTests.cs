@@ -111,11 +111,11 @@ public class RoleServiceTests
     {
         _userRepoMock.Setup(r => r.GetByIdAsync(999)).ReturnsAsync((User?)null);
 
-        await _sut.Invoking(s => s.AssignRoleAsync(new AssignRoleDto { UserId = 999, RoleName = "Student_Bachelor" }))
+        await _sut.Invoking(s => s.AssignRoleAsync(new AssignRoleDto { UserId = 999, RoleId = 1 }))
             .Should().ThrowAsync<UserNotFoundException>();
 
         _userRepoMock.Verify(r => r.GetByIdAsync(999), Times.Once);
-        _roleRepoMock.Verify(r => r.GetAllAsync(), Times.Never);
+        _roleRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<int>()), Times.Never);
         _userRoleRepoMock.Verify(r => r.Add(It.IsAny<UserRoleJunction>()), Times.Never);
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);
     }
@@ -124,16 +124,16 @@ public class RoleServiceTests
     public async Task AssignRoleAsync_RoleNotFound_ThrowsRoleNotFoundException()
     {
         var user = TestDataFactory.UserFaker.Generate();
-        var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "NonExistentRole" };
+        var dto = new AssignRoleDto { UserId = user.UserId, RoleId = 999 };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
-        _roleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
+        _roleRepoMock.Setup(r => r.GetByIdAsync(999)).ReturnsAsync((Role?)null);
 
         await _sut.Invoking(s => s.AssignRoleAsync(dto))
             .Should().ThrowAsync<RoleNotFoundException>();
 
         _userRepoMock.Verify(r => r.GetByIdAsync(user.UserId), Times.Once);
-        _roleRepoMock.Verify(r => r.GetAllAsync(), Times.Once);
+        _roleRepoMock.Verify(r => r.GetByIdAsync(999), Times.Once);
         _userRoleRepoMock.Verify(r => r.Add(It.IsAny<UserRoleJunction>()), Times.Never);
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);
     }
@@ -144,10 +144,10 @@ public class RoleServiceTests
         var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Student_Bachelor";
-        var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Student_Bachelor" };
+        var dto = new AssignRoleDto { UserId = user.UserId, RoleId = role.RoleId };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
-        _roleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([role]);
+        _roleRepoMock.Setup(r => r.GetByIdAsync(role.RoleId)).ReturnsAsync(role);
         _userRoleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
 
         UserRoleJunction? captured = null;
@@ -172,7 +172,7 @@ public class RoleServiceTests
         captured.IsActive.Should().BeTrue();
 
         _userRepoMock.Verify(r => r.GetByIdAsync(user.UserId), Times.Once);
-        _roleRepoMock.Verify(r => r.GetAllAsync(), Times.Once);
+        _roleRepoMock.Verify(r => r.GetByIdAsync(role.RoleId), Times.Once);
         _userRoleRepoMock.Verify(r => r.GetAllAsync(), Times.Once);
         _userRoleRepoMock.Verify(r => r.Add(It.IsAny<UserRoleJunction>()), Times.Once);
         _unitOfWorkMock.Verify(u => u.ExecuteSqlAsync(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
@@ -186,10 +186,10 @@ public class RoleServiceTests
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Instructor";
         var existingJunction = new UserRoleJunction { UserId = user.UserId, RoleId = role.RoleId, IsActive = false, AssignedAt = DateTime.UtcNow.AddDays(-10) };
-        var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Instructor" };
+        var dto = new AssignRoleDto { UserId = user.UserId, RoleId = role.RoleId };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
-        _roleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([role]);
+        _roleRepoMock.Setup(r => r.GetByIdAsync(role.RoleId)).ReturnsAsync(role);
         _userRoleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([existingJunction]);
 
         UserRoleJunction? captured = null;
@@ -210,7 +210,7 @@ public class RoleServiceTests
         existingJunction.IsActive.Should().BeTrue();
 
         _userRepoMock.Verify(r => r.GetByIdAsync(user.UserId), Times.Once);
-        _roleRepoMock.Verify(r => r.GetAllAsync(), Times.Once);
+        _roleRepoMock.Verify(r => r.GetByIdAsync(role.RoleId), Times.Once);
         _userRoleRepoMock.Verify(r => r.GetAllAsync(), Times.Once);
         _userRoleRepoMock.Verify(r => r.Update(existingJunction), Times.Once);
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
@@ -223,10 +223,10 @@ public class RoleServiceTests
         var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Student_Bachelor";
-        var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Student_Bachelor" };
+        var dto = new AssignRoleDto { UserId = user.UserId, RoleId = role.RoleId };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
-        _roleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([role]);
+        _roleRepoMock.Setup(r => r.GetByIdAsync(role.RoleId)).ReturnsAsync(role);
         _userRoleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
 
         UserRoleJunction? captured = null;
@@ -256,10 +256,10 @@ public class RoleServiceTests
         var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Student_Masters";
-        var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Student_Masters" };
+        var dto = new AssignRoleDto { UserId = user.UserId, RoleId = role.RoleId };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
-        _roleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([role]);
+        _roleRepoMock.Setup(r => r.GetByIdAsync(role.RoleId)).ReturnsAsync(role);
         _userRoleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
 
         UserRoleJunction? captured = null;
@@ -287,10 +287,10 @@ public class RoleServiceTests
         var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Instructor";
-        var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Instructor" };
+        var dto = new AssignRoleDto { UserId = user.UserId, RoleId = role.RoleId };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
-        _roleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([role]);
+        _roleRepoMock.Setup(r => r.GetByIdAsync(role.RoleId)).ReturnsAsync(role);
         _userRoleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
 
         UserRoleJunction? captured = null;
@@ -319,10 +319,10 @@ public class RoleServiceTests
         var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Instructor";
-        var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Instructor" };
+        var dto = new AssignRoleDto { UserId = user.UserId, RoleId = role.RoleId };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
-        _roleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([role]);
+        _roleRepoMock.Setup(r => r.GetByIdAsync(role.RoleId)).ReturnsAsync(role);
         _userRoleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
 
         UserRoleJunction? captured = null;
@@ -350,10 +350,10 @@ public class RoleServiceTests
         var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Admin_System";
-        var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Admin_System" };
+        var dto = new AssignRoleDto { UserId = user.UserId, RoleId = role.RoleId };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
-        _roleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([role]);
+        _roleRepoMock.Setup(r => r.GetByIdAsync(role.RoleId)).ReturnsAsync(role);
         _userRoleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
 
         UserRoleJunction? captured = null;
@@ -382,10 +382,10 @@ public class RoleServiceTests
         var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
         role.RoleName = "Admin_Bachelor";
-        var dto = new AssignRoleDto { UserId = user.UserId, RoleName = "Admin_Bachelor" };
+        var dto = new AssignRoleDto { UserId = user.UserId, RoleId = role.RoleId };
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
-        _roleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([role]);
+        _roleRepoMock.Setup(r => r.GetByIdAsync(role.RoleId)).ReturnsAsync(role);
         _userRoleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
 
         UserRoleJunction? captured = null;

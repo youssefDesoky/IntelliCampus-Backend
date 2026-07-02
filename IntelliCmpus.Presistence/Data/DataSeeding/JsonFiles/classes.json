@@ -380,16 +380,6 @@
     "instructorEmail": "202601002@intellicampus.online"
   },
   {
-    "groupCode": "IS498-LEC",
-    "classType": "Lecture",
-    "courseCode": "IS498",
-    "day": "Wednesday",
-    "startTime": "12:30",
-    "endTime": "14:00",
-    "room": "Hall-8",
-    "instructorEmail": "202601002@intellicampus.online"
-  },
-  {
     "groupCode": "IS437-LEC",
     "classType": "Lecture",
     "courseCode": "IS437",
@@ -910,16 +900,6 @@
     "instructorEmail": "202601005@intellicampus.online"
   },
   {
-    "groupCode": "SPD498-LEC",
-    "classType": "Lecture",
-    "courseCode": "SPD498",
-    "day": "Monday",
-    "startTime": "14:15",
-    "endTime": "15:45",
-    "room": "Hall-19",
-    "instructorEmail": "202601005@intellicampus.online"
-  },
-  {
     "groupCode": "SIS418-LEC",
     "classType": "Lecture",
     "courseCode": "SIS418",
@@ -1180,16 +1160,6 @@
     "instructorEmail": "202601006@intellicampus.online"
   },
   {
-    "groupCode": "SPS498-LEC",
-    "classType": "Lecture",
-    "courseCode": "SPS498",
-    "day": "Wednesday",
-    "startTime": "12:30",
-    "endTime": "14:00",
-    "room": "Hall-24",
-    "instructorEmail": "202601006@intellicampus.online"
-  },
-  {
     "groupCode": "SCS432-LEC",
     "classType": "Lecture",
     "courseCode": "SCS432",
@@ -1376,16 +1346,6 @@
     "day": "Tuesday",
     "startTime": "10:45",
     "endTime": "12:15",
-    "room": "Hall-28",
-    "instructorEmail": "202601007@intellicampus.online"
-  },
-  {
-    "groupCode": "SPC498-LEC",
-    "classType": "Lecture",
-    "courseCode": "SPC498",
-    "day": "Wednesday",
-    "startTime": "12:30",
-    "endTime": "14:00",
     "room": "Hall-28",
     "instructorEmail": "202601007@intellicampus.online"
   },
@@ -2100,16 +2060,6 @@
     "instructorEmail": "202601006@intellicampus.online"
   },
   {
-    "groupCode": "CS598-LEC",
-    "classType": "Lecture",
-    "courseCode": "CS598",
-    "day": "Monday",
-    "startTime": "12:30",
-    "endTime": "14:00",
-    "room": "Hall-36",
-    "instructorEmail": "202601007@intellicampus.online"
-  },
-  {
     "groupCode": "CS701-LEC",
     "classType": "Lecture",
     "courseCode": "CS701",
@@ -2230,13 +2180,483 @@
     "instructorEmail": "202601003@intellicampus.online"
   },
   {
-    "groupCode": "CS799-LEC",
-    "classType": "Lecture",
-    "courseCode": "CS799",
-    "day": "Thursday",
+    "groupCode": "CS501-TA1",
+    "classType": "Section",
+    "courseCode": "CS501",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Lab-1",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "CS501-TA2",
+    "classType": "Section",
+    "courseCode": "CS501",
+    "day": "Sunday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Lab-2",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "CS502-TA1",
+    "classType": "Section",
+    "courseCode": "CS502",
+    "day": "Monday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Lab-3",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "CS502-TA2",
+    "classType": "Section",
+    "courseCode": "CS502",
+    "day": "Monday",
     "startTime": "14:15",
     "endTime": "15:45",
-    "room": "Hall-49",
+    "room": "Room-101",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "CS503-TA1",
+    "classType": "Section",
+    "courseCode": "CS503",
+    "day": "Tuesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Room-102",
     "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "CS503-TA2",
+    "classType": "Section",
+    "courseCode": "CS503",
+    "day": "Tuesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Lab-1",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "CS504-TA1",
+    "classType": "Section",
+    "courseCode": "CS504",
+    "day": "Wednesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Lab-2",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "CS504-TA2",
+    "classType": "Section",
+    "courseCode": "CS504",
+    "day": "Wednesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Lab-3",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "CS511-TA1",
+    "classType": "Section",
+    "courseCode": "CS511",
+    "day": "Thursday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Room-101",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "CS511-TA2",
+    "classType": "Section",
+    "courseCode": "CS511",
+    "day": "Thursday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Room-102",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "CS521-TA1",
+    "classType": "Section",
+    "courseCode": "CS521",
+    "day": "Sunday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Lab-1",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "CS521-TA2",
+    "classType": "Section",
+    "courseCode": "CS521",
+    "day": "Sunday",
+    "startTime": "14:15",
+    "endTime": "15:45",
+    "room": "Lab-2",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS469-TA1",
+    "classType": "Section",
+    "courseCode": "SCS469",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Room-102",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS469-TA2",
+    "classType": "Section",
+    "courseCode": "SCS469",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Room-103",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS471-TA1",
+    "classType": "Section",
+    "courseCode": "SCS471",
+    "day": "Monday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Room-103",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS471-TA2",
+    "classType": "Section",
+    "courseCode": "SCS471",
+    "day": "Monday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Lab-1",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS472-TA1",
+    "classType": "Section",
+    "courseCode": "SCS472",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Room-102",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS472-TA2",
+    "classType": "Section",
+    "courseCode": "SCS472",
+    "day": "Sunday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Room-103",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "CS462-TA1",
+    "classType": "Section",
+    "courseCode": "CS462",
+    "day": "Monday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Lab-1",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "CS462-TA2",
+    "classType": "Section",
+    "courseCode": "CS462",
+    "day": "Monday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Room-101",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS355-TA1",
+    "classType": "Section",
+    "courseCode": "SCS355",
+    "day": "Sunday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Room-103",
+    "instructorEmail": "202601010@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS355-TA2",
+    "classType": "Section",
+    "courseCode": "SCS355",
+    "day": "Sunday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Room-102",
+    "instructorEmail": "202601010@intellicampus.online"
+  },
+  {
+    "groupCode": "CS701-TA1",
+    "classType": "Section",
+    "courseCode": "CS701",
+    "day": "Tuesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Room-103",
+    "instructorEmail": "202601001@intellicampus.online"
+  },
+  {
+    "groupCode": "CS701-TA2",
+    "classType": "Section",
+    "courseCode": "CS701",
+    "day": "Tuesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Room-103",
+    "instructorEmail": "202601001@intellicampus.online"
+  },
+  {
+    "groupCode": "CS702-TA1",
+    "classType": "Section",
+    "courseCode": "CS702",
+    "day": "Wednesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Lab-1",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "CS702-TA2",
+    "classType": "Section",
+    "courseCode": "CS702",
+    "day": "Wednesday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Room-101",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "CS703-TA1",
+    "classType": "Section",
+    "courseCode": "CS703",
+    "day": "Thursday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Room-103",
+    "instructorEmail": "202601003@intellicampus.online"
+  },
+  {
+    "groupCode": "CS703-TA2",
+    "classType": "Section",
+    "courseCode": "CS703",
+    "day": "Thursday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Room-103",
+    "instructorEmail": "202601003@intellicampus.online"
+  },
+  {
+    "groupCode": "CS704-TA1",
+    "classType": "Section",
+    "courseCode": "CS704",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Lab-2",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "CS704-TA2",
+    "classType": "Section",
+    "courseCode": "CS704",
+    "day": "Sunday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Lab-3",
+    "instructorEmail": "202601004@intellicampus.online"
+  },
+  {
+    "groupCode": "CS711-TA1",
+    "classType": "Section",
+    "courseCode": "CS711",
+    "day": "Monday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Lab-2",
+    "instructorEmail": "202601005@intellicampus.online"
+  },
+  {
+    "groupCode": "CS711-TA2",
+    "classType": "Section",
+    "courseCode": "CS711",
+    "day": "Monday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Room-102",
+    "instructorEmail": "202601005@intellicampus.online"
+  },
+  {
+    "groupCode": "CS712-TA1",
+    "classType": "Section",
+    "courseCode": "CS712",
+    "day": "Tuesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Room-101",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "CS712-TA2",
+    "classType": "Section",
+    "courseCode": "CS712",
+    "day": "Tuesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Room-101",
+    "instructorEmail": "202601006@intellicampus.online"
+  },
+  {
+    "groupCode": "CS512-TA1",
+    "classType": "Section",
+    "courseCode": "CS512",
+    "day": "Wednesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Room-101",
+    "instructorEmail": "202601007@intellicampus.online"
+  },
+  {
+    "groupCode": "CS512-TA2",
+    "classType": "Section",
+    "courseCode": "CS512",
+    "day": "Wednesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Room-101",
+    "instructorEmail": "202601007@intellicampus.online"
+  },
+  {
+    "groupCode": "CS721-TA1",
+    "classType": "Section",
+    "courseCode": "CS721",
+    "day": "Thursday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Lab-1",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "CS721-TA2",
+    "classType": "Section",
+    "courseCode": "CS721",
+    "day": "Thursday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Lab-1",
+    "instructorEmail": "202601008@intellicampus.online"
+  },
+  {
+    "groupCode": "CS722-TA1",
+    "classType": "Section",
+    "courseCode": "CS722",
+    "day": "Sunday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Lab-3",
+    "instructorEmail": "202601009@intellicampus.online"
+  },
+  {
+    "groupCode": "CS722-TA2",
+    "classType": "Section",
+    "courseCode": "CS722",
+    "day": "Sunday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Room-101",
+    "instructorEmail": "202601009@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS432-TA1",
+    "classType": "Section",
+    "courseCode": "SCS432",
+    "day": "Thursday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Lab-3",
+    "instructorEmail": "202601010@intellicampus.online"
+  },
+  {
+    "groupCode": "SCS432-TA2",
+    "classType": "Section",
+    "courseCode": "SCS432",
+    "day": "Thursday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Lab-2",
+    "instructorEmail": "202601010@intellicampus.online"
+  },
+  {
+    "groupCode": "CS731-TA1",
+    "classType": "Section",
+    "courseCode": "CS731",
+    "day": "Monday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Lab-1",
+    "instructorEmail": "202601001@intellicampus.online"
+  },
+  {
+    "groupCode": "CS731-TA2",
+    "classType": "Section",
+    "courseCode": "CS731",
+    "day": "Monday",
+    "startTime": "12:30",
+    "endTime": "14:00",
+    "room": "Room-103",
+    "instructorEmail": "202601001@intellicampus.online"
+  },
+  {
+    "groupCode": "CS741-TA1",
+    "classType": "Section",
+    "courseCode": "CS741",
+    "day": "Tuesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Lab-2",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "CS741-TA2",
+    "classType": "Section",
+    "courseCode": "CS741",
+    "day": "Tuesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Lab-2",
+    "instructorEmail": "202601002@intellicampus.online"
+  },
+  {
+    "groupCode": "CS742-TA1",
+    "classType": "Section",
+    "courseCode": "CS742",
+    "day": "Wednesday",
+    "startTime": "09:00",
+    "endTime": "10:30",
+    "room": "Room-102",
+    "instructorEmail": "202601003@intellicampus.online"
+  },
+  {
+    "groupCode": "CS742-TA2",
+    "classType": "Section",
+    "courseCode": "CS742",
+    "day": "Wednesday",
+    "startTime": "10:45",
+    "endTime": "12:15",
+    "room": "Room-102",
+    "instructorEmail": "202601003@intellicampus.online"
   }
 ]

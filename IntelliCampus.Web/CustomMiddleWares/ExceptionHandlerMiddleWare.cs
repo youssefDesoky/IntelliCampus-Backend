@@ -1,5 +1,6 @@
 ﻿using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Service_Abstraction.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

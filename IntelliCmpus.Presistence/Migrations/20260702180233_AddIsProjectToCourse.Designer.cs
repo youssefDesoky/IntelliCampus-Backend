@@ -4,6 +4,7 @@ using IntelliCampus.Presistence.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260702180233_AddIsProjectToCourse")]
+    partial class AddIsProjectToCourse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -540,15 +543,12 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("GroupCodeAr")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.Property<int?>("InstructorId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RoomId")
-                        .HasColumnType("int");
+                    b.Property<string>("Room")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<TimeSpan?>("StartTime")
                         .HasColumnType("time");
@@ -560,8 +560,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.HasIndex("CourseId");
 
                     b.HasIndex("InstructorId");
-
-                    b.HasIndex("RoomId");
 
                     b.ToTable("Classes");
                 });
@@ -1019,8 +1017,15 @@ namespace IntelliCampus.Presistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamScheduleId"));
 
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
+                    b.Property<string>("CourseCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("CourseName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -1046,8 +1051,9 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("RoomId")
-                        .HasColumnType("int");
+                    b.Property<string>("Location")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
@@ -1062,11 +1068,7 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.HasKey("ExamScheduleId");
 
-                    b.HasIndex("CourseId");
-
                     b.HasIndex("ExamId");
-
-                    b.HasIndex("RoomId");
 
                     b.HasIndex("StudentId", "Date");
 
@@ -1392,8 +1394,9 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Property<string>("Secondment")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SpecializationId")
-                        .HasColumnType("int");
+                    b.Property<string>("Specialization")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Status")
                         .HasMaxLength(20)
@@ -1404,8 +1407,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("OfficeHoursRoomId");
-
-                    b.HasIndex("SpecializationId");
 
                     b.ToTable("Instructors", (string)null);
                 });
@@ -2109,11 +2110,13 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time");
 
-                    b.Property<int?>("InstructorId")
-                        .HasColumnType("int");
+                    b.Property<string>("InstructorName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<int?>("RoomId")
-                        .HasColumnType("int");
+                    b.Property<string>("Location")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ScheduleType")
                         .IsRequired()
@@ -2132,19 +2135,11 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("TitleAr")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
                     b.HasKey("ScheduleId");
 
                     b.HasIndex("ClassId");
 
                     b.HasIndex("CourseId");
-
-                    b.HasIndex("InstructorId");
-
-                    b.HasIndex("RoomId");
 
                     b.HasIndex("ScheduleType");
 
@@ -3053,16 +3048,9 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasForeignKey("InstructorId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("IntelliCampus.Domain.Entities.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.Navigation("Course");
 
                     b.Navigation("Instructor");
-
-                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.Comment", b =>
@@ -3258,20 +3246,9 @@ namespace IntelliCampus.Presistence.Migrations
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.ExamSchedule", b =>
                 {
-                    b.HasOne("IntelliCampus.Domain.Entities.Course", "Course")
-                        .WithMany()
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("IntelliCampus.Domain.Entities.Exam", "Exam")
                         .WithMany("ExamSchedules")
                         .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("IntelliCampus.Domain.Entities.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("IntelliCampus.Domain.Entities.Student", "Student")
@@ -3280,11 +3257,7 @@ namespace IntelliCampus.Presistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Course");
-
                     b.Navigation("Exam");
-
-                    b.Navigation("Room");
 
                     b.Navigation("Student");
                 });
@@ -3434,11 +3407,6 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasForeignKey("OfficeHoursRoomId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("IntelliCampus.Domain.Entities.Specialization", "Specialization")
-                        .WithMany()
-                        .HasForeignKey("SpecializationId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("IntelliCampus.Domain.Entities.User", "User")
                         .WithOne("Instructor")
                         .HasForeignKey("IntelliCampus.Domain.Entities.Instructor", "UserId")
@@ -3448,8 +3416,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("OfficeHoursRoom");
-
-                    b.Navigation("Specialization");
 
                     b.Navigation("User");
                 });
@@ -3719,16 +3685,6 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("IntelliCampus.Domain.Entities.Instructor", "Instructor")
-                        .WithMany()
-                        .HasForeignKey("InstructorId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("IntelliCampus.Domain.Entities.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("IntelliCampus.Domain.Entities.Student", "Student")
                         .WithMany("Schedules")
                         .HasForeignKey("StudentId")
@@ -3738,10 +3694,6 @@ namespace IntelliCampus.Presistence.Migrations
                     b.Navigation("Class");
 
                     b.Navigation("Course");
-
-                    b.Navigation("Instructor");
-
-                    b.Navigation("Room");
 
                     b.Navigation("Student");
                 });

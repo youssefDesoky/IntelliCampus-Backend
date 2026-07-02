@@ -7,6 +7,7 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service.Exceptions;
+using IntelliCampus.Service_Abstraction.Exceptions;
 using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service;
@@ -71,7 +72,7 @@ public class RegistrationService : IRegistrationService
         if (course.Status != CourseStatus.Active)
             throw new InvalidOperationException("This course is finalized and read-only.");
 
-        var classEntity = await ResolveClassForRegistrationAsync(dto, dto.CourseId);
+        var classEntity = await ResolveClassForRegistrationAsync(dto, dto.CourseId, course.IsProject);
 
         // Check if already registered
         var existingRegistration = await StudentCourses.GetByIdAsync(new StudentCourseSpec(studentId, dto.CourseId));
@@ -83,7 +84,8 @@ public class RegistrationService : IRegistrationService
 
         var lectureClass = await Classes.GetByIdAsync(new LectureClassSpec(dto.CourseId));
 
-        await ValidateRegistrationConflictsAsync(studentId, classEntity, lectureClass, course.CourseName, semester);
+        if (classEntity is not null)
+            await ValidateRegistrationConflictsAsync(studentId, classEntity, lectureClass, course.CourseName, semester);
 
         await ValidateRegistrationPeriodAsync(student, course);
 
@@ -98,7 +100,7 @@ public class RegistrationService : IRegistrationService
         {
             StudentId = studentId,
             CourseId = dto.CourseId,
-            ClassId = classEntity.ClassId,
+            ClassId = classEntity?.ClassId,
             Semester = semester,
             RegisteredAt = EgyptTime.Now,
             Status = StudentCourseStatus.InProgress
@@ -113,12 +115,15 @@ public class RegistrationService : IRegistrationService
             $"You have successfully registered for {course.CourseName}.",
             clickUrl: $"/courses/{dto.CourseId}");
 
-        // Sync schedule entry for the registered class
-        await _scheduleService.SyncFromCourseRegistrationAsync(studentId, classEntity.ClassId);
+        if (classEntity is not null)
+        {
+            // Sync schedule entry for the registered class
+            await _scheduleService.SyncFromCourseRegistrationAsync(studentId, classEntity.ClassId);
 
-        // Auto-register the lecture in the schedule when registering for a section or lab
-        if (classEntity.ClassType != ClassType.Lecture && lectureClass is not null)
-            await _scheduleService.SyncFromCourseRegistrationAsync(studentId, lectureClass.ClassId);
+            // Auto-register the lecture in the schedule when registering for a section or lab
+            if (classEntity.ClassType != ClassType.Lecture && lectureClass is not null)
+                await _scheduleService.SyncFromCourseRegistrationAsync(studentId, lectureClass.ClassId);
+        }
 
         return new StudentRegistrationDto
         {
@@ -129,9 +134,9 @@ public class RegistrationService : IRegistrationService
             CourseCode = course.CourseCode,
             CourseCodeAr = course.CourseCodeAr,
             CreditHours = course.CreditHours,
-            ClassId = classEntity.ClassId,
-            ClassName = $"{classEntity.ClassType}",
-            ClassNameAr = ClassTypeAr(classEntity.ClassType),
+            ClassId = classEntity?.ClassId,
+            ClassName = classEntity is not null ? $"{classEntity.ClassType}" : null,
+            ClassNameAr = classEntity is not null ? ClassTypeAr(classEntity.ClassType) : null,
             ProfessorName = lectureClass?.Instructor?.User?.FullName,
             ProfessorNameAr = lectureClass?.Instructor?.User?.FullNameAr,
             Room = classEntity.Room?.RoomName,
@@ -180,9 +185,18 @@ public class RegistrationService : IRegistrationService
         var registration = await StudentCourses.GetByIdAsync(spec);
 
         if (registration is null)
-            throw new InvalidOperationException($"Registration not found for student {studentId} in course {courseId}.");
+            throw new RegistrationNotFoundException(courseId);
 
-        await EnsureCourseActiveAsync(courseId);
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null)
+            throw new CourseNotFoundException(courseId);
+
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is not null)
+            await ValidateRegistrationPeriodAsync(student, course);
+
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
 
         StudentCourses.Delete(registration);
         await _unitOfWork.SaveChangesAsync();
@@ -224,6 +238,22 @@ public class RegistrationService : IRegistrationService
             if (lectureClass is not null)
                 await _scheduleService.SyncFromCourseRegistrationAsync(studentId, lectureClass.ClassId);
         }
+    }
+
+    public async Task UnlinkClassFromRegistrationAsync(int studentId, int courseId)
+    {
+        var spec = new StudentCourseSpec(studentId, courseId);
+        var registration = await StudentCourses.GetByIdAsync(spec);
+        if (registration is null)
+            throw new InvalidOperationException($"Registration not found for student {studentId} in course {courseId}.");
+
+        await EnsureCourseActiveAsync(courseId);
+
+        registration.ClassId = null;
+        StudentCourses.Update(registration);
+        await _unitOfWork.SaveChangesAsync();
+
+        await _scheduleService.RemoveByStudentAndCourseAsync(studentId, courseId);
     }
 
     public async Task<RegistrationSettingsDto> GetRegistrationSettingsAsync(int studentId)
@@ -287,7 +317,7 @@ public class RegistrationService : IRegistrationService
         return completed.Sum(sc => effectiveCredits.GetValueOrDefault(sc.CourseId, sc.Course.CreditHours));
     }
 
-    private async Task<Class> ResolveClassForRegistrationAsync(CourseRegistrationDto dto, int courseId)
+    private async Task<Class?> ResolveClassForRegistrationAsync(CourseRegistrationDto dto, int courseId, bool isProject)
     {
         if (dto.ClassId.HasValue && dto.ClassId > 0)
         {
@@ -296,6 +326,8 @@ public class RegistrationService : IRegistrationService
                 throw new ClassNotFoundException($"Class with ID {dto.ClassId} not found or does not belong to the specified course.");
             return classEntity;
         }
+
+        if (isProject) return null;
 
         var allClasses = await Classes.GetAllAsync(new ClassByCourseSpec(courseId), asNoTracking: true);
         var matching = allClasses.FirstOrDefault(c => c.ClassType == ClassType.Lecture);
@@ -313,18 +345,48 @@ public class RegistrationService : IRegistrationService
         if (classEntity.ClassType != ClassType.Lecture && lectureClass is not null)
             newClasses.Add(lectureClass);
 
+        var courseIdsNeedingLectures = existingSemesterCourses
+            .Where(sc => sc.Class is not null && sc.Class.ClassType != ClassType.Lecture)
+            .Select(sc => sc.Course?.CourseId)
+            .Where(id => id.HasValue)
+            .Select(id => id!.Value)
+            .Distinct()
+            .ToList();
+
+        var existingLectureLookup = new Dictionary<int, Class>();
+        if (courseIdsNeedingLectures.Count != 0)
+        {
+            var allLectures = await Classes.GetAllAsync(
+                new ClassesByCourseIdsSpec(courseIdsNeedingLectures, ClassType.Lecture), asNoTracking: true);
+            foreach (var lec in allLectures)
+                existingLectureLookup[lec.CourseId] = lec;
+        }
+
         foreach (var existing in existingSemesterCourses)
         {
             if (existing.Class is null || existing.Course is null) continue;
-            if (existing.Class.Day is null || existing.Class.StartTime is null || existing.Class.EndTime is null) continue;
 
-            foreach (var nc in newClasses)
+            var existingClasses = new List<Class> { existing.Class };
+
+            if (existing.Class.ClassType != ClassType.Lecture &&
+                existingLectureLookup.TryGetValue(existing.Course.CourseId, out var existingLecture) &&
+                existingLecture.Day is not null && existingLecture.StartTime is not null && existingLecture.EndTime is not null)
             {
-                if (nc.Day is null || nc.StartTime is null || nc.EndTime is null) continue;
-                if (existing.Class.Day != nc.Day) continue;
-                if (existing.Class.StartTime < nc.EndTime && existing.Class.EndTime > nc.StartTime)
-                    throw new InvalidOperationException(
-                        $"Cannot register for \"{courseName}\": time conflict with \"{existing.Course.CourseName}\" on {existing.Class.Day}.");
+                existingClasses.Add(existingLecture);
+            }
+
+            foreach (var ec in existingClasses)
+            {
+                if (ec.Day is null || ec.StartTime is null || ec.EndTime is null) continue;
+
+                foreach (var nc in newClasses)
+                {
+                    if (nc.Day is null || nc.StartTime is null || nc.EndTime is null) continue;
+                    if (ec.Day != nc.Day) continue;
+                    if (ec.StartTime < nc.EndTime && ec.EndTime > nc.StartTime)
+                        throw new InvalidOperationException(
+                            $"Cannot register for \"{courseName}\": time conflict with \"{existing.Course.CourseName}\" on {ec.Day}.");
+                }
             }
         }
     }
