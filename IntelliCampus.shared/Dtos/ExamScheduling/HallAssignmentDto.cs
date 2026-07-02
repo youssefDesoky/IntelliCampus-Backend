@@ -4,6 +4,7 @@ public class HallAssignmentDto
 {
     public int ExamHallId { get; set; }
     public string HallName { get; set; } = null!;
+    public string? HallNameAr { get; set; }
     public int Capacity { get; set; }
     public int AssignedCount { get; set; }
     public int OccupancyPercent => Capacity > 0 ? (AssignedCount * 100) / Capacity : 0;
@@ -18,6 +19,7 @@ public class SeatAssignmentDto
     public int SeatNumber { get; set; }
     public int ExamHallId { get; set; }
     public string? HallName { get; set; }
+    public string? HallNameAr { get; set; }
 }
 
 public class AssignHallsRequestDto

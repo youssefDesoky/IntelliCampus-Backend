@@ -252,7 +252,7 @@ public class ScheduleServiceTests
         captured.Day.Should().Be("Monday");
         captured.StartTime.Should().Be(classEntity.StartTime!.Value);
         captured.EndTime.Should().Be(classEntity.EndTime!.Value);
-        captured.Location.Should().Be(classEntity.Room);
+        captured.Location.Should().BeNull();
         captured.ScheduleType.Should().Be(ScheduleType.Lecture);
         captured.CourseId.Should().Be(classEntity.CourseId);
         captured.StudentId.Should().Be(student.UserId);
@@ -443,7 +443,7 @@ public class ScheduleServiceTests
         updatedSchedules[0].Day.Should().Be("Monday");
         updatedSchedules[0].StartTime.Should().Be(classEntity.StartTime!.Value);
         updatedSchedules[0].EndTime.Should().Be(classEntity.EndTime!.Value);
-        updatedSchedules[0].Location.Should().Be(classEntity.Room);
+        updatedSchedules[0].Location.Should().BeNull();
 
         _classRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<ISpecifications<Class>>()), Times.Once);
         _scheduleRepoMock.Verify(r => r.GetAllAsync(It.IsAny<ISpecifications<Schedule>>()), Times.Once);

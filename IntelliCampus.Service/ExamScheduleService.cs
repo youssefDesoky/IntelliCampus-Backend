@@ -101,14 +101,13 @@ public class ExamScheduleService : IExamScheduleService
         {
             var entry = new ExamSchedule
             {
-                CourseCode = exam.Course.CourseCode ?? string.Empty,
-                CourseName = exam.Course.CourseName,
+                CourseId = exam.CourseId,
+                RoomId = exam.RoomId,
                 Day = exam.Date.DayOfWeek.ToString(),
                 Date = exam.Date,
                 StartTime = startTime,
                 EndTime = endTime,
                 Duration = durationText,
-                Location = exam.Room?.RoomName,
                 ExamType = exam.ExamType,
                 Status = status,
                 StudentId = sc.StudentId,
@@ -149,13 +148,16 @@ public class ExamScheduleService : IExamScheduleService
             Items = exams.Select(e => new ExamScheduleItem
             {
                 CourseCode = e.CourseCode,
+                CourseCodeAr = e.CourseCodeAr,
                 CourseName = e.CourseName,
+                CourseNameAr = e.CourseNameAr,
                 Day = ToFullDayName(e.Day),
                 Date = e.Date.ToString("dd MMM yyyy"),
                 StartTime = e.StartTime,
                 EndTime = e.EndTime,
                 Duration = e.Duration,
                 Location = e.Location,
+                LocationAr = e.LocationAr,
                 ExamType = e.ExamType.ToString()
             }).ToList()
         };
@@ -166,17 +168,21 @@ public class ExamScheduleService : IExamScheduleService
     private static ExamScheduleDto MapToDto(ExamSchedule e) => new()
     {
         ExamScheduleId = e.ExamScheduleId,
-        CourseCode = e.CourseCode,
-        CourseName = e.CourseName,
+        CourseCode = e.Course?.CourseCode,
+        CourseCodeAr = e.Course?.CourseCodeAr,
+        CourseName = e.Course?.CourseName,
+        CourseNameAr = e.Course?.CourseNameAr,
         Day = ToDayAbbreviation(e.Day),
         Date = e.Date,
         StartTime = FormatTime(e.StartTime),
         EndTime = FormatTime(e.EndTime),
         Duration = e.Duration,
-        Location = e.Location,
+        Location = e.Room?.RoomName,
+        LocationAr = e.Room?.RoomNameAr,
         ExamType = e.ExamType,
         Status = e.Status,
-        StudentId = e.StudentId
+        StudentId = e.StudentId,
+        RoomId = e.RoomId
     };
 
     private static string ToDayAbbreviation(string day) => day?.ToLowerInvariant() switch

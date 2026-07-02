@@ -138,10 +138,11 @@ public class ScheduleService : IScheduleService
         var schedule = new Schedule
         {
             Title = cls.Course.CourseName,
+            TitleAr = cls.Course?.CourseNameAr,
             Day = cls.Day?.ToString() ?? string.Empty,
             StartTime = cls.StartTime.Value,
             EndTime = cls.EndTime.Value,
-            Location = cls.Room,
+            RoomId = cls.RoomId,
             ScheduleType = cls.ClassType switch
             {
                 ClassType.Lecture => ScheduleType.Lecture,
@@ -149,7 +150,7 @@ public class ScheduleService : IScheduleService
                 ClassType.Lab => ScheduleType.Activity,
                 _ => ScheduleType.Lecture
             },
-            InstructorName = cls.Instructor?.User?.FullName,
+            InstructorId = cls.InstructorId,
             CourseId = cls.CourseId,
             StudentId = studentId,
             ClassId = cls.ClassId,
@@ -185,8 +186,8 @@ public class ScheduleService : IScheduleService
             s.Day = cls.Day?.ToString() ?? string.Empty;
             s.StartTime = cls.StartTime.Value;
             s.EndTime = cls.EndTime.Value;
-            s.Location = cls.Room;
-            s.InstructorName = cls.Instructor?.User?.FullName;
+            s.RoomId = cls.RoomId;
+            s.InstructorId = cls.InstructorId;
             Schedules.Update(s);
         }
 
@@ -214,9 +215,12 @@ public class ScheduleService : IScheduleService
                 StartTime = s.StartTime,
                 EndTime = s.EndTime,
                 CourseName = s.CourseName ?? s.Title,
+                CourseNameAr = s.CourseNameAr,
                 Type = s.Type,
                 Location = s.Location,
-                Instructor = s.Instructor
+                LocationAr = s.LocationAr,
+                InstructorName = s.InstructorName,
+                InstructorNameAr = s.InstructorNameAr
             }).ToList()
         };
 
@@ -234,16 +238,22 @@ public class ScheduleService : IScheduleService
     {
         ScheduleId = s.ScheduleId,
         Title = s.Title,
+        TitleAr = s.TitleAr,
         Day = ToDayAbbreviation(s.Day),
         Date = s.Date,
         StartTime = FormatTime(s.StartTime),
         EndTime = FormatTime(s.EndTime),
-        Location = s.Location,
+        Location = s.Room?.RoomName,
+        LocationAr = s.Room?.RoomNameAr,
         Type = s.ScheduleType.ToString().ToLowerInvariant(),
-        Instructor = s.InstructorName,
+        InstructorName = s.Instructor?.User?.FullName,
+        InstructorNameAr = s.Instructor?.User?.FullNameAr,
         CourseId = s.CourseId,
         CourseName = s.Course?.CourseName,
-        StudentId = s.StudentId
+        CourseNameAr = s.Course?.CourseNameAr,
+        StudentId = s.StudentId,
+        RoomId = s.RoomId,
+        InstructorId = s.InstructorId
     };
 
     private static string ToDayAbbreviation(string day) => day?.ToLowerInvariant() switch

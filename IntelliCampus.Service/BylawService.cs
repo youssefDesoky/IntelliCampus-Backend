@@ -519,7 +519,9 @@ public class BylawService : IBylawService
                 BylawCourseId = p.BylawCourseId,
                 PrerequisiteBylawCourseId = p.PrerequisiteBylawCourseId,
                 PrerequisiteCourseCode = p.PrerequisiteCourse.Course.CourseCode,
-                PrerequisiteCourseName = p.PrerequisiteCourse.Course.CourseName
+                PrerequisiteCourseCodeAr = p.PrerequisiteCourse.Course.CourseCodeAr,
+                PrerequisiteCourseName = p.PrerequisiteCourse.Course.CourseName,
+                PrerequisiteCourseNameAr = p.PrerequisiteCourse.Course.CourseNameAr
             })
             .ToList() ?? new();
 
@@ -575,7 +577,9 @@ public class BylawService : IBylawService
             BylawId = bc.BylawId,
             CourseId = bc.CourseId,
             CourseCode = course?.CourseCode,
+            CourseCodeAr = course?.CourseCodeAr,
             CourseName = course?.CourseName,
+            CourseNameAr = course?.CourseNameAr,
             CourseType = bc.CourseType.ToString(),
             CreditHours = bc.CreditHours,
             AllowedDepartments = allowedDepts,
@@ -667,8 +671,10 @@ public class BylawService : IBylawService
                 NameAr = eb.NameAr,
                 BylawId = eb.BylawId,
                 BylawName = bylaw.Name,
+                BylawNameAr = bylaw.NameAr,
                 DepartmentId = eb.DepartmentId,
                 DepartmentName = eb.Department?.DepartmentName,
+                DepartmentNameAr = eb.Department?.DepartmentNameAr,
                 RequiredCreditHours = eb.RequiredCreditHours,
                 IsActive = eb.IsActive,
                 Courses = (eb.ElectiveBucketCourses ?? [])
@@ -676,7 +682,9 @@ public class BylawService : IBylawService
                 {
                     CourseId = ebc.CourseId,
                     CourseCode = ebc.Course?.CourseCode,
+                    CourseCodeAr = ebc.Course?.CourseCodeAr,
                     CourseName = ebc.Course?.CourseName ?? "Unknown",
+                    CourseNameAr = ebc.Course?.CourseNameAr,
                     CreditHours = ebc.Course?.CreditHours ?? 0,
                     BylawCourseId = bcLookup.GetValueOrDefault(ebc.CourseId)
                 }).ToList()
@@ -702,7 +710,9 @@ public class BylawService : IBylawService
                     BylawCourseId = p.BylawCourseId,
                     PrerequisiteBylawCourseId = p.PrerequisiteBylawCourseId,
                     PrerequisiteCourseCode = p.PrerequisiteCourse.Course.CourseCode,
-                    PrerequisiteCourseName = p.PrerequisiteCourse.Course.CourseName
+                    PrerequisiteCourseCodeAr = p.PrerequisiteCourse.Course.CourseCodeAr,
+                    PrerequisiteCourseName = p.PrerequisiteCourse.Course.CourseName,
+                    PrerequisiteCourseNameAr = p.PrerequisiteCourse.Course.CourseNameAr
                 })
                 .ToList();
 
@@ -712,7 +722,9 @@ public class BylawService : IBylawService
                 BylawId = bc.BylawId,
                 CourseId = bc.CourseId,
                 CourseCode = bc.Course?.CourseCode,
+                CourseCodeAr = bc.Course?.CourseCodeAr,
                 CourseName = bc.Course?.CourseName,
+                CourseNameAr = bc.Course?.CourseNameAr,
                 CourseType = bc.CourseType.ToString(),
                 CreditHours = bc.CreditHours,
                 AllowedDepartments = allowedDepts,

@@ -63,7 +63,9 @@ public class BylawCourseDto
     public int BylawId { get; set; }
     public int CourseId { get; set; }
     public string? CourseCode { get; set; }
+    public string? CourseCodeAr { get; set; }
     public string? CourseName { get; set; }
+    public string? CourseNameAr { get; set; }
     public string CourseType { get; set; } = null!;
     public int? CreditHours { get; set; }
     public List<int>? AllowedDepartments { get; set; }
@@ -75,5 +77,7 @@ public class BylawCoursePrerequisiteDto
     public int BylawCourseId { get; set; }
     public int PrerequisiteBylawCourseId { get; set; }
     public string? PrerequisiteCourseCode { get; set; }
+    public string? PrerequisiteCourseCodeAr { get; set; }
     public string? PrerequisiteCourseName { get; set; }
+    public string? PrerequisiteCourseNameAr { get; set; }
 }

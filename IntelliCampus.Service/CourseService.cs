@@ -339,7 +339,9 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         {
             CourseId = c.CourseId,
             CourseName = c.CourseName,
+            CourseNameAr = c.CourseNameAr,
             CourseCode = c.CourseCode,
+            CourseCodeAr = c.CourseCodeAr,
             CreditHours = c.CreditHours,
             Prerequisites = c.Prerequisites?
                 .Select(p => p.PrerequisiteCourse)
@@ -347,7 +349,9 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
                 .Select(p => new PrerequisiteItemDto
                 {
                     Code = p!.CourseCode ?? p.CourseId.ToString(),
-                    Title = p.CourseName
+                    CodeAr = p.CourseCodeAr,
+                    Title = p.CourseName,
+                    TitleAr = p.CourseNameAr
                 })
                 .ToList() ?? []
         });
@@ -381,7 +385,9 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         {
             CourseId = c.CourseId,
             CourseName = c.CourseName,
+            CourseNameAr = c.CourseNameAr,
             CourseCode = c.CourseCode,
+            CourseCodeAr = c.CourseCodeAr,
             CreditHours = c.CreditHours,
             Prerequisites = c.Prerequisites?
                 .Select(p => p.PrerequisiteCourse)
@@ -389,7 +395,9 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
                 .Select(p => new PrerequisiteItemDto
                 {
                     Code = p!.CourseCode ?? p.CourseId.ToString(),
-                    Title = p.CourseName
+                    CodeAr = p.CourseCodeAr,
+                    Title = p.CourseName,
+                    TitleAr = p.CourseNameAr
                 })
                 .ToList() ?? []
         });
@@ -660,16 +668,20 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             StudentCode = student.StudentCode,
             FacultyId = student.User.FacultyId,
             FacultyName = student.User.Faculty?.FacultyName,
+            FacultyNameAr = student.User.Faculty?.FacultyNameAr,
             Level = student.Level,
             DepartmentId = student.DepartmentId,
             DepartmentName = student.Department?.DepartmentName,
+            DepartmentNameAr = student.Department?.DepartmentNameAr,
             BylawId = student.BylawId,
             BylawName = student.Bylaw?.Name,
+            BylawNameAr = student.Bylaw?.NameAr,
             EnrollmentDate = student.EnrollmentDate?.ToString("dd MM yyyy"),
             Gpa = student.Gpa,
             Program = student.Program,
             SpecializationId = student.SpecializationId,
             SpecializationName = student.Specialization?.Name,
+            SpecializationNameAr = student.Specialization?.NameAr,
             StudentType = student.StudentType,
             ProfileImage = _urlResolver.ResolveProfile(student.User.ProfileImage),
             Roles = student.User.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
@@ -716,11 +728,12 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         List<Grade>? preloadedGrades = null, StudentCourse? preloadedStudentCourse = null)
     {
         var currentSemester = SemesterHelper.GetCurrentSemester();
+        var currentSemesterAr = SemesterHelper.GetCurrentSemesterAr();
 
         var (_, _, attendancePercent) = ComputeAttendanceData(course, studentId);
         var (avgGrade, gradeLetter, courseWork) = ComputeCourseGradeData(course, studentId, gradeScales, preloadedGrades);
-        var (schedule, room) = BuildScheduleInfo(course);
-        var (classId, className, studentCourseStatusName) = GetStudentCourseInfo(course, studentId, preloadedStudentCourse);
+        var (schedule, room, scheduleAr, roomAr) = BuildScheduleInfo(course);
+        var (classId, className, classType, studentCourseStatusName) = GetStudentCourseInfo(course, studentId, preloadedStudentCourse);
 
         var lectureClass = course.Classes?.FirstOrDefault(cl => cl.ClassType == ClassType.Lecture);
         var numStudents = preloadedStudentCourse is not null ? 0 : (course.StudentCourses?.Count ?? 0);
@@ -753,8 +766,11 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
                 .Select(p => p.PrerequisiteCourse?.CourseCode ?? p.PrerequisiteCourseId.ToString())
                 .ToList(),
             Semester = currentSemester,
+            SemesterAr = currentSemesterAr,
             Schedule = schedule,
+            ScheduleAr = scheduleAr,
             Room = room,
+            RoomAr = roomAr,
             NumOfStudents = numStudents,
             TotalStudents = numStudents,
             WeeksCompleted = distinctSessionWeeks,
@@ -765,9 +781,11 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             CourseWork = courseWork,
             ClassId = classId,
             ClassName = className,
+            ClassNameAr = classType.HasValue ? ClassTypeAr(classType.Value) : null,
             IsElective = course.ElectiveBucketCourses?.Count > 0,
             StudentCourseStatusName = studentCourseStatusName,
             ProfessorName = lectureClass?.Instructor?.User?.FullName,
+            ProfessorNameAr = lectureClass?.Instructor?.User?.FullNameAr,
             RegistrationStartDate = course.RegistrationStartDate,
             RegistrationEndDate = course.RegistrationEndDate,
             AllowedLevels = course.AllowedLevels is not null
@@ -838,36 +856,61 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         return (avgGrade, gradeLetter, courseWork);
     }
 
-    private static (string? Schedule, string? Room) BuildScheduleInfo(Course course)
+    private static (string? Schedule, string? Room, string? ScheduleAr, string? RoomAr) BuildScheduleInfo(Course course)
     {
         var lectureClass = course.Classes?.FirstOrDefault(cl => cl.ClassType == ClassType.Lecture);
         var scheduleClass = lectureClass ?? course.Classes?.FirstOrDefault();
 
         string? schedule = null;
         string? room = null;
+        string? scheduleAr = null;
+        string? roomAr = null;
 
         var today = EgyptTime.Today;
         var now = EgyptTime.Now;
 
         if (scheduleClass is not null)
         {
-            room = scheduleClass.Room;
+            room = scheduleClass.Room?.RoomName;
+            roomAr = scheduleClass.Room?.RoomNameAr;
             if (scheduleClass.Day.HasValue && scheduleClass.StartTime.HasValue && scheduleClass.EndTime.HasValue)
             {
                 var startFormatted = today.Add(scheduleClass.StartTime.Value).ToString("h:mm tt");
                 var endFormatted = today.Add(scheduleClass.EndTime.Value).ToString("h:mm tt");
                 schedule = $"{scheduleClass.Day.Value} {startFormatted} - {endFormatted}";
+                scheduleAr = $"{DayNameAr(scheduleClass.Day.Value)} {startFormatted} - {endFormatted}";
             }
         }
 
-        return (schedule, room);
+        return (schedule, room, scheduleAr, roomAr);
     }
 
-    private static (int? ClassId, string? ClassName, string? StudentCourseStatusName) GetStudentCourseInfo(
+    private static string DayNameAr(DayOfWeekEnum day) => day switch
+    {
+        DayOfWeekEnum.Sunday => "الأحد",
+        DayOfWeekEnum.Monday => "الإثنين",
+        DayOfWeekEnum.Tuesday => "الثلاثاء",
+        DayOfWeekEnum.Wednesday => "الأربعاء",
+        DayOfWeekEnum.Thursday => "الخميس",
+        DayOfWeekEnum.Friday => "الجمعة",
+        DayOfWeekEnum.Saturday => "السبت",
+        _ => null!
+    };
+
+    private static string? ClassTypeAr(ClassType type) => type switch
+    {
+        ClassType.Lecture => "محاضرة",
+        ClassType.Lab => "معمل",
+        ClassType.Section => "مجموعة",
+        _ => null
+    };
+
+    private static (int? ClassId, string? ClassName, ClassType? ClassType, string? StudentCourseStatusName) GetStudentCourseInfo(
         Course course, int? studentId, StudentCourse? preloadedStudentCourse = null)
     {
         int? classId = null;
         string? className = null;
+        ClassType? classType = null;
         string? studentCourseStatusName = null;
         if (studentId.HasValue)
         {
@@ -877,6 +920,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             {
                 classId = studentCourse.ClassId;
                 className = studentCourse.Class?.GroupCode;
+                classType = studentCourse.Class?.ClassType;
                 studentCourseStatusName = studentCourse.Status switch
                 {
                     StudentCourseStatus.Registered or StudentCourseStatus.InProgress => "InProgress",
@@ -886,6 +930,6 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             }
         }
 
-        return (classId, className, studentCourseStatusName);
+        return (classId, className, classType, studentCourseStatusName);
     }
 }

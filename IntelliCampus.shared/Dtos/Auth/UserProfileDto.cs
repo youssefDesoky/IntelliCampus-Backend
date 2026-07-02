@@ -13,13 +13,20 @@ public class UserProfileDto
     public string? ProfileImage { get; set; }
     public string? Nationality { get; set; }
     public string? FacultyName { get; set; }
+    public string? FacultyNameAr { get; set; }
     public string? InstructorCode { get; set; }
     public string? InstructorRole { get; set; }
-    public string? Specialization { get; set; }
+    public int? SpecializationId { get; set; }
+    public string? SpecializationName { get; set; }
+    public string? SpecializationNameAr { get; set; }
     public int? DepartmentId { get; set; }
     public string? DepartmentName { get; set; }
+    public string? DepartmentNameAr { get; set; }
     public string? HireDate { get; set; }
     public string? Status { get; set; }
     public string? OfficeHoursRoomName { get; set; }
+    public string? OfficeHoursRoomNameAr { get; set; }
     public string? OfficeHoursRoomLocation { get; set; }
+    public string? OfficeHoursRoomLocationAr { get; set; }
+
 }

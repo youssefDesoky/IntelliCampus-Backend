@@ -1,5 +1,6 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Entities.Enums;
+using IntelliCampus.Domain.Helpers;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
@@ -544,9 +545,12 @@ public class GradeService : IGradeService
             {
                 CourseId = course.CourseId,
                 CourseName = course.CourseName,
+                CourseNameAr = course.CourseNameAr,
                 CourseCode = course.CourseCode!,
+                CourseCodeAr = course.CourseCodeAr,
                 CreditHours = effectiveCredits.GetValueOrDefault(course.CourseId, course.CreditHours),
                 Semester = sc.Semester,
+                SemesterAr = SemesterHelper.GetSemesterAr(sc.Semester),
                 Level = level,
                 Coursework = courseworkStr,
                 TotalGrade = totalGradeStr,
@@ -694,11 +698,11 @@ public class GradeService : IGradeService
         var gpa = await GetCumulativeGpaAsync(studentId);
 
         var bucketTypes = new[] {
-            (Type: CourseType.GeneralUniversity, Name: "University Requirements"),
-            (Type: CourseType.Faculty, Name: "Faculty Requirements"),
-            (Type: CourseType.Department, Name: "Department Requirements"),
-            (Type: CourseType.Specialization, Name: "Major Requirements"),
-            (Type: CourseType.Elective, Name: "Free Electives")
+            (Type: CourseType.GeneralUniversity, Name: "University Requirements", NameAr: "متطلبات الجامعة"),
+            (Type: CourseType.Faculty, Name: "Faculty Requirements", NameAr: "متطلبات الكلية"),
+            (Type: CourseType.Department, Name: "Department Requirements", NameAr: "متطلبات القسم"),
+            (Type: CourseType.Specialization, Name: "Major Requirements", NameAr: "متطلبات التخصص"),
+            (Type: CourseType.Elective, Name: "Free Electives", NameAr: "مواد اختيارية")
         };
 
         var electiveBucketTotalHours = (int)bylaw.ElectiveBuckets
@@ -711,7 +715,7 @@ public class GradeService : IGradeService
 
         var buckets = new List<BylawBucketDto>();
 
-        foreach (var (type, name) in bucketTypes)
+        foreach (var (type, name, nameAr) in bucketTypes)
         {
             var group = grouped.FirstOrDefault(g => g.Key == type)?.ToList() ?? [];
             if (group.Count == 0 && type != CourseType.Elective)
@@ -724,7 +728,9 @@ public class GradeService : IGradeService
                 {
                     CourseId = bc.CourseId,
                     CourseCode = bc.Course?.CourseCode ?? "",
+                    CourseCodeAr = bc.Course?.CourseCodeAr,
                     CourseName = bc.Course?.CourseName ?? "",
+                    CourseNameAr = bc.Course?.CourseNameAr,
                     CreditHours = credit,
                     IsCompleted = completedCourseIds.Contains(bc.CourseId)
                 };
@@ -741,6 +747,7 @@ public class GradeService : IGradeService
             buckets.Add(new BylawBucketDto
             {
                 BucketName = name,
+                BucketNameAr = nameAr,
                 BucketType = type.ToString(),
                 CompletedHours = completedHours,
                 RequiredHours = requiredHours,

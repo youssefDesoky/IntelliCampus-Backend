@@ -12,14 +12,6 @@ public class ExamScheduleConfiguration : IEntityTypeConfiguration<ExamSchedule>
 
         builder.HasKey(e => e.ExamScheduleId);
 
-        builder.Property(e => e.CourseCode)
-            .IsRequired()
-            .HasMaxLength(20);
-
-        builder.Property(e => e.CourseName)
-            .IsRequired()
-            .HasMaxLength(200);
-
         builder.Property(e => e.Day)
             .IsRequired()
             .HasMaxLength(20);
@@ -37,9 +29,6 @@ public class ExamScheduleConfiguration : IEntityTypeConfiguration<ExamSchedule>
             .IsRequired()
             .HasMaxLength(50);
 
-        builder.Property(e => e.Location)
-            .HasMaxLength(200);
-
         builder.Property(e => e.ExamType)
             .HasConversion<string>()
             .HasMaxLength(20)
@@ -52,6 +41,8 @@ public class ExamScheduleConfiguration : IEntityTypeConfiguration<ExamSchedule>
 
         builder.HasIndex(e => new { e.StudentId, e.Date });
         builder.HasIndex(e => e.ExamId);
+        builder.HasIndex(e => e.CourseId);
+        builder.HasIndex(e => e.RoomId);
 
         builder.HasOne(e => e.Student)
             .WithMany()
@@ -61,6 +52,16 @@ public class ExamScheduleConfiguration : IEntityTypeConfiguration<ExamSchedule>
         builder.HasOne(e => e.Exam)
             .WithMany(e => e.ExamSchedules)
             .HasForeignKey(e => e.ExamId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(e => e.Course)
+            .WithMany()
+            .HasForeignKey(e => e.CourseId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(e => e.Room)
+            .WithMany()
+            .HasForeignKey(e => e.RoomId)
             .OnDelete(DeleteBehavior.SetNull);
     }
 }

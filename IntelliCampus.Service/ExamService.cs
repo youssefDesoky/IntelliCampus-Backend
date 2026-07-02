@@ -308,9 +308,12 @@ public class ExamService : IExamService
             TotalMarks = exam.TotalMarks,
             RoomId = exam.RoomId,
             RoomName = exam.Room?.RoomName,
+            RoomNameAr = exam.Room?.RoomNameAr,
             CourseId = exam.CourseId,
             CourseName = exam.Course?.CourseName,
+            CourseNameAr = exam.Course?.CourseNameAr,
             CourseCode = exam.Course?.CourseCode,
+            CourseCodeAr = exam.Course?.CourseCodeAr,
             CreatedAt = exam.CreatedAt
         };
     }

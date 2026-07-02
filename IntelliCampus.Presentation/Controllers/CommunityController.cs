@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.shared.Pagination;
+using IntelliCampus.Shared.Dtos.Community;
 using IntelliCampus.Shared.Dtos.Routing;
 using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
@@ -35,90 +36,17 @@ public class CommunityController(
     }
 
     [HttpGet("questions")]
-    public async Task<ActionResult<PaginatedResult<object>>> GetQuestions(int courseId, [FromQuery] CommunityQueryParams queryParams)
+    public async Task<ActionResult<PaginatedResult<PostDto>>> GetQuestions(int courseId, [FromQuery] CommunityQueryParams queryParams)
     {
-        var paginatedPosts = await communityService.GetCoursePostsAsync(courseId, queryParams);
-        var posts = paginatedPosts.Data.ToList();
-
-        var allCommenterIds = posts.SelectMany(p => p.Comments).Select(c => c.UserId).Distinct().ToList();
-        var instructorRoles = await communityService.GetCourseInstructorRolesAsync(courseId, allCommenterIds);
-        var isInstructor = await communityService.IsUserCourseInstructorAsync(UserId, courseId);
-
-        var projectedData = posts.Select(p =>
-        {
-            var candidateMap = p.Candidates.ToDictionary(c => c.UserId, c => c.Rank);
-            return new
-            {
-                p.PostId,
-                p.Content,
-                p.CreatedAt,
-                p.IsPinned,
-                userId = p.UserId,
-                authorName = p.User.FullName,
-                authorProfileImage = communityService.ResolveProfileImage(p.User.ProfileImage),
-                commentCount = p.Comments.Count,
-                upvoteCount = p.Votes.Count,
-                isUpvoted = p.Votes.Any(v => v.UserId == UserId),
-                canEdit = p.UserId == UserId,
-                canDelete = p.UserId == UserId || isInstructor,
-                comments = p.Comments.Select(c => new
-                {
-                    c.CommentId,
-                    c.Content,
-                    c.CreatedAt,
-                    userId = c.UserId,
-                    authorName = c.User.FullName,
-                    authorProfileImage = communityService.ResolveProfileImage(c.User.ProfileImage),
-                    isRecommended = candidateMap.ContainsKey(c.UserId),
-                    recommendationRank = candidateMap.TryGetValue(c.UserId, out var rank) ? rank : (int?)null,
-                    instructorRole = instructorRoles.TryGetValue(c.UserId, out var role) ? role : null,
-                }),
-            };
-        });
-
-        return Ok(new PaginatedResult<object>(
-            paginatedPosts.PageIndex,
-            paginatedPosts.PageSize,
-            paginatedPosts.TotalCount,
-            projectedData));
+        var result = await communityService.GetCoursePostDtosAsync(courseId, queryParams, UserId);
+        return Ok(result);
     }
 
     [HttpGet("questions/{postId}")]
     public async Task<IActionResult> GetQuestion(int courseId, int postId)
     {
-        var post = await communityService.GetQuestionPostAsync(courseId, postId);
-
-        var commenterIds = post.Comments.Select(c => c.UserId).Distinct().ToList();
-        var instructorRoles = await communityService.GetCourseInstructorRolesAsync(courseId, commenterIds);
-        var candidateMap = post.Candidates.ToDictionary(c => c.UserId, c => c.Rank);
-
-        return Ok(new
-        {
-            post.PostId,
-            post.Content,
-            post.CreatedAt,
-            post.IsPinned,
-            userId = post.UserId,
-            authorName = post.User.FullName,
-            authorProfileImage = communityService.ResolveProfileImage(post.User.ProfileImage),
-            commentCount = post.Comments.Count,
-            upvoteCount = post.Votes.Count,
-            isUpvoted = post.Votes.Any(v => v.UserId == UserId),
-            canEdit = post.UserId == UserId,
-            canDelete = post.UserId == UserId || await communityService.IsUserCourseInstructorAsync(UserId, courseId),
-            comments = post.Comments.Select(c => new
-            {
-                c.CommentId,
-                c.Content,
-                c.CreatedAt,
-                userId = c.UserId,
-                authorName = c.User.FullName,
-                authorProfileImage = communityService.ResolveProfileImage(c.User.ProfileImage),
-                isRecommended = candidateMap.ContainsKey(c.UserId),
-                recommendationRank = candidateMap.TryGetValue(c.UserId, out var rank) ? rank : (int?)null,
-                instructorRole = instructorRoles.TryGetValue(c.UserId, out var role) ? role : null,
-            }),
-        });
+        var post = await communityService.GetQuestionPostDtoAsync(courseId, postId, UserId);
+        return Ok(post);
     }
 
     [HttpGet("graph")]

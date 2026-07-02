@@ -15,6 +15,7 @@ public class AdminDto
     public string? HireDate { get; set; }
     public int? FacultyId { get; set; }
     public string? FacultyName { get; set; }
+    public string? FacultyNameAr { get; set; }
     public string? ProfileImage { get; set; }
     public List<string> Roles { get; set; } = [];
 }
