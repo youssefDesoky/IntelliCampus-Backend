@@ -6,34 +6,42 @@ namespace IntelliCampus.Service.Specifications;
 
 public class ExamScheduleSpec : BaseSpecifications<ExamSchedule>
 {
-    // All exam entries for a student
     public ExamScheduleSpec(int studentId)
         : base(e => e.StudentId == studentId)
     {
+        AddInclude(e => e.Course!);
+        AddInclude(e => e.Room!);
         AddOrderBy(e => e.Date);
     }
 
-    // Exam entries filtered by ExamType
     public ExamScheduleSpec(int studentId, ExamType examType)
         : base(e => e.StudentId == studentId && e.ExamType == examType)
     {
+        AddInclude(e => e.Course!);
+        AddInclude(e => e.Room!);
         AddOrderBy(e => e.Date);
     }
 
-    // Exam entries filtered by ExamStatus
     public ExamScheduleSpec(int studentId, ExamStatus status)
         : base(e => e.StudentId == studentId && e.Status == status)
     {
+        AddInclude(e => e.Course!);
+        AddInclude(e => e.Room!);
         AddOrderBy(e => e.Date);
     }
 
-    // Single exam entry by id
     public ExamScheduleSpec(int examScheduleId, bool byId)
-        : base(e => e.ExamScheduleId == examScheduleId) { }
+        : base(e => e.ExamScheduleId == examScheduleId)
+    {
+        AddInclude(e => e.Course!);
+        AddInclude(e => e.Room!);
+    }
 
     public ExamScheduleSpec(int studentId, ExamType examType, ExamScheduleQueryParams queryParams)
         : base(e => e.StudentId == studentId && e.ExamType == examType)
     {
+        AddInclude(e => e.Course!);
+        AddInclude(e => e.Room!);
         AddOrderBy(e => e.Date);
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
@@ -41,6 +49,8 @@ public class ExamScheduleSpec : BaseSpecifications<ExamSchedule>
     public ExamScheduleSpec(int studentId, ExamStatus status, ExamScheduleQueryParams queryParams)
         : base(e => e.StudentId == studentId && e.Status == status)
     {
+        AddInclude(e => e.Course!);
+        AddInclude(e => e.Room!);
         AddOrderBy(e => e.Date);
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
@@ -48,6 +58,8 @@ public class ExamScheduleSpec : BaseSpecifications<ExamSchedule>
     public ExamScheduleSpec(int studentId, int pageSize, int pageIndex)
         : base(e => e.StudentId == studentId)
     {
+        AddInclude(e => e.Course!);
+        AddInclude(e => e.Room!);
         AddOrderBy(e => e.Date);
         ApplyPagination(pageSize, pageIndex);
     }
@@ -57,6 +69,8 @@ public class ExamScheduleSpec : BaseSpecifications<ExamSchedule>
             && (!queryParams.Type.HasValue || e.ExamType == queryParams.Type.Value)
             && (!queryParams.Status.HasValue || e.Status == queryParams.Status.Value))
     {
+        AddInclude(e => e.Course!);
+        AddInclude(e => e.Room!);
         AddOrderBy(e => e.Date);
         if (!forCount)
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);

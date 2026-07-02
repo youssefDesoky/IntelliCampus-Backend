@@ -1285,7 +1285,8 @@ public class CourseServiceTests
                     Day = DayOfWeekEnum.Sunday,
                     StartTime = new TimeSpan(9, 0, 0),
                     EndTime = new TimeSpan(10, 30, 0),
-                    Room = "Room 101",
+                    RoomId = 1,
+                    Room = new Room { RoomId = 1, RoomName = "Room 101", RoomNameAr = "قاعة 101" },
                     Instructor = instructor
                 }
             },

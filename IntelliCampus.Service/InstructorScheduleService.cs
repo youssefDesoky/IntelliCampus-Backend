@@ -77,9 +77,12 @@ public class InstructorScheduleService : IInstructorScheduleService
                 StartTime = s.StartTime,
                 EndTime = s.EndTime,
                 CourseName = s.CourseName ?? s.Title,
+                CourseNameAr = s.CourseNameAr,
                 Type = s.Type,
                 Location = s.Location,
-                Instructor = s.Instructor
+                LocationAr = s.LocationAr,
+                InstructorName = s.InstructorName,
+                InstructorNameAr = s.InstructorNameAr
             }).ToList()
         };
 
@@ -97,11 +100,13 @@ public class InstructorScheduleService : IInstructorScheduleService
     {
         ScheduleId = c.ClassId,
         Title = c.Course?.CourseName ?? string.Empty,
+        TitleAr = c.Course?.CourseNameAr,
         Day = ToDayAbbreviation(c.Day?.ToString() ?? string.Empty),
         Date = DateTime.MinValue,
         StartTime = FormatTime(c.StartTime),
         EndTime = FormatTime(c.EndTime),
-        Location = c.Room,
+        Location = c.Room?.RoomName,
+        LocationAr = c.Room?.RoomNameAr,
         Type = c.ClassType switch
         {
             ClassType.Lecture => "lecture",
@@ -109,10 +114,14 @@ public class InstructorScheduleService : IInstructorScheduleService
             ClassType.Lab => "activity",
             _ => "lecture"
         },
-        Instructor = c.Instructor?.User?.FullName,
+        InstructorName = c.Instructor?.User?.FullName,
+        InstructorNameAr = c.Instructor?.User?.FullNameAr,
         CourseId = c.CourseId,
         CourseName = c.Course?.CourseName,
-        StudentId = 0
+        CourseNameAr = c.Course?.CourseNameAr,
+        StudentId = 0,
+        RoomId = c.RoomId,
+        InstructorId = c.InstructorId
     };
 
     private static ScheduleType ParseScheduleType(string type) => type.ToLowerInvariant() switch

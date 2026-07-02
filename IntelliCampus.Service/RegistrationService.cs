@@ -125,10 +125,19 @@ public class RegistrationService : IRegistrationService
             StudentId = studentId,
             CourseId = dto.CourseId,
             CourseName = course.CourseName,
+            CourseNameAr = course.CourseNameAr,
+            CourseCode = course.CourseCode,
+            CourseCodeAr = course.CourseCodeAr,
+            CreditHours = course.CreditHours,
             ClassId = classEntity.ClassId,
             ClassName = $"{classEntity.ClassType}",
+            ClassNameAr = ClassTypeAr(classEntity.ClassType),
             ProfessorName = lectureClass?.Instructor?.User?.FullName,
+            ProfessorNameAr = lectureClass?.Instructor?.User?.FullNameAr,
+            Room = classEntity.Room?.RoomName,
+            RoomAr = classEntity.Room?.RoomNameAr,
             Semester = semester,
+            SemesterAr = SemesterHelper.GetSemesterAr(semester),
             RegisteredAt = studentCourse.RegisteredAt
         };
     }
@@ -143,17 +152,24 @@ public class RegistrationService : IRegistrationService
             StudentId = sc.StudentId,
             CourseId = sc.CourseId,
             CourseName = sc.Course.CourseName,
+            CourseNameAr = sc.Course.CourseNameAr,
             CourseCode = sc.Course.CourseCode,
+            CourseCodeAr = sc.Course.CourseCodeAr,
             CreditHours = sc.Course.CreditHours,
             ClassId = sc.ClassId,
             ClassName = sc.Class is not null ? $"{sc.Class.ClassType}" : null,
+            ClassNameAr = sc.Class is not null ? ClassTypeAr(sc.Class.ClassType) : null,
             ProfessorName = sc.Class?.Instructor?.User?.FullName
                 ?? sc.Course.Classes.FirstOrDefault(cl => cl.ClassType == ClassType.Lecture)?.Instructor?.User?.FullName,
+            ProfessorNameAr = sc.Class?.Instructor?.User?.FullNameAr
+                ?? sc.Course.Classes.FirstOrDefault(cl => cl.ClassType == ClassType.Lecture)?.Instructor?.User?.FullNameAr,
             Day = sc.Class?.Day?.ToString(),
             StartTime = sc.Class?.StartTime?.ToString(@"hh\:mm"),
             EndTime = sc.Class?.EndTime?.ToString(@"hh\:mm"),
-            Room = sc.Class?.Room,
+            Room = sc.Class?.Room?.RoomName,
+            RoomAr = sc.Class?.Room?.RoomNameAr,
             Semester = sc.Semester,
+            SemesterAr = SemesterHelper.GetSemesterAr(sc.Semester),
             RegisteredAt = sc.RegisteredAt
         });
     }
@@ -433,4 +449,11 @@ public class RegistrationService : IRegistrationService
         }
     }
 
+    private static string? ClassTypeAr(ClassType type) => type switch
+    {
+        ClassType.Lecture => "محاضرة",
+        ClassType.Lab => "معمل",
+        ClassType.Section => "مجموعة",
+        _ => null
+    };
 }

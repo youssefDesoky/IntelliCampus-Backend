@@ -315,8 +315,10 @@ public class ElectiveBucketService : IElectiveBucketService
             NameAr = bucket.NameAr,
             BylawId = bucket.BylawId,
             BylawName = bucket.Bylaw?.Name,
+            BylawNameAr = bucket.Bylaw?.NameAr,
             DepartmentId = bucket.DepartmentId,
             DepartmentName = bucket.Department?.DepartmentName,
+            DepartmentNameAr = bucket.Department?.DepartmentNameAr,
             RequiredCreditHours = bucket.RequiredCreditHours,
             IsActive = bucket.IsActive,
             Courses = (bucket.ElectiveBucketCourses ?? [])
@@ -324,7 +326,9 @@ public class ElectiveBucketService : IElectiveBucketService
             {
                 CourseId = ebc.CourseId,
                 CourseCode = ebc.Course?.CourseCode,
+                CourseCodeAr = ebc.Course?.CourseCodeAr,
                 CourseName = ebc.Course?.CourseName ?? "Unknown",
+                CourseNameAr = ebc.Course?.CourseNameAr,
                 CreditHours = ebc.Course?.CreditHours ?? 0,
                 BylawCourseId = bcLookup?.GetValueOrDefault(ebc.CourseId) ?? 0
             }).ToList()

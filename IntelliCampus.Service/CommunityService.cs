@@ -6,6 +6,7 @@ using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Service.Exceptions;
 using IntelliCampus.shared.Pagination;
+using IntelliCampus.Shared.Dtos.Community;
 using IntelliCampus.Shared.Dtos.Routing;
 using IntelliCampus.Shared.Params;
 using Microsoft.Extensions.Logging;
@@ -99,6 +100,70 @@ public class CommunityService : ICommunityService
         var countSpec = new CommunityPostSpec(community.CommunityId);
         var totalCount = await Posts.CountAsync(countSpec);
         return new PaginatedResult<Post>(queryParams.PageIndex, posts.Count, totalCount, posts);
+    }
+
+    public async Task<PaginatedResult<PostDto>> GetCoursePostDtosAsync(int courseId, CommunityQueryParams queryParams, int currentUserId)
+    {
+        var paginatedPosts = await GetCoursePostsAsync(courseId, queryParams);
+        var posts = paginatedPosts.Data.ToList();
+
+        var allCommenterIds = posts.SelectMany(p => p.Comments).Select(c => c.UserId).Distinct().ToList();
+        var instructorRoles = await GetCourseInstructorRolesAsync(courseId, allCommenterIds);
+        var isInstructor = await IsUserCourseInstructorAsync(currentUserId, courseId);
+
+        var projectedData = posts.Select(p => MapToPostDto(p, currentUserId, isInstructor, instructorRoles)).ToList();
+
+        return new PaginatedResult<PostDto>(
+            paginatedPosts.PageIndex,
+            paginatedPosts.PageSize,
+            paginatedPosts.TotalCount,
+            projectedData);
+    }
+
+    public async Task<PostDto> GetQuestionPostDtoAsync(int courseId, int postId, int currentUserId)
+    {
+        var post = await GetQuestionPostAsync(courseId, postId);
+
+        var commenterIds = post.Comments.Select(c => c.UserId).Distinct().ToList();
+        var instructorRoles = await GetCourseInstructorRolesAsync(courseId, commenterIds);
+        var isInstructor = await IsUserCourseInstructorAsync(currentUserId, courseId);
+
+        return MapToPostDto(post, currentUserId, isInstructor, instructorRoles);
+    }
+
+    private PostDto MapToPostDto(Post post, int currentUserId, bool isInstructor, Dictionary<int, string> instructorRoles)
+    {
+        var candidateMap = post.Candidates.ToDictionary(c => c.UserId, c => c.Rank);
+
+        return new PostDto
+        {
+            PostId = post.PostId,
+            Content = post.Content,
+            CreatedAt = post.CreatedAt,
+            IsPinned = post.IsPinned,
+            UserId = post.UserId,
+            AuthorName = post.User.FullName,
+            AuthorNameAr = post.User.FullNameAr,
+            AuthorProfileImage = ResolveProfileImage(post.User.ProfileImage),
+            CommentCount = post.Comments.Count,
+            UpvoteCount = post.Votes.Count,
+            IsUpvoted = post.Votes.Any(v => v.UserId == currentUserId),
+            CanEdit = post.UserId == currentUserId,
+            CanDelete = post.UserId == currentUserId || isInstructor,
+            Comments = post.Comments.Select(c => new CommunityCommentDto
+            {
+                CommentId = c.CommentId,
+                Content = c.Content,
+                CreatedAt = c.CreatedAt,
+                UserId = c.UserId,
+                AuthorName = c.User.FullName,
+                AuthorNameAr = c.User.FullNameAr,
+                AuthorProfileImage = ResolveProfileImage(c.User.ProfileImage),
+                IsRecommended = candidateMap.ContainsKey(c.UserId),
+                RecommendationRank = candidateMap.TryGetValue(c.UserId, out var rank) ? rank : (int?)null,
+                InstructorRole = instructorRoles.TryGetValue(c.UserId, out var role) ? role : null,
+            }).ToList()
+        };
     }
 
     public async Task<RoutingResponse?> RouteQuestionAsync(int courseId, int postId, int topN = 3)

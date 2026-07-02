@@ -17,11 +17,14 @@ public class StudentDto
     public string? StudentCode { get; set; }
     public int? FacultyId { get; set; }
     public string? FacultyName { get; set; }
+    public string? FacultyNameAr { get; set; }
     public int? Level { get; set; }
     public int? DepartmentId { get; set; }
     public string? DepartmentName { get; set; }
+    public string? DepartmentNameAr { get; set; }
     public int? BylawId { get; set; }
     public string? BylawName { get; set; }
+    public string? BylawNameAr { get; set; }
     public string? EnrollmentDate { get; set; }
     public double Gpa { get; set; }
     public decimal? ProbationThreshold { get; set; }
@@ -29,6 +32,7 @@ public class StudentDto
     public StudentProgram? Program { get; set; }
     public int? SpecializationId { get; set; }
     public string? SpecializationName { get; set; }
+    public string? SpecializationNameAr { get; set; }
     public StudentType StudentType { get; set; }
     public string? ProfileImage { get; set; }
     public string? Section { get; set; }

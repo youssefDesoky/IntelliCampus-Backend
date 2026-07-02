@@ -202,6 +202,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
             {
                 Id = userId.ToString(),
                 Name = user?.FullName ?? "Unknown",
+                NameAr = user?.FullNameAr ?? "غير معروف",
                 Avatar = _urlResolver.ResolveProfile(user?.ProfileImage)
             },
             Date = comment.CreatedAt,
@@ -252,6 +253,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
             {
                 Id = comment.User.UserId.ToString(),
                 Name = comment.User.FullName,
+                NameAr = comment.User.FullNameAr,
                 Avatar = _urlResolver.ResolveProfile(comment.User.ProfileImage)
             },
             Date = comment.UpdatedAt,
@@ -269,6 +271,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
             {
                 Id = announcement.Sender?.UserId.ToString() ?? "0",
                 Name = announcement.Sender?.FullName ?? "Unknown",
+                NameAr = announcement.Sender?.FullNameAr ?? "غير معروف",
                 Avatar = _urlResolver.ResolveProfile(announcement.Sender?.ProfileImage)
             },
             Date = announcement.CreatedAt,
@@ -289,6 +292,7 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
                 {
                     Id = c.User?.UserId.ToString() ?? "0",
                     Name = c.User?.FullName ?? "Unknown",
+                    NameAr = c.User?.FullNameAr ?? "غير معروف",
                     Avatar = _urlResolver.ResolveProfile(c.User?.ProfileImage)
 
 

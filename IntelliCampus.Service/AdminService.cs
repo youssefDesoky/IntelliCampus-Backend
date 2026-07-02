@@ -244,6 +244,7 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
             HireDate = admin.HireDate?.ToString("dd MM yyyy"),
             FacultyId = admin.User.FacultyId,
             FacultyName = admin.User.Faculty?.FacultyName,
+            FacultyNameAr = admin.User.Faculty?.FacultyNameAr,
             ProfileImage = _urlResolver.ResolveProfile(admin.User.ProfileImage),
             Roles = admin.User.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };

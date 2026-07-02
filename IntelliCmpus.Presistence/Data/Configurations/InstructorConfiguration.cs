@@ -24,8 +24,10 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
             .HasConversion<string>()
             .HasMaxLength(50);
 
-        builder.Property(i => i.Specialization)
-            .HasMaxLength(100);
+        builder.HasOne(i => i.Specialization)
+            .WithMany()
+            .HasForeignKey(i => i.SpecializationId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.Property(i => i.Status)
             .HasConversion<string>()
@@ -42,5 +44,6 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
             .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasIndex(i => i.DepartmentId);
+        builder.HasIndex(i => i.SpecializationId);
     }
 }
