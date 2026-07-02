@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Helpers;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
@@ -33,11 +34,17 @@ public class MeetingService(IUnitOfWork unitOfWork) : IMeetingService
         return meeting is null ? null : MapToDto(meeting);
     }
 
+    private async Task EnsureCourseActiveAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null) throw new CourseNotFoundException(courseId);
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+    }
+
     public async Task<MeetingDto> CreateAsync(CreateMeetingDto dto, int instructorId)
     {
-        var course = await Courses.GetByIdAsync(dto.CourseId);
-        if (course is null)
-            throw new CourseNotFoundException(dto.CourseId);
+        await EnsureCourseActiveAsync(dto.CourseId);
 
         var roomName = $"Course-{dto.CourseId}-{Guid.NewGuid().ToString()[..8]}";
 
@@ -62,6 +69,8 @@ public class MeetingService(IUnitOfWork unitOfWork) : IMeetingService
         var meeting = await Meetings.GetByIdAsync(meetingId);
         if (meeting is null) throw new MeetingNotFoundException($"Meeting with ID {meetingId} not found.");
 
+        await EnsureCourseActiveAsync(meeting.CourseId);
+
         var sql = "UPDATE [Meetings] SET [IsActive] = 0 WHERE [MeetingId] = {0} AND [InstructorId] = {1}";
         await _unitOfWork.ExecuteSqlAsync(sql, meetingId, instructorId);
 
@@ -72,6 +81,8 @@ public class MeetingService(IUnitOfWork unitOfWork) : IMeetingService
     {
         var meeting = await Meetings.GetByIdAsync(meetingId);
         if (meeting is null) throw new MeetingNotFoundException($"Meeting with ID {meetingId} not found.");
+
+        await EnsureCourseActiveAsync(meeting.CourseId);
 
         Meetings.Delete(meeting);
         await _unitOfWork.SaveChangesAsync();

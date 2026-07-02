@@ -37,7 +37,8 @@ public class InstructorScheduleService : IInstructorScheduleService
         var spec = new ClassByInstructorSpec(instructor.UserId);
         var classes = await Classes.GetAllAsync(spec, asNoTracking: true);
 
-        var schedules = classes.Select(MapToDto);
+        var activeClasses = classes.Where(c => c.Course is null || c.Course.Status == CourseStatus.Active);
+        var schedules = activeClasses.Select(MapToDto);
 
         if (types is not null && types.Length > 0)
         {

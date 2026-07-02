@@ -479,14 +479,29 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
     public async Task<ExcelImportResultDto> UploadGradesAsync(int courseId, IFormFile file, int? userId)
     {
-        if (file is null || file.Length is 0)
-            throw new ArgumentException("No file uploaded.");
+        try
+        {
+            if (file is null || file.Length is 0)
+            {
+                return new ExcelImportResultDto
+                {
+                    Errors = new List<string> { "No file uploaded." }
+                };
+            }
 
-        var result = await _excelImportService.ImportAsync(ImportEntityType.Grades, file, null, userId);
+            var result = await _excelImportService.ImportAsync(ImportEntityType.Grades, file, null, userId);
 
-        await CheckAndDeactivateIfAllGradedAsync(courseId);
+            await CheckAndDeactivateIfAllGradedAsync(courseId);
 
-        return result;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return new ExcelImportResultDto
+            {
+                Errors = new List<string> { $"An unexpected error occurred: {ex.Message}" }
+            };
+        }
     }
 
     public async Task CheckAndDeactivateIfAllGradedAsync(int courseId)

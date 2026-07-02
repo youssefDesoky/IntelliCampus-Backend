@@ -48,8 +48,18 @@ public class CommunityService : ICommunityService
     private IGenericRepository<User, int> Users
         => _unitOfWork.GetRepository<User, int>();
 
+    private async Task EnsureCourseActiveAsync(int courseId)
+    {
+        var course = await Courses.GetByIdAsync(courseId);
+        if (course is null) throw new CourseNotFoundException(courseId);
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("This course is finalized and read-only.");
+    }
+
     public async Task<Post> CreateQuestionPostAsync(int courseId, int userId, string content)
     {
+        await EnsureCourseActiveAsync(courseId);
+
         var community = await GetOrCreateCommunityAsync(courseId);
 
         var post = new Post
@@ -305,6 +315,8 @@ public class CommunityService : ICommunityService
         if (post.UserId != userId)
             throw new UnauthorizedAccessException("You can only update your own posts.");
 
+        await EnsureCourseActiveAsync(post.Community.CourseId);
+
         post.Content = newContent;
         Posts.Update(post);
         await _unitOfWork.SaveChangesAsync();
@@ -320,6 +332,8 @@ public class CommunityService : ICommunityService
         if (post.UserId != userId && !await IsUserCourseInstructorAsync(userId, post.Community.CourseId))
             throw new UnauthorizedAccessException("You can only delete your own posts.");
 
+        await EnsureCourseActiveAsync(post.Community.CourseId);
+
         Posts.Delete(post);
         await _unitOfWork.SaveChangesAsync();
     }
@@ -329,6 +343,10 @@ public class CommunityService : ICommunityService
         var post = await Posts.GetByIdAsync(postId);
         if (post is null)
             throw new PostNotFoundException($"Post {postId} not found.");
+
+        var postCommunity = await Communities.GetByIdAsync(post.CommunityId);
+        if (postCommunity is not null)
+            await EnsureCourseActiveAsync(postCommunity.CourseId);
 
         var comment = new Comment
         {
@@ -364,6 +382,10 @@ public class CommunityService : ICommunityService
         var user = await Users.GetByIdAsync(userId);
         if (user is null)
             throw new UserNotFoundException(userId);
+
+        var postCommunity = await Communities.GetByIdAsync(post.CommunityId);
+        if (postCommunity is not null)
+            await EnsureCourseActiveAsync(postCommunity.CourseId);
 
         var votes = _unitOfWork.GetRepository<PostVote, int>();
         var existing = await votes.GetByIdAsync(
@@ -404,6 +426,15 @@ public class CommunityService : ICommunityService
         if (comment is null) throw new CommentNotFoundException($"Comment {commentId} not found.");
         if (comment.UserId != userId)
             throw new UnauthorizedAccessException("You can only delete your own comments.");
+
+        var post = await Posts.GetByIdAsync(comment.PostId);
+        if (post is not null)
+        {
+            var communityRepo = _unitOfWork.GetRepository<Community, int>();
+            var community = await communityRepo.GetByIdAsync(post.CommunityId);
+            if (community is not null)
+                await EnsureCourseActiveAsync(community.CourseId);
+        }
 
         comments.Delete(comment);
         await _unitOfWork.SaveChangesAsync();
