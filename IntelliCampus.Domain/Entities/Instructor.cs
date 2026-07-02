@@ -7,7 +7,7 @@ public class Instructor
     public int UserId { get; set; }
     public string? InstructorCode { get; set; }
     public InstructorRole? InstructorRole { get; set; }
-    public string? Specialization { get; set; }
+    public int? SpecializationId { get; set; }
     public int? DepartmentId { get; set; }
     public DateTime? HireDate { get; set; }
     public InstructorStatus? Status { get; set; }
@@ -20,6 +20,7 @@ public class Instructor
     public User User { get; set; } = null!;
     public Department? Department { get; set; }
     public Room? OfficeHoursRoom { get; set; }
+    public Specialization? Specialization { get; set; }
     public ICollection<InstructorMaterial> InstructorMaterials { get; set; } = [];
     public ICollection<Class> Classes { get; set; } = [];
     public ICollection<Reminder> Reminders { get; set; } = [];

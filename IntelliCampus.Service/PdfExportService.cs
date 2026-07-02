@@ -137,7 +137,7 @@ public class PdfExportService : IPdfExportService
                         CourseName = current.CourseName,
                         Type       = current.Type,
                         Location   = current.Location,
-                        Instructor = current.Instructor,
+                        InstructorName = current.InstructorName,
                         StartTime  = current.StartTime,
                         EndTime    = next.EndTime
                     };
@@ -460,9 +460,9 @@ public class PdfExportService : IPdfExportService
                 string loc = TruncFit(item.Location, textW, 5.2f);
                 WriteRaw($"0.88 0.93 1.00 rg BT /F1 6 Tf {textX:F1} {ToY(rowTop + BlockPad + innerH * 0.52f):F1} Td ({Escape(loc)}) Tj ET 0 0 0 rg");
             }
-            if (!string.IsNullOrWhiteSpace(item.Instructor) && bw > 50f)
+            if (!string.IsNullOrWhiteSpace(item.InstructorName) && bw > 50f)
             {
-                string ins = TruncFit(item.Instructor, textW, 4.8f);
+                string ins = TruncFit(item.InstructorName, textW, 4.8f);
                 WriteRaw($"0.80 0.90 0.98 rg BT /F1 5.5 Tf {textX:F1} {ToY(rowTop + BlockPad + innerH * 0.70f):F1} Td ({Escape(ins)}) Tj ET 0 0 0 rg");
             }
             if (bw > 40f)

@@ -469,7 +469,7 @@ public class DataSeed : IDataSeed
                 User = user,
                 InstructorCode = dto.InstructorCode,
                 InstructorRole = Enum.Parse<InstructorRole>(dto.InstructorRole),
-                Specialization = dto.Specialization,
+                SpecializationId = _specializationIds.GetValueOrDefault(dto.Specialization ?? ""),
                 DepartmentId = _departmentIds.GetValueOrDefault(dto.DepartmentName),
                 HireDate = EgyptTime.Now,
                 Status = !string.IsNullOrEmpty(dto.Status) && Enum.TryParse<InstructorStatus>(dto.Status, true, out var status) ? status : InstructorStatus.Employed
@@ -562,7 +562,7 @@ public class DataSeed : IDataSeed
                 Day = Enum.Parse<DayOfWeekEnum>(dto.Day),
                 StartTime = TimeSpan.Parse(dto.StartTime),
                 EndTime = TimeSpan.Parse(dto.EndTime),
-                Room = dto.Room,
+                RoomId = _roomIds.GetValueOrDefault(dto.Room ?? ""),
                 CourseId = courseId,
                 InstructorId = _userIds.GetValueOrDefault(dto.InstructorEmail)
             };
@@ -586,8 +586,10 @@ public class DataSeed : IDataSeed
             var entity = new Bylaw
             {
                 Name = dto.Name,
+                NameAr = dto.NameAr,
                 Type = Enum.Parse<BylawType>(dto.Type, true),
                 Description = dto.Description,
+                DescriptionAr = dto.DescriptionAr,
                 IsActive = dto.IsActive,
                 CreatedAt = EgyptTime.Now,
                 GradeScales = dto.GradeScales.Select(gs => new GradeScaleItem
@@ -892,6 +894,7 @@ public class DataSeed : IDataSeed
             schedules.Add(new Schedule
             {
                 Title = sc.Course.CourseName,
+                TitleAr = sc.Course.CourseNameAr,
                 Day = cls.Day switch
                 {
                     DayOfWeekEnum.Sunday => "sun",
@@ -905,7 +908,7 @@ public class DataSeed : IDataSeed
                 Date = DateTime.MinValue,
                 StartTime = cls.StartTime.Value,
                 EndTime = cls.EndTime.Value,
-                Location = cls.Room,
+                RoomId = cls.RoomId,
                 ScheduleType = cls.ClassType switch
                 {
                     ClassType.Lecture => ScheduleType.Lecture,
@@ -913,7 +916,7 @@ public class DataSeed : IDataSeed
                     ClassType.Lab => ScheduleType.Activity,
                     _ => ScheduleType.Lecture
                 },
-                InstructorName = cls.Instructor?.User?.FullName,
+                InstructorId = cls.InstructorId,
                 CourseId = sc.CourseId,
                 ClassId = sc.ClassId,
                 StudentId = sc.StudentId
@@ -1572,6 +1575,7 @@ public class DataSeed : IDataSeed
     private record ClassDto
     {
         public string GroupCode { get; init; } = "";
+        public string? GroupCodeAr { get; init; }
         public string ClassType { get; init; } = "";
         public string CourseCode { get; init; } = "";
         public string Day { get; init; } = "";
@@ -1584,8 +1588,10 @@ public class DataSeed : IDataSeed
     private record BylawDto
     {
         public string Name { get; init; } = "";
+        public string? NameAr { get; init; }
         public string Type { get; init; } = "Bachelor";
         public string? Description { get; init; }
+        public string? DescriptionAr { get; init; }
         public bool IsActive { get; init; }
         public List<GradeScaleDto> GradeScales { get; init; } = new();
         public List<LevelScaleDto>? LevelScales { get; init; }

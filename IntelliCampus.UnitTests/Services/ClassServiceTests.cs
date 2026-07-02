@@ -57,7 +57,8 @@ public class ClassServiceTests
         result.Day.Should().Be(classEntity.Day);
         result.StartTime.Should().Be(classEntity.StartTime);
         result.EndTime.Should().Be(classEntity.EndTime);
-        result.Room.Should().Be(classEntity.Room);
+        result.RoomId.Should().Be(classEntity.RoomId);
+        result.RoomName.Should().BeNull();
         result.CourseId.Should().Be(classEntity.CourseId);
         result.CourseName.Should().Be(classEntity.Course.CourseName);
         result.InstructorId.Should().Be(classEntity.InstructorId);
@@ -144,7 +145,7 @@ public class ClassServiceTests
         captured.Should().NotBeNull();
         captured!.CourseId.Should().Be(dto.CourseId);
         captured.ClassType.Should().Be(ClassType.Lecture);
-        captured.Room.Should().Be(dto.Room);
+        captured.RoomId.Should().Be(dto.RoomId);
 
         result.ClassId.Should().Be(createdClass.ClassId);
         result.GroupCode.Should().Be(createdClass.GroupCode);
@@ -152,7 +153,8 @@ public class ClassServiceTests
         result.Day.Should().Be(createdClass.Day);
         result.StartTime.Should().Be(createdClass.StartTime);
         result.EndTime.Should().Be(createdClass.EndTime);
-        result.Room.Should().Be(createdClass.Room);
+        result.RoomId.Should().Be(createdClass.RoomId);
+        result.RoomName.Should().BeNull();
         result.CourseId.Should().Be(createdClass.CourseId);
         result.CourseName.Should().Be(course.CourseName);
 
@@ -241,7 +243,7 @@ public class ClassServiceTests
     [Fact]
     public async Task CreateLectureAsync_ValidData_CreatesAndReturnsLecture()
     {
-        var dto = new CreateLectureDto { CourseId = 1, InstructorName = "Dr. Smith", Schedule = "Mon 09:00", Room = "Room 101" };
+        var dto = new CreateLectureDto { CourseId = 1, InstructorName = "Dr. Smith", Schedule = "Mon 09:00", RoomId = 1 };
         var course = TestDataFactory.CourseFaker.Generate();
         course.Department = TestDataFactory.DepartmentFaker.Generate();
         var instructor = TestDataFactory.InstructorFaker.Generate();
@@ -263,7 +265,7 @@ public class ClassServiceTests
         captured.Should().NotBeNull();
         captured!.CourseId.Should().Be(1);
         captured.ClassType.Should().Be(ClassType.Lecture);
-        captured.Room.Should().Be("Room 101");
+        captured.RoomId.Should().Be(1);
         captured.InstructorId.Should().Be(instructor.UserId);
 
         result.ClassId.Should().Be(createdClass.ClassId);
@@ -299,7 +301,7 @@ public class ClassServiceTests
     [Fact]
     public async Task CreateSectionAsync_ValidData_CreatesAndReturnsSection()
     {
-        var dto = new CreateSectionDto { CourseId = 1, InstructorName = "TA Ahmed", Schedule = "Tue 11:00", Room = "Room 202" };
+        var dto = new CreateSectionDto { CourseId = 1, InstructorName = "TA Ahmed", Schedule = "Tue 11:00", RoomId = 2 };
         var course = TestDataFactory.CourseFaker.Generate();
         course.Department = TestDataFactory.DepartmentFaker.Generate();
         var instructor = TestDataFactory.InstructorFaker.Generate();
@@ -320,7 +322,7 @@ public class ClassServiceTests
         captured.Should().NotBeNull();
         captured!.CourseId.Should().Be(1);
         captured.ClassType.Should().Be(ClassType.Section);
-        captured.Room.Should().Be("Room 202");
+        captured.RoomId.Should().Be(2);
         captured.InstructorId.Should().Be(instructor.UserId);
 
         result.ClassId.Should().Be(createdClass.ClassId);
@@ -342,7 +344,7 @@ public class ClassServiceTests
         var dto = new UpdateClassDto
         {
             Schedule = "Wed 14:00",
-            Room = "Room 303",
+            RoomId = 3,
             InstructorId = instructor.UserId
         };
 
@@ -354,11 +356,12 @@ public class ClassServiceTests
 
         var result = await _sut.UpdateAsync(classEntity.ClassId, dto);
 
-        classEntity.Room.Should().Be("Room 303");
+        classEntity.RoomId.Should().Be(3);
         classEntity.InstructorId.Should().Be(instructor.UserId);
 
         result.Should().NotBeNull();
-        result.Room.Should().Be("Room 303");
+        result.RoomId.Should().Be(3);
+        result.RoomName.Should().BeNull();
         result.ClassId.Should().Be(classEntity.ClassId);
 
         _classRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<ISpecifications<Class>>()), Times.Exactly(2));
@@ -767,7 +770,7 @@ public class ClassServiceTests
 
         captured.Should().NotBeNull();
         captured!.InstructorId.Should().BeNull();
-        captured.Room.Should().BeNull();
+        captured.RoomId.Should().BeNull();
 
         result.ClassType.Should().Be(ClassType.Lecture);
 
@@ -852,7 +855,7 @@ public class ClassServiceTests
 
         captured.Should().NotBeNull();
         captured!.InstructorId.Should().BeNull();
-        captured.Room.Should().BeNull();
+        captured.RoomId.Should().BeNull();
 
         result.ClassType.Should().Be(ClassType.Section);
 
@@ -1004,8 +1007,8 @@ public class ClassServiceTests
     {
         var classEntity = TestDataFactory.ClassFaker.Generate();
         classEntity.Course = TestDataFactory.CourseFaker.Generate();
-        classEntity.Room = "Original Room";
-        var dto = new UpdateClassDto { Room = null };
+        classEntity.RoomId = 5;
+        var dto = new UpdateClassDto { RoomId = null };
 
         _classRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<ISpecifications<Class>>())).ReturnsAsync(classEntity);
         _classRepoMock.Setup(r => r.Update(classEntity));
@@ -1014,10 +1017,11 @@ public class ClassServiceTests
 
         var result = await _sut.UpdateAsync(classEntity.ClassId, dto);
 
-        classEntity.Room.Should().Be("Original Room");
+        classEntity.RoomId.Should().Be(5);
 
         result.Should().NotBeNull();
-        result.Room.Should().Be("Original Room");
+        result.RoomId.Should().Be(5);
+        result.RoomName.Should().BeNull();
 
         _classRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<ISpecifications<Class>>()), Times.Exactly(2));
         _classRepoMock.Verify(r => r.Update(classEntity), Times.Once);

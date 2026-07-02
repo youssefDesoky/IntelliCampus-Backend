@@ -21,8 +21,11 @@ public class CourseDto
 
     // Fields needed by the frontend
     public string? Semester { get; set; }
+    public string? SemesterAr { get; set; }
     public string? Schedule { get; set; }
+    public string? ScheduleAr { get; set; }
     public string? Room { get; set; }
+    public string? RoomAr { get; set; }
     public int NumOfStudents { get; set; }
     public int TotalStudents { get; set; }
     public int WeeksCompleted { get; set; }
@@ -33,8 +36,10 @@ public class CourseDto
     public decimal? CourseWork { get; set; }
     public int? ClassId { get; set; }
     public string? ClassName { get; set; }
+    public string? ClassNameAr { get; set; }
     public bool IsElective { get; set; }
     public string? ProfessorName { get; set; }
+    public string? ProfessorNameAr { get; set; }
 
     public string? StudentCourseStatusName { get; set; }
 

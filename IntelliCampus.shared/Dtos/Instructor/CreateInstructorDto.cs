@@ -13,7 +13,7 @@ public class CreateInstructorDto
     public string? Password { get; set; }
     public string? Nationality { get; set; }
     public string? InstructorRole { get; set; }
-    public string? Specialization { get; set; }
+    public int? SpecializationId { get; set; }
     public string? InstructorCode { get; set; }
     public string? DepartmentName { get; set; }
     public string? HireDate { get; set; }

@@ -10,13 +10,16 @@ public class ExamScheduleExportDto
 
 public class ExamScheduleItem
 {
-    public string CourseCode { get; set; } = string.Empty;
-    public string CourseName { get; set; } = string.Empty;
+    public string? CourseCode { get; set; }
+    public string? CourseCodeAr { get; set; }
+    public string? CourseName { get; set; }
+    public string? CourseNameAr { get; set; }
     public string Day { get; set; } = string.Empty;
     public string Date { get; set; } = string.Empty;
     public string StartTime { get; set; } = string.Empty;
     public string EndTime { get; set; } = string.Empty;
     public string Duration { get; set; } = string.Empty;
     public string? Location { get; set; }
+    public string? LocationAr { get; set; }
     public string ExamType { get; set; } = string.Empty;
 }

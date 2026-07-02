@@ -13,6 +13,9 @@ public class ClassConfiguration : IEntityTypeConfiguration<Class>
         builder.Property(c => c.GroupCode)
             .HasMaxLength(20);
 
+        builder.Property(c => c.GroupCodeAr)
+            .HasMaxLength(20);
+
         builder.Property(c => c.ClassType)
             .HasConversion<string>()
             .HasMaxLength(20);
@@ -21,8 +24,10 @@ public class ClassConfiguration : IEntityTypeConfiguration<Class>
             .HasConversion<string>()
             .HasMaxLength(20);
 
-        builder.Property(c => c.Room)
-            .HasMaxLength(100);
+        builder.HasOne(c => c.Room)
+            .WithMany()
+            .HasForeignKey(c => c.RoomId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.Property(c => c.Capacity);
 

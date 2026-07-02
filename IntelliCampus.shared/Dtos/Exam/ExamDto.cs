@@ -16,8 +16,11 @@ public class ExamDto
     public int? TotalMarks { get; set; }
     public int? RoomId { get; set; }
     public string? RoomName { get; set; }
+    public string? RoomNameAr { get; set; }
     public int CourseId { get; set; }
     public string? CourseName { get; set; }
+    public string? CourseNameAr { get; set; }
     public string? CourseCode { get; set; }
+    public string? CourseCodeAr { get; set; }
     public DateTime CreatedAt { get; set; }
 }

@@ -10,6 +10,7 @@ namespace IntelliCampus.Service.Specifications
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
+        AddInclude(i => i.Specialization!);
         AddInclude(i => i.User.Faculty!);
         AddInclude("User.UserRoles.Role");
         EnableSplitQuery();
@@ -20,6 +21,7 @@ namespace IntelliCampus.Service.Specifications
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
+        AddInclude(i => i.Specialization!);
         AddInclude("User.UserRoles.Role");
         EnableSplitQuery();
     }
@@ -29,6 +31,7 @@ namespace IntelliCampus.Service.Specifications
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
+        AddInclude(i => i.Specialization!);
         AddInclude(i => i.User.Faculty!);
         AddInclude("User.UserRoles.Role");
         EnableSplitQuery();
@@ -39,6 +42,7 @@ namespace IntelliCampus.Service.Specifications
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
+        AddInclude(i => i.Specialization!);
         AddInclude("User.UserRoles.Role");
         EnableSplitQuery();
         AddOrderBy(i => i.User.FullName);
@@ -52,6 +56,7 @@ namespace IntelliCampus.Service.Specifications
     {
         AddInclude(i => i.Department!);
         AddInclude(i => i.OfficeHoursRoom!);
+        AddInclude(i => i.Specialization!);
         AddInclude(i => i.User.Faculty!);
         AddInclude("User.UserRoles.Role");
         EnableSplitQuery();

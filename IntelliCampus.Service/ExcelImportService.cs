@@ -33,6 +33,10 @@ public class ExcelImportService : IExcelImportService
         => _unitOfWork.GetRepository<Department, int>();
     private IGenericRepository<CoursePrerequisite, int> Prerequisites
         => _unitOfWork.GetRepository<CoursePrerequisite, int>();
+    private IGenericRepository<Room, int> Rooms
+        => _unitOfWork.GetRepository<Room, int>();
+    private IGenericRepository<Specialization, int> Specializations
+        => _unitOfWork.GetRepository<Specialization, int>();
 
     public ExcelImportService(
         IStudentService studentService,
@@ -192,6 +196,16 @@ public class ExcelImportService : IExcelImportService
 
     private async Task ImportInstructorRowAsync(IXLRangeRow row, int? facultyId)
     {
+        var specializationName = GetOptionalString(row, 10);
+        int? specializationId = null;
+        if (!string.IsNullOrWhiteSpace(specializationName))
+        {
+            var specializations = await Specializations.GetAllAsync(specifications: null, asNoTracking: true);
+            var spec = specializations.FirstOrDefault(s =>
+                s.Name.Equals(specializationName, StringComparison.OrdinalIgnoreCase));
+            specializationId = spec?.SpecializationId;
+        }
+
         var dto = new CreateInstructorDto
         {
             NationalId = row.Cell(1).GetString().Trim(),
@@ -203,7 +217,7 @@ public class ExcelImportService : IExcelImportService
             Nationality = GetOptionalString(row, 7),
             InstructorCode = GetOptionalString(row, 8),
             InstructorRole = GetOptionalString(row, 9),
-            Specialization = GetOptionalString(row, 10),
+            SpecializationId = specializationId,
             DepartmentName = GetOptionalString(row, 11),
             HireDate = GetOptionalString(row, 12),
             FacultyId = facultyId
@@ -304,13 +318,22 @@ public class ExcelImportService : IExcelImportService
 
     private async Task ImportSectionRowAsync(IXLRangeRow row)
     {
+        var roomName = GetOptionalString(row, 5);
+        int? roomId = null;
+        if (!string.IsNullOrWhiteSpace(roomName))
+        {
+            var rooms = await Rooms.GetAllAsync();
+            var room = rooms.FirstOrDefault(r => r.RoomName == roomName);
+            roomId = room?.RoomId;
+        }
+
         var dto = new CreateClassDto
         {
             CourseId = int.Parse(row.Cell(1).GetString().Trim()),
             Type = row.Cell(2).GetString().Trim(),
             InstructorName = GetOptionalString(row, 3),
             Schedule = GetOptionalString(row, 4),
-            Room = GetOptionalString(row, 5)
+            RoomId = roomId
         };
 
         await _classService.CreateAsync(dto);

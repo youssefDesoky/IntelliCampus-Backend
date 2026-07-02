@@ -381,6 +381,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             {
                 ExamHallId = hall.ExamHallId,
                 HallName = hall.HallName,
+                HallNameAr = hall.HallNameAr,
                 Capacity = hall.Capacity
             };
             var assignedCount = 0;
@@ -403,7 +404,8 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
                     StudentName = student.Name,
                     SeatNumber = seatNum - 1,
                     ExamHallId = hall.ExamHallId,
-                    HallName = hall.HallName
+                    HallName = hall.HallName,
+                    HallNameAr = hall.HallNameAr
                 });
                 assignedCount++;
             }
@@ -450,6 +452,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             {
                 ExamHallId = g.Key,
                 HallName = hall?.HallName ?? $"Hall #{g.Key}",
+                HallNameAr = hall?.HallNameAr,
                 Capacity = hall?.Capacity ?? 0,
                 AssignedCount = g.Count(),
                 Students = g.Select(a => new SeatAssignmentDto
@@ -458,7 +461,8 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
                     StudentName = users.TryGetValue(a.StudentId, out var u) ? u.FullName : $"#{a.StudentId}",
                     SeatNumber = a.SeatNumber,
                     ExamHallId = a.ExamHallId,
-                    HallName = hall?.HallName
+                    HallName = hall?.HallName,
+                    HallNameAr = hall?.HallNameAr
                 }).OrderBy(s => s.SeatNumber).ToList()
             };
             result.Halls.Add(dto);

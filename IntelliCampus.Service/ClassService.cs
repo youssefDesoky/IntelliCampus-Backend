@@ -122,7 +122,7 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         var endTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : (TimeSpan?)null;
         await ValidateNoTimeOverlapAsync(dto.CourseId, classType, day, startTime, endTime);
 
-        await ValidateCapacityAgainstRoomAsync(dto.Room, dto.Capacity);
+        await ValidateCapacityAgainstRoomAsync(dto.RoomId, dto.Capacity);
 
         // Generate group code (e.g. CS-L1, IS-S1, IS-S2)
         var groupCode = await GenerateGroupCodeAsync(course, classType);
@@ -134,7 +134,7 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             Day = day,
             StartTime = startTime,
             EndTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : null,
-            Room = dto.Room,
+            RoomId = dto.RoomId,
             CourseId = dto.CourseId,
             InstructorId = instructorId,
             Capacity = dto.Capacity
@@ -151,15 +151,15 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
 
     public async Task<ClassDto> CreateLectureAsync(CreateLectureDto dto)
     {
-        return await CreateInternalAsync(dto.CourseId, dto.InstructorName, dto.Schedule, dto.Room, ClassType.Lecture, dto.Capacity);
+        return await CreateInternalAsync(dto.CourseId, dto.InstructorName, dto.Schedule, dto.RoomId, ClassType.Lecture, dto.Capacity);
     }
 
     public async Task<ClassDto> CreateSectionAsync(CreateSectionDto dto)
     {
-        return await CreateInternalAsync(dto.CourseId, dto.InstructorName, dto.Schedule, dto.Room, ClassType.Section, dto.Capacity);
+        return await CreateInternalAsync(dto.CourseId, dto.InstructorName, dto.Schedule, dto.RoomId, ClassType.Section, dto.Capacity);
     }
 
-    private async Task<ClassDto> CreateInternalAsync(int courseId, string? instructorName, string? schedule, string? room, ClassType classType, int? capacity = null)
+    private async Task<ClassDto> CreateInternalAsync(int courseId, string? instructorName, string? schedule, int? roomId, ClassType classType, int? capacity = null)
     {
         var courseSpec = new CourseForClassSpec(courseId);
         var course = await Courses.GetByIdAsync(courseSpec);
@@ -198,7 +198,7 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         var endTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : (TimeSpan?)null;
         await ValidateNoTimeOverlapAsync(courseId, classType, day, startTime, endTime);
 
-        await ValidateCapacityAgainstRoomAsync(room, capacity);
+        await ValidateCapacityAgainstRoomAsync(roomId, capacity);
 
         var groupCode = await GenerateGroupCodeAsync(course, classType);
 
@@ -209,7 +209,7 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             Day = day,
             StartTime = startTime,
             EndTime = endTime,
-            Room = room,
+            RoomId = roomId,
             CourseId = courseId,
             InstructorId = instructorId,
             Capacity = capacity
@@ -259,8 +259,8 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             classEntity.EndTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : null;
         }
 
-        if (dto.Room is not null)
-            classEntity.Room = dto.Room;
+        if (dto.RoomId.HasValue)
+            classEntity.RoomId = dto.RoomId;
 
         if (dto.InstructorId.HasValue)
         {
@@ -273,7 +273,7 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         if (dto.Capacity.HasValue)
             classEntity.Capacity = dto.Capacity.Value;
 
-        await ValidateCapacityAgainstRoomAsync(classEntity.Room, classEntity.Capacity);
+        await ValidateCapacityAgainstRoomAsync(classEntity.RoomId, classEntity.Capacity);
 
         Classes.Update(classEntity);
         await _unitOfWork.SaveChangesAsync();
@@ -477,29 +477,35 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         {
             ClassId = classEntity.ClassId,
             GroupCode = classEntity.GroupCode,
+            GroupCodeAr = classEntity.GroupCodeAr,
+            ClassTypeAr = ClassTypeAr(classEntity.ClassType),
             ClassType = classEntity.ClassType,
             Day = classEntity.Day,
+            DayNameAr = DayNameAr(classEntity.Day),
             StartTime = classEntity.StartTime,
             EndTime = classEntity.EndTime,
-            Room = classEntity.Room,
+            RoomId = classEntity.RoomId,
+            RoomName = classEntity.Room?.RoomName,
+            RoomNameAr = classEntity.Room?.RoomNameAr,
             Capacity = classEntity.Capacity,
             EnrolledCount = classEntity.ClassType == ClassType.Lecture
                 ? courseStudentCount
                 : classEntity.StudentCourses?.Count ?? 0,
             CourseId = classEntity.CourseId,
             CourseName = classEntity.Course.CourseName,
+            CourseNameAr = classEntity.Course?.CourseNameAr,
             InstructorId = classEntity.InstructorId,
-            InstructorName = classEntity.Instructor?.User?.FullName
+            InstructorName = classEntity.Instructor?.User?.FullName,
+            InstructorNameAr = classEntity.Instructor?.User?.FullNameAr
         };
     }
 
-    private async Task ValidateCapacityAgainstRoomAsync(string? roomName, int? capacity)
+    private async Task ValidateCapacityAgainstRoomAsync(int? roomId, int? capacity)
     {
-        if (string.IsNullOrWhiteSpace(roomName) || !capacity.HasValue)
+        if (!roomId.HasValue || !capacity.HasValue)
             return;
 
-        var allRooms = await Rooms.GetAllAsync();
-        var room = allRooms.FirstOrDefault(r => r.RoomName == roomName);
+        var room = await Rooms.GetByIdAsync(roomId.Value);
         if (room is null)
             return;
 
@@ -547,21 +553,46 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             Nationality = instructor.User.Nationality,
             InstructorCode = instructor.InstructorCode,
             InstructorRole = instructor.InstructorRole?.ToString(),
-            Specialization = instructor.Specialization,
+            SpecializationId = instructor.SpecializationId,
+            SpecializationName = instructor.Specialization?.Name,
+            SpecializationNameAr = instructor.Specialization?.NameAr,
             DepartmentId = instructor.DepartmentId,
             DepartmentName = instructor.Department?.DepartmentName,
+            DepartmentNameAr = instructor.Department?.DepartmentNameAr,
             HireDate = instructor.HireDate?.ToString("dd MM yyyy"),
             FacultyId = instructor.User.FacultyId,
             FacultyName = instructor.User.Faculty?.FacultyName,
+            FacultyNameAr = instructor.User.Faculty?.FacultyNameAr,
             Status = instructor.Status?.ToString(),
             OfficeHoursRoomId = instructor.OfficeHoursRoomId,
             OfficeHoursRoomName = instructor.OfficeHoursRoom?.RoomName,
+            OfficeHoursRoomNameAr = instructor.OfficeHoursRoom?.RoomNameAr,
             ContractStartDate = instructor.ContractStartDate?.ToString("dd MM yyyy"),
             ContractEndDate = instructor.ContractEndDate?.ToString("dd MM yyyy"),
             Secondment = instructor.Secondment,
             Roles = instructor.User.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()
         };
     }
+
+    private static string? ClassTypeAr(ClassType type) => type switch
+    {
+        ClassType.Lecture => "محاضرة",
+        ClassType.Lab => "معمل",
+        ClassType.Section => "مجموعة",
+        _ => null
+    };
+
+    private static string? DayNameAr(DayOfWeekEnum? day) => day switch
+    {
+        DayOfWeekEnum.Sunday => "الأحد",
+        DayOfWeekEnum.Monday => "الإثنين",
+        DayOfWeekEnum.Tuesday => "الثلاثاء",
+        DayOfWeekEnum.Wednesday => "الأربعاء",
+        DayOfWeekEnum.Thursday => "الخميس",
+        DayOfWeekEnum.Friday => "الجمعة",
+        DayOfWeekEnum.Saturday => "السبت",
+        _ => null
+    };
 
     private static RoomDto MapRoomToDto(Room room)
     {

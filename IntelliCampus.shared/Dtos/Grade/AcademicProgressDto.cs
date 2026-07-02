@@ -12,6 +12,7 @@ public class AcademicProgressDto
 public class BylawBucketDto
 {
     public string BucketName { get; set; } = string.Empty;
+    public string? BucketNameAr { get; set; }
     public string BucketType { get; set; } = string.Empty;
     public int CompletedHours { get; set; }
     public int RequiredHours { get; set; }
@@ -22,7 +23,9 @@ public class BucketCourseDto
 {
     public int CourseId { get; set; }
     public string CourseCode { get; set; } = string.Empty;
+    public string? CourseCodeAr { get; set; }
     public string CourseName { get; set; } = string.Empty;
+    public string? CourseNameAr { get; set; }
     public int CreditHours { get; set; }
     public bool IsCompleted { get; set; }
 }

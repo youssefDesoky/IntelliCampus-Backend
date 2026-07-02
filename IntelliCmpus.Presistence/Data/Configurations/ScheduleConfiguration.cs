@@ -16,6 +16,9 @@ public class ScheduleConfiguration : IEntityTypeConfiguration<Schedule>
             .IsRequired()
             .HasMaxLength(200);
 
+        builder.Property(s => s.TitleAr)
+            .HasMaxLength(200);
+
         builder.Property(s => s.Day)
             .IsRequired()
             .HasMaxLength(20);
@@ -29,12 +32,6 @@ public class ScheduleConfiguration : IEntityTypeConfiguration<Schedule>
         builder.Property(s => s.EndTime)
             .IsRequired();
 
-        builder.Property(s => s.Location)
-            .HasMaxLength(100);
-
-        builder.Property(s => s.InstructorName)
-            .HasMaxLength(200);
-
         // Backward compatible with the existing DB schema that used column name "Type"
         builder.Property(s => s.ScheduleType)
             .HasColumnName("Type")
@@ -47,6 +44,8 @@ public class ScheduleConfiguration : IEntityTypeConfiguration<Schedule>
         builder.HasIndex(s => new { s.StudentId, s.Date });
         builder.HasIndex(s => s.CourseId);
         builder.HasIndex(s => s.ClassId);
+        builder.HasIndex(s => s.RoomId);
+        builder.HasIndex(s => s.InstructorId);
 
         builder.HasOne(s => s.Student)
             .WithMany(st => st.Schedules)
@@ -62,5 +61,15 @@ public class ScheduleConfiguration : IEntityTypeConfiguration<Schedule>
             .WithMany()
             .HasForeignKey(s => s.ClassId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(s => s.Room)
+            .WithMany()
+            .HasForeignKey(s => s.RoomId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(s => s.Instructor)
+            .WithMany()
+            .HasForeignKey(s => s.InstructorId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
