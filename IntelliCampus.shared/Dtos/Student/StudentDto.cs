@@ -24,6 +24,8 @@ public class StudentDto
     public string? BylawName { get; set; }
     public string? EnrollmentDate { get; set; }
     public double Gpa { get; set; }
+    public decimal? ProbationThreshold { get; set; }
+    public bool IsOnProbation { get; set; }
     public StudentProgram? Program { get; set; }
     public int? SpecializationId { get; set; }
     public string? SpecializationName { get; set; }

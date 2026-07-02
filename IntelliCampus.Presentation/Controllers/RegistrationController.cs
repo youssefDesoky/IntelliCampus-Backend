@@ -51,6 +51,28 @@ public class RegistrationController : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("settings")]
+    public async Task<ActionResult<RegistrationSettingsDto>> GetSettings()
+    {
+        var studentId = GetCurrentStudentId();
+        if (studentId is null)
+            return Unauthorized();
+
+        var settings = await _registrationService.GetRegistrationSettingsAsync(studentId.Value);
+        return Ok(settings);
+    }
+
+    [HttpPatch("{courseId}/section")]
+    public async Task<IActionResult> ChangeSection(int courseId, [FromBody] ChangeSectionDto dto)
+    {
+        var studentId = GetCurrentStudentId();
+        if (studentId is null)
+            return Unauthorized();
+
+        await _registrationService.ChangeStudentCourseSectionAsync(studentId.Value, courseId, dto.ClassId);
+        return NoContent();
+    }
+
     private int? GetCurrentStudentId()
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

@@ -8,4 +8,8 @@ internal class NoteSpec : BaseSpecifications<Note>
     {
         AddInclude(n => n.MaterialFolder!);
     }
+
+    public NoteSpec(int courseId, bool byCourse) : base(n => n.CourseId == courseId)
+    {
+    }
 }

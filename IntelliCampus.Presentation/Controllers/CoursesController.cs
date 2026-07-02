@@ -52,6 +52,13 @@ public class CoursesController : ControllerBase
             var studentCourses = await _courseService.GetActiveCoursesByStudentBylawAsync(userId.Value, queryParams);
             return Ok(studentCourses);
         }
+        
+        if (queryParams.StudentId.HasValue)
+        {
+            var studentCourses = await _courseService.GetActiveCoursesByStudentBylawAsync(queryParams.StudentId.Value, queryParams);
+            return Ok(studentCourses);
+        }
+
 
         var courses = await _courseService.GetActiveCoursesAsync(queryParams);
         return Ok(courses);
@@ -121,6 +128,13 @@ public class CoursesController : ControllerBase
             var studentResult = await _courseService.GetAllWithPrerequisitesByStudentBylawAsync(userId.Value, queryParams);
             return Ok(studentResult);
         }
+
+        if (queryParams.StudentId.HasValue)
+        {
+            var studentResult = await _courseService.GetAllWithPrerequisitesByStudentBylawAsync(queryParams.StudentId.Value, queryParams);
+            return Ok(studentResult);
+        }
+
 
         var result = await _courseService.GetAllWithPrerequisitesAsync(queryParams);
         return Ok(result);

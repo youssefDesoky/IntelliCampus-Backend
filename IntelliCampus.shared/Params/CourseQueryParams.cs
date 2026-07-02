@@ -31,7 +31,7 @@ public class CourseQueryParams
     }
 
     private const int DefaultPageSize = 10;
-    private const int MaxPageSize = 50;
+    private const int MaxPageSize = 200;
     private int _pageSize = DefaultPageSize;
 
     public int PageSize

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using IntelliCampus.Shared.Dtos.Registration;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Helpers;
@@ -52,6 +53,9 @@ public class RegistrationService : IRegistrationService
     private IGenericRepository<Bylaw, int> Bylaws
         => _unitOfWork.GetRepository<Bylaw, int>();
 
+    private IGenericRepository<Department, int> Departments
+        => _unitOfWork.GetRepository<Department, int>();
+
     public async Task<StudentRegistrationDto?> RegisterStudentInCourseAsync(int studentId, CourseRegistrationDto dto)
     {
         // Verify student exists and get bylaw for rules
@@ -81,8 +85,13 @@ public class RegistrationService : IRegistrationService
 
         await ValidateRegistrationConflictsAsync(studentId, classEntity, lectureClass, course.CourseName, semester);
 
+        await ValidateRegistrationPeriodAsync(student, course);
+
         var existingSemesterCourses = await StudentCourses.GetAllAsync(
             new StudentCourseSemesterSpec(studentId, semester), asNoTracking: true);
+
+        await ValidateProbationAsync(student, semester, existingSemesterCourses, course);
+
         await ValidateCreditHoursAsync(student, course, semester, existingSemesterCourses);
 
         var studentCourse = new StudentCourse
@@ -134,13 +143,15 @@ public class RegistrationService : IRegistrationService
             StudentId = sc.StudentId,
             CourseId = sc.CourseId,
             CourseName = sc.Course.CourseName,
+            CourseCode = sc.Course.CourseCode,
+            CreditHours = sc.Course.CreditHours,
             ClassId = sc.ClassId,
             ClassName = sc.Class is not null ? $"{sc.Class.ClassType}" : null,
-            ProfessorName = sc.Course.Classes
-                .FirstOrDefault(cl => cl.ClassType == ClassType.Lecture)?.Instructor?.User?.FullName,
-            Schedule = sc.Class?.Day.HasValue == true && sc.Class.StartTime.HasValue && sc.Class.EndTime.HasValue
-                ? $"{sc.Class.Day} {EgyptTime.Today.Add(sc.Class.StartTime.Value):h:mm tt} - {EgyptTime.Today.Add(sc.Class.EndTime.Value):h:mm tt}"
-                : null,
+            ProfessorName = sc.Class?.Instructor?.User?.FullName
+                ?? sc.Course.Classes.FirstOrDefault(cl => cl.ClassType == ClassType.Lecture)?.Instructor?.User?.FullName,
+            Day = sc.Class?.Day?.ToString(),
+            StartTime = sc.Class?.StartTime?.ToString(@"hh\:mm"),
+            EndTime = sc.Class?.EndTime?.ToString(@"hh\:mm"),
             Room = sc.Class?.Room,
             Semester = sc.Semester,
             RegisteredAt = sc.RegisteredAt
@@ -180,7 +191,9 @@ public class RegistrationService : IRegistrationService
         if (classEntity is null || classEntity.CourseId != courseId)
             throw new ClassNotFoundException($"Class with ID {newClassId} not found or does not belong to course {courseId}.");
 
-        var oldClassId = studentCourse.ClassId;
+        if (classEntity.StartTime is null || classEntity.EndTime is null)
+            throw new InvalidOperationException("Class schedule is not fully defined (StartTime/EndTime).");
+
         studentCourse.ClassId = newClassId;
         StudentCourses.Update(studentCourse);
         await _unitOfWork.SaveChangesAsync();
@@ -195,6 +208,55 @@ public class RegistrationService : IRegistrationService
             if (lectureClass is not null)
                 await _scheduleService.SyncFromCourseRegistrationAsync(studentId, lectureClass.ClassId);
         }
+    }
+
+    public async Task<RegistrationSettingsDto> GetRegistrationSettingsAsync(int studentId)
+    {
+        var student = await Students.GetByIdAsync(studentId);
+        if (student is null)
+            throw new UserNotFoundException($"Student with ID {studentId} not found.");
+
+        var semester = SemesterHelper.GetCurrentSemester();
+        var existingSemesterCourses = await StudentCourses.GetAllAsync(
+            new StudentCourseSemesterSpec(studentId, semester), asNoTracking: true);
+
+        var effectiveCredits = student.BylawId is not null
+            ? await _bylawService.GetEffectiveCreditHoursAsync(student.BylawId.Value, student.DepartmentId)
+            : null;
+
+        var currentCredits = existingSemesterCourses.Sum(sc =>
+            (effectiveCredits?.GetValueOrDefault(sc.CourseId) ?? sc.Course?.CreditHours ?? 0));
+
+        var bylaw = student.BylawId is not null
+            ? await Bylaws.GetByIdAsync(student.BylawId.Value)
+            : null;
+
+        var isSummer = semester.StartsWith("Summer", StringComparison.OrdinalIgnoreCase);
+        var isOnProbation = student.Gpa > 0
+            && bylaw?.Settings.ProbationThreshold is not null
+            && (decimal)student.Gpa < bylaw.Settings.ProbationThreshold.Value;
+
+        var maxHours = isSummer && bylaw?.Settings.SummerMaxCreditHours.HasValue == true
+            ? bylaw.Settings.SummerMaxCreditHours.Value
+            : bylaw?.Settings.MaxCreditHoursPerSemester;
+
+        var effectiveMax = isOnProbation && bylaw?.Settings.ProbationRegistrationLimit.HasValue == true
+            ? Math.Min(maxHours ?? int.MaxValue, bylaw.Settings.ProbationRegistrationLimit.Value)
+            : maxHours;
+
+        return new RegistrationSettingsDto
+        {
+            MaxCreditHoursPerSemester = bylaw?.Settings.MaxCreditHoursPerSemester,
+            MinCreditHoursPerSemester = bylaw?.Settings.MinCreditHoursPerSemester,
+            SummerMaxCreditHours = bylaw?.Settings.SummerMaxCreditHours,
+            ProbationThreshold = bylaw?.Settings.ProbationThreshold,
+            ProbationRegistrationLimit = bylaw?.Settings.ProbationRegistrationLimit,
+            IsOnProbation = isOnProbation,
+            EffectiveMaxCreditHours = effectiveMax,
+            CurrentGpa = student.Gpa,
+            CurrentSemesterCredits = currentCredits,
+            Semester = semester,
+        };
     }
 
     private async Task<int> GetTotalEarnedCreditHoursAsync(int studentId)
@@ -277,6 +339,98 @@ public class RegistrationService : IRegistrationService
         if (!isSummer && bylaw.Settings.MinCreditHoursPerSemester.HasValue && totalAfterRegistration < bylaw.Settings.MinCreditHoursPerSemester.Value)
             throw new InvalidOperationException(
                 $"Cannot register for \"{course.CourseName}\". The total of {totalAfterRegistration} credit hours is below the minimum of {bylaw.Settings.MinCreditHoursPerSemester.Value} credit hours per semester.");
+    }
+
+    private async Task ValidateProbationAsync(Student student, string semester, IEnumerable<StudentCourse> existingSemesterCourses, Course course)
+    {
+        if (student.BylawId is null) return;
+
+        var bylaw = await Bylaws.GetByIdAsync(student.BylawId.Value);
+        if (bylaw is null) return;
+
+        if (bylaw.Settings.ProbationThreshold is null) return;
+        if (student.Gpa <= 0) return;
+
+        var isOnProbation = (decimal)student.Gpa < bylaw.Settings.ProbationThreshold.Value;
+        if (!isOnProbation) return;
+
+        if (bylaw.Settings.ProbationRegistrationLimit is null) return;
+
+        var effectiveCredits = await _bylawService.GetEffectiveCreditHoursAsync(
+            student.BylawId.Value, student.DepartmentId);
+        var existingHours = existingSemesterCourses.Sum(sc =>
+            effectiveCredits.GetValueOrDefault(sc.CourseId, sc.Course?.CreditHours ?? 0));
+        var newCourseHours = effectiveCredits.GetValueOrDefault(course.CourseId, course.CreditHours);
+        var totalAfterRegistration = existingHours + newCourseHours;
+
+        if (totalAfterRegistration > bylaw.Settings.ProbationRegistrationLimit.Value)
+            throw new InvalidOperationException(
+                $"Cannot register for \"{course.CourseName}\". You are on academic probation (GPA: {student.Gpa:F2}). " +
+                $"Adding {newCourseHours} credit hours would bring your semester total to {totalAfterRegistration}, " +
+                $"exceeding the probation registration limit of {bylaw.Settings.ProbationRegistrationLimit.Value} credit hours.");
+    }
+
+    private async Task ValidateRegistrationPeriodAsync(Student student, Course course)
+    {
+        var now = EgyptTime.Now;
+
+        if (course.RegistrationStartDate.HasValue && now < course.RegistrationStartDate.Value)
+            throw new InvalidOperationException(
+                $"Registration for \"{course.CourseName}\" has not started yet. It opens on {course.RegistrationStartDate.Value:yyyy-MM-dd}.");
+
+        if (course.RegistrationEndDate.HasValue && now > course.RegistrationEndDate.Value)
+            throw new InvalidOperationException(
+                $"Registration for \"{course.CourseName}\" closed on {course.RegistrationEndDate.Value:yyyy-MM-dd}.");
+
+        if (!string.IsNullOrWhiteSpace(course.AllowedLevels))
+        {
+            try
+            {
+                var allowedLevels = JsonSerializer.Deserialize<List<int>>(course.AllowedLevels);
+                if (allowedLevels?.Count > 0 && student.Level.HasValue && !allowedLevels.Contains(student.Level.Value))
+                    throw new InvalidOperationException(
+                        $"You are not eligible to register for \"{course.CourseName}\". It is only available for levels: {string.Join(", ", allowedLevels)}.");
+            }
+            catch (JsonException ex)
+            {
+                throw new InvalidOperationException($"Invalid AllowedLevels format for course \"{course.CourseName}\".", ex);
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(course.AllowedDepartmentIds))
+        {
+            try
+            {
+                var allowedDepts = JsonSerializer.Deserialize<List<int>>(course.AllowedDepartmentIds);
+                if (allowedDepts?.Count > 0 && student.DepartmentId.HasValue && !allowedDepts.Contains(student.DepartmentId.Value))
+                    throw new InvalidOperationException(
+                        $"You are not eligible to register for \"{course.CourseName}\". It is restricted to specific departments.");
+            }
+            catch (JsonException ex)
+            {
+                throw new InvalidOperationException($"Invalid AllowedDepartmentIds format for course \"{course.CourseName}\".", ex);
+            }
+        }
+
+        if (student.DepartmentId.HasValue)
+        {
+            var department = await Departments.GetByIdAsync(student.DepartmentId.Value);
+            if (department?.RegistrationSettings is not null)
+            {
+                var deptSettings = department.RegistrationSettings;
+                if (deptSettings.RegistrationStartDate.HasValue && now < deptSettings.RegistrationStartDate.Value)
+                    throw new InvalidOperationException(
+                        $"Department registration has not started yet. It opens on {deptSettings.RegistrationStartDate.Value:yyyy-MM-dd}.");
+
+                if (deptSettings.RegistrationEndDate.HasValue && now > deptSettings.RegistrationEndDate.Value)
+                    throw new InvalidOperationException(
+                        $"Department registration closed on {deptSettings.RegistrationEndDate.Value:yyyy-MM-dd}.");
+
+                if (deptSettings.AllowedLevels.Count > 0 && student.Level.HasValue && !deptSettings.AllowedLevels.Contains(student.Level.Value))
+                    throw new InvalidOperationException(
+                        $"Your level ({student.Level}) is not eligible for registration this semester. Allowed levels: {string.Join(", ", deptSettings.AllowedLevels)}.");
+            }
+        }
     }
 
 }

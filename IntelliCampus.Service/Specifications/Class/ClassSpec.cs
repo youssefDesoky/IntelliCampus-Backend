@@ -11,6 +11,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(c => c.Course!);
             AddInclude(c => c.Instructor!);
+            AddInclude(c => c.StudentCourses!);
             AddInclude("Instructor.User");
         }
 
