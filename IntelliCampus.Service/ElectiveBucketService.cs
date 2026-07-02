@@ -28,7 +28,7 @@ public class ElectiveBucketService : IElectiveBucketService
     private IGenericRepository<StudentElectiveBucketProgress, int> Progress => _unitOfWork.GetRepository<StudentElectiveBucketProgress, int>();
     private IGenericRepository<Course, int> Courses => _unitOfWork.GetRepository<Course, int>();
     private IGenericRepository<Student, int> Students => _unitOfWork.GetRepository<Student, int>();
-    private IGenericRepository<StudentCourse, int> StudentCourses => _unitOfWork.GetRepository<StudentCourse, int>();
+    private IGenericRepository<StudentCourse, (int, int)> StudentCourses => _unitOfWork.GetRepository<StudentCourse, (int, int)>();
     private IGenericRepository<Bylaw, int> Bylaws => _unitOfWork.GetRepository<Bylaw, int>();
     private IGenericRepository<Department, int> Departments => _unitOfWork.GetRepository<Department, int>();
     private IGenericRepository<BylawCourse, int> BylawCourses => _unitOfWork.GetRepository<BylawCourse, int>();

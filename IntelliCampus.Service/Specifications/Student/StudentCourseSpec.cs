@@ -11,6 +11,7 @@ internal class StudentCourseSpec : BaseSpecifications<StudentCourse>
         AddInclude(sc => sc.Class!);
         AddInclude("Class.Instructor.User");
         AddInclude("Course.Classes.Instructor");
+        AddInclude("Course.Classes.Instructor.User");
         EnableSplitQuery();
     }
 

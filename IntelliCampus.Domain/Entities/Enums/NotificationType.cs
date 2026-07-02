@@ -20,5 +20,6 @@ public enum NotificationType
     ElectiveBucketLocked            = 15,
     NewMessage                      = 16,
     NewComment                       = 17,
-    NewUpvote                        = 18
+    NewUpvote                        = 18,
+    FriendRequestReceived            = 19
 }

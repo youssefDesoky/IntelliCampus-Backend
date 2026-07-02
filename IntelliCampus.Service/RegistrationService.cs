@@ -30,8 +30,8 @@ public class RegistrationService : IRegistrationService
         _bylawService = bylawService;
     }
 
-    private IGenericRepository<StudentCourse, int> StudentCourses
-        => _unitOfWork.GetRepository<StudentCourse, int>();
+    private IGenericRepository<StudentCourse, (int, int)> StudentCourses
+        => _unitOfWork.GetRepository<StudentCourse, (int, int)>();
 
     private IGenericRepository<Student, int> Students
         => _unitOfWork.GetRepository<Student, int>();

@@ -1,10 +1,10 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Helpers;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Shared.Dtos.Meeting;
-
 namespace IntelliCampus.Service;
 
 public class MeetingService(IUnitOfWork unitOfWork) : IMeetingService
@@ -27,6 +27,12 @@ public class MeetingService(IUnitOfWork unitOfWork) : IMeetingService
         return meetings.Select(MapToDto).ToList();
     }
 
+    public async Task<MeetingDto?> GetByIdAsync(int meetingId)
+    {
+        var meeting = await Meetings.GetByIdAsync(meetingId);
+        return meeting is null ? null : MapToDto(meeting);
+    }
+
     public async Task<MeetingDto> CreateAsync(CreateMeetingDto dto, int instructorId)
     {
         var course = await Courses.GetByIdAsync(dto.CourseId);
@@ -38,16 +44,28 @@ public class MeetingService(IUnitOfWork unitOfWork) : IMeetingService
         var meeting = new Meeting
         {
             Title = dto.Title,
-            DateTime = dto.DateTime,
+            DateTime = EgyptTime.Now,
             RoomName = roomName,
             CourseId = dto.CourseId,
-            InstructorId = instructorId
+            InstructorId = instructorId,
+            IsActive = true
         };
 
         Meetings.Add(meeting);
         await _unitOfWork.SaveChangesAsync();
 
         return MapToDto(meeting);
+    }
+
+    public async Task<bool> EndMeetingAsync(int meetingId, int instructorId)
+    {
+        var meeting = await Meetings.GetByIdAsync(meetingId);
+        if (meeting is null) throw new MeetingNotFoundException($"Meeting with ID {meetingId} not found.");
+
+        var sql = "UPDATE [Meetings] SET [IsActive] = 0 WHERE [MeetingId] = {0} AND [InstructorId] = {1}";
+        await _unitOfWork.ExecuteSqlAsync(sql, meetingId, instructorId);
+
+        return true;
     }
 
     public async Task<bool> DeleteAsync(int meetingId)
@@ -67,6 +85,7 @@ public class MeetingService(IUnitOfWork unitOfWork) : IMeetingService
         DateTime = meeting.DateTime,
         RoomName = meeting.RoomName,
         CourseId = meeting.CourseId,
-        InstructorId = meeting.InstructorId
+        InstructorId = meeting.InstructorId,
+        IsActive = meeting.IsActive
     };
 }

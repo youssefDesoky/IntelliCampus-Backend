@@ -53,7 +53,7 @@ public class FriendServiceTests
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
         _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(sender);
 
-        var result = await _sut.SendRequestAsync(1, 2);
+        var result = await _sut.SendRequestAsync(1, "2");
 
         result.FriendRequestId.Should().Be(0);
         result.SenderId.Should().Be(1);
@@ -76,11 +76,14 @@ public class FriendServiceTests
     [Fact]
     public async Task SendRequestAsync_SelfRequest_ThrowsInvalidOperation()
     {
-        await _sut.Invoking(s => s.SendRequestAsync(1, 1))
+        var self = Mock.Of<User>(s => s.UserId == 1);
+        _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(self);
+
+        await _sut.Invoking(s => s.SendRequestAsync(1, "1"))
             .Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("*yourself*");
 
-        _userRepoMock.Verify(r => r.GetByIdAsync(It.IsAny<int>()), Times.Never);
+        _userRepoMock.Verify(r => r.GetByIdAsync(1), Times.Once);
         _requestRepoMock.Verify(r => r.Add(It.IsAny<FriendRequest>()), Times.Never);
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);
     }
@@ -89,8 +92,9 @@ public class FriendServiceTests
     public async Task SendRequestAsync_RecipientNotFound_ThrowsUserNotFoundException()
     {
         _userRepoMock.Setup(r => r.GetByIdAsync(999)).ReturnsAsync((User?)null);
+        _userRepoMock.Setup(r => r.GetAllAsync(It.IsAny<ISpecifications<User>>(), true)).ReturnsAsync([]);
 
-        await _sut.Invoking(s => s.SendRequestAsync(1, 999))
+        await _sut.Invoking(s => s.SendRequestAsync(1, "999"))
             .Should().ThrowAsync<UserNotFoundException>();
 
         _userRepoMock.Verify(r => r.GetByIdAsync(999), Times.Once);
@@ -110,7 +114,7 @@ public class FriendServiceTests
         _userRepoMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(recipient);
         _requestRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(existingRequests);
 
-        await _sut.Invoking(s => s.SendRequestAsync(1, 2))
+        await _sut.Invoking(s => s.SendRequestAsync(1, "2"))
             .Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("*already sent*");
 
@@ -127,7 +131,7 @@ public class FriendServiceTests
         _requestRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
         _friendshipRepoMock.Setup(r => r.AnyAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Friendship, bool>>>())).ReturnsAsync(true);
 
-        await _sut.Invoking(s => s.SendRequestAsync(1, 2))
+        await _sut.Invoking(s => s.SendRequestAsync(1, "2"))
             .Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("*Already friends*");
 
@@ -159,7 +163,7 @@ public class FriendServiceTests
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
         _userRepoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(sender);
 
-        var result = await _sut.SendRequestAsync(1, 2);
+        var result = await _sut.SendRequestAsync(1, "2");
 
         result.Status.Should().Be("Accepted");
         result.SenderId.Should().Be(2);

@@ -283,6 +283,7 @@ public class NotificationService : INotificationService
         NotificationType.NewMessage => "New Message",
         NotificationType.NewComment => "New Comment",
         NotificationType.NewUpvote => "New Upvote",
+        NotificationType.FriendRequestReceived => "Friend Request",
         _ => "Notification"
     };
 

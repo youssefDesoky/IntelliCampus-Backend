@@ -25,6 +25,14 @@ public class MeetingsController : ControllerBase
         return Ok(meetings);
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<MeetingDto>> GetById(int id)
+    {
+        var meeting = await _meetingService.GetByIdAsync(id);
+        if (meeting is null) return NotFound();
+        return Ok(meeting);
+    }
+
     [HttpPost]
     [Authorize(Roles = "Instructor")]
     public async Task<ActionResult<MeetingDto>> Create([FromBody] CreateMeetingDto dto)
@@ -33,6 +41,15 @@ public class MeetingsController : ControllerBase
 
         var meeting = await _meetingService.CreateAsync(dto, userId);
         return CreatedAtAction(nameof(GetByCourse), new { courseId = meeting.CourseId }, meeting);
+    }
+
+    [HttpPost("{id}/end")]
+    [Authorize(Roles = "Instructor")]
+    public async Task<IActionResult> EndMeeting(int id)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        await _meetingService.EndMeetingAsync(id, userId);
+        return Ok();
     }
 
     [HttpDelete("{id}")]

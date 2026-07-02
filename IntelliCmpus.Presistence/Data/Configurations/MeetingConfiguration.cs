@@ -21,6 +21,9 @@ public class MeetingConfiguration : IEntityTypeConfiguration<Meeting>
             .IsRequired()
             .HasMaxLength(100);
 
+        builder.Property(m => m.IsActive)
+            .HasDefaultValue(true);
+
         builder.HasIndex(m => m.CourseId);
 
         builder.HasOne(m => m.Course)

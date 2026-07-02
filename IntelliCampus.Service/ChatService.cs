@@ -1,4 +1,5 @@
 using IntelliCampus.Domain.Entities;
+using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Service.Exceptions;
@@ -10,10 +11,12 @@ namespace IntelliCampus.Service;
 public class ChatService : IChatService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly INotificationService _notificationService;
 
-    public ChatService(IUnitOfWork unitOfWork)
+    public ChatService(IUnitOfWork unitOfWork, INotificationService notificationService)
     {
         _unitOfWork = unitOfWork;
+        _notificationService = notificationService;
     }
 
     private IGenericRepository<ChatMessage, int> Messages
@@ -36,7 +39,13 @@ public class ChatService : IChatService
         Messages.Add(message);
         await _unitOfWork.SaveChangesAsync();
 
-        return await MapToDtoAsync(message);
+        var dto = await MapToDtoAsync(message);
+        if (string.IsNullOrEmpty(groupName) && int.TryParse(recipientId, out var recipientUserId))
+        {
+            var encodedName = Uri.EscapeDataString(dto.SenderName ?? "Unknown");
+            await _notificationService.SendAsync(recipientUserId, NotificationType.NewMessage, dto.Content, dto.SenderName ?? "New Message", $"/?openChat=message&userId={senderId}&userName={encodedName}");
+        }
+        return dto;
     }
 
     public async Task<IEnumerable<ChatMessageDto>> GetChatHistoryAsync(string userId1, string userId2, int pageNumber = 1, int pageSize = 50)

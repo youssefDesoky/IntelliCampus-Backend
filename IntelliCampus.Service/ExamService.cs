@@ -33,8 +33,8 @@ public class ExamService : IExamService
         => _unitOfWork.GetRepository<Reminder, int>();
     private IGenericRepository<Class, int> ClassesRepo
         => _unitOfWork.GetRepository<Class, int>();
-    private IGenericRepository<StudentCourse, int> StudentCourseRepo
-        => _unitOfWork.GetRepository<StudentCourse, int>();
+    private IGenericRepository<StudentCourse, (int, int)> StudentCourseRepo
+        => _unitOfWork.GetRepository<StudentCourse, (int, int)>();
     private IGenericRepository<Course, int> CoursesRepo
         => _unitOfWork.GetRepository<Course, int>();
 
