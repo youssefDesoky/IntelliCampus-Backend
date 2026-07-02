@@ -69,6 +69,7 @@ internal sealed class PostWithDetailsSpec : BaseSpecifications<Post>
         : base(p => p.PostId == postId)
     {
         AddInclude(p => p.User);
+        AddInclude(p => p.Community);
         AddInclude(p => p.Comments);
         AddInclude("Comments.User");
         AddInclude(p => p.Votes);

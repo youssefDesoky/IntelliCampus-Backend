@@ -648,11 +648,11 @@ public class GradeService : IGradeService
         if (student is null || student.Bylaw is null) throw new BylawNotFoundException(studentId);
 
         var scales = student.Bylaw.Settings.LevelScales;
-        if (scales?.Count == 0) return null;
+        if (scales is null || scales.Count == 0) return null;
 
         var completedHours = await GetCompletedHoursAsync(studentId);
 
-        var targetLevel = scales!
+        var targetLevel = scales
             .Where(ls => completedHours >= ls.MinHours)
             .OrderByDescending(ls => ls.Level)
             .Select(ls => ls.Level)
@@ -1038,22 +1038,22 @@ public class GradeService : IGradeService
         );
     }
 
-    private Dictionary<string, (List<double> Percents, int Count, string Type, double MaxScore)> BuildAssessmentMap(
+    private Dictionary<string, (List<double> Percents, int Count, string Type, double MaxScore, int Id)> BuildAssessmentMap(
         List<Assignment> assignments,
         List<Quiz> quizzes,
         List<Grade> courseGrades)
     {
-        var assessmentMap = new Dictionary<string, (List<double> Percents, int Count, string Type, double MaxScore)>();
+        var assessmentMap = new Dictionary<string, (List<double> Percents, int Count, string Type, double MaxScore, int Id)>();
 
         foreach (var a in assignments)
         {
             var key = a.Title.ToLowerInvariant();
-            assessmentMap.TryAdd(key, (new List<double>(), 0, GradeType.Assignment.ToString(), (double)a.MaxGrade));
+            assessmentMap.TryAdd(key, (new List<double>(), 0, GradeType.Assignment.ToString(), (double)a.MaxGrade, a.AssignmentId));
         }
         foreach (var q in quizzes)
         {
             var key = q.Title.ToLowerInvariant();
-            assessmentMap.TryAdd(key, (new List<double>(), 0, GradeType.Quiz.ToString(), (double)q.MaxGrade));
+            assessmentMap.TryAdd(key, (new List<double>(), 0, GradeType.Quiz.ToString(), (double)q.MaxGrade, q.QuizId));
         }
 
         var midtermGrades = courseGrades.Where(g => g.GradeType == GradeType.Midterm).ToList();
@@ -1063,13 +1063,13 @@ public class GradeService : IGradeService
         {
             var key = GradeType.Midterm.ToString().ToLowerInvariant();
             if (!assessmentMap.ContainsKey(key))
-                assessmentMap[key] = (new List<double>(), 0, GradeType.Midterm.ToString(), (double)g.MaxScore);
+                assessmentMap[key] = (new List<double>(), 0, GradeType.Midterm.ToString(), (double)g.MaxScore, -1);
         }
         foreach (var g in finalGrades)
         {
             var key = GradeType.Final.ToString().ToLowerInvariant();
             if (!assessmentMap.ContainsKey(key))
-                assessmentMap[key] = (new List<double>(), 0, GradeType.Final.ToString(), (double)g.MaxScore);
+                assessmentMap[key] = (new List<double>(), 0, GradeType.Final.ToString(), (double)g.MaxScore, -2);
         }
 
         return assessmentMap;
@@ -1084,7 +1084,7 @@ public class GradeService : IGradeService
         Dictionary<int, Quiz> quizzesById,
         HashSet<int> failedCourseStudentIds,
         int courseId,
-        ref Dictionary<string, (List<double> Percents, int Count, string Type, double MaxScore)> assessmentMap,
+        ref Dictionary<string, (List<double> Percents, int Count, string Type, double MaxScore, int Id)> assessmentMap,
         CourseWorkWeight? courseWorkWeight = null)
     {
         var (assignTotalScore, assignTotalMax) = (0m, 0m);
@@ -1129,6 +1129,7 @@ public class GradeService : IGradeService
             var pct = assignment.MaxGrade > 0 ? (double)(sa.Grade!.Value / assignment.MaxGrade * 100) : 0;
             assessments.Add(new InstructorAssessmentDto
             {
+                AssessmentId = assignment.AssignmentId,
                 Name = assignment.Title,
                 Type = GradeType.Assignment.ToString(),
                 Score = (double)sa.Grade!.Value,
@@ -1139,7 +1140,7 @@ public class GradeService : IGradeService
             if (assessmentMap.TryGetValue(key, out var entry))
             {
                 entry.Percents.Add(pct);
-                assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore);
+                assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore, entry.Id);
             }
         }
 
@@ -1154,6 +1155,7 @@ public class GradeService : IGradeService
             var pct = quiz.MaxGrade > 0 ? (double)(sq.Score!.Value / quiz.MaxGrade * 100) : 0;
             assessments.Add(new InstructorAssessmentDto
             {
+                AssessmentId = quiz.QuizId,
                 Name = quiz.Title,
                 Type = GradeType.Quiz.ToString(),
                 Score = (double)sq.Score!.Value,
@@ -1164,7 +1166,7 @@ public class GradeService : IGradeService
             if (assessmentMap.TryGetValue(key, out var entry))
             {
                 entry.Percents.Add(pct);
-                assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore);
+                assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore, entry.Id);
             }
         }
 
@@ -1174,6 +1176,7 @@ public class GradeService : IGradeService
             var pct = midterm.MaxScore > 0 ? (double)(midterm.Score / midterm.MaxScore * 100) : 0;
             assessments.Add(new InstructorAssessmentDto
             {
+                AssessmentId = -1,
                 Name = midterm.Title,
                 Type = GradeType.Midterm.ToString(),
                 Score = (double)midterm.Score,
@@ -1184,7 +1187,7 @@ public class GradeService : IGradeService
             if (assessmentMap.TryGetValue(key, out var entry))
             {
                 entry.Percents.Add(pct);
-                assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore);
+                assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore, entry.Id);
             }
         }
 
@@ -1194,6 +1197,7 @@ public class GradeService : IGradeService
             var pct = final.MaxScore > 0 ? (double)(final.Score / final.MaxScore * 100) : 0;
             assessments.Add(new InstructorAssessmentDto
             {
+                AssessmentId = -2,
                 Name = final.Title,
                 Type = GradeType.Final.ToString(),
                 Score = (double)final.Score,
@@ -1204,7 +1208,7 @@ public class GradeService : IGradeService
             if (assessmentMap.TryGetValue(key, out var entry))
             {
                 entry.Percents.Add(pct);
-                assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore);
+                assessmentMap[key] = (entry.Percents, entry.Count + 1, entry.Type, entry.MaxScore, entry.Id);
             }
         }
 
@@ -1271,24 +1275,23 @@ public class GradeService : IGradeService
     private (List<InstructorAssessmentSummaryDto> Assessments, double TotalCoursework, double AvgPercent, double PassRate) BuildAssessmentSummary(
         List<double> allOverallPercents,
         int passCount,
-        Dictionary<string, (List<double> Percents, int Count, string Type, double MaxScore)> assessmentMap)
+        Dictionary<string, (List<double> Percents, int Count, string Type, double MaxScore, int Id)> assessmentMap)
     {
         var avgPercent = allOverallPercents.Count > 0 ? allOverallPercents.Average() : 0;
         var passRate = allOverallPercents.Count > 0 ? (double)passCount / allOverallPercents.Count * 100 : 0;
 
-        int id = 0;
         var assessmentsList = new List<InstructorAssessmentSummaryDto>();
         double totalCoursework = 0;
         foreach (var kvp in assessmentMap)
         {
-            var (percents, count, type, maxScore) = kvp.Value;
+            var (percents, count, type, maxScore, id) = kvp.Value;
             var avg = percents.Count > 0 ? percents.Average() : (double?)null;
             var title = type == GradeType.Midterm.ToString() ? "Midterm Exam"
                        : type == GradeType.Final.ToString() ? "Final Exam"
                        : kvp.Key;
             assessmentsList.Add(new InstructorAssessmentSummaryDto
             {
-                Id = id++,
+                Id = id,
                 Title = title,
                 Type = type,
                 MaxScore = maxScore,

@@ -67,6 +67,13 @@ public class ExcelImportService : IExcelImportService
             return result;
         }
 
+        var ext = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+        if (ext != ".xlsx" && ext != ".xls" && ext != ".csv")
+        {
+            result.Errors.Add($"Unsupported file format '{ext}'. Accepted: .xlsx, .xls, .csv");
+            return result;
+        }
+
         int? facultyId = null;
         bool isInstructor = false;
         if (creatorUserId.HasValue)
@@ -77,29 +84,52 @@ public class ExcelImportService : IExcelImportService
         }
 
         using var stream = file.OpenReadStream();
-        using var workbook = new XLWorkbook(stream);
-        var worksheet = workbook.Worksheet(1);
-        var range = worksheet.RangeUsed();
-        if (range is null)
+        IXLWorkbook workbook;
+        try
         {
-            result.Errors.Add("No data found in the worksheet.");
+            workbook = new XLWorkbook(stream);
+        }
+        catch (Exception ex)
+        {
+            result.Errors.Add($"Could not read the file as a valid Excel document: {ex.Message}");
             return result;
         }
-        var rows = range.RowsUsed().Skip(1).ToList();
 
-        result.TotalRows = rows.Count;
-
-        foreach (var row in rows)
+        using (workbook)
         {
+            IXLWorksheet worksheet;
             try
             {
-                await ImportRowAsync(entityType, row, bylawId, facultyId, isInstructor);
-                result.SuccessCount++;
+                worksheet = workbook.Worksheet(1);
             }
-            catch (Exception ex)
+            catch
             {
-                result.FailCount++;
-                result.Errors.Add($"Row {row.RowNumber()}: {ex.Message}");
+                result.Errors.Add("The Excel file does not contain any worksheets.");
+                return result;
+            }
+
+            var range = worksheet.RangeUsed();
+            if (range is null)
+            {
+                result.Errors.Add("No data found in the worksheet.");
+                return result;
+            }
+            var rows = range.RowsUsed().Skip(1).ToList();
+
+            result.TotalRows = rows.Count;
+
+            foreach (var row in rows)
+            {
+                try
+                {
+                    await ImportRowAsync(entityType, row, bylawId, facultyId, isInstructor);
+                    result.SuccessCount++;
+                }
+                catch (Exception ex)
+                {
+                    result.FailCount++;
+                    result.Errors.Add($"Row {row.RowNumber()}: {ex.Message}");
+                }
             }
         }
 
@@ -295,30 +325,62 @@ public class ExcelImportService : IExcelImportService
 
         var gradesRepo = _unitOfWork.GetRepository<Grade, int>();
 
+        var studentId = int.Parse(row.Cell(1).GetString().Trim());
         var courseId = int.Parse(row.Cell(2).GetString().Trim());
+        var title = row.Cell(3).GetString().Trim();
+        var score = ParseDecimal(row.Cell(4).GetString());
+        var maxScore = ParseDecimal(row.Cell(5).GetString());
+        var weight = ParseDecimal(row.Cell(6).GetString());
+        var notes = GetOptionalString(row, 8);
+
         var courseForGuard = await Courses.GetByIdAsync(courseId);
         if (courseForGuard is null || courseForGuard.Status != CourseStatus.Active)
             throw new InvalidOperationException("This course is finalized and read-only.");
 
-        var grade = new Grade
-        {
-            StudentId = int.Parse(row.Cell(1).GetString().Trim()),
-            CourseId = courseId,
-            Title = row.Cell(3).GetString().Trim(),
-            Score = ParseDecimal(row.Cell(4).GetString()),
-            MaxScore = ParseDecimal(row.Cell(5).GetString()),
-            Weight = ParseDecimal(row.Cell(6).GetString()),
-            GradeType = gradeType,
-            Status = "Graded",
-            GradedAt = EgyptTime.Now,
-            Notes = GetOptionalString(row, 8)
-        };
+        var allGrades = await gradesRepo.GetAllAsync(specifications: null, asNoTracking: false);
+        var existing = allGrades.FirstOrDefault(g =>
+            g.StudentId == studentId && g.CourseId == courseId &&
+            g.Title == title && g.GradeType == gradeType);
 
-        gradesRepo.Add(grade);
+        if (existing is not null)
+        {
+            existing.Score = score;
+            existing.MaxScore = maxScore;
+            existing.Weight = weight;
+            existing.Notes = notes;
+            existing.GradedAt = EgyptTime.Now;
+            existing.Status = "Graded";
+        }
+        else
+        {
+            gradesRepo.Add(new Grade
+            {
+                StudentId = studentId,
+                CourseId = courseId,
+                Title = title,
+                Score = score,
+                MaxScore = maxScore,
+                Weight = weight,
+                GradeType = gradeType,
+                Status = "Graded",
+                GradedAt = EgyptTime.Now,
+                Notes = notes
+            });
+        }
+
         await _unitOfWork.SaveChangesAsync();
 
-        if (grade.GradeType == GradeType.Final)
-            await _gradeService.UpdateStudentGpaIfCompleteAsync(grade.StudentId);
+        if (gradeType == GradeType.Final)
+        {
+            try
+            {
+                await _gradeService.UpdateStudentGpaIfCompleteAsync(studentId);
+            }
+            catch
+            {
+                // Grade is already saved — GPA update failure shouldn't fail the import
+            }
+        }
     }
 
     private async Task ImportExamRowAsync(IXLRangeRow row)

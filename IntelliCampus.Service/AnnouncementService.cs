@@ -178,6 +178,8 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
         if (announcement is null)
             throw new AnnouncementNotFoundException(announcementId);
 
+        await EnsureCourseActiveAsync(announcement.CourseId);
+
         var now = EgyptTime.Now;
         var comment = new AnnouncementComment
         {
@@ -215,6 +217,10 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
         if (comment.UserId != userId)
             throw new UnauthorizedAccessException("You are not authorized to delete this comment.");
 
+        var announcement = await Announcements.GetByIdAsync(comment.AnnouncementId);
+        if (announcement is not null)
+            await EnsureCourseActiveAsync(announcement.CourseId);
+
         Comments.Delete(comment);
         await _unitOfWork.SaveChangesAsync();
     }
@@ -228,6 +234,10 @@ public class AnnouncementService(IUnitOfWork unitOfWork, UrlResolver urlResolver
             throw new CommentNotFoundException(commentId);
         if (comment.UserId != userId)
             throw new UnauthorizedAccessException("You are not authorized to edit this comment.");
+
+        var announcement = await Announcements.GetByIdAsync(comment.AnnouncementId);
+        if (announcement is not null)
+            await EnsureCourseActiveAsync(announcement.CourseId);
 
         comment.Content = content;
         comment.UpdatedAt = EgyptTime.Now;
