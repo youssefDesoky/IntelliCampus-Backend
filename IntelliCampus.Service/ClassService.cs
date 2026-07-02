@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Linq;
 using IntelliCampus.Shared.Dtos.Class;
 using IntelliCampus.Shared.Dtos.Instructor;
 using IntelliCampus.Shared.Dtos.Room;
@@ -66,7 +67,8 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
 
         var spec = new ClassSpec(courseId, byCourse: true, queryParams);
         var classes = await Classes.GetAllAsync(spec, asNoTracking: true);
-        return classes.Select(MapToDto);
+        var courseStudentCount = await StudentCourses.CountAsync(sc => sc.CourseId == courseId);
+        return classes.Select(c => MapToDto(c, courseStudentCount));
     }
 
     public async Task<ClassDto> CreateAsync(CreateClassDto dto)
@@ -120,6 +122,8 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         var endTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : (TimeSpan?)null;
         await ValidateNoTimeOverlapAsync(dto.CourseId, classType, day, startTime, endTime);
 
+        await ValidateCapacityAgainstRoomAsync(dto.Room, dto.Capacity);
+
         // Generate group code (e.g. CS-L1, IS-S1, IS-S2)
         var groupCode = await GenerateGroupCodeAsync(course, classType);
 
@@ -132,7 +136,8 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             EndTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : null,
             Room = dto.Room,
             CourseId = dto.CourseId,
-            InstructorId = instructorId
+            InstructorId = instructorId,
+            Capacity = dto.Capacity
         };
 
         Classes.Add(classEntity);
@@ -146,15 +151,15 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
 
     public async Task<ClassDto> CreateLectureAsync(CreateLectureDto dto)
     {
-        return await CreateInternalAsync(dto.CourseId, dto.InstructorName, dto.Schedule, dto.Room, ClassType.Lecture);
+        return await CreateInternalAsync(dto.CourseId, dto.InstructorName, dto.Schedule, dto.Room, ClassType.Lecture, dto.Capacity);
     }
 
     public async Task<ClassDto> CreateSectionAsync(CreateSectionDto dto)
     {
-        return await CreateInternalAsync(dto.CourseId, dto.InstructorName, dto.Schedule, dto.Room, ClassType.Section);
+        return await CreateInternalAsync(dto.CourseId, dto.InstructorName, dto.Schedule, dto.Room, ClassType.Section, dto.Capacity);
     }
 
-    private async Task<ClassDto> CreateInternalAsync(int courseId, string? instructorName, string? schedule, string? room, ClassType classType)
+    private async Task<ClassDto> CreateInternalAsync(int courseId, string? instructorName, string? schedule, string? room, ClassType classType, int? capacity = null)
     {
         var courseSpec = new CourseForClassSpec(courseId);
         var course = await Courses.GetByIdAsync(courseSpec);
@@ -193,6 +198,8 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         var endTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : (TimeSpan?)null;
         await ValidateNoTimeOverlapAsync(courseId, classType, day, startTime, endTime);
 
+        await ValidateCapacityAgainstRoomAsync(room, capacity);
+
         var groupCode = await GenerateGroupCodeAsync(course, classType);
 
         var classEntity = new Class
@@ -204,7 +211,8 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             EndTime = endTime,
             Room = room,
             CourseId = courseId,
-            InstructorId = instructorId
+            InstructorId = instructorId,
+            Capacity = capacity
         };
 
         Classes.Add(classEntity);
@@ -261,6 +269,11 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
                 throw new InstructorNotFoundException(dto.InstructorId.Value);
             classEntity.InstructorId = dto.InstructorId.Value;
         }
+
+        if (dto.Capacity.HasValue)
+            classEntity.Capacity = dto.Capacity.Value;
+
+        await ValidateCapacityAgainstRoomAsync(classEntity.Room, classEntity.Capacity);
 
         Classes.Update(classEntity);
         await _unitOfWork.SaveChangesAsync();
@@ -458,7 +471,7 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         }
     }
 
-    private static ClassDto MapToDto(Class classEntity)
+    private static ClassDto MapToDto(Class classEntity, int courseStudentCount = 0)
     {
         return new ClassDto
         {
@@ -469,11 +482,29 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             StartTime = classEntity.StartTime,
             EndTime = classEntity.EndTime,
             Room = classEntity.Room,
+            Capacity = classEntity.Capacity,
+            EnrolledCount = classEntity.ClassType == ClassType.Lecture
+                ? courseStudentCount
+                : classEntity.StudentCourses?.Count ?? 0,
             CourseId = classEntity.CourseId,
             CourseName = classEntity.Course.CourseName,
             InstructorId = classEntity.InstructorId,
             InstructorName = classEntity.Instructor?.User?.FullName
         };
+    }
+
+    private async Task ValidateCapacityAgainstRoomAsync(string? roomName, int? capacity)
+    {
+        if (string.IsNullOrWhiteSpace(roomName) || !capacity.HasValue)
+            return;
+
+        var allRooms = await Rooms.GetAllAsync();
+        var room = allRooms.FirstOrDefault(r => r.RoomName == roomName);
+        if (room is null)
+            return;
+
+        if (capacity.Value > room.Capacity)
+            throw new InvalidOperationException($"Class capacity ({capacity.Value}) exceeds room capacity ({room.Capacity}).");
     }
 
     private async Task ValidateNoTimeOverlapAsync(int courseId, ClassType classType, DayOfWeekEnum? day, TimeSpan? startTime, TimeSpan? endTime, int? excludeClassId = null)

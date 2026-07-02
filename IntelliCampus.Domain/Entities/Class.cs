@@ -13,6 +13,7 @@ public class Class
     public string? Room { get; set; }
     public int CourseId { get; set; }
     public int? InstructorId { get; set; }
+    public int? Capacity { get; set; }
 
     // Navigation properties
     public Course Course { get; set; } = null!;

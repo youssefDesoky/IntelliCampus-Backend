@@ -10,4 +10,5 @@ public class UpdateClassDto
     public TimeSpan? StartTime { get; set; }
     public TimeSpan? EndTime { get; set; }
     public int? InstructorId { get; set; }
+    public int? Capacity { get; set; }
 }

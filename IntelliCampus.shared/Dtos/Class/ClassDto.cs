@@ -13,6 +13,8 @@ public class ClassDto
     public TimeSpan? StartTime { get; set; }
     public TimeSpan? EndTime { get; set; }
     public string? Room { get; set; }
+    public int? Capacity { get; set; }
+    public int EnrolledCount { get; set; }
     public int CourseId { get; set; }
     public string CourseName { get; set; } = null!;
     public int? InstructorId { get; set; }

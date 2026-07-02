@@ -24,6 +24,8 @@ public class ClassConfiguration : IEntityTypeConfiguration<Class>
         builder.Property(c => c.Room)
             .HasMaxLength(100);
 
+        builder.Property(c => c.Capacity);
+
         builder.HasOne(c => c.Course)
             .WithMany(co => co.Classes)
             .HasForeignKey(c => c.CourseId)

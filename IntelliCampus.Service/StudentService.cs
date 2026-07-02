@@ -203,7 +203,12 @@ public class StudentService : IStudentService
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
+        var user = student.User;
         Students.Delete(student);
+
+        if (user is not null)
+            Users.Delete(user);
+
         await _unitOfWork.SaveChangesAsync();
     }
 
@@ -344,6 +349,10 @@ public class StudentService : IStudentService
             BylawName = student.Bylaw?.Name,
             EnrollmentDate = student.EnrollmentDate?.ToString("dd MM yyyy"),
             Gpa = student.Gpa,
+            ProbationThreshold = student.Bylaw?.Settings.ProbationThreshold,
+            IsOnProbation = student.Gpa > 0
+                && student.Bylaw?.Settings.ProbationThreshold is not null
+                && (decimal)student.Gpa < student.Bylaw.Settings.ProbationThreshold.Value,
             Program = student.Program,
             SpecializationId = student.SpecializationId,
             SpecializationName = student.Specialization?.Name,

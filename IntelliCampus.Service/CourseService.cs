@@ -39,6 +39,9 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     private IGenericRepository<CoursePrerequisite, int> Prerequisites
         => _unitOfWork.GetRepository<CoursePrerequisite, int>();
 
+    private IGenericRepository<Note, int> Notes
+        => _unitOfWork.GetRepository<Note, int>();
+
     private IGenericRepository<Grade, int> GradesRepo
         => _unitOfWork.GetRepository<Grade, int>();
 
@@ -66,7 +69,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
     public async Task<PaginatedResult<CourseDto>> GetAllAsync(CourseQueryParams queryParams)
     {
-        var spec = new CourseSpec(queryParams, CourseIncludeLevel.Light);
+        var spec = new CourseSpec(queryParams, CourseIncludeLevel.Listing);
         var courses = await Courses.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = courses.Select(c => MapToDto(c)).ToList();
         var countSpec = new CourseCountSpec(queryParams);
@@ -78,7 +81,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     public async Task<PaginatedResult<CourseDto>> GetActiveCoursesAsync(CourseQueryParams queryParams)
     {
         queryParams.IsActiveOnly = true;
-        var spec = new CourseSpec(queryParams, CourseIncludeLevel.Light);
+        var spec = new CourseSpec(queryParams, CourseIncludeLevel.Listing);
         var courses = await Courses.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = courses.Select(c => MapToDto(c)).ToList();
 
@@ -512,7 +515,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
     public async Task<CourseDto> ReactivateCourseAsync(int oldCourseId)
     {
-        var oldCourse = await Courses.GetByIdAsync(new CourseSpec(oldCourseId));
+        var oldCourse = await Courses.GetByIdAsync(oldCourseId);
         if (oldCourse is null)
             throw new CourseNotFoundException(oldCourseId);
 
@@ -537,9 +540,10 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         await _unitOfWork.SaveChangesAsync();
 
         // Copy prerequisites
-        if (oldCourse.Prerequisites?.Count > 0)
+        var oldPrereqs = await Prerequisites.GetAllAsync(new CoursePrerequisiteWithCourseSpec(oldCourseId));
+        if (oldPrereqs.Any())
         {
-            foreach (var prereq in oldCourse.Prerequisites)
+            foreach (var prereq in oldPrereqs)
             {
                 Prerequisites.Add(new CoursePrerequisite
                 {
@@ -587,13 +591,19 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
     public async Task<bool> DeleteAsync(int courseId)
     {
-        var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
+        var course = await Courses.GetByIdAsync(courseId);
         if (course is null) throw new CourseNotFoundException(courseId);
-        if (course.Status == CourseStatus.Active)
-            throw new InvalidOperationException("can't delete active course");
 
-        if (course.Classes?.Count > 0)
+        if (course.Status != CourseStatus.Active)
+            throw new InvalidOperationException("Cannot delete an inactive course.");
+
+        var hasClasses = await Classes.AnyAsync(c => c.CourseId == courseId);
+        if (hasClasses)
             throw new InvalidOperationException("Cannot delete course with existing class schedules. Remove all classes first.");
+
+        var hasStudents = await StudentCourses.AnyAsync(sc => sc.CourseId == courseId);
+        if (hasStudents)
+            throw new InvalidOperationException("Cannot delete course with registered students. Remove all student registrations first.");
 
         var hasPrerequisiteFor = await Prerequisites.AnyAsync(p => p.PrerequisiteCourseId == courseId);
         if (hasPrerequisiteFor)

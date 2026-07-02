@@ -8,7 +8,8 @@ namespace IntelliCampus.Service.Specifications
     {
         Full,
         Student,
-        Light
+        Light,
+        Listing
     }
 
     internal class CourseSpec : BaseSpecifications<Course>
@@ -34,6 +35,9 @@ namespace IntelliCampus.Service.Specifications
         {
             switch (includeLevel)
             {
+                case CourseIncludeLevel.Listing:
+                    AddListingIncludes();
+                    break;
                 case CourseIncludeLevel.Light:
                     AddLightIncludes();
                     break;
@@ -102,6 +106,11 @@ namespace IntelliCampus.Service.Specifications
             AddInclude("Classes.Instructor");
             AddInclude("Classes.Instructor.User");
             EnableSplitQuery();
+        }
+
+        private void AddListingIncludes()
+        {
+            AddInclude(c => c.Department!);
         }
 
         private void AddLightIncludes()
