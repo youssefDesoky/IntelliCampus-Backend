@@ -8,5 +8,6 @@ public interface IRegistrationService
     Task<IEnumerable<StudentRegistrationDto>> GetStudentRegistrationsAsync(int studentId);
     Task<bool> UnregisterStudentFromCourseAsync(int studentId, int courseId);
     Task ChangeStudentCourseSectionAsync(int studentId, int courseId, int newClassId);
+    Task UnlinkClassFromRegistrationAsync(int studentId, int courseId);
     Task<RegistrationSettingsDto> GetRegistrationSettingsAsync(int studentId);
 }

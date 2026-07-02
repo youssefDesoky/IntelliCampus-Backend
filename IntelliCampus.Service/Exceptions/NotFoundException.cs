@@ -1,10 +1,8 @@
-﻿namespace IntelliCampus.Service.Exceptions
-{
-    public abstract class NotFoundException(string message) : Exception(message)
-    {
-    }
+﻿using IntelliCampus.Service_Abstraction.Exceptions;
 
-    public sealed class QuizNotFoundException(int id) : NotFoundException($"Quiz With Id {id} Is Not Found")
+namespace IntelliCampus.Service.Exceptions;
+
+public sealed class QuizNotFoundException(int id) : NotFoundException($"Quiz With Id {id} Is Not Found")
     {
     }
 
@@ -248,5 +246,7 @@ public sealed class BroadcastAnnouncementNotFoundException : NotFoundException
     public BroadcastAnnouncementNotFoundException(string message) : base(message) { }
 }
 
-
+public sealed class RegistrationNotFoundException : NotFoundException
+{
+    public RegistrationNotFoundException(int courseId) : base($"Registration not found for course {courseId}.") { }
 }

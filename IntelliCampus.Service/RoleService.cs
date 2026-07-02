@@ -53,10 +53,9 @@ public class RoleService : IRoleService
         if (user is null)
             throw new UserNotFoundException(dto.UserId);
 
-        var roles = await roleRepo.GetAllAsync(specifications: null, asNoTracking: true);
-        var role = roles.FirstOrDefault(r => r.RoleName == dto.RoleName);
+        var role = await roleRepo.GetByIdAsync(dto.RoleId);
         if (role is null)
-            throw new RoleNotFoundException($"Role '{dto.RoleName}' not found.");
+            throw new RoleNotFoundException($"Role with ID '{dto.RoleId}' not found.");
 
         var existing = (await userRoleRepo.GetAllAsync(new UserRoleJunctionSpec(dto.UserId)))
             .FirstOrDefault(ur => ur.RoleId == role.RoleId);
@@ -65,7 +64,7 @@ public class RoleService : IRoleService
         {
             existing.IsActive = true;
             userRoleRepo.Update(existing);
-            await EnsureRelatedEntityAsync(dto.UserId, dto.RoleName);
+            await EnsureRelatedEntityAsync(dto.UserId, role.RoleName);
             await _unitOfWork.SaveChangesAsync();
             return new UserRoleDto
             {
@@ -86,7 +85,7 @@ public class RoleService : IRoleService
         };
 
         userRoleRepo.Add(userRole);
-        await EnsureRelatedEntityAsync(dto.UserId, dto.RoleName);
+        await EnsureRelatedEntityAsync(dto.UserId, role.RoleName);
         await _unitOfWork.SaveChangesAsync();
 
         return new UserRoleDto

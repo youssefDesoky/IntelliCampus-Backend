@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using IntelliCampus.Shared.Dtos.Registration;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Service_Abstraction.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,8 +48,25 @@ public class RegistrationController : ControllerBase
         if (studentId is null)
             return Unauthorized();
 
-        await _registrationService.UnregisterStudentFromCourseAsync(studentId.Value, courseId);
-        return NoContent();
+        try
+        {
+            var result = await _registrationService.UnregisterStudentFromCourseAsync(studentId.Value, courseId);
+            if (result)
+                return Ok(new { success = true, message = $"Successfully unregistered from course" });
+            return StatusCode(500, new { success = false, message = "Unregistration failed." });
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(new { success = false, message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { success = false, message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { success = false, message = ex.Message });
+        }
     }
 
     [HttpGet("settings")]

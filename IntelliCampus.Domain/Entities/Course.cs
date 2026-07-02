@@ -20,6 +20,7 @@ public class Course
     public DateTime? RegistrationEndDate { get; set; }
     public string? AllowedLevels { get; set; }
     public string? AllowedDepartmentIds { get; set; }
+    public bool IsProject { get; set; }
 
     // Navigation properties
     public Department? Department { get; set; }

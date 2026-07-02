@@ -1,16 +1,12 @@
 using IntelliCampus.Domain.Entities;
 
-namespace IntelliCampus.Service.Specifications
+namespace IntelliCampus.Service.Specifications;
+
+internal class ClassByInstructorSpec : BaseSpecifications<Class>
 {
-    internal class ClassByInstructorSpec : BaseSpecifications<Class>
+    public ClassByInstructorSpec(int instructorId)
+        : base(c => c.InstructorId == instructorId)
     {
-        public ClassByInstructorSpec(int instructorId)
-            : base(c => c.InstructorId == instructorId)
-        {
-            AddInclude(c => c.Course!);
-            AddInclude(c => c.Instructor!);
-            AddInclude("Instructor.User");
-            EnableSplitQuery();
-        }
+        AddInclude(c => c.Course!);
     }
 }

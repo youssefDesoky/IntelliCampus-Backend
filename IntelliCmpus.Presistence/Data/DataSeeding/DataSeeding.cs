@@ -515,6 +515,7 @@ public class DataSeed : IDataSeed
                 CourseNameAr = dto.CourseNameAr,
                 CreditHours = dto.CreditHours,
                 Status = Enum.Parse<CourseStatus>(dto.Status),
+                IsProject = dto.IsProject,
                 DepartmentId = _departmentIds.GetValueOrDefault(dto.DepartmentName)
             };
             _dbContext.Courses.Add(entity);
@@ -1561,6 +1562,7 @@ public class DataSeed : IDataSeed
         public int CreditHours { get; init; }
         public string Status { get; init; } = "Active";
         public string? DepartmentName { get; init; }
+        public bool IsProject { get; init; }
     }
 
     private record PrerequisiteDto

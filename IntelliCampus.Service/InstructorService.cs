@@ -265,6 +265,7 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         return new InstructorDto
         {
             InstructorId = instructor.UserId,
+            UserId = instructor.UserId,
             NationalId = instructor.User.NationalId,
             FullName = instructor.User.FullName,
             FullNameAr = instructor.User.FullNameAr,
