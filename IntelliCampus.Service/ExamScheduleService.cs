@@ -97,7 +97,7 @@ public class ExamScheduleService : IExamScheduleService
 
         var status = exam.Status;
 
-        foreach (var sc in exam.Course.StudentCourses)
+        foreach (var sc in exam.Course.StudentCourses.Where(sc => sc.Status == StudentCourseStatus.InProgress))
         {
             var entry = new ExamSchedule
             {

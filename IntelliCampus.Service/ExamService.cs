@@ -192,7 +192,7 @@ public class ExamService : IExamService
     {
         var semester = SemesterHelper.GetSemesterFromDate(date);
         var enrolledStudentIds = (await StudentCourseRepo.GetAllAsync(
-            new StudentCourseIdsSpec(courseId, true), asNoTracking: true))
+            new StudentCourseIdsSpec(courseId, true, StudentCourseStatus.InProgress), asNoTracking: true))
             .Where(sc => sc.Semester == semester)
             .Select(sc => sc.StudentId)
             .ToHashSet();
@@ -245,6 +245,7 @@ public class ExamService : IExamService
 
         // --- Notify Students ---
         var studentIds = exam.Course.StudentCourses
+            .Where(sc => sc.Status == StudentCourseStatus.InProgress)
             .Select(sc => sc.StudentId)
             .Distinct()
             .ToList();

@@ -331,7 +331,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             return result;
         }
 
-        var studentIds = (await StudentCoursesRepo.GetAllAsync(new StudentCourseIdsSpec(exam.CourseId, true), asNoTracking: true))
+        var studentIds = (await StudentCoursesRepo.GetAllAsync(new StudentCourseIdsSpec(exam.CourseId, true, StudentCourseStatus.InProgress), asNoTracking: true))
             .Select(e => e.StudentId)
             .Distinct()
             .ToList();

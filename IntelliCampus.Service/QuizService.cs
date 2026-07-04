@@ -219,7 +219,7 @@ public class QuizService : IQuizService
         await _unitOfWork.SaveChangesAsync();
 
         var registered = (await StudentCourses.GetAllAsync(
-            new StudentCourseIdsSpec(parsedCourseId, true), asNoTracking: true))
+            new StudentCourseIdsSpec(parsedCourseId, true, StudentCourseStatus.InProgress), asNoTracking: true))
             .Select(sc => sc.StudentId)
             .Distinct()
             .ToList();

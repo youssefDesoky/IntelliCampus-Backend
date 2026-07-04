@@ -12,10 +12,12 @@ namespace IntelliCampus.Service;
 public class DashboardService : IDashboardService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IGradeService _gradeService;
 
-    public DashboardService(IUnitOfWork unitOfWork)
+    public DashboardService(IUnitOfWork unitOfWork, IGradeService gradeService)
     {
         _unitOfWork = unitOfWork;
+        _gradeService = gradeService;
     }
 
     public async Task<DashboardStatsDto> GetStatsAsync()
@@ -46,9 +48,10 @@ public class DashboardService : IDashboardService
         if (student is null)
             return new StudentDashboardDto();
 
+        var gpa = await _gradeService.GetCumulativeGpaAsync(studentId);
         var (activeCourses, attendanceRate, studentCourses, _, latestNews, attendances, grades)
             = await LoadStudentDashboardDataAsync(studentId);
-        return BuildStudentDashboardDto(student, activeCourses, attendanceRate, studentCourses, latestNews, attendances, grades);
+        return BuildStudentDashboardDto(student, activeCourses, attendanceRate, studentCourses, latestNews, attendances, grades, gpa);
     }
 
     private async Task<(
@@ -104,7 +107,8 @@ public class DashboardService : IDashboardService
         List<StudentCourse> studentCourses,
         List<LatestNewsItemDto> latestNews,
         List<Attendance> attendances,
-        List<Grade> grades)
+        List<Grade> grades,
+        double currentGpa)
     {
         var attendanceTrend = attendances
             .GroupBy(a => new { a.Date.Year, Week = GetWeekNumber(a.Date) })
@@ -143,7 +147,7 @@ public class DashboardService : IDashboardService
             {
                 ActiveCourses = activeCourses,
                 AttendanceRate = attendanceRate,
-                CurrentGpa = student.Gpa
+                CurrentGpa = currentGpa
             },
             LatestNews = latestNews,
             AttendanceTrend = attendanceTrend,

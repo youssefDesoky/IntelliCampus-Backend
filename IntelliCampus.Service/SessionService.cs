@@ -129,7 +129,7 @@ public class SessionService : ISessionService
         ClassId = s.ClassId,
         ClassName = s.Class?.GroupCode,
         SessionType = s.SessionType,
-        TotalStudents = totalStudents ?? s.Class?.StudentCourses?.Count ?? s.Attendances?.Count ?? 0,
+        TotalStudents = totalStudents ?? s.Class?.StudentCourses?.Count(sc => sc.Status == StudentCourseStatus.InProgress) ?? s.Attendances?.Count ?? 0,
         PresentCount = presentCount ?? s.Attendances?.Count(a => a.Status == AttendanceStatus.Present
                                                               || a.Status == AttendanceStatus.Excused) ?? 0
     };
