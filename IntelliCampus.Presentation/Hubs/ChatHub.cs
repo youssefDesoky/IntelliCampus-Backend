@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using IntelliCampus.Service_Abstraction;
+using IntelliCampus.Domain.Entities.Enums;
 
 namespace IntelliCampus.Presentation.Hubs;
 
@@ -10,12 +11,14 @@ public class ChatHub : Hub
     private readonly IChatService _chatService;
     private readonly IFriendService _friendService;
     private readonly IGroupService _groupService;
+    private readonly INotificationService _notificationService;
 
-    public ChatHub(IChatService chatService, IFriendService friendService, IGroupService groupService)
+    public ChatHub(IChatService chatService, IFriendService friendService, IGroupService groupService, INotificationService notificationService)
     {
         _chatService = chatService;
         _friendService = friendService;
         _groupService = groupService;
+        _notificationService = notificationService;
     }
 
     public override async Task OnConnectedAsync()
@@ -47,6 +50,30 @@ public class ChatHub : Hub
         var msg = await _chatService.SendMessageAsync(senderId, string.Empty, content, groupName);
 
         await Clients.Group(groupName).SendAsync("ReceiveGroupMessage", msg);
+
+        var groupIdStr = groupName.Replace("group_", "");
+        if (int.TryParse(groupIdStr, out var groupId) && msg.SenderName is not null)
+        {
+            var group = await _groupService.GetGroupByIdAsync(groupId, int.Parse(senderId));
+            if (group is not null)
+            {
+                var memberIds = group.Members
+                    .Select(m => m.UserId)
+                    .Where(id => id != int.Parse(senderId))
+                    .ToList();
+
+                if (memberIds.Count > 0)
+                {
+                    var titlePreview = msg.Content.Length > 80 ? msg.Content[..80] + "..." : msg.Content;
+                    await _notificationService.SendToManyAsync(
+                        memberIds,
+                        NotificationType.NewMessage,
+                        $"{msg.SenderName} in {group.Title}: {titlePreview}",
+                        "Group Message",
+                        $"/?openChat=group&userId={groupName}&userName={Uri.EscapeDataString(group.Title)}");
+                }
+            }
+        }
     }
 
     public async Task JoinGroup(string groupName)
