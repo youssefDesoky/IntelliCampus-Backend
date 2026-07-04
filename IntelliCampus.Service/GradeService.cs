@@ -16,16 +16,14 @@ public class GradeService : IGradeService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly INotificationService _notificationService;
-    private readonly IStudentService _studentService;
     private readonly IPdfExportService _pdfExportService;
     private readonly IBylawService _bylawService;
 
     public GradeService(IUnitOfWork unitOfWork, INotificationService notificationService,
-        IStudentService studentService, IPdfExportService pdfExportService, IBylawService bylawService)
+        IPdfExportService pdfExportService, IBylawService bylawService)
     {
         _unitOfWork = unitOfWork;
         _notificationService = notificationService;
-        _studentService = studentService;
         _pdfExportService = pdfExportService;
         _bylawService = bylawService;
     }
@@ -792,11 +790,11 @@ public class GradeService : IGradeService
 
     public async Task<byte[]> ExportTranscriptPdfAsync(int studentId)
     {
-        var studentCheck = await Students.GetByIdAsync(studentId);
-        if (studentCheck is null)
+        var spec = new StudentSpec(new CourseQueryParams { StudentId = studentId });
+        var studentEntity = await Students.GetByIdAsync(spec);
+        if (studentEntity is null)
             throw new StudentNotFoundException(studentId);
 
-        var student = await _studentService.GetByIdAsync(studentId);
         var courseDtos = await GetTranscriptAsync(studentId);
 
         var courseItemList = courseDtos.Select(c => (
@@ -812,9 +810,6 @@ public class GradeService : IGradeService
             c.CourseId,
             c.Semester
         )).ToList();
-
-        var spec = new StudentSpec(new CourseQueryParams { StudentId = studentId });
-        var studentEntity = await Students.GetByIdAsync(spec);
 
         int totalCredits = courseItemList.Sum(c => c.Item.CreditHours);
         double gpa = CalculateGpa(courseItemList.Select(c => c.Item).ToList(), studentEntity?.Bylaw?.GradeScales);
@@ -834,11 +829,11 @@ public class GradeService : IGradeService
 
         var dto = new TranscriptExportDto
         {
-            StudentName = student?.FullName ?? "",
-            StudentCode = student?.StudentCode ?? "-",
-            Faculty = student?.FacultyName,
-            Level = student?.Level,
-            Department = student?.DepartmentName,
+            StudentName = studentEntity?.User?.FullName ?? "",
+            StudentCode = studentEntity?.StudentCode ?? "-",
+            Faculty = studentEntity?.User?.Faculty?.FacultyName,
+            Level = studentEntity?.Level,
+            Department = studentEntity?.Department?.DepartmentName,
             TotalCredits = totalCredits,
             GPA = gpa,
             Semesters = semesters
@@ -1005,7 +1000,7 @@ public class GradeService : IGradeService
         var quizIds = quizzes.Select(q => q.QuizId).ToHashSet();
         var quizzesById = quizzes.ToDictionary(q => q.QuizId);
 
-        var studentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(courseId, true), asNoTracking: true)).ToList();
+        var studentCourses = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(courseId, true, StudentCourseStatus.InProgress), asNoTracking: true)).ToList();
         var enrolledStudentIds = studentCourses
             .Select(sc => sc.StudentId)
             .ToHashSet();

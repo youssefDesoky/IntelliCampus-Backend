@@ -10,6 +10,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ClassesController : ControllerBase
 {
     private readonly IClassService _classService;

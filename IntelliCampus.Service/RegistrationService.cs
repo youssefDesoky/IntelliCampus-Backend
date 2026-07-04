@@ -18,17 +18,20 @@ public class RegistrationService : IRegistrationService
     private readonly IScheduleService _scheduleService;
     private readonly INotificationService _notificationService;
     private readonly IBylawService _bylawService;
+    private readonly IGradeService _gradeService;
 
     public RegistrationService(
         IUnitOfWork unitOfWork,
         IScheduleService scheduleService,
         INotificationService notificationService,
-        IBylawService bylawService)
+        IBylawService bylawService,
+        IGradeService gradeService)
     {
         _unitOfWork = unitOfWork;
         _scheduleService = scheduleService;
         _notificationService = notificationService;
         _bylawService = bylawService;
+        _gradeService = gradeService;
     }
 
     private IGenericRepository<StudentCourse, (int, int)> StudentCourses
@@ -277,10 +280,12 @@ public class RegistrationService : IRegistrationService
             ? await Bylaws.GetByIdAsync(student.BylawId.Value)
             : null;
 
+        var gpa = await _gradeService.GetCumulativeGpaAsync(studentId);
+
         var isSummer = semester.StartsWith("Summer", StringComparison.OrdinalIgnoreCase);
-        var isOnProbation = student.Gpa > 0
+        var isOnProbation = gpa > 0
             && bylaw?.Settings.ProbationThreshold is not null
-            && (decimal)student.Gpa < bylaw.Settings.ProbationThreshold.Value;
+            && (decimal)gpa < bylaw.Settings.ProbationThreshold.Value;
 
         var maxHours = isSummer && bylaw?.Settings.SummerMaxCreditHours.HasValue == true
             ? bylaw.Settings.SummerMaxCreditHours.Value
@@ -299,7 +304,7 @@ public class RegistrationService : IRegistrationService
             ProbationRegistrationLimit = bylaw?.Settings.ProbationRegistrationLimit,
             IsOnProbation = isOnProbation,
             EffectiveMaxCreditHours = effectiveMax,
-            CurrentGpa = student.Gpa,
+            CurrentGpa = gpa,
             CurrentSemesterCredits = currentCredits,
             Semester = semester,
         };

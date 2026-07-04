@@ -393,7 +393,7 @@ public class AttendanceService : IAttendanceService
             ClassId = s.ClassId,
             ClassName = s.Class?.GroupCode,
             SessionType = s.SessionType,
-            TotalStudents = s.Class?.StudentCourses?.Count ?? s.Attendances?.Count ?? 0,
+            TotalStudents = s.Class?.StudentCourses?.Count(sc => sc.Status == StudentCourseStatus.InProgress) ?? s.Attendances?.Count ?? 0,
             PresentCount = s.Attendances?
                 .Count(a => a.StudentId == studentId
                          && (a.Status == AttendanceStatus.Present
@@ -422,8 +422,14 @@ public class AttendanceService : IAttendanceService
             .SelectMany(s => s.Attendances)
             .ToList();
 
+        var enrolledStudentIds = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(classEntity.CourseId, byCourse: true, StudentCourseStatus.InProgress), asNoTracking: true))
+            .Select(sc => sc.StudentId)
+            .ToHashSet();
+
         var studentIds = allAttendances
             .Select(a => a.StudentId)
+            .Where(id => enrolledStudentIds.Contains(id))
+            .Concat(enrolledStudentIds)
             .Distinct();
 
         var summaries = studentIds.Select(studentId =>
@@ -520,7 +526,7 @@ public class AttendanceService : IAttendanceService
         var attendanceByStudent = sessionAttendance.ToDictionary(a => a.StudentId);
 
         // Collect all student IDs: enrolled + anyone with attendance (manual recording bypasses enrollment)
-        var enrolledStudentIds = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(classEntity.CourseId, byCourse: true), asNoTracking: true))
+        var enrolledStudentIds = (await StudentCourses.GetAllAsync(new StudentCourseIdsSpec(classEntity.CourseId, byCourse: true, StudentCourseStatus.InProgress), asNoTracking: true))
             .Select(sc => sc.StudentId)
             .ToHashSet();
 

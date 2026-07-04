@@ -502,7 +502,7 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             Capacity = classEntity.Capacity,
             EnrolledCount = classEntity.ClassType == ClassType.Lecture
                 ? courseStudentCount
-                : classEntity.StudentCourses?.Count ?? 0,
+                : classEntity.StudentCourses?.Count(sc => sc.Status == StudentCourseStatus.InProgress) ?? 0,
             CourseId = classEntity.CourseId,
             CourseName = classEntity.Course.CourseName,
             CourseNameAr = classEntity.Course?.CourseNameAr,

@@ -171,7 +171,7 @@ public class AssignmentService(
         await _unitOfWork.SaveChangesAsync();
 
         var registered = (await StudentCourses.GetAllAsync(
-            new StudentCourseIdsSpec(dto.CourseId, true), asNoTracking: true))
+            new StudentCourseIdsSpec(dto.CourseId, true, StudentCourseStatus.InProgress), asNoTracking: true))
             .Select(sc => sc.StudentId)
             .Distinct()
             .ToList();

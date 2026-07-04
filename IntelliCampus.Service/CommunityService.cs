@@ -85,6 +85,25 @@ public class CommunityService : ICommunityService
         return post;
     }
 
+    private async Task<HashSet<int>> GetActiveCourseUserIdsAsync(int courseId)
+    {
+        var studentCourses = _unitOfWork.GetRepository<StudentCourse, (int, int)>();
+        var studentIds = (await studentCourses.GetAllAsync(
+            new StudentCourseIdsSpec(courseId, byCourse: true, StudentCourseStatus.InProgress),
+            asNoTracking: true))
+            .Select(sc => sc.StudentId)
+            .ToHashSet();
+
+        var classes = _unitOfWork.GetRepository<Class, int>();
+        var instructorIds = (await classes.GetAllAsync(new ClassesByCourseSpec(courseId), asNoTracking: true))
+            .Where(c => c.InstructorId.HasValue)
+            .Select(c => c.InstructorId!.Value)
+            .ToHashSet();
+
+        studentIds.UnionWith(instructorIds);
+        return studentIds;
+    }
+
     public async Task<IEnumerable<Post>> GetCoursePostsAsync(int courseId)
     {
         var community = await GetOrCreateCommunityAsync(courseId);
@@ -107,22 +126,30 @@ public class CommunityService : ICommunityService
         var paginatedPosts = await GetCoursePostsAsync(courseId, queryParams);
         var posts = paginatedPosts.Data.ToList();
 
-        var allCommenterIds = posts.SelectMany(p => p.Comments).Select(c => c.UserId).Distinct().ToList();
+        var activeUserIds = await GetActiveCourseUserIdsAsync(courseId);
+
+        var activePosts = posts.Where(p => activeUserIds.Contains(p.UserId)).ToList();
+
+        var allCommenterIds = activePosts.SelectMany(p => p.Comments).Select(c => c.UserId).Distinct().ToList();
         var instructorRoles = await GetCourseInstructorRolesAsync(courseId, allCommenterIds);
         var isInstructor = await IsUserCourseInstructorAsync(currentUserId, courseId);
 
-        var projectedData = posts.Select(p => MapToPostDto(p, currentUserId, isInstructor, instructorRoles)).ToList();
+        var projectedData = activePosts.Select(p => MapToPostDto(p, currentUserId, isInstructor, instructorRoles)).ToList();
 
         return new PaginatedResult<PostDto>(
             paginatedPosts.PageIndex,
             paginatedPosts.PageSize,
-            paginatedPosts.TotalCount,
+            projectedData.Count,
             projectedData);
     }
 
     public async Task<PostDto> GetQuestionPostDtoAsync(int courseId, int postId, int currentUserId)
     {
         var post = await GetQuestionPostAsync(courseId, postId);
+        var activeUserIds = await GetActiveCourseUserIdsAsync(courseId);
+
+        if (!activeUserIds.Contains(post.UserId))
+            throw new KeyNotFoundException("Post not found.");
 
         var commenterIds = post.Comments.Select(c => c.UserId).Distinct().ToList();
         var instructorRoles = await GetCourseInstructorRolesAsync(courseId, commenterIds);
@@ -278,7 +305,8 @@ public class CommunityService : ICommunityService
     private async Task EnsureRouterInitializedAsync(int courseId)
     {
         var course = await Courses.GetByIdAsync(new CourseSpec(courseId));
-        if (course is null || course.StudentCourses.Count == 0) return;
+        var activeStudentCourses = course?.StudentCourses?.Where(sc => sc.Status == StudentCourseStatus.InProgress).ToList();
+        if (course is null || activeStudentCourses is null || activeStudentCourses.Count == 0) return;
 
         var courseCode = course.CourseCode ?? course.CourseId.ToString();
 
@@ -290,7 +318,7 @@ public class CommunityService : ICommunityService
             })
             .ToList();
 
-        var students = course.StudentCourses
+        var students = activeStudentCourses
             .Select(sc => new StudentData(
                 StudentId: sc.Student.UserId.ToString(),
                 Name: sc.Student.User.FullName,

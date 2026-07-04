@@ -736,7 +736,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         var (classId, className, classType, studentCourseStatusName) = GetStudentCourseInfo(course, studentId, preloadedStudentCourse);
 
         var lectureClass = course.Classes?.FirstOrDefault(cl => cl.ClassType == ClassType.Lecture);
-        var numStudents = preloadedStudentCourse is not null ? 0 : (course.StudentCourses?.Count ?? 0);
+        var numStudents = preloadedStudentCourse is not null ? 0 : (course.StudentCourses?.Count(sc => sc.Status == StudentCourseStatus.InProgress) ?? 0);
 
         var allSessions = course.Classes?.SelectMany(cl => cl.Sessions) ?? [];
         var now = EgyptTime.Now;

@@ -20,14 +20,16 @@ public class StudentService : IStudentService
     private readonly ICodeGenerationService _codeGeneration;
     private readonly UrlResolver _urlResolver;
     private readonly IBylawService _bylawService;
+    private readonly IGradeService _gradeService;
 
-    public StudentService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration, UrlResolver urlResolver, IBylawService bylawService)
+    public StudentService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration, UrlResolver urlResolver, IBylawService bylawService, IGradeService gradeService)
     {
         _unitOfWork = unitOfWork;
         _passwordService = passwordService;
         _codeGeneration = codeGeneration;
         _urlResolver = urlResolver;
         _bylawService = bylawService;
+        _gradeService = gradeService;
     }
 
     private IGenericRepository<Student, int> Students
@@ -63,7 +65,8 @@ public class StudentService : IStudentService
             ? await _bylawService.GetEffectiveCreditHoursAsync(student.BylawId.Value, student.DepartmentId)
             : new Dictionary<int, int>();
 
-        return MapToDto(student, effectiveCredits);
+        var gpa = await _gradeService.GetCumulativeGpaAsync(studentId);
+        return MapToDto(student, effectiveCredits, gpa);
     }
 
     public async Task<PaginatedResult<StudentDto>> GetAllAsync(StudentQueryParams queryParams)
@@ -174,14 +177,16 @@ public class StudentService : IStudentService
         Students.Update(student);
         await _unitOfWork.SaveChangesAsync();
 
+        var gpa = await _gradeService.GetCumulativeGpaAsync(student.UserId);
+
         if (student.DepartmentId.HasValue)
         {
             var updatedSpec = new StudentSpec(new CourseQueryParams { StudentId = student.UserId });
             var result = await Students.GetByIdAsync(updatedSpec);
-            return MapToDto(result!);
+            return MapToDto(result!, gpa: gpa);
         }
 
-        return MapToDto(student);
+        return MapToDto(student, gpa: gpa);
     }
 
     public async Task<StudentDto> UpdateLevelAsync(int studentId, int level)
@@ -326,8 +331,9 @@ public class StudentService : IStudentService
         throw new InvalidOperationException("Invalid enrollment date format.");
     }
 
-    private StudentDto MapToDto(Student student, Dictionary<int, int>? effectiveCredits = null)
+    private StudentDto MapToDto(Student student, Dictionary<int, int>? effectiveCredits = null, double? gpa = null)
     {
+        gpa ??= student.Gpa;
         return new StudentDto
         {
             StudentId = student.UserId,
@@ -351,11 +357,11 @@ public class StudentService : IStudentService
             BylawName = student.Bylaw?.Name,
             BylawNameAr = student.Bylaw?.NameAr,
             EnrollmentDate = student.EnrollmentDate?.ToString("dd MM yyyy"),
-            Gpa = student.Gpa,
+            Gpa = gpa.Value,
             ProbationThreshold = student.Bylaw?.Settings.ProbationThreshold,
-            IsOnProbation = student.Gpa > 0
+            IsOnProbation = gpa > 0
                 && student.Bylaw?.Settings.ProbationThreshold is not null
-                && (decimal)student.Gpa < student.Bylaw.Settings.ProbationThreshold.Value,
+                && (decimal)gpa < student.Bylaw.Settings.ProbationThreshold.Value,
             Program = student.Program,
             SpecializationId = student.SpecializationId,
             SpecializationName = student.Specialization?.Name,

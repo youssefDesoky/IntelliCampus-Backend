@@ -271,3 +271,5 @@ app.MapHub<InboxHub>("/hubs/inbox");
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }
