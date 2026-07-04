@@ -175,6 +175,7 @@ builder.Services.AddSingleton<INotificationStreamService, NotificationStreamServ
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IFriendService, FriendService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<UrlResolver>();
 builder.Services.AddScoped<ISpecializationService, SpecializationService>();
 builder.Services.AddScoped<IBylawService, BylawService>();

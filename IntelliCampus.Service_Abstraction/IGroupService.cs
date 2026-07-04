@@ -9,4 +9,5 @@ public interface IGroupService
     Task<GroupDto?> GetGroupByIdAsync(int groupId, int userId);
     Task<bool> AddMemberAsync(int groupId, int userId, int addedByUserId);
     Task<bool> RemoveMemberAsync(int groupId, int userId, int removedByUserId);
+    Task<string?> GetUserDisplayNameAsync(int userId);
 }

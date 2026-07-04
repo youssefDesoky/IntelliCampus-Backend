@@ -12,10 +12,10 @@ public class UrlResolver
         _baseUrl = configuration.GetSection("URLs")["BaseUrl"] ?? string.Empty;
     }
 
-    public string Resolve(string? url)
+    public string? Resolve(string? url)
     {
         if (string.IsNullOrEmpty(url))
-            return string.Empty;
+            return null;
 
         if (url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             return url;

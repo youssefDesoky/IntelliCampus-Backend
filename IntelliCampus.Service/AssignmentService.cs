@@ -197,7 +197,7 @@ public class AssignmentService(
                 registered,
                 NotificationType.NewAssignmentPosted,
                 $"New assignment posted: '{dto.Title}'. Due {dto.DueDate:dd MMM yyyy}.",
-                clickUrl: $"/courses/{dto.CourseId}/assignments/{assignment.AssignmentId}");
+                clickUrl: $"/courses/{dto.CourseId}/assignments");
         }
 
         var spec = new AssignmentSpec(assignment.AssignmentId);
@@ -478,7 +478,7 @@ public class AssignmentService(
             studentId,
             NotificationType.AssignmentSubmitted,
             $"Your assignment '{assignment.Title}' was submitted successfully.",
-            clickUrl: $"/courses/{assignment.CourseId}/assignments/{assignment.AssignmentId}");
+            clickUrl: $"/courses/{assignment.CourseId}/assignments");
 
         await _reminderService.MarkSubmissionCompletedAsync(studentId, ReminderType.Assignment, assignment.DueDate);
 
@@ -515,7 +515,7 @@ public class AssignmentService(
             submission.StudentId,
             NotificationType.AssignmentGraded,
             $"Your assignment '{assignment.Title}' has been graded. Score: {dto.Score}/{assignment.MaxGrade}.",
-            clickUrl: $"/courses/{assignment.CourseId}/assignments/{submission.AssignmentId}");
+            clickUrl: $"/courses/{assignment.CourseId}/assignments");
 
         var spec = new StudentAssignmentSpec(submission.StudentId, submission.AssignmentId);
         var result = await StudentAssignments.GetByIdAsync(spec);

@@ -1,9 +1,12 @@
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Exceptions;
+using IntelliCampus.Service.Resolvers;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Group;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace IntelliCampus.Service;
@@ -11,10 +14,14 @@ namespace IntelliCampus.Service;
 public class GroupService : IGroupService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IWebHostEnvironment _env;
+    private readonly UrlResolver _urlResolver;
 
-    public GroupService(IUnitOfWork unitOfWork)
+    public GroupService(IUnitOfWork unitOfWork, IWebHostEnvironment env, UrlResolver urlResolver)
     {
         _unitOfWork = unitOfWork;
+        _env = env;
+        _urlResolver = urlResolver;
     }
 
     private IGenericRepository<Group, int> Groups
@@ -44,11 +51,13 @@ public class GroupService : IGroupService
             }
         }
 
+        var imageUrl = await SaveBase64ImageAsync(profileImage);
+
         var group = new Group
         {
             Title = title,
             Description = description,
-            ProfileImage = profileImage,
+            ProfileImage = imageUrl,
             CreatedById = createdById,
             CreatedAt = EgyptTime.Now
         };
@@ -83,31 +92,48 @@ public class GroupService : IGroupService
             throw new UserNotFoundException(userId);
 
         var memberships = (await GroupMembers.GetAllAsync(new GroupMembersByUserIdSpec(userId), asNoTracking: true)).ToList();
-        var groupIds = memberships.Select(gm => gm.GroupId).Distinct().ToList();
-    
-        var groups = (await Groups.GetAllAsync(new GroupsByIdsSpec(groupIds), asNoTracking: true)).ToList();
-        var allMembers = (await GroupMembers.GetAllAsync(new GroupMembersByGroupIdsSpec(groupIds), asNoTracking: true)).ToList();
-        var allUserIds = allMembers.Select(m => m.UserId).Concat(groups.Select(g => g.CreatedById)).Distinct().ToList();
-        var users = (await Users.GetAllAsync(new UsersByIdsSpec(allUserIds), asNoTracking: true)).ToDictionary(u => u.UserId);
-    
+        if (memberships.Count == 0)
+            return [];
+
+        var groupIds = memberships.Select(m => m.GroupId).Distinct().ToList();
+
+        var groups = (await Groups.GetAllAsync(
+            new GroupsByIdsSpec(groupIds),
+            g => new Group
+            {
+                GroupId = g.GroupId,
+                Title = g.Title,
+                Description = g.Description,
+                ProfileImage = g.ProfileImage,
+                CreatedById = g.CreatedById,
+                CreatedAt = g.CreatedAt
+            },
+            asNoTracking: true)).ToList();
+        if (groups.Count == 0)
+            return [];
+
+        var allMemberships = (await GroupMembers.GetAllAsync(new GroupMembersByGroupIdsSpec(groupIds), asNoTracking: true)).ToList();
+        var memberIds = allMemberships.Select(m => m.UserId).Concat(groups.Select(g => g.CreatedById)).Distinct().ToList();
+        var users = (await Users.GetAllAsync(new UsersByIdsSpec(memberIds), asNoTracking: true)).ToDictionary(u => u.UserId);
+
         return groups.Select(group =>
         {
-            var groupMembers = allMembers.Where(m => m.GroupId == group.GroupId).ToList();
+            var groupMembers = allMemberships.Where(m => m.GroupId == group.GroupId).ToList();
             var memberDtos = groupMembers.Select(m => new GroupMemberDto
             {
                 UserId = m.UserId,
                 FullName = users.GetValueOrDefault(m.UserId)?.FullName ?? "Unknown",
-                ProfileImage = users.GetValueOrDefault(m.UserId)?.ProfileImage,
+                ProfileImage = null,
                 JoinedAt = m.JoinedAt
             }).ToList();
-        
-            return new GroupDto
-            {
-                GroupId = group.GroupId,
-                Title = group.Title,
-                Description = group.Description,
-                ProfileImage = group.ProfileImage,
-                CreatedById = group.CreatedById,
+
+        return new GroupDto
+        {
+            GroupId = group.GroupId,
+            Title = group.Title,
+            Description = group.Description,
+            ProfileImage = _urlResolver.Resolve(group.ProfileImage),
+            CreatedById = group.CreatedById,
                 CreatedByName = users.GetValueOrDefault(group.CreatedById)?.FullName ?? "Unknown",
                 CreatedAt = group.CreatedAt,
                 MemberCount = groupMembers.Count,
@@ -129,7 +155,7 @@ public class GroupService : IGroupService
         {
             UserId = m.UserId,
             FullName = users.GetValueOrDefault(m.UserId)?.FullName ?? "Unknown",
-            ProfileImage = users.GetValueOrDefault(m.UserId)?.ProfileImage,
+            ProfileImage = null,
             JoinedAt = m.JoinedAt
         }).ToList();
 
@@ -138,7 +164,7 @@ public class GroupService : IGroupService
             GroupId = group.GroupId,
             Title = group.Title,
             Description = group.Description,
-            ProfileImage = group.ProfileImage,
+            ProfileImage = _urlResolver.Resolve(group.ProfileImage),
             CreatedById = group.CreatedById,
             CreatedByName = users.GetValueOrDefault(group.CreatedById)?.FullName ?? "Unknown",
             CreatedAt = group.CreatedAt,
@@ -177,8 +203,8 @@ public class GroupService : IGroupService
         if (group.CreatedById != removedByUserId && userId != removedByUserId)
             throw new UnauthorizedAccessException("Cannot remove this member");
 
-        var member = (await GroupMembers.GetAllAsync())
-            .FirstOrDefault(gm => gm.GroupId == groupId && gm.UserId == userId);
+        var member = (await GroupMembers.GetAllAsync(new GroupMembersByGroupIdsSpec(new List<int> { groupId }), asNoTracking: false))
+            .FirstOrDefault(gm => gm.UserId == userId);
 
         if (member == null) throw new GroupNotFoundException();
 
@@ -187,14 +213,58 @@ public class GroupService : IGroupService
         return true;
     }
 
-    private static GroupDto MapToDto(Group group, List<GroupMemberDto>? members)
+    public async Task<string?> GetUserDisplayNameAsync(int userId)
+    {
+        var user = await Users.GetByIdAsync(userId);
+        return user?.FullName;
+    }
+
+    private async Task<string?> SaveBase64ImageAsync(string? base64Data)
+    {
+        if (string.IsNullOrEmpty(base64Data) || !base64Data.StartsWith("data:image/"))
+            return null;
+
+        try
+        {
+            var commaIndex = base64Data.IndexOf(',');
+            if (commaIndex < 0 || commaIndex >= base64Data.Length - 1)
+                return null;
+
+            var mimePart = base64Data[5..commaIndex]; // e.g. "image/png"
+            var base64 = base64Data[(commaIndex + 1)..];
+            var bytes = Convert.FromBase64String(base64);
+
+            var ext = mimePart switch
+            {
+                "image/jpeg" => ".jpg",
+                "image/png" => ".png",
+                "image/gif" => ".gif",
+                "image/webp" => ".webp",
+                _ => ".jpg"
+            };
+
+            var fileName = $"{Guid.NewGuid()}{ext}";
+            var uploadsDir = Path.Combine(_env.WebRootPath, "uploads", "groups");
+            Directory.CreateDirectory(uploadsDir);
+            var filePath = Path.Combine(uploadsDir, fileName);
+            await File.WriteAllBytesAsync(filePath, bytes);
+
+            return $"/uploads/groups/{fileName}";
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private GroupDto MapToDto(Group group, List<GroupMemberDto>? members)
     {
         return new GroupDto
         {
             GroupId = group.GroupId,
             Title = group.Title,
             Description = group.Description,
-            ProfileImage = group.ProfileImage,
+            ProfileImage = _urlResolver.Resolve(group.ProfileImage),
             CreatedById = group.CreatedById,
             CreatedByName = group.CreatedBy?.FullName ?? "Unknown",
             CreatedAt = group.CreatedAt,
