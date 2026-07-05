@@ -2,6 +2,7 @@ namespace IntelliCampus.Shared.Params;
 
 public class BylawQueryParams
 {
+    public string? Search { get; set; }
     public string? Type { get; set; }
 
     private int _pageIndex = 1;

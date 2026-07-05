@@ -28,9 +28,11 @@ public class SpecializationService : ISpecializationService
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
 
-    public async Task<IEnumerable<SpecializationDto>> GetAllAsync()
+    public async Task<IEnumerable<SpecializationDto>> GetAllAsync(string? search = null)
     {
-        var spec = new SpecializationSpec();
+        var spec = string.IsNullOrEmpty(search)
+            ? new SpecializationSpec()
+            : new SpecializationSpec(search);
         var items = await Specializations.GetAllAsync(spec, asNoTracking: true);
         return items.Select(MapToDto);
     }

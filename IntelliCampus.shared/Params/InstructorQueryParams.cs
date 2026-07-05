@@ -2,6 +2,7 @@ namespace IntelliCampus.Shared.Params;
 
 public class InstructorQueryParams
 {
+    public string? Search { get; set; }
     public int? DepartmentId { get; set; }
     public int? FacultyId { get; set; }
 

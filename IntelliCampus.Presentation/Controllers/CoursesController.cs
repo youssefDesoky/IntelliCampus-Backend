@@ -164,9 +164,9 @@ public class CoursesController : ControllerBase
 
     [HttpGet("{courseId}/students")]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<StudentDto>>> GetStudents(int courseId)
+    public async Task<ActionResult<IEnumerable<StudentDto>>> GetStudents(int courseId, [FromQuery] string? search = null)
     {
-        var students = await _courseService.GetStudentsByCourseIdAsync(courseId);
+        var students = await _courseService.GetStudentsByCourseIdAsync(courseId, search);
         return Ok(students);
     }
 

@@ -25,7 +25,7 @@ public interface ICourseService
     Task<IEnumerable<CoursePrerequisiteDto>?> GetPrerequisitesAsync(int courseId);
     Task<PaginatedResult<CoursePrerequisiteDto>> GetAllWithPrerequisitesAsync(CourseQueryParams queryParams);
     Task<PaginatedResult<CoursePrerequisiteDto>> GetAllWithPrerequisitesByStudentBylawAsync(int studentId, CourseQueryParams queryParams);
-    Task<IEnumerable<StudentDto>> GetStudentsByCourseIdAsync(int courseId);
+    Task<IEnumerable<StudentDto>> GetStudentsByCourseIdAsync(int courseId, string? search = null);
     Task<CourseDto> UpdateRegistrationSettingsAsync(int courseId, UpdateCourseRegistrationSettingsDto dto);
     Task<CourseRegistrationSettingsDto?> GetRegistrationSettingsAsync(int courseId);
     Task<ExcelImportResultDto> UploadGradesAsync(int courseId, IFormFile file, int? userId);

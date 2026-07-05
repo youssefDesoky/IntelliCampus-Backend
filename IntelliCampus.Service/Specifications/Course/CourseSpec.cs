@@ -57,7 +57,9 @@ namespace IntelliCampus.Service.Specifications
                 && (!queryParams.IsActiveOnly || c.Status == CourseStatus.Active)
                 && (string.IsNullOrEmpty(queryParams.Search)
                     || c.CourseName.Contains(queryParams.Search)
-                    || (c.CourseCode != null && c.CourseCode.Contains(queryParams.Search))))
+                    || (c.CourseCode != null && c.CourseCode.Contains(queryParams.Search))
+                    || c.Classes.Any(cl => cl.Instructor != null && cl.Instructor.User.FullName.Contains(queryParams.Search))
+                    || c.Classes.Any(cl => cl.Instructor != null && cl.Instructor.User.FullNameAr != null && cl.Instructor.User.FullNameAr.Contains(queryParams.Search))))
         {
             switch (includeLevel)
             {
@@ -76,7 +78,9 @@ namespace IntelliCampus.Service.Specifications
             : base(c => courseIds.Contains(c.CourseId)
                 && (string.IsNullOrEmpty(queryParams.Search)
                     || c.CourseName.Contains(queryParams.Search)
-                    || (c.CourseCode != null && c.CourseCode.Contains(queryParams.Search))))
+                    || (c.CourseCode != null && c.CourseCode.Contains(queryParams.Search))
+                    || c.Classes.Any(cl => cl.Instructor != null && cl.Instructor.User.FullName.Contains(queryParams.Search))
+                    || c.Classes.Any(cl => cl.Instructor != null && cl.Instructor.User.FullNameAr != null && cl.Instructor.User.FullNameAr.Contains(queryParams.Search))))
         {
         }
 

@@ -18,9 +18,9 @@ public class SpecializationController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<SpecializationDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<SpecializationDto>>> GetAll([FromQuery] string? search = null)
     {
-        var items = await _specializationService.GetAllAsync();
+        var items = await _specializationService.GetAllAsync(search);
         return Ok(items);
     }
 
