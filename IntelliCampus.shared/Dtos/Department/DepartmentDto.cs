@@ -12,4 +12,5 @@ public class DepartmentDto
     public int? FacultyId { get; set; }
     public string? FacultyName { get; set; }
     public int? MaxCapacity { get; set; }
+    public int CourseCount { get; set; }
 }

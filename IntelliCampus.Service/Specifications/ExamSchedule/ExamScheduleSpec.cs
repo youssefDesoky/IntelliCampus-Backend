@@ -11,6 +11,10 @@ public class ExamScheduleSpec : BaseSpecifications<ExamSchedule>
     {
         AddInclude(e => e.Course!);
         AddInclude(e => e.Room!);
+        AddInclude(e => e.Exam!);
+        AddInclude("Exam.ExamSeatAssignments");
+        AddInclude("Exam.ExamSeatAssignments.Room");
+        EnableSplitQuery();
         AddOrderBy(e => e.Date);
     }
 
@@ -19,6 +23,10 @@ public class ExamScheduleSpec : BaseSpecifications<ExamSchedule>
     {
         AddInclude(e => e.Course!);
         AddInclude(e => e.Room!);
+        AddInclude(e => e.Exam!);
+        AddInclude("Exam.ExamSeatAssignments");
+        AddInclude("Exam.ExamSeatAssignments.Room");
+        EnableSplitQuery();
         AddOrderBy(e => e.Date);
     }
 
@@ -27,6 +35,10 @@ public class ExamScheduleSpec : BaseSpecifications<ExamSchedule>
     {
         AddInclude(e => e.Course!);
         AddInclude(e => e.Room!);
+        AddInclude(e => e.Exam!);
+        AddInclude("Exam.ExamSeatAssignments");
+        AddInclude("Exam.ExamSeatAssignments.Room");
+        EnableSplitQuery();
         AddOrderBy(e => e.Date);
     }
 
@@ -35,6 +47,10 @@ public class ExamScheduleSpec : BaseSpecifications<ExamSchedule>
     {
         AddInclude(e => e.Course!);
         AddInclude(e => e.Room!);
+        AddInclude(e => e.Exam!);
+        AddInclude("Exam.ExamSeatAssignments");
+        AddInclude("Exam.ExamSeatAssignments.Room");
+        EnableSplitQuery();
     }
 
     public ExamScheduleSpec(int studentId, ExamType examType, ExamScheduleQueryParams queryParams)
@@ -42,6 +58,10 @@ public class ExamScheduleSpec : BaseSpecifications<ExamSchedule>
     {
         AddInclude(e => e.Course!);
         AddInclude(e => e.Room!);
+        AddInclude(e => e.Exam!);
+        AddInclude("Exam.ExamSeatAssignments");
+        AddInclude("Exam.ExamSeatAssignments.Room");
+        EnableSplitQuery();
         AddOrderBy(e => e.Date);
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
@@ -51,6 +71,10 @@ public class ExamScheduleSpec : BaseSpecifications<ExamSchedule>
     {
         AddInclude(e => e.Course!);
         AddInclude(e => e.Room!);
+        AddInclude(e => e.Exam!);
+        AddInclude("Exam.ExamSeatAssignments");
+        AddInclude("Exam.ExamSeatAssignments.Room");
+        EnableSplitQuery();
         AddOrderBy(e => e.Date);
         ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
     }
@@ -60,6 +84,10 @@ public class ExamScheduleSpec : BaseSpecifications<ExamSchedule>
     {
         AddInclude(e => e.Course!);
         AddInclude(e => e.Room!);
+        AddInclude(e => e.Exam!);
+        AddInclude("Exam.ExamSeatAssignments");
+        AddInclude("Exam.ExamSeatAssignments.Room");
+        EnableSplitQuery();
         AddOrderBy(e => e.Date);
         ApplyPagination(pageSize, pageIndex);
     }
@@ -71,6 +99,10 @@ public class ExamScheduleSpec : BaseSpecifications<ExamSchedule>
     {
         AddInclude(e => e.Course!);
         AddInclude(e => e.Room!);
+        AddInclude(e => e.Exam!);
+        AddInclude("Exam.ExamSeatAssignments");
+        AddInclude("Exam.ExamSeatAssignments.Room");
+        EnableSplitQuery();
         AddOrderBy(e => e.Date);
         if (!forCount)
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);

@@ -60,7 +60,7 @@ public class ExamSchedulingController : ControllerBase
     public async Task<ActionResult<HallAssignmentResultDto>> AssignHalls(
         int examId, [FromBody] AssignHallsRequestDto request)
     {
-        var result = await _schedulingService.AssignHallsToExamAsync(examId, request.ExamHallIds);
+        var result = await _schedulingService.AssignHallsToExamAsync(examId, request.RoomIds);
         if (!result.Success)
             return BadRequest(result);
         return Ok(result);

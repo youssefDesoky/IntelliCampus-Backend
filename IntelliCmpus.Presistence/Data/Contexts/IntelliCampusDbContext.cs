@@ -30,7 +30,6 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<CourseWorkWeight> CourseWorkWeights { get; set; }
     public DbSet<GradeComplaint> GradeComplaints { get; set; }
     public DbSet<Exam> Exams { get; set; }
-    public DbSet<ExamHall> ExamHalls { get; set; }
     public DbSet<ExamSeatAssignment> ExamSeatAssignments { get; set; }
 
     // Learning materials

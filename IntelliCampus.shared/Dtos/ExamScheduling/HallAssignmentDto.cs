@@ -2,9 +2,9 @@ namespace IntelliCampus.Shared.Dtos.ExamScheduling;
 
 public class HallAssignmentDto
 {
-    public int ExamHallId { get; set; }
-    public string HallName { get; set; } = null!;
-    public string? HallNameAr { get; set; }
+    public int RoomId { get; set; }
+    public string RoomName { get; set; } = null!;
+    public string? RoomNameAr { get; set; }
     public int Capacity { get; set; }
     public int AssignedCount { get; set; }
     public int OccupancyPercent => Capacity > 0 ? (AssignedCount * 100) / Capacity : 0;
@@ -17,15 +17,15 @@ public class SeatAssignmentDto
     public string StudentName { get; set; } = null!;
     public string? StudentCode { get; set; }
     public int SeatNumber { get; set; }
-    public int ExamHallId { get; set; }
-    public string? HallName { get; set; }
-    public string? HallNameAr { get; set; }
+    public int RoomId { get; set; }
+    public string? RoomName { get; set; }
+    public string? RoomNameAr { get; set; }
 }
 
 public class AssignHallsRequestDto
 {
     public int ExamId { get; set; }
-    public List<int> ExamHallIds { get; set; } = [];
+    public List<int> RoomIds { get; set; } = [];
 }
 
 public class HallAssignmentResultDto

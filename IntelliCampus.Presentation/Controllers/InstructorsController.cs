@@ -2,6 +2,7 @@ using System.Security.Claims;
 using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.shared.Pagination;
 using IntelliCampus.Shared.Dtos.Instructor;
+using IntelliCampus.Shared.Dtos.Schedule;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Params;
 using Microsoft.AspNetCore.Authorization;
@@ -15,10 +16,12 @@ namespace IntelliCampus.Web.Controllers;
 public class InstructorsController : ControllerBase
 {
     private readonly IInstructorService _instructorService;
+    private readonly IInstructorScheduleService _instructorScheduleService;
 
-    public InstructorsController(IInstructorService instructorService)
+    public InstructorsController(IInstructorService instructorService, IInstructorScheduleService instructorScheduleService)
     {
         _instructorService = instructorService;
+        _instructorScheduleService = instructorScheduleService;
     }
 
     [HttpGet]
@@ -33,6 +36,13 @@ public class InstructorsController : ControllerBase
     {
         var instructor = await _instructorService.GetByIdAsync(id);
         return Ok(instructor);
+    }
+
+    [HttpGet("{id}/schedule")]
+    public async Task<ActionResult<IEnumerable<ScheduleDto>>> GetSchedule(int id, [FromQuery] ScheduleQueryParams queryParams)
+    {
+        var schedule = await _instructorScheduleService.GetScheduleAsync(id, queryParams);
+        return Ok(schedule);
     }
 
     [HttpPost]

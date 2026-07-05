@@ -49,6 +49,23 @@ public class InstructorScheduleService : IInstructorScheduleService
         return schedules;
     }
 
+    public async Task<IEnumerable<ScheduleDto>> GetScheduleAsync(int instructorId, ScheduleQueryParams queryParams)
+    {
+        var spec = new ClassByInstructorSpec(instructorId);
+        var classes = await Classes.GetAllAsync(spec, asNoTracking: true);
+        var activeClasses = classes.Where(c => c.Course is null || c.Course.Status == CourseStatus.Active);
+        var schedules = activeClasses.Select(MapToDto);
+
+        var types = queryParams.Types;
+        if (types is not null && types.Length > 0)
+        {
+            var typeSet = types.ToHashSet();
+            schedules = schedules.Where(s => typeSet.Contains(ParseScheduleType(s.Type)));
+        }
+
+        return schedules;
+    }
+
     public async Task<ScheduleDto> GetScheduleByIdAsync(int classId, int userId)
     {
         var spec = new ClassByIdSpec(classId);

@@ -207,5 +207,43 @@
     "studentType": "PhD",
     "specialization": "Artificial Intelligence",
     "enrollmentDateOffset": "-2 years"
+  },
+  {
+    "nationalId": "30601012200301",
+    "studentCode": "20240100007",
+    "fullName": "Test Probation Student",
+    "fullNameAr": "طالب اختبار المراقبة",
+    "email": "20240100007@intellicampus.online",
+    "phoneNumber": "01000000007",
+    "address": "1 Test St., Cairo",
+    "nationality": "EG",
+    "password": "30601012200301",
+    "roles": [
+      "Student_Bachelor"
+    ],
+    "level": 2,
+    "departmentName": "Information Systems",
+    "program": "General",
+    "gpa": 1.5,
+    "enrollmentDateOffset": "-1 years"
+  },
+  {
+    "nationalId": "30601012200302",
+    "studentCode": "20240100008",
+    "fullName": "Test Probation Student 2",
+    "fullNameAr": "طالب اختبار المراقبة 2",
+    "email": "20240100008@intellicampus.online",
+    "phoneNumber": "01000000008",
+    "address": "2 Test St., Giza",
+    "nationality": "EG",
+    "password": "30601012200302",
+    "roles": [
+      "Student_Bachelor"
+    ],
+    "level": 2,
+    "departmentName": "Data Science",
+    "program": "Credit",
+    "gpa": 1.8,
+    "enrollmentDateOffset": "-1 years"
   }
 ]

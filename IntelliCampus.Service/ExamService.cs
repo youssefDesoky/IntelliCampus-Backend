@@ -101,7 +101,9 @@ public class ExamService : IExamService
         await _unitOfWork.SaveChangesAsync();
 
         await _examScheduleService.SyncFromExamAsync(exam.ExamId);
-        await SendExamNotificationsAsync(exam);
+
+        var examWithDetails = await Exams.GetByIdAsync(new ExamWithDetailsSpec(exam.ExamId));
+        await SendExamNotificationsAsync(examWithDetails!);
 
         return MapToDto(exam);
     }

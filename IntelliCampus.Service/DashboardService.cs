@@ -257,9 +257,9 @@ public class DashboardService : IDashboardService
     {
         var (stats, courseStatusBreakdown, attendances, grades, allCourses, allDepartments, studentCourses, allStudents, latestNews)
             = await LoadAdminDashboardDataAsync();
-        var (attendanceTrend, gradeDistribution, topCourses, deptStatus, snapshot)
+        var (attendanceTrend, gradeDistribution, topCourses, deptStatus, snapshot, probationHeatmap)
             = ComputeTrendMetrics(attendances, grades, allCourses, allDepartments, studentCourses, allStudents);
-        return BuildAdminDashboardDto(stats, courseStatusBreakdown, attendanceTrend, gradeDistribution, topCourses, deptStatus, snapshot, latestNews);
+        return BuildAdminDashboardDto(stats, courseStatusBreakdown, attendanceTrend, gradeDistribution, topCourses, deptStatus, snapshot, latestNews, probationHeatmap);
     }
 
     private async Task<(
@@ -311,7 +311,7 @@ public class DashboardService : IDashboardService
         var recentSemesters = GetRecentSemesters(3);
         var studentCourses = (await studentCourseRepo.GetAllAsync(new StudentCourseIdsSpec(recentSemesters), asNoTracking: true)).ToList();
 
-        var allStudents = await studentsRepo.GetAllAsync(new StudentSpec(true), asNoTracking: true);
+        var allStudents = await studentsRepo.GetAllAsync(new StudentSpec(true, true), asNoTracking: true);
 
         var latestNews = (await broadcastRepo.GetAllAsync(new BroadcastSpec(), asNoTracking: true))
             .Select(b => new LatestNewsItemDto
@@ -333,7 +333,8 @@ public class DashboardService : IDashboardService
         List<GradeDistributionPointDto> GradeDistribution,
         List<TopCourseDto> TopCourses,
         List<DepartmentStatusDto> DepartmentStatus,
-        AdminSnapshotDto Snapshot
+        AdminSnapshotDto Snapshot,
+        List<ProbationDeptPointDto> ProbationHeatmap
     ) ComputeTrendMetrics(
         List<Attendance> attendances,
         List<Grade> grades,
@@ -432,9 +433,33 @@ public class DashboardService : IDashboardService
             retention = earliest.Count > 0 ? Math.Round((double)retained / earliest.Count * 100, 1) : 100;
         }
 
-        var averageGpa = allStudents.Any()
-            ? Math.Round(allStudents.Average(s => s.Gpa), 2)
+        var studentsList = allStudents.ToList();
+        var averageGpa = studentsList.Count > 0
+            ? Math.Round(studentsList.Where(s => s.Gpa > 0).Average(s => s.Gpa), 2)
             : 0.0;
+
+        var probationStudents = studentsList
+            .Where(s => s.Gpa > 0
+                && s.Bylaw?.Settings.ProbationThreshold is not null
+                && (decimal)s.Gpa < s.Bylaw.Settings.ProbationThreshold.Value)
+            .ToHashSet();
+
+        var probationHeatmap = studentsList
+            .Where(s => s.Level.HasValue && s.Department is not null && s.Bylaw?.Settings.ProbationThreshold is not null)
+            .GroupBy(s => new { Dept = s.Department!.DepartmentName, Level = s.Level!.Value })
+            .Select(g => new ProbationDeptPointDto
+            {
+                Department = g.Key.Dept,
+                Level = g.Key.Level,
+                ProbationCount = g.Count(s => probationStudents.Contains(s)),
+                TotalStudents = g.Count(),
+                ProbationRate = g.Count() > 0
+                    ? Math.Round((double)g.Count(s => probationStudents.Contains(s)) / g.Count() * 100, 1)
+                    : 0.0
+            })
+            .OrderBy(p => p.Department)
+            .ThenBy(p => p.Level)
+            .ToList();
 
         var snapshot = new AdminSnapshotDto
         {
@@ -442,9 +467,10 @@ public class DashboardService : IDashboardService
             CourseCompletion = courseCompletion,
             StudentRetention = retention,
             AverageGpa = averageGpa,
+            ProbationCount = probationStudents.Count,
         };
 
-        return (attendanceTrend, gradeDistribution, topCourses, deptStatus, snapshot);
+        return (attendanceTrend, gradeDistribution, topCourses, deptStatus, snapshot, probationHeatmap);
     }
 
     private static AdminDashboardDto BuildAdminDashboardDto(
@@ -455,7 +481,8 @@ public class DashboardService : IDashboardService
         List<TopCourseDto> topCourses,
         List<DepartmentStatusDto> deptStatus,
         AdminSnapshotDto snapshot,
-        List<LatestNewsItemDto> latestNews)
+        List<LatestNewsItemDto> latestNews,
+        List<ProbationDeptPointDto> probationHeatmap)
     {
         return new AdminDashboardDto
         {
@@ -467,6 +494,7 @@ public class DashboardService : IDashboardService
                 TopCourses = topCourses,
                 DepartmentStatus = deptStatus,
                 CourseStatusBreakdown = courseStatusBreakdown,
+                ProbationHeatmap = probationHeatmap,
             },
             Snapshot = snapshot,
             LatestNews = latestNews,

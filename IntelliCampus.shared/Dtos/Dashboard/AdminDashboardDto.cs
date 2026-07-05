@@ -25,6 +25,16 @@ public class AdminChartsDto
     public List<TopCourseDto> TopCourses { get; set; } = [];
     public List<DepartmentStatusDto> DepartmentStatus { get; set; } = [];
     public List<CourseStatusPointDto> CourseStatusBreakdown { get; set; } = [];
+    public List<ProbationDeptPointDto> ProbationHeatmap { get; set; } = [];
+}
+
+public class ProbationDeptPointDto
+{
+    public string Department { get; set; } = string.Empty;
+    public int Level { get; set; }
+    public int ProbationCount { get; set; }
+    public int TotalStudents { get; set; }
+    public double ProbationRate { get; set; }
 }
 
 public class GradeDistributionPointDto
@@ -59,6 +69,7 @@ public class AdminSnapshotDto
     public double CourseCompletion { get; set; }
     public double StudentRetention { get; set; }
     public double AverageGpa { get; set; }
+    public int ProbationCount { get; set; }
 }
 
 public class PublishNewsDto

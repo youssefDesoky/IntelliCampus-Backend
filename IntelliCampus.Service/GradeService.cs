@@ -329,11 +329,27 @@ public class GradeService : IGradeService
             assignQuizWeight = 100 - midtermWeight - finalWeight;
         }
 
-        overallPercent = await ApplyBylawGradeRulesAsync(studentId, courseId,
+        (overallPercent, var isForcedFailing) = await ApplyBylawGradeRulesAsync(studentId, courseId,
             assignQuizWeight, midtermWeight, finalWeight,
             assignQuizContrib, midtermContrib, finalContrib, overallPercent);
 
         var (letter, gpa) = await ResolveGradeScaleAsync(studentId, overallPercent);
+
+        if (isForcedFailing)
+        {
+            var scales = student.Bylaw?.GradeScales;
+            if (scales?.Count > 0)
+            {
+                var lowest = scales.OrderByDescending(s => s.SortOrder).First();
+                letter = lowest.GradeLetter;
+                gpa = lowest.GpaValue;
+            }
+            else
+            {
+                letter = "F";
+                gpa = 0;
+            }
+        }
 
         return BuildCourseGradeDto(overallPercent, letter, gpa, breakdown, history);
     }
@@ -454,6 +470,28 @@ public class GradeService : IGradeService
 
         var bylawSettings = student?.Bylaw?.Settings;
         var gradeScales = student?.Bylaw?.GradeScales;
+        var minPassingSortOrder = student?.Bylaw?.MinPassingGradeSortOrder;
+
+        if (minPassingSortOrder is not null && gradeScales is not null && gradeScales.Count > 0)
+        {
+            foreach (var gradeEntry in gradesByCourse)
+            {
+                var finalGrade = gradeEntry.Value.LastOrDefault(g => g.GradeType == GradeType.Final && g.Status == "Graded");
+                if (finalGrade is null) continue;
+
+                var pct = finalGrade.MaxScore > 0
+                    ? Math.Round(finalGrade.Score / finalGrade.MaxScore * 100, 0)
+                    : 0;
+                var letter = ResolveGradeScale(gradeScales, pct);
+                var sortOrder = gradeScales
+                    .Where(s => s.GradeLetter == letter)
+                    .Select(s => s.SortOrder)
+                    .FirstOrDefault();
+
+                if (sortOrder > minPassingSortOrder.Value)
+                    failedCourseIds.Add(gradeEntry.Key);
+            }
+        }
 
         var allCourseWorkWeights = (await CourseWorkWeights.GetAllAsync()).ToDictionary(w => w.CourseId);
 
@@ -504,9 +542,15 @@ public class GradeService : IGradeService
                         var finalW = bylawSettings?.FinalExamGrade ?? final?.Weight ?? 0;
                         overall = ApplyBylawGradeRules(bylawSettings, gradeScales, failedCourseIds, courseId,
                             assignQuizW, midtermW, finalW,
-                            assignmentContrib + quizContrib, midContrib, fnContrib, overall);
+                            assignmentContrib + quizContrib, midContrib, fnContrib, overall,
+                            out var forcedFail);
                         totalGradeStr = overall.ToString();
                         letter = ResolveGradeScale(gradeScales, overall);
+                        if (forcedFail)
+                        {
+                            letter = gradeScales?.OrderByDescending(s => s.SortOrder).FirstOrDefault()?.GradeLetter ?? "F";
+                            failedCourseIds.Add(courseId);
+                        }
                     }
                     else
                     {
@@ -528,9 +572,15 @@ public class GradeService : IGradeService
                         var assignQuizWeight = 100 - midtermWeight - finalWeight;
                         overall = ApplyBylawGradeRules(bylawSettings, gradeScales, failedCourseIds, courseId,
                             assignQuizWeight, midtermWeight, finalWeight,
-                            assignQuizContrib, midtermContrib, finalContrib, overall);
+                            assignQuizContrib, midtermContrib, finalContrib, overall,
+                            out var forcedFail);
                         totalGradeStr = overall.ToString();
                         letter = ResolveGradeScale(gradeScales, overall);
+                        if (forcedFail)
+                        {
+                            letter = gradeScales?.OrderByDescending(s => s.SortOrder).FirstOrDefault()?.GradeLetter ?? "F";
+                            failedCourseIds.Add(courseId);
+                        }
                     }
                     else
                     {
@@ -539,7 +589,7 @@ public class GradeService : IGradeService
                 }
             }
 
-            var level = ExtractLevelFromCourseCode(course.CourseCode);
+            var level = sc.Level ?? ExtractLevelFromCourseCode(course.CourseCode);
 
             result.Add(new TranscriptCourseDto
             {
@@ -634,11 +684,49 @@ public class GradeService : IGradeService
         var effectiveCredits = await _bylawService.GetEffectiveCreditHoursAsync(
             student.BylawId ?? 0, student.DepartmentId);
 
+        var gradeScales = student.Bylaw?.GradeScales;
+        var minPassingSortOrder = student.Bylaw?.MinPassingGradeSortOrder;
+        var settings = student.Bylaw?.Settings;
+
         var allGrades = await Grades.GetAllAsync(new GradeSpec(studentId), asNoTracking: true);
-        var completedCourseIds = allGrades
+        var finalGradesByCourse = allGrades
             .Where(g => g.GradeType == GradeType.Final && g.Status == "Graded")
-            .Select(g => g.CourseId)
-            .Distinct()
+            .GroupBy(g => g.CourseId)
+            .ToDictionary(g => g.Key, g => g.First());
+
+        Dictionary<int, decimal>? courseworkPctByCourse = null;
+        if (settings?.MinPassingCourseworkGrade.HasValue == true)
+        {
+            courseworkPctByCourse = await ComputeCourseworkPercentagesAsync(studentId, courseIds, allGrades);
+        }
+
+        var completedCourseIds = finalGradesByCourse
+            .Where(kvp =>
+            {
+                if (minPassingSortOrder is null || gradeScales is null || gradeScales.Count == 0)
+                    return true;
+
+                var finalGrade = kvp.Value;
+                var pct = finalGrade.MaxScore > 0
+                    ? Math.Round(finalGrade.Score / finalGrade.MaxScore * 100, 0)
+                    : 0;
+                var letter = ResolveGradeScale(gradeScales, pct);
+                var sortOrder = gradeScales
+                    .Where(s => s.GradeLetter == letter)
+                    .Select(s => s.SortOrder)
+                    .FirstOrDefault();
+                if (sortOrder > minPassingSortOrder.Value)
+                    return false;
+
+                if (courseworkPctByCourse is not null && courseworkPctByCourse.TryGetValue(kvp.Key, out var cpct))
+                {
+                    if (cpct < settings!.MinPassingCourseworkGrade!.Value)
+                        return false;
+                }
+
+                return true;
+            })
+            .Select(kvp => kvp.Key)
             .ToHashSet();
 
         return studentCourses
@@ -758,12 +846,22 @@ public class GradeService : IGradeService
         var graduationHours = bylaw.Settings?.TotalHoursToCompleteDegree
             ?? buckets.Sum(b => b.RequiredHours);
 
+        var totalCompletedHours = buckets.Sum(b => b.CompletedHours);
+        var minPassingGpa = bylaw.MinPassingGpa;
+        var meetsMinPassingGpa = minPassingGpa is null || gpa >= (double)minPassingGpa.Value;
+        var meetsTotalHourRequirement = totalCompletedHours >= graduationHours;
+
         return new AcademicProgressDto
         {
-            TotalCompletedHours = buckets.Sum(b => b.CompletedHours),
+            TotalCompletedHours = totalCompletedHours,
             TotalRequiredHours = buckets.Sum(b => b.RequiredHours),
             TotalGraduationHours = graduationHours,
             Gpa = gpa,
+            MinPassingGpa = minPassingGpa is decimal d ? (double)d : null,
+            MeetsMinPassingGpa = meetsMinPassingGpa,
+            MeetsTotalHourRequirement = meetsTotalHourRequirement,
+            IsEligibleForGraduation = meetsMinPassingGpa && meetsTotalHourRequirement,
+            MinPassingGradeLetter = bylaw.MinPassingGradeLetter,
             Buckets = buckets
         };
     }
@@ -1255,18 +1353,22 @@ public class GradeService : IGradeService
             assignQuizWeight = 100 - midtermWeight - finalWeight;
         }
 
+        var isForcedFailing = false;
         if (student.Bylaw is not null)
         {
             overallDecimal = ApplyBylawGradeRules(
                 student.Bylaw.Settings, student.Bylaw.GradeScales,
                 failedCourseStudentIds, courseId,
                 assignQuizWeight, midtermWeight, finalWeight,
-                assignQuizContrib, midtermContrib, finalContrib, overallDecimal);
+                assignQuizContrib, midtermContrib, finalContrib, overallDecimal,
+                out isForcedFailing);
         }
 
         var overallPercent = Math.Round((double)overallDecimal, 0);
 
         var letter = ResolveGradeScale(student.Bylaw?.GradeScales, overallDecimal);
+        if (isForcedFailing)
+            letter = student.Bylaw?.GradeScales?.OrderByDescending(s => s.SortOrder).FirstOrDefault()?.GradeLetter ?? "F";
 
         return new InstructorStudentGradeDto
         {
@@ -1813,13 +1915,99 @@ public class GradeService : IGradeService
         History = history
     };
 
+    private async Task<Dictionary<int, decimal>> ComputeCourseworkPercentagesAsync(
+        int studentId, List<int> courseIds, IEnumerable<Grade> allGrades)
+    {
+        var assignments = await Assignments.GetAllAsync(new AssignmentSpec(courseIds), asNoTracking: true);
+        var assignmentByCourse = assignments.GroupBy(a => a.CourseId).ToDictionary(g => g.Key, g => g.ToList());
+        var quizzes = await Quizzes.GetAllAsync(new QuizSpec(courseIds), asNoTracking: true);
+        var quizByCourse = quizzes.GroupBy(q => q.CourseId).ToDictionary(g => g.Key, g => g.ToList());
+        var submissions = (await StudentAssignments.GetAllAsync(
+            new StudentAssignmentSpec(studentId, "transcript"), asNoTracking: true)).ToList();
+        var quizSubmissions = (await StudentQuizzes.GetAllAsync(
+            new StudentQuizSpec(studentId, "transcript"), asNoTracking: true)).ToList();
+        var weights = (await CourseWorkWeights.GetAllAsync()).ToDictionary(w => w.CourseId);
+        var midtermsByCourse = allGrades
+            .Where(g => g.GradeType == GradeType.Midterm && g.Status == "Graded")
+            .GroupBy(g => g.CourseId)
+            .ToDictionary(g => g.Key, g => g.First());
+
+        var result = new Dictionary<int, decimal>();
+
+        foreach (var courseId in courseIds)
+        {
+            var courseAssignments = assignmentByCourse.GetValueOrDefault(courseId);
+            var courseQuizzes = quizByCourse.GetValueOrDefault(courseId);
+            var courseSubmissions = courseAssignments is not null
+                ? submissions.Where(s => courseAssignments.Any(a => a.AssignmentId == s.AssignmentId)).ToList()
+                : new List<StudentAssignment>();
+            var courseQuizSubmissions = courseQuizzes is not null
+                ? quizSubmissions.Where(qs => courseQuizzes.Any(q => q.QuizId == qs.QuizId)).ToList()
+                : new List<StudentQuiz>();
+            var midterm = midtermsByCourse.GetValueOrDefault(courseId);
+            var weight = weights.GetValueOrDefault(courseId);
+
+            var assignTotal = courseAssignments is not null
+                ? ComputeAssignmentScores(courseSubmissions, courseAssignments)
+                : (TotalScore: 0m, TotalMax: 0m);
+            var quizTotal = courseQuizzes is not null
+                ? ComputeQuizScores(courseQuizSubmissions, courseQuizzes)
+                : (TotalScore: 0m, TotalMax: 0m);
+
+            decimal courseworkPct;
+            if (weight is not null)
+            {
+                var (aContrib, qContrib, mContrib, _) = CalculateContributions(
+                    assignTotal.TotalScore, assignTotal.TotalMax,
+                    quizTotal.TotalScore, quizTotal.TotalMax,
+                    weight.AssignmentWeight, weight.QuizWeight, weight.MidtermWeight, 0,
+                    midterm, null);
+                var cwContrib = aContrib + qContrib + mContrib;
+                var cwWeight = weight.AssignmentWeight + weight.QuizWeight + weight.MidtermWeight;
+                courseworkPct = cwWeight > 0 ? Math.Round(cwContrib / cwWeight * 100, 0) : 100;
+            }
+            else
+            {
+                var midtermWeight = midterm?.Weight ?? 0;
+                var totalWeight = 100m;
+                var assignQuizWeight = totalWeight - midtermWeight;
+                var assignQuizContrib = assignTotal.TotalMax > 0 || quizTotal.TotalMax > 0
+                    ? ((assignTotal.TotalMax > 0 ? assignTotal.TotalScore / assignTotal.TotalMax * assignQuizWeight : 0)
+                     + (quizTotal.TotalMax > 0 ? quizTotal.TotalScore / quizTotal.TotalMax * assignQuizWeight : 0)) / 2
+                    : 0;
+                var midContrib = midterm?.MaxScore > 0
+                    ? midterm.Score / midterm.MaxScore * midtermWeight
+                    : 0;
+                var cwContrib = assignQuizContrib + midContrib;
+                var cwWeight = totalWeight;
+                courseworkPct = Math.Round(cwContrib / cwWeight * 100, 0);
+            }
+
+            result[courseId] = courseworkPct;
+        }
+
+        return result;
+    }
+
+    private static (decimal TotalScore, decimal TotalMax) ComputeAssignmentScores(
+        List<StudentAssignment> submissions, List<Assignment> assignments)
+    {
+        var graded = submissions.Where(sa => sa.Grade.HasValue).ToList();
+        var assignDict = assignments.ToDictionary(a => a.AssignmentId);
+        var totalScore = graded.Sum(sa => sa.Grade!.Value);
+        var totalMax = graded.Sum(sa => assignDict.GetValueOrDefault(sa.AssignmentId)?.MaxGrade ?? 0);
+        return (totalScore, totalMax);
+    }
+
     private static decimal ApplyBylawGradeRules(
         BylawSettings? settings, List<GradeScaleItem>? gradeScales,
         HashSet<int> failedCourseIds, int courseId,
         decimal assignQuizWeight, decimal midtermWeight, decimal finalWeight,
         decimal assignQuizContrib, decimal midtermContrib, decimal finalContrib,
-        decimal overallPercent)
+        decimal overallPercent,
+        out bool isForcedFailing)
     {
+        isForcedFailing = false;
         if (settings is null)
             return overallPercent;
 
@@ -1829,14 +2017,20 @@ public class GradeService : IGradeService
         {
             var courseworkPct = Math.Round((assignQuizContrib + midtermContrib) / courseworkWeight * 100, 0);
             if (courseworkPct < settings.MinPassingCourseworkGrade.Value)
-                return 0;
+            {
+                isForcedFailing = true;
+                return overallPercent;
+            }
         }
 
         if (settings.MinPassingFinalExamGrade.HasValue && finalWeight > 0)
         {
             var finalPct = Math.Round(finalContrib / finalWeight * 100, 0);
             if (finalPct < settings.MinPassingFinalExamGrade.Value)
-                return 0;
+            {
+                isForcedFailing = true;
+                return overallPercent;
+            }
         }
 
         if (!string.IsNullOrWhiteSpace(settings.MaxGradeOnRetake) && failedCourseIds.Contains(courseId))
@@ -1864,7 +2058,7 @@ public class GradeService : IGradeService
         return "-";
     }
 
-    private async Task<decimal> ApplyBylawGradeRulesAsync(int studentId, int courseId,
+    private async Task<(decimal OverallPercent, bool IsForcedFailing)> ApplyBylawGradeRulesAsync(int studentId, int courseId,
         decimal assignQuizWeight, decimal midtermWeight, decimal finalWeight,
         decimal assignQuizContrib, decimal midtermContrib, decimal finalContrib,
         decimal overallPercent)
@@ -1872,7 +2066,7 @@ public class GradeService : IGradeService
         var spec = new StudentSpec(new CourseQueryParams { StudentId = studentId });
         var student = await Students.GetByIdAsync(spec);
         var settings = student?.Bylaw?.Settings;
-        if (settings is null) return overallPercent;
+        if (settings is null) return (overallPercent, false);
 
         var courseworkWeight = assignQuizWeight + midtermWeight;
 
@@ -1880,14 +2074,14 @@ public class GradeService : IGradeService
         {
             var courseworkPct = Math.Round((assignQuizContrib + midtermContrib) / courseworkWeight * 100, 0);
             if (courseworkPct < settings.MinPassingCourseworkGrade.Value)
-                return 0;
+                return (overallPercent, true);
         }
 
         if (settings.MinPassingFinalExamGrade.HasValue && finalWeight > 0)
         {
             var finalPct = Math.Round(finalContrib / finalWeight * 100, 0);
             if (finalPct < settings.MinPassingFinalExamGrade.Value)
-                return 0;
+                return (overallPercent, true);
         }
 
         if (!string.IsNullOrWhiteSpace(settings.MaxGradeOnRetake))
@@ -1915,11 +2109,11 @@ public class GradeService : IGradeService
                 var scale = student?.Bylaw?.GradeScales?
                     .FirstOrDefault(s => s.GradeLetter == settings.MaxGradeOnRetake);
                 if (scale is not null && overallPercent > scale.MinPercentage)
-                    return scale.MinPercentage;
+                    return (scale.MinPercentage, false);
             }
         }
 
-        return overallPercent;
+        return (overallPercent, false);
     }
 
     private async Task<(decimal MidtermW, decimal FinalW, decimal QuizW, decimal AssignW)> ResolveCourseWeightsAsync(int courseId, Grade? midterm, Grade? final)

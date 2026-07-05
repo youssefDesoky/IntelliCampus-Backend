@@ -214,7 +214,8 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
             HeadInstructorName = department.HeadInstructor?.User?.FullName,
             FacultyId = department.FacultyId,
             FacultyName = department.Faculty?.FacultyName,
-            MaxCapacity = department.MaxCapacity
+            MaxCapacity = department.MaxCapacity,
+            CourseCount = department.Courses?.Count ?? 0
         };
     }
 }

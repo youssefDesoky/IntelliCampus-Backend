@@ -6,6 +6,7 @@ public class StudentCourse
     public int CourseId { get; set; }
     public int? ClassId { get; set; }
     public string? Semester { get; set; }
+    public int? Level { get; set; }
     public DateTime RegisteredAt { get; set; }
     public Enums.StudentCourseStatus Status { get; set; } = Enums.StudentCourseStatus.InProgress;
 

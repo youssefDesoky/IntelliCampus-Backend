@@ -66,6 +66,17 @@ public StudentSpec(List<int> studentIds)
 public StudentSpec(bool hasGpa)
     : base(s => hasGpa && s.Gpa > 0) { }
 
+// Students with Bylaw include (for probation computation, no filter)
+public StudentSpec(bool includeBylaw, bool forProbation)
+    : base(null)
+{
+    if (includeBylaw)
+    {
+        AddInclude(s => s.Department!);
+        AddInclude(s => s.Bylaw!);
+    }
+}
+
 // Batch load by IDs with User include (used by MapToDtoWithDetails)
 public StudentSpec(List<int> ids, bool lightweight)
     : base(s => ids.Contains(s.UserId))
