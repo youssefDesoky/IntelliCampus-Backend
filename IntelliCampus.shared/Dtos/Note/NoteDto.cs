@@ -8,4 +8,5 @@ public class NoteDto
     public string CreationDate { get; set; } = null!;
     public string Modified { get; set; } = null!;
     public LinkedLectureDto? LinkedLecture { get; set; }
+    public string? AiSummary { get; set; }
 }

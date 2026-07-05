@@ -212,6 +212,16 @@ public class FriendService : IFriendService
             };
         }).ToList();
 
+        // Synthesize Fahim bot entry — no Friendship/User row needed
+        friendDtos.Insert(0, new FriendDto
+        {
+            UserId = -1,
+            FullName = "Fahim",
+            ProfileImage = null,
+            Roles = [],
+            FriendsSince = DateTime.UnixEpoch
+        });
+
         return friendDtos.OrderBy(f => f.FullName);
     }
 

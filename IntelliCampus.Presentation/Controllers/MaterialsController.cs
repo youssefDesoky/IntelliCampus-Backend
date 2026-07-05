@@ -90,6 +90,18 @@ public class MaterialsController(IMaterialService materialService) : ControllerB
         return NoContent();
     }
 
+    [Authorize(Roles = "Instructor")]
+    [HttpPost("{id}/resync-ai")]
+    public async Task<IActionResult> ResyncToAi(int id)
+    {
+        var instructorId = GetCurrentInstructorId();
+        if (instructorId is null)
+            return Unauthorized();
+
+        var inserted = await _materialService.ResyncMaterialToAiAsync(id, instructorId.Value);
+        return Ok(new { message = $"Re-synced to AI: {inserted} chunks indexed.", inserted });
+    }
+
     [Authorize]
     [HttpGet("{id}/download")]
     public async Task<IActionResult> Download(int id)

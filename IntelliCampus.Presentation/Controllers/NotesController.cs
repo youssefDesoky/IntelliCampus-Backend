@@ -51,4 +51,11 @@ public class NotesController : ControllerBase
         var note = await _noteService.UpdateLinkedLectureAsync(noteId, dto);
         return Ok(note);
     }
+
+    [HttpPost("{noteId}/enhance")]
+    public async Task<ActionResult<NoteSummaryDto>> Enhance(int noteId)
+    {
+        var summary = await _noteService.EnhanceAsync(noteId);
+        return Ok(summary);
+    }
 }

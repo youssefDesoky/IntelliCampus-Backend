@@ -3,6 +3,7 @@ using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Service_Abstraction.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http;
 
 namespace IntelliCampus.Web.CustomMiddleWares
 {
@@ -58,6 +59,8 @@ namespace IntelliCampus.Web.CustomMiddleWares
                         InvalidOperationException => StatusCodes.Status400BadRequest,
                         ArgumentException => StatusCodes.Status400BadRequest,
                         RouterNotInitializedException => StatusCodes.Status503ServiceUnavailable,
+                        FaheemAiException => StatusCodes.Status502BadGateway,
+                        HttpRequestException => StatusCodes.Status503ServiceUnavailable,
                         _ => StatusCodes.Status500InternalServerError
                     }
                };

@@ -5,12 +5,22 @@ using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Note;
+using Microsoft.Extensions.Logging;
 
 namespace IntelliCampus.Service;
 
-public class NoteService(IUnitOfWork unitOfWork) : INoteService
+public class NoteService : INoteService
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IFaheemAiService _faheemAi;
+    private readonly ILogger<NoteService> _logger;
+
+    public NoteService(IUnitOfWork unitOfWork, IFaheemAiService faheemAi, ILogger<NoteService> logger)
+    {
+        _unitOfWork = unitOfWork;
+        _faheemAi = faheemAi;
+        _logger = logger;
+    }
 
     private IGenericRepository<Note, int> Notes
         => _unitOfWork.GetRepository<Note, int>();
@@ -23,6 +33,9 @@ public class NoteService(IUnitOfWork unitOfWork) : INoteService
 
     private IGenericRepository<MaterialFolder, int> MaterialFolders
         => _unitOfWork.GetRepository<MaterialFolder, int>();
+
+    private IGenericRepository<NoteSummary, int> NoteSummaries
+        => _unitOfWork.GetRepository<NoteSummary, int>();
 
     public async Task<NoteDto> GetByIdAsync(int noteId)
     {
@@ -131,6 +144,63 @@ public class NoteService(IUnitOfWork unitOfWork) : INoteService
         return MapToDto(reloaded!);
     }
 
+    public async Task<NoteSummaryDto> EnhanceAsync(int noteId, CancellationToken ct = default)
+    {
+        var spec = new NoteSpec(noteId);
+        var note = await Notes.GetByIdAsync(spec);
+        if (note is null)
+            throw new NoteNotFoundException(noteId);
+
+        var courseCode = note.Course?.CourseCode;
+        if (string.IsNullOrEmpty(courseCode))
+            throw new InvalidOperationException($"Note {noteId} has no associated course code.");
+
+        var notesPayload = $"# {note.Title}\n\n{note.Content}";
+        var lectureId = note.MaterialFolderId?.ToString();
+
+        string generated;
+        try
+        {
+            generated = await _faheemAi.EnhanceNoteAsync(courseCode, notesPayload, lectureId, ct);
+        }
+        catch (FaheemAiException ex) when (ex.Signal == "smart_notes_retrieval_error")
+        {
+            _logger.LogWarning("Smart notes enhance failed for note {NoteId} — course {Course} has no indexed materials", noteId, courseCode);
+            throw new InvalidOperationException(
+                "This course has no indexed materials yet. Please ask your instructor to upload and sync course materials, then try again.");
+        }
+        catch (FaheemAiException ex)
+        {
+            _logger.LogError(ex, "Smart notes enhance failed for note {NoteId}", noteId);
+            throw new InvalidOperationException(
+                "The AI service encountered an error while enhancing your notes. Please try again later.");
+        }
+
+        // Upsert NoteSummary
+        var existingSummary = note.NoteSummary;
+        if (existingSummary is not null)
+        {
+            existingSummary.GeneratedText = generated;
+            NoteSummaries.Update(existingSummary);
+        }
+        else
+        {
+            NoteSummaries.Add(new NoteSummary
+            {
+                NoteId = note.NoteId,
+                GeneratedText = generated,
+            });
+        }
+
+        await _unitOfWork.SaveChangesAsync();
+
+        return new NoteSummaryDto
+        {
+            NoteId = note.NoteId,
+            GeneratedText = generated,
+        };
+    }
+
     private static NoteDto MapToDto(Note note)
     {
         var creationDate = note.CreatedAt.ToString("MMM dd, yyyy");
@@ -147,7 +217,8 @@ public class NoteService(IUnitOfWork unitOfWork) : INoteService
             Modified = modified,
             LinkedLecture = note.MaterialFolder is not null
                 ? MapLinkedLecture(note.MaterialFolder)
-                : null
+                : null,
+            AiSummary = note.NoteSummary?.GeneratedText,
         };
     }
 

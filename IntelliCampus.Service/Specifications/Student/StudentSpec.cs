@@ -43,6 +43,7 @@ public StudentSpec(CourseQueryParams queryParams)
     if (queryParams.IncludeCourses)
     {
         AddInclude("StudentCourses.Course.Notes.MaterialFolder");
+        AddInclude("StudentCourses.Course.Notes.NoteSummary");
     }
 
     EnableSplitQuery();
