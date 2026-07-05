@@ -79,8 +79,12 @@ public class CommunityService : ICommunityService
             "Question post {PostId} created in community for course {CourseId}",
             post.PostId, courseId);
 
-        // Route the question and notify top candidates
-        await NotifyTopCandidatesAsync(courseId, post);
+        // Route the question and notify top candidates (only for student posts;
+        // instructor posts are announcements and should not go through the router)
+        if (!await IsUserCourseInstructorAsync(userId, courseId))
+        {
+            await NotifyTopCandidatesAsync(courseId, post);
+        }
 
         return post;
     }
@@ -298,7 +302,6 @@ public class CommunityService : ICommunityService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to notify candidates for post {PostId}", post.PostId);
-            throw;
         }
     }
 

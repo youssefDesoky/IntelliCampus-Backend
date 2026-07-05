@@ -50,7 +50,9 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
         {
             AssessmentPerformance = await BuildAssessmentPerformanceAsync(courseId, instructorId),
             SubmissionRate = await BuildSubmissionRateAsync(courseId, instructorId, totalStudents),
-            WeeklyAttendance = await BuildWeeklyAttendanceAsync(courseId)
+            WeeklyAttendance = await BuildWeeklyAttendanceAsync(courseId),
+            CourseWorkBreakdown = await BuildCourseWorkBreakdownAsync(courseId),
+            StudentScoreHeatmap = await BuildStudentScoreHeatmapAsync(courseId, students)
         };
     }
 
@@ -222,5 +224,134 @@ public class InstructorAnalyticsService : IInstructorAnalyticsService
     {
         var digits = new string(week?.Skip(1).ToArray() ?? []);
         return int.TryParse(digits, out var n) ? n : int.MaxValue;
+    }
+
+    private IGenericRepository<CourseWorkWeight, int> CourseWorkWeightRepo
+        => _unitOfWork.GetRepository<CourseWorkWeight, int>();
+
+    private async Task<CourseWorkBreakdownDto> BuildCourseWorkBreakdownAsync(int courseId)
+    {
+        var weight = await CourseWorkWeightRepo.GetByIdAsync(courseId);
+        if (weight is not null && (weight.QuizWeight > 0 || weight.AssignmentWeight > 0 || weight.MidtermWeight > 0))
+        {
+            var items = new List<CourseWorkBreakdownItemDto>();
+
+            if (weight.QuizWeight > 0)
+                items.Add(new CourseWorkBreakdownItemDto { Type = "Quiz", Marks = weight.QuizWeight });
+            if (weight.AssignmentWeight > 0)
+                items.Add(new CourseWorkBreakdownItemDto { Type = "Assignment", Marks = weight.AssignmentWeight });
+            if (weight.MidtermWeight > 0)
+                items.Add(new CourseWorkBreakdownItemDto { Type = "Midterm", Marks = weight.MidtermWeight });
+
+            var declared = weight.QuizWeight + weight.AssignmentWeight + weight.MidtermWeight;
+            var undeclared = declared < 100 ? 100 - declared : 0;
+
+            return new CourseWorkBreakdownDto
+            {
+                TotalMarks = 100,
+                Breakdown = items,
+                UndeclaredMarks = undeclared
+            };
+        }
+
+        // Fallback: build from actual assessment marks when weights are not configured
+        var fallbackItems = new List<CourseWorkBreakdownItemDto>();
+
+        var quizzes = await _quizService.GetByCourseIdAsync(courseId);
+        var quizMarks = quizzes.Sum(q => (double)q.MaxScore);
+        if (quizMarks > 0)
+            fallbackItems.Add(new CourseWorkBreakdownItemDto { Type = "Quiz", Marks = (decimal)quizMarks });
+
+        var assignments = await _assignmentService.GetByCourseIdAsync(courseId);
+        var assignmentMarks = assignments.Sum(a => (double)a.TotalPoints);
+        if (assignmentMarks > 0)
+            fallbackItems.Add(new CourseWorkBreakdownItemDto { Type = "Assignment", Marks = (decimal)assignmentMarks });
+
+        var examRepo = _unitOfWork.GetRepository<Exam, int>();
+        var exams = await examRepo.GetAllAsync(new ExamByCourseIdSpec(courseId), asNoTracking: true);
+        var midtermMarks = exams.Where(e => e.ExamType == ExamType.Midterm).Sum(e => (double)e.MaxGrade);
+        var finalMarks = exams.Where(e => e.ExamType == ExamType.Final).Sum(e => (double)e.MaxGrade);
+        if (midtermMarks > 0)
+            fallbackItems.Add(new CourseWorkBreakdownItemDto { Type = "Midterm", Marks = (decimal)midtermMarks });
+        if (finalMarks > 0)
+            fallbackItems.Add(new CourseWorkBreakdownItemDto { Type = "Final", Marks = (decimal)finalMarks });
+
+        var total = fallbackItems.Sum(i => (double)i.Marks);
+        if (total <= 0)
+            return new CourseWorkBreakdownDto();
+
+        return new CourseWorkBreakdownDto
+        {
+            TotalMarks = (decimal)total,
+            Breakdown = fallbackItems,
+            UndeclaredMarks = 0
+        };
+    }
+
+    private async Task<List<StudentScoreHeatmapRowDto>> BuildStudentScoreHeatmapAsync(int courseId, IEnumerable<IntelliCampus.Shared.Dtos.Student.StudentDto> students)
+    {
+        var studentMap = students.ToDictionary(s => s.StudentId, s => s.FullName);
+        var studentScores = new Dictionary<int, Dictionary<string, double>>();
+
+        var quizzes = await _quizService.GetByCourseIdAsync(courseId);
+        var quizIds = quizzes.Select(q => q.Id).ToHashSet();
+        if (quizIds.Count > 0)
+        {
+            var studentQuizRepo = _unitOfWork.GetRepository<StudentQuiz, int>();
+            var allQuizResults = await studentQuizRepo.GetAllAsync(new StudentQuizSpec(quizIds, true), asNoTracking: true);
+            var quizMaxMap = quizzes.ToDictionary(q => q.Id, q => (double)q.MaxScore);
+            var quizTitleMap = quizzes.ToDictionary(q => q.Id, q => q.Title);
+
+            foreach (var sq in allQuizResults)
+            {
+                if (!sq.Score.HasValue || !quizMaxMap.TryGetValue(sq.QuizId, out var max) || max <= 0)
+                    continue;
+
+                if (!quizTitleMap.TryGetValue(sq.QuizId, out var title))
+                    continue;
+
+                if (!studentScores.TryGetValue(sq.StudentId, out var scores))
+                {
+                    scores = new Dictionary<string, double>();
+                    studentScores[sq.StudentId] = scores;
+                }
+                scores[title] = Math.Round((double)sq.Score.Value / max * 100, 1);
+            }
+        }
+
+        var assignments = await _assignmentService.GetByCourseIdAsync(courseId);
+        var assignmentIds = assignments.Select(a => int.Parse(a.Id)).ToHashSet();
+        if (assignmentIds.Count > 0)
+        {
+            var studentAssignmentRepo = _unitOfWork.GetRepository<StudentAssignment, int>();
+            var allSubmissions = await studentAssignmentRepo.GetAllAsync(new StudentAssignmentSpec(assignmentIds, true), asNoTracking: true);
+            var assignMaxMap = assignments.ToDictionary(a => int.Parse(a.Id), a => (double)a.TotalPoints);
+            var assignTitleMap = assignments.ToDictionary(a => int.Parse(a.Id), a => a.Title);
+
+            foreach (var sa in allSubmissions)
+            {
+                if (!sa.Grade.HasValue || !assignMaxMap.TryGetValue(sa.AssignmentId, out var max) || max <= 0)
+                    continue;
+
+                if (!assignTitleMap.TryGetValue(sa.AssignmentId, out var title))
+                    continue;
+
+                if (!studentScores.TryGetValue(sa.StudentId, out var scores))
+                {
+                    scores = new Dictionary<string, double>();
+                    studentScores[sa.StudentId] = scores;
+                }
+                scores[title] = Math.Round((double)sa.Grade.Value / max * 100, 1);
+            }
+        }
+
+        return studentScores
+            .Select(kvp => new StudentScoreHeatmapRowDto
+            {
+                Student = studentMap.TryGetValue(kvp.Key, out var name) ? name : $"Student #{kvp.Key}",
+                Scores = kvp.Value
+            })
+            .Where(r => r.Scores.Count > 0)
+            .ToList();
     }
 }
