@@ -10,6 +10,8 @@ public class StudentCourseConfiguration : IEntityTypeConfiguration<StudentCourse
     {
         builder.HasKey(sc => new { sc.StudentId, sc.CourseId });
 
+        builder.Property(sc => sc.Level);
+
         builder.Property(sc => sc.Semester)
             .HasMaxLength(20);
 

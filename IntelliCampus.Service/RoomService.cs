@@ -46,6 +46,7 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
             RoomNameAr = dto.RoomNameAr,
             Capacity = dto.Capacity,
             Type = dto.Type,
+            IsExamHall = dto.IsExamHall,
             Location = dto.Location,
             LocationAr = dto.LocationAr
         };
@@ -73,6 +74,8 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
             room.Capacity = dto.Capacity.Value;
         if (dto.Type is not null)
             room.Type = dto.Type;
+        if (dto.IsExamHall.HasValue)
+            room.IsExamHall = dto.IsExamHall.Value;
         if (dto.Location is not null)
             room.Location = dto.Location;
         if (dto.LocationAr is not null)
@@ -105,7 +108,8 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
             Capacity = room.Capacity,
             Type = room.Type,
             Location = room.Location,
-            LocationAr = room.LocationAr
+            LocationAr = room.LocationAr,
+            IsExamHall = room.IsExamHall
         };
     }
 }

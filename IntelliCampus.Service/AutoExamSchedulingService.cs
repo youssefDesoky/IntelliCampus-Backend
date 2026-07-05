@@ -31,11 +31,12 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
         => _unitOfWork.GetRepository<User, int>();
     private IGenericRepository<ExamSeatAssignment, int> SeatAssignRepo
         => _unitOfWork.GetRepository<ExamSeatAssignment, int>();
-    private IGenericRepository<ExamHall, int> ExamHallsRepo
-        => _unitOfWork.GetRepository<ExamHall, int>();
+    private IGenericRepository<Room, int> RoomsRepo
+        => _unitOfWork.GetRepository<Room, int>();
     private IGenericRepository<Course, int> CoursesRepo
         => _unitOfWork.GetRepository<Course, int>();
-
+    private IGenericRepository<Reminder, int> RemindersRepo
+        => _unitOfWork.GetRepository<Reminder, int>();
     // ─── Conflict Graph ───────────────────────────────────────────────
 
     public async Task<ConflictGraph> BuildConflictGraphAsync(string semester)
@@ -234,8 +235,18 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             return result;
         }
 
+        var allEnrollments = (await StudentCoursesRepo.GetAllAsync(new StudentCourseSemesterAllSpec(semester), asNoTracking: true))
+            .GroupBy(e => e.CourseId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+        var semesterEnrollments = allEnrollments.ToDictionary(kv => kv.Key, kv => kv.Value.Count);
+
+        var allRooms = (await RoomsRepo.GetAllAsync(new RoomsForExamSpec(), asNoTracking: true)).OrderBy(r => r.RoomName).ToList();
+        var totalCapacity = allRooms.Sum(r => r.Capacity);
+        var totalRoomCount = allRooms.Count;
+
         var orderedCourseIds = graph.GetSortedByDegreeDesc();
         var schedule = new Dictionary<int, SlotKey>();
+        var slotLoad = new Dictionary<SlotKey, (int StudentCount, int RoomCount)>();
 
         foreach (var courseId in orderedCourseIds)
         {
@@ -244,25 +255,43 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
                 .Select(c => schedule[c])
                 .ToHashSet();
 
-            var chosen = allSlots.FirstOrDefault(s => !forbidden.Contains(s));
+            var enrolledCount = semesterEnrollments.GetValueOrDefault(courseId);
+
+            var chosen = allSlots.FirstOrDefault(s =>
+                !forbidden.Contains(s) &&
+                (
+                    !slotLoad.TryGetValue(s, out var load) ||
+                    (load.RoomCount < totalRoomCount && load.StudentCount + enrolledCount <= totalCapacity)
+                )
+            );
+
             if (chosen is null)
             {
                 result.UnscheduledCourseIds.Add(courseId);
                 continue;
             }
+
             schedule[courseId] = chosen!;
+            slotLoad[chosen] = slotLoad.TryGetValue(chosen, out var existing)
+                ? (existing.StudentCount + enrolledCount, existing.RoomCount + 1)
+                : (enrolledCount, 1);
         }
 
-        // Pre-load course data and enrollment counts for all scheduled courses
+        // Pre-load course data
         var courseIds = schedule.Keys.ToList();
         var courses = courseIds.Count > 0
             ? (await CoursesRepo.GetAllAsync(new CourseBasicSpec(courseIds), asNoTracking: true)).ToDictionary(c => c.CourseId)
             : new Dictionary<int, Course>();
-        var semesterEnrollments = (await StudentCoursesRepo.GetAllAsync(new StudentCourseSemesterAllSpec(semester), asNoTracking: true))
-            .GroupBy(e => e.CourseId)
-            .ToDictionary(g => g.Key, g => g.Count());
 
-        foreach (var kv in schedule)
+        var slotHallUsage = new Dictionary<SlotKey, HashSet<int>>();
+
+        var processingOrder = schedule
+            .GroupBy(kv => kv.Value)
+            .SelectMany(g => g.OrderBy(kv => semesterEnrollments.GetValueOrDefault(kv.Key))
+                               .ThenBy(kv => kv.Key))
+            .ToList();
+
+        foreach (var kv in processingOrder)
         {
             if (!courses.TryGetValue(kv.Key, out var course))
                 continue;
@@ -286,6 +315,64 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             };
             ExamsRepo.Add(exam);
             await _unitOfWork.SaveChangesAsync();
+
+            if (allEnrollments.TryGetValue(course.CourseId, out var enrollments))
+            {
+                var enrolledIds = enrollments.Select(e => e.StudentId).Distinct().ToList();
+
+                var usedAtSlot = slotHallUsage.TryGetValue(slot, out var used) ? used : new HashSet<int>();
+                var freeRooms = allRooms.Where(h => !usedAtSlot.Contains(h.RoomId)).ToList();
+                var freeCapacity = freeRooms.Sum(h => h.Capacity);
+
+                string? roomName = null;
+                if (freeRooms.Count > 0 && enrolledIds.Count <= freeCapacity)
+                {
+                    var users = (await UsersRepo.GetAllAsync(new UsersByIdsSpec(enrolledIds), asNoTracking: true))
+                        .ToDictionary(u => u.UserId);
+                    var orderedStudents = enrolledIds
+                        .Select(id => (Id: id, Name: users.GetValueOrDefault(id)?.FullName ?? $"#{id}"))
+                        .OrderBy(s => s.Name)
+                        .ToList();
+
+                    int studentIdx = 0, seatNum = 1;
+                    var claimed = new HashSet<int>(usedAtSlot);
+                    foreach (var hall in freeRooms)
+                    {
+                        roomName ??= hall.RoomName;
+                        for (int i = 0; i < hall.Capacity && studentIdx < orderedStudents.Count; i++)
+                        {
+                            var student = orderedStudents[studentIdx++];
+                            SeatAssignRepo.Add(new ExamSeatAssignment
+                            {
+                                ExamId = exam.ExamId,
+                                StudentId = student.Id,
+                                RoomId = hall.RoomId,
+                                SeatNumber = seatNum++
+                            });
+                            claimed.Add(hall.RoomId);
+                        }
+                        if (studentIdx >= orderedStudents.Count)
+                            break;
+                    }
+                    await _unitOfWork.SaveChangesAsync();
+                    slotHallUsage[slot] = claimed;
+                }
+
+                foreach (var studentId in enrolledIds)
+                {
+                    RemindersRepo.Add(new Reminder
+                    {
+                        StudentId = studentId,
+                        Title = $"Exam: {course.CourseName} on {examDate:dd MMM yyyy}",
+                        Date = examDate,
+                        Type = ReminderType.Exam,
+                        Location = roomName,
+                        Priority = "high"
+                    });
+                }
+                await _unitOfWork.SaveChangesAsync();
+            }
+
             await _examScheduleService.SyncFromExamAsync(exam.ExamId);
 
             result.Scheduled.Add(new ScheduledExamDto
@@ -308,7 +395,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
     // ─── Hall Assignment ──────────────────────────────────────────────
 
     public async Task<HallAssignmentResultDto> AssignHallsToExamAsync(
-        int examId, List<int> examHallIds)
+        int examId, List<int> roomIds)
     {
         var result = new HallAssignmentResultDto { ExamId = examId };
 
@@ -320,14 +407,14 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             return result;
         }
 
-        var halls = (await ExamHallsRepo.GetAllAsync(new ExamHallsByIdsSpec(examHallIds), asNoTracking: true))
-            .OrderBy(h => h.HallName)
+        var halls = (await RoomsRepo.GetAllAsync(new RoomIdsSpec(roomIds), asNoTracking: true))
+            .OrderBy(h => h.RoomName)
             .ToList();
 
         if (halls.Count == 0)
         {
             result.Success = false;
-            result.ErrorMessage = "No exam halls provided.";
+            result.ErrorMessage = "No exam rooms provided.";
             return result;
         }
 
@@ -379,9 +466,9 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
         {
             var dto = new HallAssignmentDto
             {
-                ExamHallId = hall.ExamHallId,
-                HallName = hall.HallName,
-                HallNameAr = hall.HallNameAr,
+                RoomId = hall.RoomId,
+                RoomName = hall.RoomName,
+                RoomNameAr = hall.RoomNameAr,
                 Capacity = hall.Capacity
             };
             var assignedCount = 0;
@@ -393,7 +480,7 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
                 {
                     ExamId = examId,
                     StudentId = student.Id,
-                    ExamHallId = hall.ExamHallId,
+                    RoomId = hall.RoomId,
                     SeatNumber = seatNum++
                 };
                 SeatAssignRepo.Add(assignment);
@@ -403,9 +490,9 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
                     StudentId = student.Id,
                     StudentName = student.Name,
                     SeatNumber = seatNum - 1,
-                    ExamHallId = hall.ExamHallId,
-                    HallName = hall.HallName,
-                    HallNameAr = hall.HallNameAr
+                    RoomId = hall.RoomId,
+                    RoomName = hall.RoomName,
+                    RoomNameAr = hall.RoomNameAr
                 });
                 assignedCount++;
             }
@@ -415,6 +502,8 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
         }
 
         await _unitOfWork.SaveChangesAsync();
+
+        await _examScheduleService.SyncFromExamAsync(examId);
 
         result.Success = true;
         result.Halls = hallDtoList;
@@ -439,20 +528,20 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
             return result;
         }
 
-        var hallIds = assignments.Select(a => a.ExamHallId).Distinct().ToList();
+        var roomIds = assignments.Select(a => a.RoomId).Distinct().ToList();
         var studentIds = assignments.Select(a => a.StudentId).Distinct().ToList();
-        var halls = (await ExamHallsRepo.GetAllAsync(new ExamHallsByIdsSpec(hallIds), asNoTracking: true)).ToDictionary(h => h.ExamHallId);
+        var halls = (await RoomsRepo.GetAllAsync(new RoomIdsSpec(roomIds), asNoTracking: true)).ToDictionary(h => h.RoomId);
         var users = (await UsersRepo.GetAllAsync(new UsersByIdsSpec(studentIds), asNoTracking: true)).ToDictionary(u => u.UserId);
 
-        var grouped = assignments.GroupBy(a => a.ExamHallId);
+        var grouped = assignments.GroupBy(a => a.RoomId);
         foreach (var g in grouped)
         {
             var hall = halls.GetValueOrDefault(g.Key);
             var dto = new HallAssignmentDto
             {
-                ExamHallId = g.Key,
-                HallName = hall?.HallName ?? $"Hall #{g.Key}",
-                HallNameAr = hall?.HallNameAr,
+                RoomId = g.Key,
+                RoomName = hall?.RoomName ?? $"Room #{g.Key}",
+                RoomNameAr = hall?.RoomNameAr,
                 Capacity = hall?.Capacity ?? 0,
                 AssignedCount = g.Count(),
                 Students = g.Select(a => new SeatAssignmentDto
@@ -460,9 +549,9 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
                     StudentId = a.StudentId,
                     StudentName = users.TryGetValue(a.StudentId, out var u) ? u.FullName : $"#{a.StudentId}",
                     SeatNumber = a.SeatNumber,
-                    ExamHallId = a.ExamHallId,
-                    HallName = hall?.HallName,
-                    HallNameAr = hall?.HallNameAr
+                    RoomId = a.RoomId,
+                    RoomName = hall?.RoomName,
+                    RoomNameAr = hall?.RoomNameAr
                 }).OrderBy(s => s.SeatNumber).ToList()
             };
             result.Halls.Add(dto);
@@ -484,17 +573,17 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
         if (assignments.Count == 0) return [];
 
         var studentIds = assignments.Select(a => a.StudentId).Distinct().ToList();
-        var hallIds = assignments.Select(a => a.ExamHallId).Distinct().ToList();
+        var roomIds = assignments.Select(a => a.RoomId).Distinct().ToList();
         var users = (await UsersRepo.GetAllAsync(new UsersByIdsSpec(studentIds), asNoTracking: true)).ToDictionary(u => u.UserId);
-        var halls = (await ExamHallsRepo.GetAllAsync(new ExamHallsByIdsSpec(hallIds), asNoTracking: true)).ToDictionary(h => h.ExamHallId);
+        var halls = (await RoomsRepo.GetAllAsync(new RoomIdsSpec(roomIds), asNoTracking: true)).ToDictionary(h => h.RoomId);
 
         return assignments.Select(a => new SeatAssignmentDto
         {
             StudentId = a.StudentId,
             StudentName = users.TryGetValue(a.StudentId, out var u) ? u.FullName : $"#{a.StudentId}",
             SeatNumber = a.SeatNumber,
-            ExamHallId = a.ExamHallId,
-            HallName = halls.TryGetValue(a.ExamHallId, out var h) ? h.HallName : null
+            RoomId = a.RoomId,
+            RoomName = halls.TryGetValue(a.RoomId, out var h) ? h.RoomName : null
         }).ToList();
     }
 }

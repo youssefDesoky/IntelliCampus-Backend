@@ -25,5 +25,9 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
 
         builder.Property(r => r.LocationAr)
             .HasMaxLength(200);
+
+        builder.Property(r => r.IsExamHall)
+            .IsRequired()
+            .HasDefaultValue(false);
     }
 }

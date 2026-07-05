@@ -8,7 +8,9 @@ namespace IntelliCampus.Service.Specifications
         public DepartmentSpec()
         {
             AddInclude(d => d.HeadInstructor!);
+            AddInclude("HeadInstructor.User");
             AddInclude(d => d.Faculty!);
+            AddInclude(d => d.Courses!);
             EnableSplitQuery();
         }
 
@@ -18,7 +20,9 @@ namespace IntelliCampus.Service.Specifications
                 (string.IsNullOrEmpty(queryParams.Search) || d.DepartmentName.Contains(queryParams.Search)))
         {
             AddInclude(d => d.HeadInstructor!);
+            AddInclude("HeadInstructor.User");
             AddInclude(d => d.Faculty!);
+            AddInclude(d => d.Courses!);
             EnableSplitQuery();
             AddOrderBy(d => d.DepartmentId);
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);
@@ -28,7 +32,9 @@ namespace IntelliCampus.Service.Specifications
             : base(d => d.DepartmentId == departmentId)
         {
             AddInclude(d => d.HeadInstructor!);
+            AddInclude("HeadInstructor.User");
             AddInclude(d => d.Faculty!);
+            AddInclude(d => d.Courses!);
             EnableSplitQuery();
         }
     }

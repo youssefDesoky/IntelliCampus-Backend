@@ -60,6 +60,12 @@ public class RegistrationService : IRegistrationService
     private IGenericRepository<Department, int> Departments
         => _unitOfWork.GetRepository<Department, int>();
 
+    private IGenericRepository<BylawCourse, int> BylawCourses
+        => _unitOfWork.GetRepository<BylawCourse, int>();
+
+    private IGenericRepository<Grade, int> Grades
+        => _unitOfWork.GetRepository<Grade, int>();
+
     public async Task<StudentRegistrationDto?> RegisterStudentInCourseAsync(int studentId, CourseRegistrationDto dto)
     {
         // Verify student exists and get bylaw for rules
@@ -85,10 +91,10 @@ public class RegistrationService : IRegistrationService
         // Auto-generate semester based on current date
         var semester = SemesterHelper.GetCurrentSemester();
 
-        var lectureClass = await Classes.GetByIdAsync(new LectureClassSpec(dto.CourseId));
+        var lectureClasses = await GetLectureClassesAsync(dto.CourseId);
 
         if (classEntity is not null)
-            await ValidateRegistrationConflictsAsync(studentId, classEntity, lectureClass, course.CourseName, semester);
+            await ValidateRegistrationConflictsAsync(studentId, classEntity, lectureClasses, course.CourseName, semester);
 
         await ValidateRegistrationPeriodAsync(student, course);
 
@@ -96,6 +102,14 @@ public class RegistrationService : IRegistrationService
             new StudentCourseSemesterSpec(studentId, semester), asNoTracking: true);
 
         await ValidateProbationAsync(student, semester, existingSemesterCourses, course);
+
+        await ValidateCoursePrerequisitesAsync(student, course);
+
+        if (course.IsProject)
+            await ValidateGraduationProjectEligibilityAsync(student);
+
+        if (student.StudentType is StudentType.Masters or StudentType.PhD)
+            await ValidatePostgraduateEligibilityAsync(student);
 
         await ValidateCreditHoursAsync(student, course, semester, existingSemesterCourses);
 
@@ -105,6 +119,7 @@ public class RegistrationService : IRegistrationService
             CourseId = dto.CourseId,
             ClassId = classEntity?.ClassId,
             Semester = semester,
+            Level = student.Level,
             RegisteredAt = EgyptTime.Now,
             Status = StudentCourseStatus.InProgress
         };
@@ -120,13 +135,16 @@ public class RegistrationService : IRegistrationService
 
         if (classEntity is not null)
         {
-            // Sync schedule entry for the registered class
             await _scheduleService.SyncFromCourseRegistrationAsync(studentId, classEntity.ClassId);
 
-            // Auto-register the lecture in the schedule when registering for a section or lab
-            if (classEntity.ClassType != ClassType.Lecture && lectureClass is not null)
-                await _scheduleService.SyncFromCourseRegistrationAsync(studentId, lectureClass.ClassId);
+            if (classEntity.ClassType != ClassType.Lecture)
+            {
+                foreach (var lec in lectureClasses)
+                    await _scheduleService.SyncFromCourseRegistrationAsync(studentId, lec.ClassId);
+            }
         }
+
+        var firstLecture = lectureClasses.FirstOrDefault();
 
         return new StudentRegistrationDto
         {
@@ -140,8 +158,8 @@ public class RegistrationService : IRegistrationService
             ClassId = classEntity?.ClassId,
             ClassName = classEntity is not null ? $"{classEntity.ClassType}" : null,
             ClassNameAr = classEntity is not null ? ClassTypeAr(classEntity.ClassType) : null,
-            ProfessorName = lectureClass?.Instructor?.User?.FullName,
-            ProfessorNameAr = lectureClass?.Instructor?.User?.FullNameAr,
+            ProfessorName = firstLecture?.Instructor?.User?.FullName,
+            ProfessorNameAr = firstLecture?.Instructor?.User?.FullNameAr,
             Room = classEntity.Room?.RoomName,
             RoomAr = classEntity.Room?.RoomNameAr,
             Semester = semester,
@@ -236,10 +254,9 @@ public class RegistrationService : IRegistrationService
 
         if (classEntity.ClassType != ClassType.Lecture)
         {
-            var lectureSpec = new LectureClassSpec(courseId);
-            var lectureClass = await Classes.GetByIdAsync(lectureSpec);
-            if (lectureClass is not null)
-                await _scheduleService.SyncFromCourseRegistrationAsync(studentId, lectureClass.ClassId);
+            var lectureClasses = await GetLectureClassesAsync(courseId);
+            foreach (var lec in lectureClasses)
+                await _scheduleService.SyncFromCourseRegistrationAsync(studentId, lec.ClassId);
         }
     }
 
@@ -322,6 +339,12 @@ public class RegistrationService : IRegistrationService
         return completed.Sum(sc => effectiveCredits.GetValueOrDefault(sc.CourseId, sc.Course.CreditHours));
     }
 
+    private async Task<List<Class>> GetLectureClassesAsync(int courseId)
+    {
+        var all = await Classes.GetAllAsync(new ClassByCourseSpec(courseId), asNoTracking: true);
+        return all.Where(c => c.ClassType == ClassType.Lecture).ToList();
+    }
+
     private async Task<Class?> ResolveClassForRegistrationAsync(CourseRegistrationDto dto, int courseId, bool isProject)
     {
         if (dto.ClassId.HasValue && dto.ClassId > 0)
@@ -341,14 +364,14 @@ public class RegistrationService : IRegistrationService
         return matching;
     }
 
-    private async Task ValidateRegistrationConflictsAsync(int studentId, Class classEntity, Class? lectureClass, string courseName, string semester)
+    private async Task ValidateRegistrationConflictsAsync(int studentId, Class classEntity, List<Class> lectureClasses, string courseName, string semester)
     {
         var existingSemesterCourses = await StudentCourses.GetAllAsync(
             new StudentCourseSemesterSpec(studentId, semester), asNoTracking: true);
 
         var newClasses = new List<Class> { classEntity };
-        if (classEntity.ClassType != ClassType.Lecture && lectureClass is not null)
-            newClasses.Add(lectureClass);
+        if (classEntity.ClassType != ClassType.Lecture)
+            newClasses.AddRange(lectureClasses);
 
         var courseIdsNeedingLectures = existingSemesterCourses
             .Where(sc => sc.Class is not null && sc.Class.ClassType != ClassType.Lecture)
@@ -358,13 +381,17 @@ public class RegistrationService : IRegistrationService
             .Distinct()
             .ToList();
 
-        var existingLectureLookup = new Dictionary<int, Class>();
+        var existingLectureLookup = new Dictionary<int, List<Class>>();
         if (courseIdsNeedingLectures.Count != 0)
         {
             var allLectures = await Classes.GetAllAsync(
                 new ClassesByCourseIdsSpec(courseIdsNeedingLectures, ClassType.Lecture), asNoTracking: true);
             foreach (var lec in allLectures)
-                existingLectureLookup[lec.CourseId] = lec;
+            {
+                if (!existingLectureLookup.ContainsKey(lec.CourseId))
+                    existingLectureLookup[lec.CourseId] = new List<Class>();
+                existingLectureLookup[lec.CourseId].Add(lec);
+            }
         }
 
         foreach (var existing in existingSemesterCourses)
@@ -374,10 +401,13 @@ public class RegistrationService : IRegistrationService
             var existingClasses = new List<Class> { existing.Class };
 
             if (existing.Class.ClassType != ClassType.Lecture &&
-                existingLectureLookup.TryGetValue(existing.Course.CourseId, out var existingLecture) &&
-                existingLecture.Day is not null && existingLecture.StartTime is not null && existingLecture.EndTime is not null)
+                existingLectureLookup.TryGetValue(existing.Course.CourseId, out var existingLectures))
             {
-                existingClasses.Add(existingLecture);
+                foreach (var lec in existingLectures)
+                {
+                    if (lec.Day is not null && lec.StartTime is not null && lec.EndTime is not null)
+                        existingClasses.Add(lec);
+                }
             }
 
             foreach (var ec in existingClasses)
@@ -418,10 +448,6 @@ public class RegistrationService : IRegistrationService
         if (maxHours.HasValue && totalAfterRegistration > maxHours.Value)
             throw new InvalidOperationException(
                 $"Cannot register for \"{course.CourseName}\". Adding {newCourseHours} credit hours would bring your semester total to {totalAfterRegistration}, exceeding the maximum of {maxHours.Value} credit hours{(isSummer ? " for summer" : "")}.");
-
-        if (!isSummer && bylaw.Settings.MinCreditHoursPerSemester.HasValue && totalAfterRegistration < bylaw.Settings.MinCreditHoursPerSemester.Value)
-            throw new InvalidOperationException(
-                $"Cannot register for \"{course.CourseName}\". The total of {totalAfterRegistration} credit hours is below the minimum of {bylaw.Settings.MinCreditHoursPerSemester.Value} credit hours per semester.");
     }
 
     private async Task ValidateProbationAsync(Student student, string semester, IEnumerable<StudentCourse> existingSemesterCourses, Course course)
@@ -512,6 +538,102 @@ public class RegistrationService : IRegistrationService
                 if (deptSettings.AllowedLevels.Count > 0 && student.Level.HasValue && !deptSettings.AllowedLevels.Contains(student.Level.Value))
                     throw new InvalidOperationException(
                         $"Your level ({student.Level}) is not eligible for registration this semester. Allowed levels: {string.Join(", ", deptSettings.AllowedLevels)}.");
+            }
+        }
+    }
+
+    private async Task ValidateCoursePrerequisitesAsync(Student student, Course course)
+    {
+        if (student.BylawId is null) return;
+
+        var bylawCourse = await BylawCourses.GetByIdAsync(
+            new BylawCourseSpec(student.BylawId.Value, course.CourseId, includePrerequisites: true));
+        if (bylawCourse is null) return;
+
+        var prereqs = bylawCourse.Prerequisites?.ToList();
+        if (prereqs is null || prereqs.Count == 0) return;
+
+        var failedPrereqs = new List<string>();
+        foreach (var prereq in prereqs)
+        {
+            var prereqBc = prereq.PrerequisiteCourse;
+            if (prereqBc?.Course is null) continue;
+
+            var prereqCourseId = prereqBc.CourseId;
+            var prereqName = prereqBc.Course.CourseName;
+
+            var sc = await StudentCourses.GetByIdAsync(new StudentCourseSpec(student.UserId, prereqCourseId));
+            if (sc is null || sc.Status != StudentCourseStatus.Completed)
+            {
+                failedPrereqs.Add(prereqName);
+                continue;
+            }
+
+            var finalGrade = (await Grades.GetAllAsync(
+                new GradeSpec(student.UserId, prereqCourseId), asNoTracking: true))
+                .FirstOrDefault(g => g.GradeType == GradeType.Final && g.Status == "Graded");
+            if (finalGrade is null)
+            {
+                failedPrereqs.Add(prereqName);
+            }
+        }
+
+        if (failedPrereqs.Count > 0)
+            throw new InvalidOperationException(
+                $"Cannot register for \"{course.CourseName}\". The following prerequisites have not been completed: {string.Join(", ", failedPrereqs)}.");
+    }
+
+    private async Task ValidateGraduationProjectEligibilityAsync(Student student)
+    {
+        if (student.BylawId is null) return;
+
+        var bylaw = await Bylaws.GetByIdAsync(student.BylawId.Value);
+        if (bylaw?.Settings.MinCreditHoursForGraduationProject is null) return;
+
+        var completedHours = await GetTotalEarnedCreditHoursAsync(student.UserId);
+        if (completedHours < bylaw.Settings.MinCreditHoursForGraduationProject.Value)
+            throw new InvalidOperationException(
+                $"Cannot register for a graduation project. You have completed {completedHours} credit hours, but the minimum requirement is {bylaw.Settings.MinCreditHoursForGraduationProject.Value}.");
+    }
+
+    private async Task ValidatePostgraduateEligibilityAsync(Student student)
+    {
+        if (student.BylawId is null) return;
+
+        var bylaw = await Bylaws.GetByIdAsync(student.BylawId.Value);
+        if (bylaw is null) return;
+
+        if (bylaw.Settings.HasComprehensiveExam == true)
+        {
+            var hasPassedComprehensive = await Grades.AnyAsync(g =>
+                g.StudentId == student.UserId &&
+                g.GradeType == GradeType.Final &&
+                g.Status == "Graded" &&
+                g.Score >= (bylaw.Settings.MinPassingFinalExamGrade ?? 50));
+            if (!hasPassedComprehensive)
+                throw new InvalidOperationException(
+                    "Cannot register for courses. You must pass the comprehensive examination first.");
+        }
+
+        if (bylaw.Settings.ThesisCreditHours.HasValue && bylaw.Settings.ThesisCreditHours.Value > 0)
+        {
+            var thesisCourses = await BylawCourses.GetAllAsync(
+                new BylawCourseSpec(student.BylawId.Value, false), asNoTracking: true);
+            var thesisCourseIds = thesisCourses
+                .Where(bc => bc.Course?.IsProject == true)
+                .Select(bc => bc.CourseId)
+                .ToHashSet();
+
+            if (thesisCourseIds.Count > 0)
+            {
+                var enrolledThesisHours = (await StudentCourses.GetAllAsync(
+                    new StudentCourseSemesterSpec(student.UserId, SemesterHelper.GetCurrentSemester()), asNoTracking: true))
+                    .Where(sc => thesisCourseIds.Contains(sc.CourseId))
+                    .Sum(sc => sc.Course?.CreditHours ?? 0);
+
+                if (enrolledThesisHours > bylaw.Settings.ThesisCreditHours.Value)
+                    throw new InvalidOperationException(
+                        $"Cannot register for additional thesis courses. You have {enrolledThesisHours} thesis credit hours, which meets or exceeds the maximum of {bylaw.Settings.ThesisCreditHours.Value}.");
             }
         }
     }

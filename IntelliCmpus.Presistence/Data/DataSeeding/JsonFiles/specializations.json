@@ -38,5 +38,40 @@
     "name": "Cyber Security",
     "nameAr": "أمن السيبراني",
     "departmentName": "Networks and Cyber Security"
+  },
+  {
+    "name": "Database Systems",
+    "nameAr": "قواعد البيانات",
+    "departmentName": "Information Systems"
+  },
+  {
+    "name": "Systems Analysis",
+    "nameAr": "تحليل النظم",
+    "departmentName": "Information Systems"
+  },
+  {
+    "name": "Web Development",
+    "nameAr": "تطوير الويب",
+    "departmentName": "Information Systems"
+  },
+  {
+    "name": "Cloud Computing",
+    "nameAr": "الحوسبة السحابية",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "name": "Data Structures",
+    "nameAr": "هياكل البيانات",
+    "departmentName": "Software Engineering"
+  },
+  {
+    "name": "Machine Learning",
+    "nameAr": "تعلم الآلة",
+    "departmentName": "Data Science"
+  },
+  {
+    "name": "Network Security",
+    "nameAr": "أمن الشبكات",
+    "departmentName": "Networks and Cyber Security"
   }
 ]

@@ -23,9 +23,9 @@ public class ExamSeatAssignmentConfiguration : IEntityTypeConfiguration<ExamSeat
             .HasForeignKey(e => e.StudentId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(e => e.ExamHall)
+        builder.HasOne(e => e.Room)
             .WithMany()
-            .HasForeignKey(e => e.ExamHallId)
+            .HasForeignKey(e => e.RoomId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasIndex(e => new { e.ExamId, e.StudentId }).IsUnique();

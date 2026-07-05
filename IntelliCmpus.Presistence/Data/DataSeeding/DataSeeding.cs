@@ -57,8 +57,6 @@ public class DataSeed : IDataSeed
 
             await SeedRoomsAsync();
 
-            await SeedExamHallsAsync();
-
             await _dbContext.SaveChangesAsync();
 
             // Depends on Faculty
@@ -393,8 +391,10 @@ public class DataSeed : IDataSeed
                 DepartmentId = deptId
             };
             _dbContext.Add(entity);
-            _specializationIds[dto.Name] = entity.SpecializationId;
         }
+        await _dbContext.SaveChangesAsync();
+        foreach (var s in await _dbContext.Set<Specialization>().ToListAsync())
+            if (s.Name != null) _specializationIds[s.Name] = s.SpecializationId;
     }
 
     private async Task SeedAdminAsync()
@@ -1156,23 +1156,6 @@ public class DataSeed : IDataSeed
         }
     }
 
-    // ---- Exam Halls ----
-
-    private async Task SeedExamHallsAsync()
-    {
-        if (await _dbContext.ExamHalls.AnyAsync()) return;
-        var items = await ReadJsonAsync<ExamHallDto>("exam-halls.json");
-        foreach (var dto in items)
-        {
-            _dbContext.ExamHalls.Add(new ExamHall
-            {
-                HallName = dto.HallName,
-                HallNameAr = dto.HallNameAr,
-                Capacity = dto.Capacity
-            });
-        }
-    }
-
     // ---- Assignments ----
 
     private async Task SeedAssignmentsAsync()
@@ -1750,13 +1733,6 @@ public class DataSeed : IDataSeed
         public int? TotalMarks { get; init; }
         public string? RoomName { get; init; }
         public string CourseCode { get; init; } = "";
-    }
-
-    private record ExamHallDto
-    {
-        public string HallName { get; init; } = "";
-        public string? HallNameAr { get; init; }
-        public int Capacity { get; init; }
     }
 
     private record AssignmentDto

@@ -4,6 +4,7 @@ using IntelliCampus.Presistence.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntelliCampus.Presistence.Migrations
 {
     [DbContext(typeof(IntelliCampusDbContext))]
-    partial class IntelliCampusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260704230251_AddLevelToStudentCourse")]
+    partial class AddLevelToStudentCourse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -986,6 +989,31 @@ namespace IntelliCampus.Presistence.Migrations
                     b.ToTable("Exams");
                 });
 
+            modelBuilder.Entity("IntelliCampus.Domain.Entities.ExamHall", b =>
+                {
+                    b.Property<int>("ExamHallId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamHallId"));
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("HallName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("HallNameAr")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("ExamHallId");
+
+                    b.ToTable("ExamHalls");
+                });
+
             modelBuilder.Entity("IntelliCampus.Domain.Entities.ExamSchedule", b =>
                 {
                     b.Property<int>("ExamScheduleId")
@@ -1056,10 +1084,10 @@ namespace IntelliCampus.Presistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamSeatAssignmentId"));
 
-                    b.Property<int>("ExamId")
+                    b.Property<int>("ExamHallId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RoomId")
+                    b.Property<int>("ExamId")
                         .HasColumnType("int");
 
                     b.Property<int>("SeatNumber")
@@ -1070,7 +1098,7 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.HasKey("ExamSeatAssignmentId");
 
-                    b.HasIndex("RoomId");
+                    b.HasIndex("ExamHallId");
 
                     b.HasIndex("StudentId");
 
@@ -1294,7 +1322,8 @@ namespace IntelliCampus.Presistence.Migrations
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("ProfileImage")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -2031,11 +2060,6 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsExamHall")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
 
                     b.Property<string>("Location")
                         .HasMaxLength(200)
@@ -3273,16 +3297,16 @@ namespace IntelliCampus.Presistence.Migrations
 
             modelBuilder.Entity("IntelliCampus.Domain.Entities.ExamSeatAssignment", b =>
                 {
+                    b.HasOne("IntelliCampus.Domain.Entities.ExamHall", "ExamHall")
+                        .WithMany()
+                        .HasForeignKey("ExamHallId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("IntelliCampus.Domain.Entities.Exam", "Exam")
                         .WithMany("ExamSeatAssignments")
                         .HasForeignKey("ExamId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("IntelliCampus.Domain.Entities.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IntelliCampus.Domain.Entities.Student", "Student")
@@ -3293,7 +3317,7 @@ namespace IntelliCampus.Presistence.Migrations
 
                     b.Navigation("Exam");
 
-                    b.Navigation("Room");
+                    b.Navigation("ExamHall");
 
                     b.Navigation("Student");
                 });

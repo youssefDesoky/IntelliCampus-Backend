@@ -119,7 +119,7 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             ParseSchedule(dto.Schedule, out day, out startTime);
         }
 
-        var endTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : (TimeSpan?)null;
+        var endTime = startTime.HasValue ? AddDuration(startTime.Value) : (TimeSpan?)null;
         await ValidateNoTimeOverlapAsync(dto.CourseId, classType, day, startTime, endTime);
 
         if (instructorId.HasValue)
@@ -136,7 +136,7 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             ClassType = classType,
             Day = day,
             StartTime = startTime,
-            EndTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : null,
+            EndTime = startTime.HasValue ? AddDuration(startTime.Value) : null,
             RoomId = dto.RoomId,
             CourseId = dto.CourseId,
             InstructorId = instructorId,
@@ -198,7 +198,7 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         if (!string.IsNullOrWhiteSpace(schedule))
             ParseSchedule(schedule, out day, out startTime);
 
-        var endTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : (TimeSpan?)null;
+        var endTime = startTime.HasValue ? AddDuration(startTime.Value) : (TimeSpan?)null;
         await ValidateNoTimeOverlapAsync(courseId, classType, day, startTime, endTime);
 
         if (instructorId.HasValue)
@@ -252,7 +252,7 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             if (dto.StartTime.HasValue)
             {
                 classEntity.StartTime = dto.StartTime.Value;
-                classEntity.EndTime = dto.EndTime ?? dto.StartTime.Value.Add(TimeSpan.FromMinutes(90));
+                classEntity.EndTime = dto.EndTime ?? AddDuration(dto.StartTime.Value);
             }
             if (dto.EndTime.HasValue && !dto.StartTime.HasValue)
                 classEntity.EndTime = dto.EndTime.Value;
@@ -262,7 +262,7 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         {
             classEntity.Day = day;
             classEntity.StartTime = startTime;
-            classEntity.EndTime = startTime.HasValue ? startTime.Value.Add(TimeSpan.FromMinutes(90)) : null;
+            classEntity.EndTime = startTime.HasValue ? AddDuration(startTime.Value) : null;
         }
 
         if (dto.RoomId.HasValue)
@@ -443,6 +443,15 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
         }
     }
 
+    private static TimeSpan AddDuration(TimeSpan startTime, int minutes = 90)
+    {
+        var endTime = startTime.Add(TimeSpan.FromMinutes(minutes));
+        if (endTime.Days > 0)
+            throw new InvalidOperationException(
+                $"Class start time {startTime:hh\\:mm} is too late. The {minutes}-minute duration would extend past midnight. Please choose an earlier time.");
+        return endTime;
+    }
+
     private static void ParseSchedule(string schedule, out DayOfWeekEnum? day, out TimeSpan? startTime)
     {
         day = null;
@@ -514,8 +523,11 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
 
     private async Task ValidateCapacityAgainstRoomAsync(int? roomId, int? capacity)
     {
-        if (!roomId.HasValue || !capacity.HasValue)
+        if (!roomId.HasValue)
             return;
+
+        if (!capacity.HasValue)
+            throw new InvalidOperationException("Capacity is required when a room is selected.");
 
         var room = await Rooms.GetByIdAsync(roomId.Value);
         if (room is null)

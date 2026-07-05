@@ -9,4 +9,5 @@ public class RoomDto
     public string? Type { get; set; }
     public string? Location { get; set; }
     public string? LocationAr { get; set; }
+    public bool IsExamHall { get; set; }
 }

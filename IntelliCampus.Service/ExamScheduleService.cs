@@ -177,8 +177,10 @@ public class ExamScheduleService : IExamScheduleService
         StartTime = FormatTime(e.StartTime),
         EndTime = FormatTime(e.EndTime),
         Duration = e.Duration,
-        Location = e.Room?.RoomName,
-        LocationAr = e.Room?.RoomNameAr,
+        Location = e.Exam?.ExamSeatAssignments?.FirstOrDefault(a => a.StudentId == e.StudentId)?.Room?.RoomName
+                   ?? e.Room?.RoomName,
+        LocationAr = e.Exam?.ExamSeatAssignments?.FirstOrDefault(a => a.StudentId == e.StudentId)?.Room?.RoomNameAr
+                      ?? e.Room?.RoomNameAr,
         ExamType = e.ExamType,
         Status = e.Status,
         StudentId = e.StudentId,

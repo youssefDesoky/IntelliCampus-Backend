@@ -6,6 +6,11 @@ public class AcademicProgressDto
     public int TotalRequiredHours { get; set; }
     public int TotalGraduationHours { get; set; }
     public double Gpa { get; set; }
+    public double? MinPassingGpa { get; set; }
+    public bool MeetsMinPassingGpa { get; set; }
+    public bool MeetsTotalHourRequirement { get; set; }
+    public bool IsEligibleForGraduation { get; set; }
+    public string? MinPassingGradeLetter { get; set; }
     public List<BylawBucketDto> Buckets { get; set; } = [];
 }
 

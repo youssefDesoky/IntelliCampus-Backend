@@ -218,10 +218,14 @@ public class SpecializationAllocationService : ISpecializationAllocationService
             {
                 if (s.BylawId is null) return false;
                 if (!bylawLookup.TryGetValue(s.BylawId.Value, out var bylaw)) return false;
-                var minHours = bylaw.Settings?.MinHoursToChooseSpecialization;
-                if (minHours is null) return true;
                 var hours = completedHoursLookup.GetValueOrDefault(s.UserId, 0);
-                return hours >= minHours.Value;
+                var specHours = bylaw.Settings?.MinHoursToChooseSpecialization;
+                if (specHours.HasValue && hours < specHours.Value)
+                    return false;
+                var deptHours = bylaw.Settings?.MinHoursToChooseDepartment;
+                if (s.DepartmentId is null && deptHours.HasValue && hours < deptHours.Value)
+                    return false;
+                return true;
             })
             .OrderByDescending(s => s.Gpa)
             .ThenByDescending(s => completedHoursLookup.GetValueOrDefault(s.UserId, 0))
