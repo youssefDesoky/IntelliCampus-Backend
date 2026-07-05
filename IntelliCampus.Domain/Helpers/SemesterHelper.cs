@@ -16,8 +16,8 @@ public static class SemesterHelper
         return month switch
         {
             >= 9 and <= 12 => $"Fall {year}",
-            >= 5 and <= 8 => $"Spring {year}",
-            >= 1 and <= 4 => $"Summer {year}",
+            >= 1 and <= 4 => $"Spring {year}",
+            >= 5 and <= 8 => $"Summer {year}",
             _ => $"Fall {year}" // Fallback, shouldn't happen
         };
     }
