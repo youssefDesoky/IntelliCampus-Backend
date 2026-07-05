@@ -383,7 +383,8 @@ public class StudentService : IStudentService
                             : n.CreatedAt.ToString("MMM dd, yyyy, h:mm tt"),
                         LinkedLecture = n.MaterialFolder is not null
                             ? MapLinkedLecture(n.MaterialFolder)
-                            : null
+                            : null,
+                        AiSummary = n.NoteSummary?.GeneratedText
                     }).ToList()
             }).ToList()
         };

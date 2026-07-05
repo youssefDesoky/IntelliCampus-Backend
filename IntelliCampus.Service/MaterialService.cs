@@ -7,17 +7,22 @@ using IntelliCampus.Domain.Entities.Enums;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service.Specifications;
 using IntelliCampus.Shared.Params;
+using Microsoft.Extensions.Logging;
 
 namespace IntelliCampus.Service;
 
 public class MaterialService(
     IUnitOfWork unitOfWork,
     INotificationService notificationService,
-    UrlResolver urlResolver) : IMaterialService
+    UrlResolver urlResolver,
+    IFaheemAiService faheemAiService,
+    ILogger<MaterialService> logger) : IMaterialService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly INotificationService _notificationService = notificationService;
     private readonly UrlResolver _urlResolver = urlResolver;
+    private readonly IFaheemAiService _faheemAi = faheemAiService;
+    private readonly ILogger<MaterialService> _logger = logger;
 
     private IGenericRepository<Material, int> Materials
         => _unitOfWork.GetRepository<Material, int>();
@@ -175,6 +180,15 @@ public class MaterialService(
                 clickUrl: $"/courses/{dto.CourseId}/materials?materialId={material.MaterialId}");
         }
 
+        // Fire-and-forget: sync material to Python AI service for RAG indexing
+        _logger.LogInformation("AI sync check: CourseId={Id}, CourseCode='{Code}', fileUrl='{Url}'",
+            course.CourseId, course.CourseCode, fileUrl);
+        if (!string.IsNullOrEmpty(course.CourseCode) && !string.IsNullOrEmpty(fileUrl))
+        {
+            _logger.LogInformation("AI sync: triggering sync for course {Code}", course.CourseCode);
+            _ = SyncMaterialToAiAsync(course.CourseCode, fileUrl, folder?.Name);
+        }
+
         return new MaterialDto
         {
             MaterialId = material.MaterialId,
@@ -188,6 +202,87 @@ public class MaterialService(
             FolderId = material.FolderId,
             FolderName = folder?.Name
         };
+    }
+
+    private async Task SyncMaterialToAiAsync(string courseCode, string fileUrl, string? folderName)
+    {
+        var attempt = 0;
+        const int maxAttempts = 3;
+        while (attempt < maxAttempts)
+        {
+            attempt++;
+            try
+            {
+                var physicalPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", fileUrl.TrimStart('/'));
+                if (!File.Exists(physicalPath))
+                {
+                    _logger.LogWarning("AI sync skipped — file not found (attempt {Attempt}/{Max}): {Path}", attempt, maxAttempts, physicalPath);
+                    return;
+                }
+
+                var fileName = Path.GetFileName(physicalPath);
+                _logger.LogInformation("AI sync: uploading {FileName} for course {Code} (attempt {Attempt}/{Max})", fileName, courseCode, attempt, maxAttempts);
+
+                var uploadResult = await _faheemAi.UploadCourseMaterialAsync(
+                    courseCode, physicalPath, fileName,
+                    type: "other",
+                    lectureId: null,
+                    lectureName: folderName);
+
+                _logger.LogInformation("AI sync: uploaded file_id={FileId}, processing...", uploadResult.FileId);
+
+                var inserted = await _faheemAi.ProcessCourseMaterialAsync(courseCode, uploadResult.FileId);
+                var indexed = await _faheemAi.IndexCourseMaterialAsync(courseCode, uploadResult.FileId);
+
+                _logger.LogInformation("AI sync: course {Code} processed {Processed} chunks, indexed {Indexed} chunks", courseCode, inserted, indexed);
+                return;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "AI sync attempt {Attempt}/{Max} failed for course {CourseCode}", attempt, maxAttempts, courseCode);
+                if (attempt >= maxAttempts)
+                    return;
+                await Task.Delay(TimeSpan.FromSeconds(2 * attempt));
+            }
+        }
+    }
+
+    public async Task<int> ResyncMaterialToAiAsync(int materialId, int instructorId)
+    {
+        var material = await Materials.GetByIdAsync(new MaterialSpec(materialId));
+        if (material is null)
+            throw new MaterialNotFoundException();
+        if (string.IsNullOrEmpty(material.FileUrl))
+            throw new InvalidOperationException("Material has no file to sync.");
+        if (string.IsNullOrEmpty(material.Course?.CourseCode))
+            throw new InvalidOperationException("Material's course has no course code; cannot sync to AI.");
+
+        var instructorTeachesCourse = await Classes.AnyAsync(c => c.CourseId == material.CourseId && c.InstructorId == instructorId);
+        if (!instructorTeachesCourse)
+            throw new InvalidOperationException("You are not authorized to sync materials for this course.");
+
+        var folderName = material.Folder?.Name;
+
+        var physicalPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", material.FileUrl!.TrimStart('/'));
+        if (!File.Exists(physicalPath))
+            throw new InvalidOperationException($"Physical file not found on disk: {physicalPath}");
+
+        var fileName = Path.GetFileName(physicalPath);
+        _logger.LogInformation("AI re-sync: uploading {FileName} for course {Code}", fileName, material.Course.CourseCode);
+
+        var uploadResult = await _faheemAi.UploadCourseMaterialAsync(
+            material.Course.CourseCode, physicalPath, fileName,
+            type: "other",
+            lectureId: null,
+            lectureName: folderName);
+
+        _logger.LogInformation("AI re-sync: uploaded file_id={FileId}, processing...", uploadResult.FileId);
+
+        var inserted = await _faheemAi.ProcessCourseMaterialAsync(material.Course.CourseCode, uploadResult.FileId);
+        var indexed = await _faheemAi.IndexCourseMaterialAsync(material.Course.CourseCode, uploadResult.FileId);
+
+        _logger.LogInformation("AI re-sync: course {Code} processed {Processed} chunks, indexed {Indexed} chunks", material.Course.CourseCode, inserted, indexed);
+        return indexed;
     }
 
     public async Task<bool> DeleteAsync(int materialId, int instructorId)

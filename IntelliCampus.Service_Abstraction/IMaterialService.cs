@@ -12,6 +12,7 @@ public interface IMaterialService
     Task<MaterialDto> CreateAsync(int instructorId, CreateMaterialDto dto, string? fileUrl, long? fileSize);
     Task<bool> DeleteAsync(int materialId, int instructorId);
     Task<(string? FileUrl, string? FileName)?> GetDownloadInfoAsync(int materialId);
+    Task<int> ResyncMaterialToAiAsync(int materialId, int instructorId);
 
     // Folders
     Task<MaterialFolderDto?> GetFolderByIdAsync(int folderId);

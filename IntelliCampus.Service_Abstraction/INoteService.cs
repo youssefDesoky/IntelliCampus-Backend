@@ -9,4 +9,5 @@ public interface INoteService
     Task<NoteDto> UpdateAsync(int noteId, UpdateNoteDto dto);
     Task DeleteAsync(int noteId);
     Task<NoteDto> UpdateLinkedLectureAsync(int noteId, UpdateLinkedLectureDto? dto);
+    Task<NoteSummaryDto> EnhanceAsync(int noteId, CancellationToken ct = default);
 }

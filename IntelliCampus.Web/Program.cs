@@ -142,6 +142,12 @@ builder.Services.AddHttpClient<IRoutingClientService, RoutingClientService>(clie
     client.BaseAddress = new Uri(builder.Configuration["RoutingService:BaseUrl"] ?? "http://localhost:8000");
     client.Timeout = TimeSpan.FromSeconds(30);
 });
+builder.Services.AddHttpClient<IFaheemAiService, FaheemAiService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["FaheemAi:BaseUrl"] ?? "http://localhost:5000");
+    client.Timeout = TimeSpan.FromSeconds(int.TryParse(builder.Configuration["FaheemAi:RequestTimeoutSeconds"], out var s) ? s : 60);
+});
+builder.Services.AddSingleton<IFahimUserService, FahimUserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();

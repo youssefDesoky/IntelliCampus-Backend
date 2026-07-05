@@ -12,4 +12,7 @@ public interface IChatService
     Task<ChatMessageDto?> EditMessageAsync(string userId, string messageId, string newContent);
     Task<ChatMessageDto?> PinMessageAsync(string userId, string messageId);
     Task<ChatMessageDto?> UnpinMessageAsync(string userId, string messageId);
+    Task<ChatMessageDto> GenerateFahimReplyAsync(string senderId, string question, CancellationToken ct = default);
+    Task<ChatMessageDto> GenerateFahimCourseReplyAsync(string senderId, string courseCode, string courseName, string question, CancellationToken ct = default);
+    Task<ChatMessageDto> GenerateFahimFallbackReplyAsync(string senderId, Exception? error = null, CancellationToken ct = default);
 }

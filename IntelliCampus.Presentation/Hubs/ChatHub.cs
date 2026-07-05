@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Entities.Enums;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IntelliCampus.Presentation.Hubs;
 
@@ -12,13 +14,24 @@ public class ChatHub : Hub
     private readonly IFriendService _friendService;
     private readonly IGroupService _groupService;
     private readonly INotificationService _notificationService;
+    private readonly IHubContext<ChatHub> _hubContext;
+    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ILogger<ChatHub> _logger;
+    private readonly IFahimUserService _fahimUserService;
 
-    public ChatHub(IChatService chatService, IFriendService friendService, IGroupService groupService, INotificationService notificationService)
+    public ChatHub(IChatService chatService, IFriendService friendService,
+        IGroupService groupService, INotificationService notificationService,
+        IHubContext<ChatHub> hubContext, IServiceScopeFactory scopeFactory,
+        ILogger<ChatHub> logger, IFahimUserService fahimUserService)
     {
         _chatService = chatService;
         _friendService = friendService;
         _groupService = groupService;
         _notificationService = notificationService;
+        _hubContext = hubContext;
+        _scopeFactory = scopeFactory;
+        _logger = logger;
+        _fahimUserService = fahimUserService;
     }
 
     public override async Task OnConnectedAsync()
@@ -35,6 +48,47 @@ public class ChatHub : Hub
         await base.OnDisconnectedAsync(exception);
     }
 
+    public async Task SendCourseQuestion(string recipientId, string courseCode, string courseName, string content)
+    {
+        var senderId = Context.UserIdentifier!;
+
+        var msg = await _chatService.SendMessageAsync(senderId, recipientId, content);
+        await Clients.User(senderId).SendAsync("ReceivePrivateMessage", msg);
+        await Clients.User(recipientId).SendAsync("ReceiveTypingStatus", recipientId, true);
+
+        _ = HandleFahimCourseReplyAsync(senderId, courseCode, courseName, content);
+    }
+
+    private async Task HandleFahimCourseReplyAsync(string senderId, string courseCode, string courseName, string content)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var chatService = scope.ServiceProvider.GetRequiredService<IChatService>();
+        const string fahimUserId = "-1";
+
+        try
+        {
+            await _hubContext.Clients.User(senderId)
+                .SendAsync("ReceiveTypingStatus", fahimUserId, true);
+
+            var reply = await chatService.GenerateFahimCourseReplyAsync(senderId, courseCode, courseName, content);
+
+            await _hubContext.Clients.User(senderId)
+                .SendAsync("ReceiveTypingStatus", fahimUserId, false);
+
+            await _hubContext.Clients.User(senderId)
+                .SendAsync("ReceivePrivateMessage", reply);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Fahim AI course reply failed for user {SenderId} course {Course}", senderId, courseCode);
+
+            var fallback = await chatService.GenerateFahimFallbackReplyAsync(senderId, ex);
+
+            await _hubContext.Clients.User(senderId)
+                .SendAsync("ReceivePrivateMessage", fallback);
+        }
+    }
+
     public async Task SendPrivateMessage(string recipientId, string content)
     {
         var senderId = Context.UserIdentifier!;
@@ -42,6 +96,42 @@ public class ChatHub : Hub
 
         await Clients.User(recipientId).SendAsync("ReceivePrivateMessage", msg);
         await Clients.User(senderId).SendAsync("ReceivePrivateMessage", msg);
+
+        // Fire-and-forget Fahim AI reply — uses new scope for long-running LLM call
+        if (_fahimUserService.IsFahim(recipientId))
+        {
+            _ = HandleFahimReplyAsync(senderId, content);
+        }
+    }
+
+    private async Task HandleFahimReplyAsync(string senderId, string content)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var chatService = scope.ServiceProvider.GetRequiredService<IChatService>();
+        const string fahimUserId = "-1";
+
+        try
+        {
+            await _hubContext.Clients.User(senderId)
+                .SendAsync("ReceiveTypingStatus", fahimUserId, true);
+
+            var reply = await chatService.GenerateFahimReplyAsync(senderId, content);
+
+            await _hubContext.Clients.User(senderId)
+                .SendAsync("ReceiveTypingStatus", fahimUserId, false);
+
+            await _hubContext.Clients.User(senderId)
+                .SendAsync("ReceivePrivateMessage", reply);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Fahim AI reply failed for user {SenderId}", senderId);
+
+            var fallback = await chatService.GenerateFahimFallbackReplyAsync(senderId, ex);
+
+            await _hubContext.Clients.User(senderId)
+                .SendAsync("ReceivePrivateMessage", fallback);
+        }
     }
 
     public async Task SendGroupMessage(string groupName, string content)
