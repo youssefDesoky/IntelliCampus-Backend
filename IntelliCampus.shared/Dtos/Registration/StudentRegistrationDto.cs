@@ -22,4 +22,5 @@ public class StudentRegistrationDto
     public string? Semester { get; set; }
     public string? SemesterAr { get; set; }
     public DateTime RegisteredAt { get; set; }
+    public bool IsElective { get; set; }
 }

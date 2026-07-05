@@ -36,6 +36,7 @@ public StudentSpec(CourseQueryParams queryParams)
     AddInclude(s => s.User.Faculty!);
     AddInclude(s => s.Department!);
     AddInclude(s => s.Bylaw!);
+    AddInclude("Bylaw.GradeScales");
     AddInclude(s => s.Specialization!);
     AddInclude("User.UserRoles.Role");
 

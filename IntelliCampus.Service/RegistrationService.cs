@@ -65,6 +65,10 @@ public class RegistrationService : IRegistrationService
 
     private IGenericRepository<Grade, int> Grades
         => _unitOfWork.GetRepository<Grade, int>();
+    private IGenericRepository<ExamSchedule, int> ExamSchedules
+        => _unitOfWork.GetRepository<ExamSchedule, int>();
+    private IGenericRepository<Reminder, int> Reminders
+        => _unitOfWork.GetRepository<Reminder, int>();
 
     public async Task<StudentRegistrationDto?> RegisterStudentInCourseAsync(int studentId, CourseRegistrationDto dto)
     {
@@ -173,6 +177,14 @@ public class RegistrationService : IRegistrationService
         var spec = new StudentCourseSpec(studentId);
         var registrations = await StudentCourses.GetAllAsync(spec, asNoTracking: true);
 
+        var student = await Students.GetByIdAsync(studentId);
+        var electiveCourseIds = student?.BylawId is not null
+            ? (await BylawCourses.GetAllAsync(new BylawCourseSpec(student.BylawId.Value, false), asNoTracking: true))
+                .Where(bc => bc.CourseType == CourseType.Elective)
+                .Select(bc => bc.CourseId)
+                .ToHashSet()
+            : [];
+
         return registrations.Select(sc => new StudentRegistrationDto
         {
             StudentId = sc.StudentId,
@@ -196,7 +208,8 @@ public class RegistrationService : IRegistrationService
             RoomAr = sc.Class?.Room?.RoomNameAr,
             Semester = sc.Semester,
             SemesterAr = SemesterHelper.GetSemesterAr(sc.Semester),
-            RegisteredAt = sc.RegisteredAt
+            RegisteredAt = sc.RegisteredAt,
+            IsElective = electiveCourseIds.Contains(sc.CourseId)
         });
     }
 
@@ -222,8 +235,27 @@ public class RegistrationService : IRegistrationService
         StudentCourses.Delete(registration);
         await _unitOfWork.SaveChangesAsync();
 
-        // Clean up schedule entries for this dropped course
+        // Clean up class schedule entries for this dropped course
         await _scheduleService.RemoveByStudentAndCourseAsync(studentId, courseId);
+
+        // Clean up exam schedule entries for this dropped course
+        var examSchedules = await ExamSchedules.GetAllAsync(
+            new ExamScheduleByStudentAndCourseSpec(studentId, courseId));
+        foreach (var es in examSchedules)
+            ExamSchedules.Delete(es);
+        if (examSchedules.Any())
+            await _unitOfWork.SaveChangesAsync();
+
+        // Clean up exam reminders for this dropped course
+        var courseName = course.CourseName;
+        var reminders = await Reminders.GetAllAsync(new RemindersByStudentSpec(studentId));
+        var examReminders = reminders.Where(r =>
+            r.Type == ReminderType.Exam &&
+            r.Title?.StartsWith($"Exam: {courseName}") == true).ToList();
+        foreach (var r in examReminders)
+            Reminders.Delete(r);
+        if (examReminders.Any())
+            await _unitOfWork.SaveChangesAsync();
 
         return true;
     }
