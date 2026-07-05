@@ -637,12 +637,14 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         return true;
     }
 
-    public async Task<IEnumerable<StudentDto>> GetStudentsByCourseIdAsync(int courseId)
+    public async Task<IEnumerable<StudentDto>> GetStudentsByCourseIdAsync(int courseId, string? search = null)
     {
         var course = await Courses.GetByIdAsync(courseId);
         if (course is null) throw new CourseNotFoundException(courseId);
 
-        var studentCourses = await StudentCourses.GetAllAsync(new CourseStudentsSpec(courseId), asNoTracking: true);
+        var studentCourses = string.IsNullOrEmpty(search)
+            ? await StudentCourses.GetAllAsync(new CourseStudentsSpec(courseId), asNoTracking: true)
+            : await StudentCourses.GetAllAsync(new CourseStudentsSpec(courseId, search), asNoTracking: true);
 
         return studentCourses.Select(sc =>
         {

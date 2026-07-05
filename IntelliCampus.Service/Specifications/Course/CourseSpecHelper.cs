@@ -19,7 +19,9 @@ namespace IntelliCampus.Service.Specifications
                     || c.Prerequisites.Any(p => p.PrerequisiteCourse != null
                         && (p.PrerequisiteCourse.CourseName.Contains(queryParams.Search)
                             || (p.PrerequisiteCourse.CourseCode != null
-                                && p.PrerequisiteCourse.CourseCode.Contains(queryParams.Search)))))
+                                && p.PrerequisiteCourse.CourseCode.Contains(queryParams.Search))))
+                    || c.Classes.Any(cl => cl.Instructor != null && cl.Instructor.User.FullName.Contains(queryParams.Search))
+                    || c.Classes.Any(cl => cl.Instructor != null && cl.Instructor.User.FullNameAr != null && cl.Instructor.User.FullNameAr.Contains(queryParams.Search)))
                 && (!queryParams.StudentId.HasValue
                     || c.StudentCourses.Any(sc => sc.StudentId == queryParams.StudentId.Value
                         && (queryParams.StudentStatuses == null || queryParams.StudentStatuses.Contains(sc.Status))))

@@ -20,5 +20,11 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(s => s.Department);
         }
+
+        public SpecializationSpec(string search)
+            : base(s => s.Name.Contains(search) || (s.NameAr != null && s.NameAr.Contains(search)))
+        {
+            AddInclude(s => s.Department);
+        }
     }
 }
