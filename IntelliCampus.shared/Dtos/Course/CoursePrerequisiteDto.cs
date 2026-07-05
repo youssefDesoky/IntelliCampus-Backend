@@ -8,6 +8,7 @@ public class CoursePrerequisiteDto
     public string? CourseCode { get; set; }
     public string? CourseCodeAr { get; set; }
     public int CreditHours { get; set; }
+    public bool IsElective { get; set; }
     public List<PrerequisiteItemDto> Prerequisites { get; set; } = [];
 }
 

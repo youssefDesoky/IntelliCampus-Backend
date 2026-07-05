@@ -580,11 +580,11 @@ public class GradeService : IGradeService
                             failedCourseIds.Add(courseId);
                         }
                     }
-                    else
-                    {
-                        totalGradeStr = "-";
-                    }
+                else
+                {
+                    totalGradeStr = "-";
                 }
+            }
             }
 
             var level = sc.Level ?? ExtractLevelFromCourseCode(course.CourseCode);

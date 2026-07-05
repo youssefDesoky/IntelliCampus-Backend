@@ -101,20 +101,39 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         if (bylawId is null)
             return new PaginatedResult<CourseDto>(queryParams.PageIndex, 0, 0, new List<CourseDto>());
 
-        var bylawCourseIds = (await BylawCourses.GetAllAsync(new BylawCourseSpec(bylawId.Value, false), asNoTracking: true))
+        var bylawCourses = await BylawCourses.GetAllAsync(new BylawCourseSpec(bylawId.Value, false), asNoTracking: true);
+        var bylawCourseIds = bylawCourses.Select(bc => bc.CourseId).Distinct().ToList();
+        var electiveCourseIds = bylawCourses
+            .Where(bc => bc.CourseType == CourseType.Elective)
             .Select(bc => bc.CourseId)
-            .Distinct()
-            .ToList();
+            .ToHashSet();
 
         if (bylawCourseIds.Count == 0)
             return new PaginatedResult<CourseDto>(queryParams.PageIndex, 0, 0, new List<CourseDto>());
 
-        queryParams.IsActiveOnly = true;
-        var spec = new CourseSpec(bylawCourseIds, queryParams, CourseIncludeLevel.Light);
-        var courses = await Courses.GetAllAsync(spec, asNoTracking: true);
-        var dataToReturn = courses.Select(c => MapToDto(c)).ToList();
+        var completedCourseIds = (await StudentCourses.GetAllAsync(
+            new StudentCourseIdsSpec(studentId, [StudentCourseStatus.Completed, StudentCourseStatus.Failed]),
+            asNoTracking: true))
+            .Select(sc => sc.CourseId)
+            .ToHashSet();
 
-        return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, bylawCourseIds.Count, dataToReturn);
+        var availableCourseIds = bylawCourseIds.Where(id => !completedCourseIds.Contains(id)).ToList();
+
+        if (availableCourseIds.Count == 0)
+            return new PaginatedResult<CourseDto>(queryParams.PageIndex, 0, 0, new List<CourseDto>());
+
+        queryParams.IsActiveOnly = true;
+        var spec = new CourseSpec(availableCourseIds, queryParams, CourseIncludeLevel.Light);
+        var courses = await Courses.GetAllAsync(spec, asNoTracking: true);
+        var dataToReturn = courses.Select(c =>
+        {
+            var dto = MapToDto(c);
+            if (electiveCourseIds.Contains(c.CourseId))
+                dto.IsElective = true;
+            return dto;
+        }).ToList();
+
+        return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, availableCourseIds.Count, dataToReturn);
     }
 
     public async Task<PaginatedResult<CourseDto>> GetCoursesByStudentIdAsync(CourseQueryParams queryParams)
@@ -124,9 +143,24 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
+        HashSet<int>? electiveCourseIds = null;
+        if (student.BylawId is not null)
+        {
+            electiveCourseIds = (await BylawCourses.GetAllAsync(new BylawCourseSpec(student.BylawId.Value, false), asNoTracking: true))
+                .Where(bc => bc.CourseType == CourseType.Elective)
+                .Select(bc => bc.CourseId)
+                .ToHashSet();
+        }
+
         var gradeScales = student.Bylaw?.GradeScales;
         var courses = await Courses.GetAllAsync(new CourseSpec(queryParams, CourseIncludeLevel.Student), asNoTracking: true);
-        var dataToReturn = courses.Select(c => MapToDto(c, studentId, gradeScales)).ToList();
+        var dataToReturn = courses.Select(c =>
+        {
+            var dto = MapToDto(c, studentId, gradeScales);
+            if (electiveCourseIds is not null && electiveCourseIds.Contains(c.CourseId))
+                dto.IsElective = true;
+            return dto;
+        }).ToList();
 
         var countSpec = new CourseCountSpec(queryParams);
         var totalCount = await Courses.CountAsync(countSpec);
@@ -145,17 +179,25 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         if (bylawId is null)
             return new PaginatedResult<CourseDto>(queryParams.PageIndex, 0, 0, new List<CourseDto>());
 
-        var bylawCourseIds = (await BylawCourses.GetAllAsync(new BylawCourseSpec(bylawId.Value, false), asNoTracking: true))
+        var bylawCourses = await BylawCourses.GetAllAsync(new BylawCourseSpec(bylawId.Value, false), asNoTracking: true);
+        var bylawCourseIds = bylawCourses.Select(bc => bc.CourseId).Distinct().ToList();
+        var electiveCourseIds = bylawCourses
+            .Where(bc => bc.CourseType == CourseType.Elective)
             .Select(bc => bc.CourseId)
-            .Distinct()
-            .ToList();
+            .ToHashSet();
 
         if (bylawCourseIds.Count == 0)
             return new PaginatedResult<CourseDto>(queryParams.PageIndex, 0, 0, new List<CourseDto>());
 
         var gradeScales = student.Bylaw?.GradeScales;
         var courses = await Courses.GetAllAsync(new CourseSpec(bylawCourseIds, queryParams, CourseIncludeLevel.Student), asNoTracking: true);
-        var dataToReturn = courses.Select(c => MapToDto(c, studentId, gradeScales)).ToList();
+        var dataToReturn = courses.Select(c =>
+        {
+            var dto = MapToDto(c, studentId, gradeScales);
+            if (electiveCourseIds.Contains(c.CourseId))
+                dto.IsElective = true;
+            return dto;
+        }).ToList();
 
         return new PaginatedResult<CourseDto>(queryParams.PageIndex, dataToReturn.Count, bylawCourseIds.Count, dataToReturn);
     }
@@ -371,10 +413,12 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         if (bylawId is null)
             return new PaginatedResult<CoursePrerequisiteDto>(queryParams.PageIndex, 0, 0, new List<CoursePrerequisiteDto>());
 
-        var bylawCourseIds = (await BylawCourses.GetAllAsync(new BylawCourseSpec(bylawId.Value, false), asNoTracking: true))
+        var bylawCourses = await BylawCourses.GetAllAsync(new BylawCourseSpec(bylawId.Value, false), asNoTracking: true);
+        var bylawCourseIds = bylawCourses.Select(bc => bc.CourseId).Distinct().ToList();
+        var electiveCourseIds = bylawCourses
+            .Where(bc => bc.CourseType == CourseType.Elective)
             .Select(bc => bc.CourseId)
-            .Distinct()
-            .ToList();
+            .ToHashSet();
 
         if (bylawCourseIds.Count == 0)
             return new PaginatedResult<CoursePrerequisiteDto>(queryParams.PageIndex, 0, 0, new List<CoursePrerequisiteDto>());
@@ -389,6 +433,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             CourseCode = c.CourseCode,
             CourseCodeAr = c.CourseCodeAr,
             CreditHours = c.CreditHours,
+            IsElective = electiveCourseIds.Contains(c.CourseId),
             Prerequisites = c.Prerequisites?
                 .Select(p => p.PrerequisiteCourse)
                 .Where(p => p is not null)
