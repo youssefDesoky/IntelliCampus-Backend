@@ -54,7 +54,7 @@ public class ChatService : IChatService
         await _unitOfWork.SaveChangesAsync();
 
         var dto = await MapToDtoAsync(message);
-        if (string.IsNullOrEmpty(groupName) && int.TryParse(recipientId, out var recipientUserId))
+        if (string.IsNullOrEmpty(groupName) && recipientId != FahimSenderId && int.TryParse(recipientId, out var recipientUserId))
         {
             var encodedName = Uri.EscapeDataString(dto.SenderName ?? "Unknown");
             await _notificationService.SendAsync(recipientUserId, NotificationType.NewMessage, dto.Content, dto.SenderName ?? "New Message", $"/?openChat=message&userId={senderId}&userName={encodedName}");
