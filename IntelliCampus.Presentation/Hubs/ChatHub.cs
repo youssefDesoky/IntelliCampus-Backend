@@ -1,9 +1,11 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Domain.Entities.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
 
 namespace IntelliCampus.Presentation.Hubs;
 
@@ -18,11 +20,13 @@ public class ChatHub : Hub
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<ChatHub> _logger;
     private readonly IFahimUserService _fahimUserService;
+    private readonly IFileStorageService _fileStorage;
 
     public ChatHub(IChatService chatService, IFriendService friendService,
         IGroupService groupService, INotificationService notificationService,
         IHubContext<ChatHub> hubContext, IServiceScopeFactory scopeFactory,
-        ILogger<ChatHub> logger, IFahimUserService fahimUserService)
+        ILogger<ChatHub> logger, IFahimUserService fahimUserService,
+        IFileStorageService fileStorage)
     {
         _chatService = chatService;
         _friendService = friendService;
@@ -32,6 +36,7 @@ public class ChatHub : Hub
         _scopeFactory = scopeFactory;
         _logger = logger;
         _fahimUserService = fahimUserService;
+        _fileStorage = fileStorage;
     }
 
     public override async Task OnConnectedAsync()
@@ -48,7 +53,7 @@ public class ChatHub : Hub
         await base.OnDisconnectedAsync(exception);
     }
 
-    public async Task SendCourseQuestion(string recipientId, string courseCode, string courseName, string content)
+    public async Task SendCourseQuestion(string recipientId, string courseCode, string courseName, string content, string? fileUrl = null)
     {
         var senderId = Context.UserIdentifier!;
 
@@ -56,21 +61,43 @@ public class ChatHub : Hub
         await Clients.User(senderId).SendAsync("ReceivePrivateMessage", msg);
         await Clients.User(recipientId).SendAsync("ReceiveTypingStatus", recipientId, true);
 
-        _ = HandleFahimCourseReplyAsync(senderId, courseCode, courseName, content);
+        if (!IsStudentSender())
+        {
+            _logger.LogWarning("Non-student {SenderId} attempted to use Faheem AI course question; ignoring.", senderId);
+            return;
+        }
+
+        _ = HandleFahimCourseReplyAsync(senderId, courseCode, courseName, content, fileUrl);
     }
 
-    private async Task HandleFahimCourseReplyAsync(string senderId, string courseCode, string courseName, string content)
+    private async Task HandleFahimCourseReplyAsync(string senderId, string courseCode, string courseName, string content, string? fileUrl)
     {
         using var scope = _scopeFactory.CreateScope();
         var chatService = scope.ServiceProvider.GetRequiredService<IChatService>();
         const string fahimUserId = "-1";
 
+        Stream? attachmentStream = null;
+        string? attachmentFileName = null;
         try
         {
+            if (!string.IsNullOrWhiteSpace(fileUrl))
+            {
+                try
+                {
+                    var normalizedUrl = fileUrl.TrimStart('/', '\\');
+                    attachmentStream = await _fileStorage.OpenReadAsync(normalizedUrl);
+                    attachmentFileName = Path.GetFileName(normalizedUrl);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to open attachment {FileUrl} for Fahim course reply", fileUrl);
+                }
+            }
+
             await _hubContext.Clients.User(senderId)
                 .SendAsync("ReceiveTypingStatus", fahimUserId, true);
 
-            var reply = await chatService.GenerateFahimCourseReplyAsync(senderId, courseCode, courseName, content);
+            var reply = await chatService.GenerateFahimCourseReplyAsync(senderId, courseCode, courseName, content, attachmentStream, attachmentFileName, CancellationToken.None);
 
             await _hubContext.Clients.User(senderId)
                 .SendAsync("ReceiveTypingStatus", fahimUserId, false);
@@ -87,6 +114,10 @@ public class ChatHub : Hub
             await _hubContext.Clients.User(senderId)
                 .SendAsync("ReceivePrivateMessage", fallback);
         }
+        finally
+        {
+            attachmentStream?.Dispose();
+        }
     }
 
     public async Task SendPrivateMessage(string recipientId, string content)
@@ -97,12 +128,23 @@ public class ChatHub : Hub
         await Clients.User(recipientId).SendAsync("ReceivePrivateMessage", msg);
         await Clients.User(senderId).SendAsync("ReceivePrivateMessage", msg);
 
-        // Fire-and-forget Fahim AI reply — uses new scope for long-running LLM call
+        // Fire-and-forget Fahim AI reply — uses new scope for long-running LLM call.
+        // Faheem AI assistant is available to students only.
         if (_fahimUserService.IsFahim(recipientId))
         {
+            if (!IsStudentSender())
+            {
+                _logger.LogWarning("Non-student {SenderId} attempted to message Faheem AI; ignoring.", senderId);
+                return;
+            }
+
             _ = HandleFahimReplyAsync(senderId, content);
         }
     }
+
+    private bool IsStudentSender()
+        => Context.User?.FindAll(ClaimTypes.Role)
+            .Any(c => c.Value.StartsWith("Student_")) == true;
 
     private async Task HandleFahimReplyAsync(string senderId, string content)
     {
