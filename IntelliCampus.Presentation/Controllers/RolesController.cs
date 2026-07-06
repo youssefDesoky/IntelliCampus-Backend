@@ -24,6 +24,14 @@ public class RolesController : ControllerBase
         return Ok(roles);
     }
 
+    [HttpGet("assignable")]
+    [Authorize(Roles = "SuperAdmin")]
+    public async Task<ActionResult<IEnumerable<RoleDto>>> GetAssignableRoles()
+    {
+        var roles = await _roleService.GetAssignableRolesAsync();
+        return Ok(roles);
+    }
+
     [HttpGet("user/{userId}")]
     [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult<IEnumerable<UserRoleDto>>> GetUserRoles(int userId)
