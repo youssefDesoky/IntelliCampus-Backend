@@ -29,6 +29,19 @@ public class RoleService : IRoleService
         });
     }
 
+    public async Task<IEnumerable<RoleDto>> GetAssignableRolesAsync()
+    {
+        return await _cache.GetOrCreateAsync("assignable_roles", async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+            var roles = await _unitOfWork.GetRepository<Role, int>().GetAllAsync(specifications: null, asNoTracking: true);
+            return roles
+                .Where(r => r.RoleName.StartsWith("Student_") || r.RoleName == "Instructor")
+                .Select(r => new RoleDto { RoleId = r.RoleId, RoleName = r.RoleName })
+                .ToList();
+        });
+    }
+
     public async Task<IEnumerable<UserRoleDto>> GetUserRolesAsync(int userId)
     {
         var spec = new UserRoleJunctionSpec(userId);
@@ -56,6 +69,9 @@ public class RoleService : IRoleService
         var role = await roleRepo.GetByIdAsync(dto.RoleId);
         if (role is null)
             throw new RoleNotFoundException($"Role with ID '{dto.RoleId}' not found.");
+
+        if (role.RoleName.StartsWith("Admin_") || role.RoleName == "SuperAdmin")
+            throw new ForbiddenException($"Role '{role.RoleName}' cannot be assigned through this endpoint.");
 
         var existing = (await userRoleRepo.GetAllAsync(new UserRoleJunctionSpec(dto.UserId)))
             .FirstOrDefault(ur => ur.RoleId == role.RoleId);

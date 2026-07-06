@@ -2,6 +2,7 @@ using FluentAssertions;
 using IntelliCampus.Domain.Entities;
 using IntelliCampus.Domain.Interfaces;
 using IntelliCampus.Service;
+using IntelliCampus.Service.Exceptions;
 using IntelliCampus.Service_Abstraction;
 using IntelliCampus.Shared.Dtos.Role;
 using IntelliCampus.UnitTests.TestHelpers;
@@ -345,7 +346,7 @@ public class RoleServiceTests
     }
 
     [Fact]
-    public async Task AssignRoleAsync_AdminRole_CreatesAdminEntity()
+    public async Task AssignRoleAsync_AdminRole_ThrowsForbiddenException()
     {
         var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
@@ -354,30 +355,16 @@ public class RoleServiceTests
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
         _roleRepoMock.Setup(r => r.GetByIdAsync(role.RoleId)).ReturnsAsync(role);
-        _userRoleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
 
-        UserRoleJunction? captured = null;
-        _userRoleRepoMock.Setup(r => r.Add(It.IsAny<UserRoleJunction>()))
-            .Callback<UserRoleJunction>(ur => captured = ur);
-        _adminRepoMock.Setup(r => r.AnyAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Admin, bool>>>())).ReturnsAsync(false);
-        _unitOfWorkMock.Setup(u => u.ExecuteSqlAsync(It.IsAny<string>(), It.IsAny<object[]>())).Returns(Task.CompletedTask);
-        _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
+        await _sut.Invoking(s => s.AssignRoleAsync(dto))
+            .Should().ThrowAsync<ForbiddenException>();
 
-        var result = await _sut.AssignRoleAsync(dto);
-
-        result.Should().NotBeNull();
-        result.RoleName.Should().Be("Admin_System");
-
-        captured.Should().NotBeNull();
-        captured!.UserId.Should().Be(user.UserId);
-
-        _unitOfWorkMock.Verify(u => u.ExecuteSqlAsync(It.IsAny<string>(), It.IsAny<object[]>()), Times.Once);
-        _userRoleRepoMock.Verify(r => r.Add(It.IsAny<UserRoleJunction>()), Times.Once);
-        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Once);
+        _userRoleRepoMock.Verify(r => r.Add(It.IsAny<UserRoleJunction>()), Times.Never);
+        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);
     }
 
     [Fact]
-    public async Task AssignRoleAsync_AdminRoleAlreadyExists_DoesNotCreateAdmin()
+    public async Task AssignRoleAsync_AdminRoleAlreadyExists_ThrowsForbiddenException()
     {
         var user = TestDataFactory.UserFaker.Generate();
         var role = TestDataFactory.RoleFaker.Generate();
@@ -386,17 +373,13 @@ public class RoleServiceTests
 
         _userRepoMock.Setup(r => r.GetByIdAsync(user.UserId)).ReturnsAsync(user);
         _roleRepoMock.Setup(r => r.GetByIdAsync(role.RoleId)).ReturnsAsync(role);
-        _userRoleRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
 
-        UserRoleJunction? captured = null;
-        _userRoleRepoMock.Setup(r => r.Add(It.IsAny<UserRoleJunction>()))
-            .Callback<UserRoleJunction>(ur => captured = ur);
-        _adminRepoMock.Setup(r => r.AnyAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Admin, bool>>>())).ReturnsAsync(true);
-        _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
+        await _sut.Invoking(s => s.AssignRoleAsync(dto))
+            .Should().ThrowAsync<ForbiddenException>();
 
-        var result = await _sut.AssignRoleAsync(dto);
-
-        result.Should().NotBeNull();
+        _userRoleRepoMock.Verify(r => r.Add(It.IsAny<UserRoleJunction>()), Times.Never);
+        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(), Times.Never);
+    }
         result.RoleName.Should().Be("Admin_Bachelor");
 
         captured.Should().NotBeNull();
