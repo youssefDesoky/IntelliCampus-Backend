@@ -8,6 +8,7 @@ public interface IFaheemAiService
     Task<int> ProcessCourseMaterialAsync(string courseCode, int? fileId = null, CancellationToken ct = default);
     Task<int> IndexCourseMaterialAsync(string courseCode, int? fileId = null, CancellationToken ct = default);
     Task<string> AskCourseAsync(string courseCode, string question, string? studentCode = null, CancellationToken ct = default);
+    Task<string> AskCourseAsync(string courseCode, string question, string? studentCode = null, Stream? attachmentStream = null, string? attachmentFileName = null, CancellationToken ct = default);
 }
 
 public record UploadMaterialResult(int FileId, string FileType, string? LectureId, string? LectureName, string CourseCode);

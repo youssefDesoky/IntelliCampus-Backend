@@ -291,7 +291,7 @@ public class ChatService : IChatService
         return await MapToDtoAsync(replyMessage);
     }
 
-    public async Task<ChatMessageDto> GenerateFahimCourseReplyAsync(string senderId, string courseCode, string courseName, string question, CancellationToken ct = default)
+    public async Task<ChatMessageDto> GenerateFahimCourseReplyAsync(string senderId, string courseCode, string courseName, string question, Stream? attachmentStream = null, string? attachmentFileName = null, CancellationToken ct = default)
     {
         var student = await Students.GetByIdAsync(int.Parse(senderId));
         var studentCode = student?.StudentCode;
@@ -299,7 +299,7 @@ public class ChatService : IChatService
         string answer;
         try
         {
-            answer = await _faheemAi.AskCourseAsync(courseCode, question, studentCode, ct);
+            answer = await _faheemAi.AskCourseAsync(courseCode, question, studentCode, attachmentStream, attachmentFileName, ct);
         }
         catch (FaheemAiException ex) when (ex.Signal == "course_answer_error")
         {

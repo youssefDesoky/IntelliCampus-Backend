@@ -212,15 +212,20 @@ public class FriendService : IFriendService
             };
         }).ToList();
 
-        // Synthesize Fahim bot entry — no Friendship/User row needed
-        friendDtos.Insert(0, new FriendDto
+        // Synthesize Fahim (Faheem AI) bot entry — no Friendship/User row needed.
+        // Only students can interact with the AI assistant.
+        var isStudent = await Students.GetByIdAsync(userId) is not null;
+        if (isStudent)
         {
-            UserId = -1,
-            FullName = "Fahim",
-            ProfileImage = null,
-            Roles = [],
-            FriendsSince = DateTime.UnixEpoch
-        });
+            friendDtos.Insert(0, new FriendDto
+            {
+                UserId = -1,
+                FullName = "Fahim",
+                ProfileImage = null,
+                Roles = [],
+                FriendsSince = DateTime.UnixEpoch
+            });
+        }
 
         return friendDtos.OrderBy(f => f.FullName);
     }
