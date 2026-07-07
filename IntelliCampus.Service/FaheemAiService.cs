@@ -145,30 +145,51 @@ public class FaheemAiService : IFaheemAiService
         return result.TotalIndexedChunks;
     }
 
-    public async Task<string> AskCourseAsync(string courseCode, string question, string? studentCode = null, CancellationToken ct = default)
+    public Task<string> AskCourseAsync(string courseCode, string question, string? studentCode = null, CancellationToken ct = default)
+        => AskCourseAsync(courseCode, question, studentCode, attachmentStream: null, attachmentFileName: null, ct);
+
+    public async Task<string> AskCourseAsync(string courseCode, string question, string? studentCode = null, Stream? attachmentStream = null, string? attachmentFileName = null, CancellationToken ct = default)
     {
         var encodedCode = Uri.EscapeDataString(courseCode);
         using var formContent = new MultipartFormDataContent();
-        formContent.Add(new StringContent(question), "text");
+        formContent.Add(new StringContent(question ?? string.Empty), "text");
         formContent.Add(new StringContent("5"), "limit");
+        if (studentCode is not null)
+            formContent.Add(new StringContent(studentCode), "student_code");
 
-        var response = await _httpClient.PostAsync(
-            $"/api/v1/courses/{encodedCode}/answer", formContent, ct);
-
-        if (!response.IsSuccessStatusCode)
+        StreamContent? fileContent = null;
+        if (attachmentStream is not null && !string.IsNullOrWhiteSpace(attachmentFileName))
         {
-            var body = await response.Content.ReadAsStringAsync(ct);
-            _logger.LogError("Course question failed ({Status}): {Body}", response.StatusCode, body);
-
-            var signal = ExtractSignal(body);
-            throw new FaheemAiException($"Course question returned {response.StatusCode}: {body}", (int)response.StatusCode, signal);
+            var mimeType = GetMimeType(attachmentFileName);
+            fileContent = new StreamContent(attachmentStream);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(mimeType);
+            formContent.Add(fileContent, "files", Path.GetFileName(attachmentFileName));
         }
 
-        var result = await response.Content.ReadFromJsonAsync<CourseQuestionResponse>(JsonOptions, ct);
-        if (result is null)
-            throw new FaheemAiException("Course question returned null response.");
+        try
+        {
+            var response = await _httpClient.PostAsync(
+                $"/api/v1/courses/{encodedCode}/answer", formContent, ct);
 
-        return result.Answer;
+            if (!response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync(ct);
+                _logger.LogError("Course question failed ({Status}): {Body}", response.StatusCode, body);
+
+                var signal = ExtractSignal(body);
+                throw new FaheemAiException($"Course question returned {response.StatusCode}: {body}", (int)response.StatusCode, signal);
+            }
+
+            var result = await response.Content.ReadFromJsonAsync<CourseQuestionResponse>(JsonOptions, ct);
+            if (result is null)
+                throw new FaheemAiException("Course question returned null response.");
+
+            return result.Answer;
+        }
+        finally
+        {
+            fileContent?.Dispose();
+        }
     }
 
     private static string? ExtractSignal(string responseBody)

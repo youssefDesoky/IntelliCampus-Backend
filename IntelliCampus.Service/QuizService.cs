@@ -246,7 +246,7 @@ public class QuizService : IQuizService
                 NotificationType.NewQuizPosted,
                 $"A new quiz \"{quiz.Title}\" has been posted. Due: {quiz.DueDate:g}",
                 "New Quiz Available",
-                $"/courses/{parsedCourseId}/quizzes/practice?quizId={quiz.QuizId}");
+                $"/courses/{parsedCourseId}/quizzes");
         }
 
         var spec = new QuizSpec(quiz.QuizId);
@@ -319,7 +319,7 @@ public class QuizService : IQuizService
         {
             var existingQuestions = await QuestionsRepo.GetAllAsync(new QuestionsByQuizSpec(quizId), asNoTracking: true);
             var existingPoints = existingQuestions.Sum(q => q.Points);
-            if (dto.MaxGrade.Value != existingPoints)
+            if (existingPoints > 0 && dto.MaxGrade.Value != existingPoints)
                 throw new InvalidOperationException($"Max grade must equal the total question points ({existingPoints}). Got: {dto.MaxGrade.Value}.");
             quiz.MaxGrade = dto.MaxGrade.Value;
             quiz.TotalMarks = (int)dto.MaxGrade.Value;
@@ -895,7 +895,7 @@ public class QuizService : IQuizService
         {
             var submission = submissions.GetValueOrDefault(quiz.QuizId);
 
-            if (submission is not null)
+            if (submission is not null && submission.Score is not null)
             {
                 history.Add(new QuizHistoryItemDto
                 {
@@ -909,6 +909,41 @@ public class QuizService : IQuizService
                     DueDate = quiz.DueDate,
                     Status = "Completed"
                 });
+            }
+            else if (submission is not null && submission.Score is null)
+            {
+                var timeLimit = submission.StartedAt.HasValue
+                    ? submission.StartedAt.Value.AddMinutes(quiz.DurationMinutes)
+                    : quiz.DueDate;
+
+                if (now <= timeLimit)
+                {
+                    upcoming.Add(new QuizUpcomingItemDto
+                    {
+                        Id = quiz.QuizId.ToString(),
+                        Title = quiz.Title,
+                        Description = quiz.Description,
+                        MaxScore = quiz.MaxGrade,
+                        DurationMinutes = quiz.DurationMinutes,
+                        StartDate = quiz.StartDate,
+                        DueDate = quiz.DueDate,
+                        Status = "Active"
+                    });
+                }
+                else
+                {
+                    upcoming.Add(new QuizUpcomingItemDto
+                    {
+                        Id = quiz.QuizId.ToString(),
+                        Title = quiz.Title,
+                        Description = quiz.Description,
+                        MaxScore = quiz.MaxGrade,
+                        DurationMinutes = quiz.DurationMinutes,
+                        StartDate = quiz.StartDate,
+                        DueDate = quiz.DueDate,
+                        Status = "Missed"
+                    });
+                }
             }
             else if (now < quiz.StartDate)
             {

@@ -45,6 +45,16 @@ public class BylawService : IBylawService
     private IGenericRepository<Admin, int> Admins
         => _unitOfWork.GetRepository<Admin, int>();
 
+    private const string BylawListCacheVersionKey = "__bylaw_list_cache_version";
+
+    private int GetBylawListCacheVersion() =>
+        _cache.TryGetValue(BylawListCacheVersionKey, out int version) ? version : 0;
+
+    private void InvalidateBylawListCache()
+    {
+        _cache.Set(BylawListCacheVersionKey, GetBylawListCacheVersion() + 1);
+    }
+
     public async Task<BylawDto?> GetByIdAsync(int bylawId)
     {
         var spec = new BylawSpec(bylawId);
@@ -59,25 +69,26 @@ public class BylawService : IBylawService
         return MapToDto(bylaw);
     }
 
-    public async Task<PaginatedResult<BylawDto>> GetAllAsync(BylawQueryParams queryParams)
+   public async Task<PaginatedResult<BylawDto>> GetAllAsync(BylawQueryParams queryParams)
     {
-        if (_adminContext.IsAdmin)
-            queryParams.FacultyId = await _adminContext.GetFacultyIdAsync();
+    if (_adminContext.IsAdmin)
+        queryParams.FacultyId = await _adminContext.GetFacultyIdAsync();
 
-        var cacheKey = $"bylaws_{queryParams.Type ?? "all"}_{queryParams.FacultyId ?? 0}_{queryParams.PageIndex}_{queryParams.PageSize}";
-        return await _cache.GetOrCreateAsync(cacheKey, async entry =>
-        {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
-            var spec = new BylawSpec(queryParams);
-            var bylaws = await Bylaws.GetAllAsync(spec, asNoTracking: true);
-            var dataToReturn = bylaws.Select(MapToDto).ToList();
+    var version = GetBylawListCacheVersion();
+    var cacheKey = $"bylaws_v{version}_{queryParams.Type ?? "all"}_{queryParams.Search ?? ""}_{queryParams.FacultyId ?? 0}_{queryParams.PageIndex}_{queryParams.PageSize}";
+    return await _cache.GetOrCreateAsync(cacheKey, async entry =>
+    {
+        entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
+        var spec = new BylawSpec(queryParams);
+        var bylaws = await Bylaws.GetAllAsync(spec, asNoTracking: true);
+        var dataToReturn = bylaws.Select(MapToDto).ToList();
 
-            var countSpec = new BylawCountSpec(queryParams);
-            var totalCount = await Bylaws.CountAsync(countSpec);
+        var countSpec = new BylawCountSpec(queryParams);
+        var totalCount = await Bylaws.CountAsync(countSpec);
 
-            return new PaginatedResult<BylawDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
-        });
-    }
+        return new PaginatedResult<BylawDto>(queryParams.PageIndex, dataToReturn.Count, totalCount, dataToReturn);
+    });
+  }
 
     public async Task<BylawDto> CreateAsync(CreateBylawDto dto, int adminId)
     {
@@ -124,6 +135,7 @@ public class BylawService : IBylawService
 
         Bylaws.Add(bylaw);
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return MapToDto(bylaw);
     }
@@ -143,6 +155,7 @@ public class BylawService : IBylawService
         bylaw.FileName = file.FileName;
 
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return MapToDto(bylaw);
     }
@@ -198,6 +211,7 @@ public class BylawService : IBylawService
 
         Bylaws.Delete(bylaw);
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return true;
     }
@@ -213,6 +227,7 @@ public class BylawService : IBylawService
 
         bylaw.IsActive = !bylaw.IsActive;
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return true;
     }
@@ -241,6 +256,7 @@ public class BylawService : IBylawService
             .ToList();
 
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return MapToDto(bylaw);
     }
@@ -267,6 +283,7 @@ public class BylawService : IBylawService
             .ToList();
 
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return MapToDto(bylaw);
     }
@@ -291,6 +308,7 @@ public class BylawService : IBylawService
             .ToList();
 
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return MapToDto(bylaw);
     }
@@ -317,6 +335,7 @@ public class BylawService : IBylawService
             .ToList();
 
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return MapToDto(bylaw);
     }
@@ -335,6 +354,7 @@ public class BylawService : IBylawService
             bylaw.Settings.MinCreditHoursForGraduationProject = dto.MinCreditHoursForGraduationProject.Value;
 
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return MapToDto(bylaw);
     }
@@ -363,6 +383,7 @@ public class BylawService : IBylawService
             bylaw.Type = parsedType;
 
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return MapToDto(bylaw);
     }
@@ -389,6 +410,7 @@ public class BylawService : IBylawService
             bylaw.Settings.HasComprehensiveExam = dto.HasComprehensiveExam.Value;
 
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return MapToDto(bylaw);
     }
@@ -409,6 +431,7 @@ public class BylawService : IBylawService
             bylaw.MinPassingGradeSortOrder = dto.MinPassingGradeSortOrder.Value;
 
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return MapToDto(bylaw);
     }
@@ -427,6 +450,7 @@ public class BylawService : IBylawService
             bylaw.Settings.ProbationRegistrationLimit = dto.ProbationRegistrationLimit.Value;
 
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return MapToDto(bylaw);
     }
@@ -445,6 +469,7 @@ public class BylawService : IBylawService
             bylaw.Settings.FinalExamGrade = dto.FinalExamGrade.Value;
 
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return MapToDto(bylaw);
     }
@@ -482,6 +507,7 @@ public class BylawService : IBylawService
 
         BylawCourses.Add(bylawCourse);
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return MapToBylawCourseDto(bylawCourse, course, null);
     }
@@ -506,6 +532,7 @@ public class BylawService : IBylawService
 
         BylawCourses.Delete(bylawCourse);
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return true;
     }
@@ -548,6 +575,7 @@ public class BylawService : IBylawService
         }
 
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         var refreshedBc = await BylawCourses.GetByIdAsync(bcSpec);
         var course = await Courses.GetByIdAsync(bylawCourse.CourseId);
@@ -580,6 +608,7 @@ public class BylawService : IBylawService
 
         BylawCourses.Update(bylawCourse);
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         var course = await Courses.GetByIdAsync(bylawCourse.CourseId);
         return MapToBylawCourseDto(bylawCourse, course, null);
@@ -596,6 +625,7 @@ public class BylawService : IBylawService
 
         BylawCourses.Update(bylawCourse);
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         var course = await Courses.GetByIdAsync(bylawCourse.CourseId);
         return MapToBylawCourseDto(bylawCourse, course, null);
@@ -789,6 +819,7 @@ public class BylawService : IBylawService
             bylaw.Settings.MaxGradeOnRetake = dto.MaxGradeOnRetake;
 
         await _unitOfWork.SaveChangesAsync();
+        InvalidateBylawListCache();
 
         return MapToDto(bylaw);
     }

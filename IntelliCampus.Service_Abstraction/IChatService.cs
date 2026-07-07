@@ -13,6 +13,6 @@ public interface IChatService
     Task<ChatMessageDto?> PinMessageAsync(string userId, string messageId);
     Task<ChatMessageDto?> UnpinMessageAsync(string userId, string messageId);
     Task<ChatMessageDto> GenerateFahimReplyAsync(string senderId, string question, CancellationToken ct = default);
-    Task<ChatMessageDto> GenerateFahimCourseReplyAsync(string senderId, string courseCode, string courseName, string question, CancellationToken ct = default);
+    Task<ChatMessageDto> GenerateFahimCourseReplyAsync(string senderId, string courseCode, string courseName, string question, System.IO.Stream? attachmentStream = null, string? attachmentFileName = null, CancellationToken ct = default);
     Task<ChatMessageDto> GenerateFahimFallbackReplyAsync(string senderId, Exception? error = null, CancellationToken ct = default);
 }
