@@ -24,7 +24,11 @@ internal sealed class StudentCourseIdsSpec : BaseSpecifications<StudentCourse>
         : base(sc => studentIds.Contains(sc.StudentId) && sc.Status == status) { }
 
     public StudentCourseIdsSpec(List<string> semesters)
-        : base(sc => semesters.Contains(sc.Semester)) { }
+        : base(sc => semesters.Contains(sc.Semester))
+    {
+        AddInclude("Course.Department");
+        AddInclude("Student.User");
+    }
 
     public StudentCourseIdsSpec(int classId, string byClass)
         : base(sc => sc.ClassId == classId) { }

@@ -4,8 +4,6 @@ public class StudentAllocationDto
 {
     public int StudentId { get; set; }
     public string StudentName { get; set; } = null!;
-    public int SpecializationId { get; set; }
-    public string SpecializationName { get; set; } = null!;
     public int DepartmentId { get; set; }
     public string DepartmentName { get; set; } = null!;
 }

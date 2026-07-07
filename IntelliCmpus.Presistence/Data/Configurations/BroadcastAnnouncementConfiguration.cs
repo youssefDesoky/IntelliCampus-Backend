@@ -18,5 +18,15 @@ public class BroadcastAnnouncementConfiguration : IEntityTypeConfiguration<Broad
             .WithMany()
             .HasForeignKey(b => b.SenderId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(b => b.Faculty)
+            .WithMany()
+            .HasForeignKey(b => b.FacultyId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Property(b => b.Audience).HasConversion<int>().IsRequired();
+        builder.Property(b => b.TargetStudentType).HasConversion<int>();
+
+        builder.HasIndex(b => new { b.FacultyId, b.Audience });
     }
 }

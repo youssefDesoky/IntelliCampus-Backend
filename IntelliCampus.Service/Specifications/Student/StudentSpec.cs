@@ -12,7 +12,6 @@ namespace IntelliCampus.Service.Specifications
             AddInclude(s => s.User.Faculty!);
             AddInclude(s => s.Department!);
             AddInclude(s => s.Bylaw!);
-            AddInclude(s => s.Specialization!);
             AddInclude("User.UserRoles.Role");
             EnableSplitQuery();
         }
@@ -23,7 +22,6 @@ namespace IntelliCampus.Service.Specifications
             AddInclude(s => s.User.Faculty!);
             AddInclude(s => s.Department!);
             AddInclude(s => s.Bylaw!);
-            AddInclude(s => s.Specialization!);
             AddInclude("User.UserRoles.Role");
             EnableSplitQuery();
             AddOrderBy(s => s.User.FullName);
@@ -37,7 +35,6 @@ public StudentSpec(CourseQueryParams queryParams)
     AddInclude(s => s.Department!);
     AddInclude(s => s.Bylaw!);
     AddInclude("Bylaw.GradeScales");
-    AddInclude(s => s.Specialization!);
     AddInclude("User.UserRoles.Role");
 
     if (queryParams.IncludeCourses)
@@ -59,7 +56,6 @@ public StudentSpec(List<int> studentIds)
     AddInclude(s => s.User.Faculty!);
     AddInclude(s => s.Department!);
     AddInclude(s => s.Bylaw!);
-    AddInclude(s => s.Specialization!);
     AddInclude("User.UserRoles.Role");
     EnableSplitQuery();
 }
@@ -68,16 +64,17 @@ public StudentSpec(List<int> studentIds)
 public StudentSpec(bool hasGpa)
     : base(s => hasGpa && s.Gpa > 0) { }
 
-// Students with Bylaw include (for probation computation, no filter)
-public StudentSpec(bool includeBylaw, bool forProbation)
-    : base(null)
-{
-    if (includeBylaw)
+    // Students with User + Bylaw include (for probation & faculty-scoping)
+    public StudentSpec(bool includeBylaw, bool forProbation)
+        : base(null)
     {
-        AddInclude(s => s.Department!);
-        AddInclude(s => s.Bylaw!);
+        AddInclude("User");
+        if (includeBylaw)
+        {
+            AddInclude(s => s.Department!);
+            AddInclude(s => s.Bylaw!);
+        }
     }
-}
 
 // Batch load by IDs with User include (used by MapToDtoWithDetails)
 public StudentSpec(List<int> ids, bool lightweight)

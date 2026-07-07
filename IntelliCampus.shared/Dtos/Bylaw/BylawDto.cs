@@ -16,6 +16,8 @@ public class BylawDto
     public DateTime CreatedAt { get; set; }
     public int? UploadedByAdminId { get; set; }
     public string? UploadedByAdminName { get; set; }
+    public int? FacultyId { get; set; }
+    public string? FacultyName { get; set; }
     public int? StudentCount { get; set; }
     public List<GradeScaleItemDto>? GradeScales { get; set; }
     public List<LevelScaleItemDto>? LevelScales { get; set; }

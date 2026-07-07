@@ -22,13 +22,15 @@ public class BylawService : IBylawService
     private readonly IFileStorageService _fileStorageService;
     private readonly UrlResolver _urlResolver;
     private readonly IMemoryCache _cache;
+    private readonly ICurrentAdminContext _adminContext;
 
-    public BylawService(IUnitOfWork unitOfWork, IFileStorageService fileStorageService, UrlResolver urlResolver, IMemoryCache memoryCache)
+    public BylawService(IUnitOfWork unitOfWork, IFileStorageService fileStorageService, UrlResolver urlResolver, IMemoryCache memoryCache, ICurrentAdminContext adminContext)
     {
         _unitOfWork = unitOfWork;
         _fileStorageService = fileStorageService;
         _urlResolver = urlResolver;
         _cache = memoryCache;
+        _adminContext = adminContext;
     }
 
     private IGenericRepository<Bylaw, int> Bylaws
@@ -51,12 +53,18 @@ public class BylawService : IBylawService
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
 
+        if (_adminContext.IsAdmin)
+            await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
+
         return MapToDto(bylaw);
     }
 
     public async Task<PaginatedResult<BylawDto>> GetAllAsync(BylawQueryParams queryParams)
     {
-        var cacheKey = $"bylaws_{queryParams.Type ?? "all"}_{queryParams.PageIndex}_{queryParams.PageSize}";
+        if (_adminContext.IsAdmin)
+            queryParams.FacultyId = await _adminContext.GetFacultyIdAsync();
+
+        var cacheKey = $"bylaws_{queryParams.Type ?? "all"}_{queryParams.FacultyId ?? 0}_{queryParams.PageIndex}_{queryParams.PageSize}";
         return await _cache.GetOrCreateAsync(cacheKey, async entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
@@ -77,6 +85,8 @@ public class BylawService : IBylawService
         if (admin is null)
             throw new AdminNotFoundException(adminId);
 
+        var facultyId = await _adminContext.GetFacultyIdAsync();
+
         var bylaw = new Bylaw
         {
             Name = dto.Name,
@@ -87,6 +97,7 @@ public class BylawService : IBylawService
             IsActive = true,
             CreatedAt = EgyptTime.Now,
             UploadedByAdminId = adminId,
+            FacultyId = facultyId,
             GradeScales = dto.GradeScales?
                 .OrderBy(g => g.SortOrder)
                 .Select(g => new GradeScaleItem
@@ -107,8 +118,7 @@ public class BylawService : IBylawService
                         MinHours = l.MinHours
                     })
                     .ToList() ?? new(),
-                MinHoursToChooseDepartment = dto.MinHoursToChooseDepartment,
-                MinHoursToChooseSpecialization = dto.MinHoursToChooseSpecialization
+                MinHoursToChooseDepartment = dto.MinHoursToChooseDepartment
             }
         };
 
@@ -126,6 +136,8 @@ public class BylawService : IBylawService
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
 
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
+
         var fileUrl = await _fileStorageService.SaveAsync(file, "bylaws");
         bylaw.FileUrl = fileUrl;
         bylaw.FileName = file.FileName;
@@ -140,6 +152,9 @@ public class BylawService : IBylawService
         var bylaw = await Bylaws.GetByIdAsync(bylawId);
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
+
+        if (_adminContext.IsAdmin)
+            await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
 
         if (string.IsNullOrEmpty(bylaw.FileUrl))
             throw new InvalidOperationException("No document uploaded for this bylaw.");
@@ -159,6 +174,8 @@ public class BylawService : IBylawService
 
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
+
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
 
         if (bylaw.IsActive)
             throw new InvalidOperationException("Cannot delete active bylaw. Deactivate it first.");
@@ -192,6 +209,8 @@ public class BylawService : IBylawService
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
 
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
+
         bylaw.IsActive = !bylaw.IsActive;
         await _unitOfWork.SaveChangesAsync();
 
@@ -204,6 +223,8 @@ public class BylawService : IBylawService
 
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
+
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
 
         var existing = bylaw.GradeScales?.FirstOrDefault(g => g.SortOrder == sortOrder);
 
@@ -232,6 +253,8 @@ public class BylawService : IBylawService
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
 
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
+
         bylaw.GradeScales = items
             .OrderBy(i => i.SortOrder)
             .Select(i => new GradeScaleItem
@@ -256,6 +279,8 @@ public class BylawService : IBylawService
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
 
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
+
         bylaw.Settings.LevelScales = items
             .OrderBy(i => i.Level)
             .Select(i => new LevelScaleItem
@@ -276,6 +301,8 @@ public class BylawService : IBylawService
 
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
+
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
 
         var existing = bylaw.Settings.LevelScales?.FirstOrDefault(l => l.Level == level);
 
@@ -300,10 +327,10 @@ public class BylawService : IBylawService
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
 
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
+
         if (dto.MinHoursToChooseDepartment.HasValue)
             bylaw.Settings.MinHoursToChooseDepartment = dto.MinHoursToChooseDepartment.Value;
-        if (dto.MinHoursToChooseSpecialization.HasValue)
-            bylaw.Settings.MinHoursToChooseSpecialization = dto.MinHoursToChooseSpecialization.Value;
         if (dto.MinCreditHoursForGraduationProject.HasValue)
             bylaw.Settings.MinCreditHoursForGraduationProject = dto.MinCreditHoursForGraduationProject.Value;
 
@@ -317,6 +344,8 @@ public class BylawService : IBylawService
         var bylaw = await Bylaws.GetByIdAsync(bylawId);
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
+
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
 
         if (dto.Name is not null)
             bylaw.Name = dto.Name;
@@ -344,6 +373,8 @@ public class BylawService : IBylawService
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
 
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
+
         if (dto.TotalHoursToCompleteDegree.HasValue)
             bylaw.Settings.TotalHoursToCompleteDegree = dto.TotalHoursToCompleteDegree.Value;
         if (dto.MinCreditHoursPerSemester.HasValue)
@@ -368,6 +399,8 @@ public class BylawService : IBylawService
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
 
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
+
         if (dto.MinPassingGpa.HasValue)
             bylaw.MinPassingGpa = dto.MinPassingGpa.Value;
         if (dto.MinPassingGradeLetter is not null)
@@ -386,6 +419,8 @@ public class BylawService : IBylawService
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
 
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
+
         if (dto.ProbationThreshold.HasValue)
             bylaw.Settings.ProbationThreshold = dto.ProbationThreshold.Value;
         if (dto.ProbationRegistrationLimit.HasValue)
@@ -401,6 +436,8 @@ public class BylawService : IBylawService
         var bylaw = await Bylaws.GetByIdAsync(bylawId);
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
+
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
 
         if (dto.CourseWorkGrade.HasValue)
             bylaw.Settings.CourseWorkGrade = dto.CourseWorkGrade.Value;
@@ -421,6 +458,8 @@ public class BylawService : IBylawService
         var bylaw = await Bylaws.GetByIdAsync(bylawId);
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
+
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
 
         var bcSpec = new BylawCourseSpec(bylawId, dto.CourseId);
         var existingBc = await BylawCourses.GetByIdAsync(bcSpec);
@@ -602,11 +641,12 @@ public class BylawService : IBylawService
             CreatedAt = bylaw.CreatedAt,
             UploadedByAdminId = bylaw.UploadedByAdminId,
             UploadedByAdminName = bylaw.UploadedBy?.User?.FullName,
+            FacultyId = bylaw.FacultyId,
+            FacultyName = bylaw.Faculty?.FacultyName,
             StudentCount = bylaw.Students?.Count,
             GradeScales = MapGradeScales(bylaw),
             LevelScales = MapLevelScales(bylaw),
             MinHoursToChooseDepartment = bylaw.Settings.MinHoursToChooseDepartment,
-            MinHoursToChooseSpecialization = bylaw.Settings.MinHoursToChooseSpecialization,
             TotalHoursToCompleteDegree = bylaw.Settings.TotalHoursToCompleteDegree,
             MinCreditHoursPerSemester = bylaw.Settings.MinCreditHoursPerSemester,
             MaxCreditHoursPerSemester = bylaw.Settings.MaxCreditHoursPerSemester,
@@ -739,6 +779,8 @@ public class BylawService : IBylawService
         if (bylaw is null)
             throw new BylawNotFoundException(bylawId);
 
+        await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
+
         if (dto.MinPassingCourseworkGrade.HasValue)
             bylaw.Settings.MinPassingCourseworkGrade = dto.MinPassingCourseworkGrade.Value;
         if (dto.MinPassingFinalExamGrade.HasValue)
@@ -757,6 +799,9 @@ public class BylawService : IBylawService
         var bylaw = await Bylaws.GetByIdAsync(spec);
         if (bylaw?.BylawCourses is null)
             return new Dictionary<int, int>();
+
+        if (_adminContext.IsAdmin)
+            await _adminContext.EnsureCanAccessFacultyAsync(bylaw.FacultyId);
 
         var result = new Dictionary<int, int>();
         foreach (var bc in bylaw.BylawCourses)

@@ -1,434 +1,272 @@
 [
     {
-        "roomName": "Hall-1",
-        "roomNameAr": "قاعة 1",
-        "capacity": 100,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "CS-Hall-1",
+        "roomNameAr":  "قاعة 1 - حاسبات",
+        "capacity":  60,
+        "type":  "Hall",
+        "location":  "CS Building, First Floor",
+        "locationAr":  "مبنى الحاسبات، الطابق الأول",
+        "facultyName":  "Faculty of Computers and Artificial Intelligence"
     },
     {
-        "roomName": "Hall-2",
-        "roomNameAr": "قاعة 2",
-        "capacity": 80,
-        "type": "Hall",
-        "location": "Building A, Floor 2",
-        "locationAr": "مبنى أ، الطابق الثاني"
+        "roomName":  "CS-Hall-2",
+        "roomNameAr":  "قاعة 2 - حاسبات",
+        "capacity":  60,
+        "type":  "Hall",
+        "location":  "CS Building, Second Floor",
+        "locationAr":  "مبنى الحاسبات، الطابق الثاني",
+        "facultyName":  "Faculty of Computers and Artificial Intelligence"
     },
     {
-        "roomName": "Hall-3",
-        "roomNameAr": "قاعة 3",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 3",
-        "locationAr": "مبنى أ، الطابق الثالث"
+        "roomName":  "CS-Hall-3",
+        "roomNameAr":  "قاعة 3 - حاسبات",
+        "capacity":  60,
+        "type":  "Hall",
+        "location":  "CS Building, Third Floor",
+        "locationAr":  "مبنى الحاسبات، الطابق الثالث",
+        "facultyName":  "Faculty of Computers and Artificial Intelligence"
     },
     {
-        "roomName": "Lab-1",
-        "roomNameAr": "معمل 1",
-        "capacity": 30,
-        "type": "Lab",
-        "location": "Building B, Floor 1",
-        "locationAr": "مبنى ب، الطابق الأول"
+        "roomName":  "CS-Lab-1",
+        "roomNameAr":  "معمل 1 - حاسبات",
+        "capacity":  30,
+        "type":  "Lab",
+        "location":  "CS Building, Lab Wing",
+        "locationAr":  "مبنى الحاسبات، جناح المعامل",
+        "facultyName":  "Faculty of Computers and Artificial Intelligence"
     },
     {
-        "roomName": "Lab-2",
-        "roomNameAr": "معمل 2",
-        "capacity": 30,
-        "type": "Lab",
-        "location": "Building B, Floor 1",
-        "locationAr": "مبنى ب، الطابق الأول"
+        "roomName":  "CS-Lab-2",
+        "roomNameAr":  "معمل 2 - حاسبات",
+        "capacity":  30,
+        "type":  "Lab",
+        "location":  "CS Building, Lab Wing",
+        "locationAr":  "مبنى الحاسبات، جناح المعامل",
+        "facultyName":  "Faculty of Computers and Artificial Intelligence"
     },
     {
-        "roomName": "Lab-3",
-        "roomNameAr": "معمل 3",
-        "capacity": 25,
-        "type": "Lab",
-        "location": "Building B, Floor 2",
-        "locationAr": "مبنى ب، الطابق الثاني"
+        "roomName":  "CS-Lab-3",
+        "roomNameAr":  "معمل 3 - حاسبات",
+        "capacity":  30,
+        "type":  "Lab",
+        "location":  "CS Building, Lab Wing",
+        "locationAr":  "مبنى الحاسبات، جناح المعامل",
+        "facultyName":  "Faculty of Computers and Artificial Intelligence"
     },
     {
-        "roomName": "Room-101",
-        "roomNameAr": "غرفة 101",
-        "capacity": 50,
-        "type": "Classroom",
-        "location": "Building C, Floor 1",
-        "locationAr": "مبنى ج، الطابق الأول"
+        "roomName":  "CS-Room-1",
+        "roomNameAr":  "غرفة 1 - حاسبات",
+        "capacity":  45,
+        "type":  "Classroom",
+        "location":  "CS Building, First Floor",
+        "locationAr":  "مبنى الحاسبات، الطابق الأول",
+        "facultyName":  "Faculty of Computers and Artificial Intelligence"
     },
     {
-        "roomName": "Room-102",
-        "roomNameAr": "غرفة 102",
-        "capacity": 45,
-        "type": "Classroom",
-        "location": "Building C, Floor 1",
-        "locationAr": "مبنى ج، الطابق الأول"
+        "roomName":  "CS-Room-2",
+        "roomNameAr":  "غرفة 2 - حاسبات",
+        "capacity":  45,
+        "type":  "Classroom",
+        "location":  "CS Building, Second Floor",
+        "locationAr":  "مبنى الحاسبات، الطابق الثاني",
+        "facultyName":  "Faculty of Computers and Artificial Intelligence"
     },
     {
-        "roomName": "Room-103",
-        "roomNameAr": "غرفة 103",
-        "capacity": 40,
-        "type": "Classroom",
-        "location": "Building C, Floor 1",
-        "locationAr": "مبنى ج، الطابق الأول"
+        "roomName":  "CS-Room-3",
+        "roomNameAr":  "غرفة 3 - حاسبات",
+        "capacity":  45,
+        "type":  "Classroom",
+        "location":  "CS Building, Third Floor",
+        "locationAr":  "مبنى الحاسبات، الطابق الثالث",
+        "facultyName":  "Faculty of Computers and Artificial Intelligence"
     },
     {
-        "roomName": "Auditorium-A",
-        "roomNameAr": "مدرج أ",
-        "capacity": 200,
-        "type": "Hall",
-        "location": "Building A, Ground Floor",
-        "locationAr": "مبنى أ، الطابق الأرضي"
+        "roomName":  "CS-Room-4",
+        "roomNameAr":  "غرفة 4 - حاسبات",
+        "capacity":  45,
+        "type":  "Classroom",
+        "location":  "CS Building, Fourth Floor",
+        "locationAr":  "مبنى الحاسبات، الطابق الرابع",
+        "facultyName":  "Faculty of Computers and Artificial Intelligence"
     },
     {
-        "roomName": "Hall-10",
-        "roomNameAr": "قاعة 10",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Eng-Hall-1",
+        "roomNameAr":  "قاعة 1 - هندسة",
+        "capacity":  60,
+        "type":  "Hall",
+        "location":  "Engineering Building, First Floor",
+        "locationAr":  "مبنى الهندسة، الطابق الأول",
+        "facultyName":  "Faculty of Engineering"
     },
     {
-        "roomName": "Hall-11",
-        "roomNameAr": "قاعة 11",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Eng-Hall-2",
+        "roomNameAr":  "قاعة 2 - هندسة",
+        "capacity":  60,
+        "type":  "Hall",
+        "location":  "Engineering Building, Second Floor",
+        "locationAr":  "مبنى الهندسة، الطابق الثاني",
+        "facultyName":  "Faculty of Engineering"
     },
     {
-        "roomName": "Hall-12",
-        "roomNameAr": "قاعة 12",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Eng-Hall-3",
+        "roomNameAr":  "قاعة 3 - هندسة",
+        "capacity":  60,
+        "type":  "Hall",
+        "location":  "Engineering Building, Third Floor",
+        "locationAr":  "مبنى الهندسة، الطابق الثالث",
+        "facultyName":  "Faculty of Engineering"
     },
     {
-        "roomName": "Hall-13",
-        "roomNameAr": "قاعة 13",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Eng-Lab-1",
+        "roomNameAr":  "معمل 1 - هندسة",
+        "capacity":  30,
+        "type":  "Lab",
+        "location":  "Engineering Building, Lab Wing",
+        "locationAr":  "مبنى الهندسة، جناح المعامل",
+        "facultyName":  "Faculty of Engineering"
     },
     {
-        "roomName": "Hall-14",
-        "roomNameAr": "قاعة 14",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Eng-Lab-2",
+        "roomNameAr":  "معمل 2 - هندسة",
+        "capacity":  30,
+        "type":  "Lab",
+        "location":  "Engineering Building, Lab Wing",
+        "locationAr":  "مبنى الهندسة، جناح المعامل",
+        "facultyName":  "Faculty of Engineering"
     },
     {
-        "roomName": "Hall-15",
-        "roomNameAr": "قاعة 15",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Eng-Lab-3",
+        "roomNameAr":  "معمل 3 - هندسة",
+        "capacity":  30,
+        "type":  "Lab",
+        "location":  "Engineering Building, Lab Wing",
+        "locationAr":  "مبنى الهندسة، جناح المعامل",
+        "facultyName":  "Faculty of Engineering"
     },
     {
-        "roomName": "Hall-16",
-        "roomNameAr": "قاعة 16",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Eng-Lab-4",
+        "roomNameAr":  "معمل 4 - هندسة",
+        "capacity":  30,
+        "type":  "Lab",
+        "location":  "Engineering Building, Lab Wing",
+        "locationAr":  "مبنى الهندسة، جناح المعامل",
+        "facultyName":  "Faculty of Engineering"
     },
     {
-        "roomName": "Hall-17",
-        "roomNameAr": "قاعة 17",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Eng-Room-1",
+        "roomNameAr":  "غرفة 1 - هندسة",
+        "capacity":  45,
+        "type":  "Classroom",
+        "location":  "Engineering Building, First Floor",
+        "locationAr":  "مبنى الهندسة، الطابق الأول",
+        "facultyName":  "Faculty of Engineering"
     },
     {
-        "roomName": "Hall-18",
-        "roomNameAr": "قاعة 18",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Eng-Room-2",
+        "roomNameAr":  "غرفة 2 - هندسة",
+        "capacity":  45,
+        "type":  "Classroom",
+        "location":  "Engineering Building, Second Floor",
+        "locationAr":  "مبنى الهندسة، الطابق الثاني",
+        "facultyName":  "Faculty of Engineering"
     },
     {
-        "roomName": "Hall-19",
-        "roomNameAr": "قاعة 19",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Eng-Room-3",
+        "roomNameAr":  "غرفة 3 - هندسة",
+        "capacity":  45,
+        "type":  "Classroom",
+        "location":  "Engineering Building, Third Floor",
+        "locationAr":  "مبنى الهندسة، الطابق الثالث",
+        "facultyName":  "Faculty of Engineering"
     },
     {
-        "roomName": "Hall-20",
-        "roomNameAr": "قاعة 20",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Sci-Hall-1",
+        "roomNameAr":  "قاعة 1 - علوم",
+        "capacity":  60,
+        "type":  "Hall",
+        "location":  "Science Building, First Floor",
+        "locationAr":  "مبنى العلوم، الطابق الأول",
+        "facultyName":  "Faculty of Science"
     },
     {
-        "roomName": "Hall-21",
-        "roomNameAr": "قاعة 21",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Sci-Hall-2",
+        "roomNameAr":  "قاعة 2 - علوم",
+        "capacity":  60,
+        "type":  "Hall",
+        "location":  "Science Building, Second Floor",
+        "locationAr":  "مبنى العلوم، الطابق الثاني",
+        "facultyName":  "Faculty of Science"
     },
     {
-        "roomName": "Hall-22",
-        "roomNameAr": "قاعة 22",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Sci-Hall-3",
+        "roomNameAr":  "قاعة 3 - علوم",
+        "capacity":  60,
+        "type":  "Hall",
+        "location":  "Science Building, Third Floor",
+        "locationAr":  "مبنى العلوم، الطابق الثالث",
+        "facultyName":  "Faculty of Science"
     },
     {
-        "roomName": "Hall-23",
-        "roomNameAr": "قاعة 23",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Sci-Lab-1",
+        "roomNameAr":  "معمل 1 - علوم",
+        "capacity":  30,
+        "type":  "Lab",
+        "location":  "Science Building, Lab Wing",
+        "locationAr":  "مبنى العلوم، جناح المعامل",
+        "facultyName":  "Faculty of Science"
     },
     {
-        "roomName": "Hall-24",
-        "roomNameAr": "قاعة 24",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Sci-Lab-2",
+        "roomNameAr":  "معمل 2 - علوم",
+        "capacity":  30,
+        "type":  "Lab",
+        "location":  "Science Building, Lab Wing",
+        "locationAr":  "مبنى العلوم، جناح المعامل",
+        "facultyName":  "Faculty of Science"
     },
     {
-        "roomName": "Hall-25",
-        "roomNameAr": "قاعة 25",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Sci-Lab-3",
+        "roomNameAr":  "معمل 3 - علوم",
+        "capacity":  30,
+        "type":  "Lab",
+        "location":  "Science Building, Lab Wing",
+        "locationAr":  "مبنى العلوم، جناح المعامل",
+        "facultyName":  "Faculty of Science"
     },
     {
-        "roomName": "Hall-26",
-        "roomNameAr": "قاعة 26",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Sci-Lab-4",
+        "roomNameAr":  "معمل 4 - علوم",
+        "capacity":  30,
+        "type":  "Lab",
+        "location":  "Science Building, Lab Wing",
+        "locationAr":  "مبنى العلوم، جناح المعامل",
+        "facultyName":  "Faculty of Science"
     },
     {
-        "roomName": "Hall-27",
-        "roomNameAr": "قاعة 27",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Sci-Room-1",
+        "roomNameAr":  "غرفة 1 - علوم",
+        "capacity":  45,
+        "type":  "Classroom",
+        "location":  "Science Building, First Floor",
+        "locationAr":  "مبنى العلوم، الطابق الأول",
+        "facultyName":  "Faculty of Science"
     },
     {
-        "roomName": "Hall-28",
-        "roomNameAr": "قاعة 28",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Sci-Room-2",
+        "roomNameAr":  "غرفة 2 - علوم",
+        "capacity":  45,
+        "type":  "Classroom",
+        "location":  "Science Building, Second Floor",
+        "locationAr":  "مبنى العلوم، الطابق الثاني",
+        "facultyName":  "Faculty of Science"
     },
     {
-        "roomName": "Hall-29",
-        "roomNameAr": "قاعة 29",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-30",
-        "roomNameAr": "قاعة 30",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-31",
-        "roomNameAr": "قاعة 31",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-32",
-        "roomNameAr": "قاعة 32",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-33",
-        "roomNameAr": "قاعة 33",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-34",
-        "roomNameAr": "قاعة 34",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-35",
-        "roomNameAr": "قاعة 35",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-37",
-        "roomNameAr": "قاعة 37",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-38",
-        "roomNameAr": "قاعة 38",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-39",
-        "roomNameAr": "قاعة 39",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-4",
-        "roomNameAr": "قاعة 4",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-40",
-        "roomNameAr": "قاعة 40",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-41",
-        "roomNameAr": "قاعة 41",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-42",
-        "roomNameAr": "قاعة 42",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-43",
-        "roomNameAr": "قاعة 43",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-44",
-        "roomNameAr": "قاعة 44",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-45",
-        "roomNameAr": "قاعة 45",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-46",
-        "roomNameAr": "قاعة 46",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-47",
-        "roomNameAr": "قاعة 47",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-48",
-        "roomNameAr": "قاعة 48",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-5",
-        "roomNameAr": "قاعة 5",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-6",
-        "roomNameAr": "قاعة 6",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-7",
-        "roomNameAr": "قاعة 7",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-8",
-        "roomNameAr": "قاعة 8",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
-    },
-    {
-        "roomName": "Hall-9",
-        "roomNameAr": "قاعة 9",
-        "capacity": 60,
-        "type": "Hall",
-        "location": "Building A, Floor 1",
-        "locationAr": "مبنى أ، الطابق الأول"
+        "roomName":  "Sci-Room-3",
+        "roomNameAr":  "غرفة 3 - علوم",
+        "capacity":  45,
+        "type":  "Classroom",
+        "location":  "Science Building, Third Floor",
+        "locationAr":  "مبنى العلوم، الطابق الثالث",
+        "facultyName":  "Faculty of Science"
     }
 ]

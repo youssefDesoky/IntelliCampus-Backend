@@ -70,12 +70,6 @@ public sealed class QuizNotFoundException(int id) : NotFoundException($"Quiz Wit
         public RoomNotFoundException(string message) : base(message) { }
     }
 
-    public sealed class SpecializationNotFoundException : NotFoundException
-    {
-        public SpecializationNotFoundException(int id) : base($"Specialization With Id {id} Is Not Found") { }
-        public SpecializationNotFoundException(string message) : base(message) { }
-    }
-
     public sealed class MeetingNotFoundException : NotFoundException
     {
         public MeetingNotFoundException(int id) : base($"Meeting With Id {id} Is Not Found") { }
@@ -232,12 +226,6 @@ public sealed class NoteNotFoundException : NotFoundException
 {
     public NoteNotFoundException(int id) : base($"Note With Id {id} Is Not Found") { }
     public NoteNotFoundException(string message) : base(message) { }
-}
-
-public sealed class SpecializationPreferenceNotFoundException : NotFoundException
-{
-    public SpecializationPreferenceNotFoundException(int studentId) : base($"No specialization preferences found for student {studentId}") { }
-    public SpecializationPreferenceNotFoundException(string message) : base(message) { }
 }
 
 public sealed class BroadcastAnnouncementNotFoundException : NotFoundException

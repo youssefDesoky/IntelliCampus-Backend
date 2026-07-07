@@ -36,11 +36,6 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .HasForeignKey(s => s.BylawId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasOne(s => s.Specialization)
-            .WithMany(sp => sp.Students)
-            .HasForeignKey(s => s.SpecializationId)
-            .OnDelete(DeleteBehavior.SetNull);
-
         builder.Property(s => s.StudentType)
             .HasConversion<int>()
             .HasDefaultValue(IntelliCampus.Domain.Entities.Enums.StudentType.Bachelor);
@@ -50,6 +45,5 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
         builder.HasIndex(s => s.StudentType);
         builder.HasIndex(s => s.StudentCode);
         builder.HasIndex(s => s.BylawId);
-        builder.HasIndex(s => s.SpecializationId);
     }
 }

@@ -29,5 +29,12 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
         builder.Property(r => r.IsExamHall)
             .IsRequired()
             .HasDefaultValue(false);
+
+        builder.HasIndex(r => r.FacultyId);
+
+        builder.HasOne(r => r.Faculty)
+            .WithMany(f => f.Rooms)
+            .HasForeignKey(r => r.FacultyId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

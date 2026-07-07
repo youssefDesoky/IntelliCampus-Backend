@@ -35,8 +35,6 @@ public class ExcelImportService : IExcelImportService
         => _unitOfWork.GetRepository<CoursePrerequisite, int>();
     private IGenericRepository<Room, int> Rooms
         => _unitOfWork.GetRepository<Room, int>();
-    private IGenericRepository<Specialization, int> Specializations
-        => _unitOfWork.GetRepository<Specialization, int>();
 
     public ExcelImportService(
         IStudentService studentService,
@@ -154,7 +152,7 @@ public class ExcelImportService : IExcelImportService
                 await ImportInstructorRowAsync(row, facultyId);
                 break;
             case ImportEntityType.Rooms:
-                await ImportRoomRowAsync(row);
+                await ImportRoomRowAsync(row, facultyId ?? throw new InvalidOperationException("FacultyId is required for room import."));
                 break;
             case ImportEntityType.Departments:
                 await ImportDepartmentRowAsync(row, facultyId);
@@ -196,16 +194,6 @@ public class ExcelImportService : IExcelImportService
 
     private async Task ImportInstructorRowAsync(IXLRangeRow row, int? facultyId)
     {
-        var specializationName = GetOptionalString(row, 10);
-        int? specializationId = null;
-        if (!string.IsNullOrWhiteSpace(specializationName))
-        {
-            var specializations = await Specializations.GetAllAsync(specifications: null, asNoTracking: true);
-            var spec = specializations.FirstOrDefault(s =>
-                s.Name.Equals(specializationName, StringComparison.OrdinalIgnoreCase));
-            specializationId = spec?.SpecializationId;
-        }
-
         var dto = new CreateInstructorDto
         {
             NationalId = row.Cell(1).GetString().Trim(),
@@ -217,9 +205,8 @@ public class ExcelImportService : IExcelImportService
             Nationality = GetOptionalString(row, 7),
             InstructorCode = GetOptionalString(row, 8),
             InstructorRole = GetOptionalString(row, 9),
-            SpecializationId = specializationId,
-            DepartmentName = GetOptionalString(row, 11),
-            HireDate = GetOptionalString(row, 12),
+            DepartmentName = GetOptionalString(row, 10),
+            HireDate = GetOptionalString(row, 11),
             FacultyId = facultyId
         };
 
@@ -288,7 +275,7 @@ public class ExcelImportService : IExcelImportService
         }
     }
 
-    private async Task ImportRoomRowAsync(IXLRangeRow row)
+    private async Task ImportRoomRowAsync(IXLRangeRow row, int facultyId)
     {
         var dto = new CreateRoomDto
         {
@@ -297,7 +284,8 @@ public class ExcelImportService : IExcelImportService
             Capacity = int.Parse(row.Cell(3).GetString().Trim()),
             Type = GetOptionalString(row, 4),
             Location = GetOptionalString(row, 5),
-            LocationAr = GetOptionalString(row, 6)
+            LocationAr = GetOptionalString(row, 6),
+            FacultyId = facultyId
         };
 
         await _roomService.CreateAsync(dto);

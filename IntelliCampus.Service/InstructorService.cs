@@ -12,12 +12,13 @@ using IntelliCampus.Service.Resolvers;
 
 namespace IntelliCampus.Service;
 
-public class InstructorService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration, UrlResolver urlResolver) : IInstructorService
+public class InstructorService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration, UrlResolver urlResolver, ICurrentAdminContext adminContext) : IInstructorService
 {
     private readonly IPasswordService _passwordService = passwordService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICodeGenerationService _codeGeneration = codeGeneration;
     private readonly UrlResolver _urlResolver = urlResolver;
+    private readonly ICurrentAdminContext _adminContext = adminContext;
 
     private IGenericRepository<Instructor, int> Instructors
         => _unitOfWork.GetRepository<Instructor, int>();
@@ -39,11 +40,17 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         if (instructor is null)
             throw new InstructorNotFoundException(instructorId);
 
+        if (_adminContext.IsAdmin)
+            await _adminContext.EnsureCanAccessByUserFacultyAsync(instructor.UserId);
+
         return MapToDto(instructor);
     }
 
     public async Task<PaginatedResult<InstructorDto>> GetAllAsync(InstructorQueryParams queryParams)
     {
+        if (_adminContext.IsAdmin)
+            queryParams.FacultyId = await _adminContext.GetFacultyIdAsync();
+
         var spec = new InstructorSpec(queryParams);
         var instructors = await Instructors.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = instructors.Select(MapToDto).ToList();
@@ -56,6 +63,9 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
 
     public async Task<IEnumerable<InstructorDto>> GetProfessorsAsync(InstructorQueryParams queryParams)
     {
+        if (_adminContext.IsAdmin)
+            queryParams.FacultyId = await _adminContext.GetFacultyIdAsync();
+
         var spec = new ProfessorsSpec(queryParams);
         var professors = await Instructors.GetAllAsync(spec, asNoTracking: true);
         return professors.Select(MapToDto);
@@ -63,6 +73,8 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
 
     public async Task<InstructorDto> CreateAsync(CreateInstructorDto dto, int? creatorUserId = null)
     {
+        await _adminContext.EnsureAdminHasFacultyAsync();
+
         if (await Users.AnyAsync(u => u.NationalId == dto.NationalId))
             throw new InvalidOperationException("National ID already exists.");
 
@@ -116,6 +128,8 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         if (instructor is null)
             throw new InstructorNotFoundException(instructorId);
 
+        await _adminContext.EnsureCanAccessByUserFacultyAsync(instructorId);
+
         if (dto.Email is not null && dto.Email != instructor.User.Email)
         {
             if (await Users.AnyAsync(u => u.Email == dto.Email && u.UserId != instructorId))
@@ -130,7 +144,6 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         if (dto.Nationality is not null) instructor.User.Nationality = dto.Nationality;
         if (dto.InstructorCode is not null) instructor.InstructorCode = dto.InstructorCode;
         if (dto.InstructorRole is not null) instructor.InstructorRole = ParseInstructorRole(dto.InstructorRole);
-        if (dto.SpecializationId.HasValue) instructor.SpecializationId = dto.SpecializationId.Value;
         if (dto.FacultyId.HasValue) instructor.User.FacultyId = dto.FacultyId;
         if (dto.Status is not null) instructor.Status = ParseStatus(dto.Status);
         if (dto.OfficeHoursRoomId.HasValue) instructor.OfficeHoursRoomId = dto.OfficeHoursRoomId;
@@ -206,6 +219,8 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
         if (instructor is null)
             throw new InstructorNotFoundException(instructorId);
 
+        await _adminContext.EnsureCanAccessByUserFacultyAsync(instructorId);
+
         Instructors.Delete(instructor);
         await _unitOfWork.SaveChangesAsync();
     }
@@ -275,9 +290,6 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             Nationality = instructor.User.Nationality,
             InstructorCode = instructor.InstructorCode,
             InstructorRole = instructor.InstructorRole?.ToString(),
-            SpecializationId = instructor.SpecializationId,
-            SpecializationName = instructor.Specialization?.Name,
-            SpecializationNameAr = instructor.Specialization?.NameAr,
             DepartmentId = instructor.DepartmentId,
             DepartmentName = instructor.Department?.DepartmentName,
             DepartmentNameAr = instructor.Department?.DepartmentNameAr,
@@ -339,7 +351,6 @@ public class InstructorService(IUnitOfWork unitOfWork, IPasswordService password
             User = user,
             InstructorCode = code,
             InstructorRole = ParseInstructorRole(dto.InstructorRole),
-            SpecializationId = dto.SpecializationId,
             DepartmentId = departmentId,
             HireDate = hireDate,
             Status = ParseStatus(dto.Status),

@@ -15,6 +15,7 @@ public class AttendanceSpec : BaseSpecifications<Attendance>
         : base(a => a.Date >= from && a.Date <= to)
     {
         AddOrderBy(a => a.Date);
+        AddInclude("Student.User");
     }
 
     // Session attendance — by session and student IDs

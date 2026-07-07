@@ -73,9 +73,7 @@ public class StudentsController : ControllerBase
     public async Task<ActionResult<StudentDto>> UpdateLevel(int id, [FromBody] UpdateStudentLevelDto dto)
     {
         var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
-        if (!userRoles.Contains(UserRole.SuperAdmin.ToString()) &&
-            !userRoles.Contains(UserRole.Admin_Bachelor.ToString()) &&
-            !userRoles.Contains(UserRole.Admin_Diploma.ToString()))
+        if (!userRoles.Any(r => r == UserRole.SuperAdmin.ToString() || r.StartsWith("Admin_")))
             return Forbid();
 
         var student = await _studentService.UpdateLevelAsync(id, dto.Level);

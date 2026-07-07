@@ -183,7 +183,6 @@ builder.Services.AddScoped<IFriendService, FriendService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<UrlResolver>();
-builder.Services.AddScoped<ISpecializationService, SpecializationService>();
 builder.Services.AddScoped<IBylawService, BylawService>();
 builder.Services.AddScoped<IExamService, ExamService>();
 builder.Services.AddScoped<IAutoExamSchedulingService, AutoExamSchedulingService>();
@@ -202,9 +201,11 @@ builder.Services.AddScoped<IInstructorAnalyticsService, InstructorAnalyticsServi
 builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<IInternalMessageService, InternalMessageService>();
 builder.Services.AddScoped<IInboxHubService, InboxHubService>();
-builder.Services.AddScoped<ISpecializationPreferenceService, SpecializationPreferenceService>();
-builder.Services.AddScoped<ISpecializationAllocationService, SpecializationAllocationService>();
-builder.Services.AddHostedService<IntelliCampus.Service.SpecializationAllocationHostedService>();
+builder.Services.AddScoped<IDepartmentPreferenceService, DepartmentPreferenceService>();
+builder.Services.AddScoped<IDepartmentAllocationService, DepartmentAllocationService>();
+builder.Services.AddHostedService<IntelliCampus.Service.DepartmentAllocationHostedService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentAdminContext, CurrentAdminContext>();
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = actionContext =>

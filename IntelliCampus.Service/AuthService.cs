@@ -64,6 +64,7 @@ public class AuthService(
             FullName = user.FullName,
             Email = user.Email,
             Roles = user.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
+            FacultyId = user.FacultyId,
             ProfileImage = _urlResolver.ResolveProfile(user.ProfileImage),
             MustChangePassword = user.MustChangePassword,
             Notifications = (await _notificationService.GetUnreadAsync(userId, new NotificationQueryParams())).ToList()
@@ -99,9 +100,6 @@ public class AuthService(
         {
             dto.InstructorCode = instructorProfile.InstructorCode;
             dto.InstructorRole = instructorProfile.InstructorRole?.ToString();
-            dto.SpecializationId = instructorProfile.SpecializationId;
-            dto.SpecializationName = instructorProfile.Specialization?.Name;
-            dto.SpecializationNameAr = instructorProfile.Specialization?.NameAr;
             dto.DepartmentId = instructorProfile.DepartmentId;
             dto.DepartmentName = instructorProfile.Department?.DepartmentName;
             dto.DepartmentNameAr = instructorProfile.Department?.DepartmentNameAr;
@@ -156,9 +154,6 @@ public class AuthService(
         {
             profileDto.InstructorCode = instructorProfile.InstructorCode;
             profileDto.InstructorRole = instructorProfile.InstructorRole?.ToString();
-            profileDto.SpecializationId = instructorProfile.SpecializationId;
-            profileDto.SpecializationName = instructorProfile.Specialization?.Name;
-            profileDto.SpecializationNameAr = instructorProfile.Specialization?.NameAr;
             profileDto.DepartmentId = instructorProfile.DepartmentId;
             profileDto.DepartmentName = instructorProfile.Department?.DepartmentName;
             profileDto.HireDate = instructorProfile.HireDate?.ToString("dd MM yyyy");
@@ -204,9 +199,6 @@ public class AuthService(
         {
             dto.InstructorCode = instructorProfile.InstructorCode;
             dto.InstructorRole = instructorProfile.InstructorRole?.ToString();
-            dto.SpecializationId = instructorProfile.SpecializationId;
-            dto.SpecializationName = instructorProfile.Specialization?.Name;
-            dto.SpecializationNameAr = instructorProfile.Specialization?.NameAr;
             dto.DepartmentId = instructorProfile.DepartmentId;
             dto.DepartmentName = instructorProfile.Department?.DepartmentName;
             dto.HireDate = instructorProfile.HireDate?.ToString("dd MM yyyy");

@@ -4,6 +4,7 @@
     "departmentNameAr": "نظم المعلومات",
     "description": "Information Systems Department — General Program",
     "descriptionAr": "قسم نظم المعلومات — البرنامج العام",
+    "facultyName": "Faculty of Computers and Artificial Intelligence",
     "headEmail": "202601001@intellicampus.online"
   },
   {
@@ -11,20 +12,87 @@
     "departmentNameAr": "علوم البيانات",
     "description": "Data Science Department — Credit Hours Program",
     "descriptionAr": "قسم علوم البيانات — برنامج الساعات المعتمدة",
-    "headEmail": "202601005@intellicampus.online"
+    "facultyName": "Faculty of Computers and Artificial Intelligence",
+    "headEmail": "202601006@intellicampus.online"
   },
   {
     "departmentName": "Software Engineering",
     "departmentNameAr": "هندسة البرمجيات",
     "description": "Software Engineering Department — Credit Hours Program",
     "descriptionAr": "قسم هندسة البرمجيات — برنامج الساعات المعتمدة",
-    "headEmail": "202601007@intellicampus.online"
+    "facultyName": "Faculty of Computers and Artificial Intelligence",
+    "headEmail": "202601011@intellicampus.online"
   },
   {
     "departmentName": "Networks and Cyber Security",
     "departmentNameAr": "الشبكات وأمن السيبراني",
     "description": "Networks and Cyber Security Department — Credit Hours Program",
     "descriptionAr": "قسم الشبكات وأمن السيبراني — برنامج الساعات المعتمدة",
-    "headEmail": "202601009@intellicampus.online"
+    "facultyName": "Faculty of Computers and Artificial Intelligence",
+    "headEmail": "202601016@intellicampus.online"
+  },
+  {
+    "departmentName": "Civil Engineering",
+    "departmentNameAr": "الهندسة المدنية",
+    "description": "Civil Engineering Department — Credit Hours Program",
+    "descriptionAr": "قسم الهندسة المدنية — برنامج الساعات المعتمدة",
+    "facultyName": "Faculty of Engineering",
+    "headEmail": "202601021@intellicampus.online"
+  },
+  {
+    "departmentName": "Mechanical Engineering",
+    "departmentNameAr": "الهندسة الميكانيكية",
+    "description": "Mechanical Engineering Department — Credit Hours Program",
+    "descriptionAr": "قسم الهندسة الميكانيكية — برنامج الساعات المعتمدة",
+    "facultyName": "Faculty of Engineering",
+    "headEmail": "202601026@intellicampus.online"
+  },
+  {
+    "departmentName": "Electrical Engineering",
+    "departmentNameAr": "الهندسة الكهربائية",
+    "description": "Electrical Engineering Department — Credit Hours Program",
+    "descriptionAr": "قسم الهندسة الكهربائية — برنامج الساعات المعتمدة",
+    "facultyName": "Faculty of Engineering",
+    "headEmail": "202601031@intellicampus.online"
+  },
+  {
+    "departmentName": "Chemical Engineering",
+    "departmentNameAr": "الهندسة الكيميائية",
+    "description": "Chemical Engineering Department — Credit Hours Program",
+    "descriptionAr": "قسم الهندسة الكيميائية — برنامج الساعات المعتمدة",
+    "facultyName": "Faculty of Engineering",
+    "headEmail": "202601036@intellicampus.online"
+  },
+  {
+    "departmentName": "Physics",
+    "departmentNameAr": "الفيزياء",
+    "description": "Physics Department — Credit Hours Program",
+    "descriptionAr": "قسم الفيزياء — برنامج الساعات المعتمدة",
+    "facultyName": "Faculty of Science",
+    "headEmail": "202601041@intellicampus.online"
+  },
+  {
+    "departmentName": "Chemistry",
+    "departmentNameAr": "الكيمياء",
+    "description": "Chemistry Department — Credit Hours Program",
+    "descriptionAr": "قسم الكيمياء — برنامج الساعات المعتمدة",
+    "facultyName": "Faculty of Science",
+    "headEmail": "202601046@intellicampus.online"
+  },
+  {
+    "departmentName": "Mathematics",
+    "departmentNameAr": "الرياضيات",
+    "description": "Mathematics Department — Credit Hours Program",
+    "descriptionAr": "قسم الرياضيات — برنامج الساعات المعتمدة",
+    "facultyName": "Faculty of Science",
+    "headEmail": "202601051@intellicampus.online"
+  },
+  {
+    "departmentName": "Biological Sciences",
+    "departmentNameAr": "العلوم البيولوجية",
+    "description": "Biological Sciences Department — Credit Hours Program",
+    "descriptionAr": "قسم العلوم البيولوجية — برنامج الساعات المعتمدة",
+    "facultyName": "Faculty of Science",
+    "headEmail": "202601056@intellicampus.online"
   }
 ]

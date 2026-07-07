@@ -24,8 +24,7 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<Session> Sessions { get; set; }
     public DbSet<Department> Departments { get; set; }
     public DbSet<Room> Rooms { get; set; }
-    public DbSet<Specialization> Specializations { get; set; }
-    public DbSet<SpecializationPrerequisite> SpecializationPrerequisites { get; set; }
+    public DbSet<DepartmentPreference> DepartmentPreferences { get; set; }
     public DbSet<Grade> Grades { get; set; }
     public DbSet<CourseWorkWeight> CourseWorkWeights { get; set; }
     public DbSet<GradeComplaint> GradeComplaints { get; set; }
@@ -115,9 +114,6 @@ public class IntelliCampusDbContext : DbContext
     public DbSet<ElectiveBucket> ElectiveBuckets { get; set; }
     public DbSet<ElectiveBucketCourse> ElectiveBucketCourses { get; set; }
     public DbSet<StudentElectiveBucketProgress> StudentElectiveBucketProgresses { get; set; }
-
-    // Specialization Preference
-    public DbSet<SpecializationPreference> SpecializationPreferences { get; set; }
 
     // Inbox
     public DbSet<InternalMessage> InternalMessages { get; set; }

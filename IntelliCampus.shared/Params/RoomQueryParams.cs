@@ -4,6 +4,7 @@ public class RoomQueryParams
 {
     public string? Search { get; set; }
     public string? RoomType { get; set; }
+    public int? FacultyId { get; set; }
 
     private int _pageIndex = 1;
     public int PageIndex

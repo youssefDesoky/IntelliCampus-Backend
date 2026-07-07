@@ -13,11 +13,13 @@ public class DashboardService : IDashboardService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IGradeService _gradeService;
+    private readonly ICurrentAdminContext _adminContext;
 
-    public DashboardService(IUnitOfWork unitOfWork, IGradeService gradeService)
+    public DashboardService(IUnitOfWork unitOfWork, IGradeService gradeService, ICurrentAdminContext adminContext)
     {
         _unitOfWork = unitOfWork;
         _gradeService = gradeService;
+        _adminContext = adminContext;
     }
 
     public async Task<DashboardStatsDto> GetStatsAsync()
@@ -50,7 +52,7 @@ public class DashboardService : IDashboardService
 
         var gpa = await _gradeService.GetCumulativeGpaAsync(studentId);
         var (activeCourses, attendanceRate, studentCourses, _, latestNews, attendances, grades)
-            = await LoadStudentDashboardDataAsync(studentId);
+            = await LoadStudentDashboardDataAsync(studentId, student.StudentType);
         return BuildStudentDashboardDto(student, activeCourses, attendanceRate, studentCourses, latestNews, attendances, grades, gpa);
     }
 
@@ -62,7 +64,7 @@ public class DashboardService : IDashboardService
         List<LatestNewsItemDto> LatestNews,
         List<Attendance> Attendances,
         List<Grade> Grades
-    )> LoadStudentDashboardDataAsync(int studentId)
+    )> LoadStudentDashboardDataAsync(int studentId, StudentType studentType)
     {
         var studentCourseRepo = _unitOfWork.GetRepository<StudentCourse, (int, int)>();
         var attendanceRepo = _unitOfWork.GetRepository<Attendance, int>();
@@ -81,8 +83,13 @@ public class DashboardService : IDashboardService
         var studentCourses = (await studentCourseRepo.GetAllAsync(new StudentCourseIdsSpec(studentId), asNoTracking: true)).ToList();
         var courseIds = studentCourses.Select(sc => sc.CourseId).ToList();
 
+        // Load student's faculty for scoped broadcast feed
+        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(studentId);
+        var facultyId = user?.FacultyId;
+
         var broadcastRepo = _unitOfWork.GetRepository<BroadcastAnnouncement, int>();
-        var latestNews = (await broadcastRepo.GetAllAsync(new BroadcastSpec(), asNoTracking: true))
+        var latestNews = (await broadcastRepo.GetAllAsync(
+            new BroadcastSpec(facultyId, studentType), asNoTracking: true))
             .Select(b => new LatestNewsItemDto
             {
                 Id = b.Id,
@@ -193,7 +200,12 @@ public class DashboardService : IDashboardService
                 : 0.0;
         }
 
-        var latestNews = (await broadcastRepo.GetAllAsync(new BroadcastSpec(), asNoTracking: true))
+        // Load instructor's faculty for scoped broadcast feed
+        var user = await _unitOfWork.GetRepository<User, int>().GetByIdAsync(instructorId);
+        var facultyId = user?.FacultyId;
+
+        var latestNews = (await broadcastRepo.GetAllAsync(
+            new BroadcastSpec(facultyId, forInstructors: true), asNoTracking: true))
             .Select(b => new LatestNewsItemDto
             {
                 Id = b.Id,
@@ -278,6 +290,8 @@ public class DashboardService : IDashboardService
         List<LatestNewsItemDto> LatestNews
     )> LoadAdminDashboardDataAsync()
     {
+        var scope = await GetAdminScopeAsync();
+
         var studentsRepo = _unitOfWork.GetRepository<Student, int>();
         var instructorsRepo = _unitOfWork.GetRepository<Instructor, int>();
         var coursesRepo = _unitOfWork.GetRepository<Course, int>();
@@ -289,35 +303,103 @@ public class DashboardService : IDashboardService
         var studentCourseRepo = _unitOfWork.GetRepository<StudentCourse, (int, int)>();
         var broadcastRepo = _unitOfWork.GetRepository<BroadcastAnnouncement, int>();
 
-        var stats = new AdminStatsDto
+        // Stats counts
+        if (scope.InstructorsOnly)
         {
-            TotalStudents = await studentsRepo.CountAsync(_ => true),
-            Instructors = await instructorsRepo.CountAsync(_ => true),
-            Courses = await coursesRepo.CountAsync(_ => true),
-            Departments = await departmentsRepo.CountAsync(_ => true),
-            ActiveClasses = await classesRepo.CountAsync(c => c.Course.Status == CourseStatus.Active),
-            Rooms = await roomsRepo.CountAsync(_ => true),
+            var stats = new AdminStatsDto
+            {
+                TotalStudents = 0,
+                Instructors = await instructorsRepo.CountAsync(i => scope.FacultyId == null || i.User.FacultyId == scope.FacultyId),
+                Courses = await coursesRepo.CountAsync(c => scope.FacultyId == null || c.Department.FacultyId == scope.FacultyId),
+                Departments = await departmentsRepo.CountAsync(d => scope.FacultyId == null || d.FacultyId == scope.FacultyId),
+                ActiveClasses = await classesRepo.CountAsync(c => (scope.FacultyId == null || c.Course.Department.FacultyId == scope.FacultyId) && c.Course.Status == CourseStatus.Active),
+                Rooms = await roomsRepo.CountAsync(r => scope.FacultyId == null || r.FacultyId == scope.FacultyId),
+            };
+
+            var courseStatusBreakdown = new List<CourseStatusPointDto>
+            {
+                new() { Name = "Active",   Value = await coursesRepo.CountAsync(c => (scope.FacultyId == null || c.Department.FacultyId == scope.FacultyId) && c.Status == CourseStatus.Active) },
+                new() { Name = "Inactive", Value = await coursesRepo.CountAsync(c => (scope.FacultyId == null || c.Department.FacultyId == scope.FacultyId) && c.Status == CourseStatus.Inactive) },
+            };
+
+            var facultyId = scope.FacultyId;
+            var allCourses = (await coursesRepo.GetAllAsync(new CourseBasicSpec(), asNoTracking: true))
+                .Where(c => facultyId == null || c.Department?.FacultyId == facultyId)
+                .ToDictionary(c => c.CourseId);
+            var allDepartments = (await departmentsRepo.GetAllAsync(specifications: null, asNoTracking: true))
+                .Where(d => facultyId == null || d.FacultyId == facultyId)
+                .ToDictionary(d => d.DepartmentId);
+
+            return (stats, courseStatusBreakdown, [], [], allCourses, allDepartments, [], [], await GetAdminLatestNewsAsync(scope));
+        }
+
+        var statTotalStudents = scope.StudentTypeFilter.HasValue
+            ? await studentsRepo.CountAsync(s => (scope.FacultyId == null || s.User.FacultyId == scope.FacultyId) && s.StudentType == scope.StudentTypeFilter.Value)
+            : await studentsRepo.CountAsync(s => scope.FacultyId == null || s.User.FacultyId == scope.FacultyId);
+
+        var stats2 = new AdminStatsDto
+        {
+            TotalStudents = statTotalStudents,
+            Instructors = await instructorsRepo.CountAsync(i => scope.FacultyId == null || i.User.FacultyId == scope.FacultyId),
+            Courses = await coursesRepo.CountAsync(c => scope.FacultyId == null || c.Department.FacultyId == scope.FacultyId),
+            Departments = await departmentsRepo.CountAsync(d => scope.FacultyId == null || d.FacultyId == scope.FacultyId),
+            ActiveClasses = await classesRepo.CountAsync(c => (scope.FacultyId == null || c.Course.Department.FacultyId == scope.FacultyId) && c.Course.Status == CourseStatus.Active),
+            Rooms = await roomsRepo.CountAsync(r => scope.FacultyId == null || r.FacultyId == scope.FacultyId),
         };
 
-        var courseStatusBreakdown = new List<CourseStatusPointDto>
+        var courseStatusBreakdown2 = new List<CourseStatusPointDto>
         {
-            new() { Name = "Active",   Value = await coursesRepo.CountAsync(c => c.Status == CourseStatus.Active) },
-            new() { Name = "Inactive", Value = await coursesRepo.CountAsync(c => c.Status == CourseStatus.Inactive) },
+            new() { Name = "Active",   Value = await coursesRepo.CountAsync(c => (scope.FacultyId == null || c.Department.FacultyId == scope.FacultyId) && c.Status == CourseStatus.Active) },
+            new() { Name = "Inactive", Value = await coursesRepo.CountAsync(c => (scope.FacultyId == null || c.Department.FacultyId == scope.FacultyId) && c.Status == CourseStatus.Inactive) },
         };
 
+        // Load courses & departments with includes (navigations loaded for in-memory filtering)
+        var allCourses2 = (await coursesRepo.GetAllAsync(new CourseBasicSpec(), asNoTracking: true))
+            .Where(c => scope.FacultyId == null || c.Department?.FacultyId == scope.FacultyId)
+            .ToDictionary(c => c.CourseId);
+        var allDepartments2 = (await departmentsRepo.GetAllAsync(specifications: null, asNoTracking: true))
+            .Where(d => scope.FacultyId == null || d.FacultyId == scope.FacultyId)
+            .ToDictionary(d => d.DepartmentId);
+
+        // Attendances & grades with includes loaded, filter by faculty + student-type
         var now = EgyptTime.Now;
         var yearAgo = now.AddYears(-1);
-        var attendances = (await attendanceRepo.GetAllAsync(new AttendanceSpec(yearAgo, now), asNoTracking: true)).ToList();
-        var grades = (await gradeRepo.GetAllAsync(new GradeSpec(yearAgo, now), asNoTracking: true)).ToList();
 
-        var allCourses = (await coursesRepo.GetAllAsync(new CourseBasicSpec(), asNoTracking: true)).ToDictionary(c => c.CourseId);
-        var allDepartments = (await departmentsRepo.GetAllAsync(specifications: null, asNoTracking: true)).ToDictionary(d => d.DepartmentId);
-        var recentSemesters = GetRecentSemesters(3);
-        var studentCourses = (await studentCourseRepo.GetAllAsync(new StudentCourseIdsSpec(recentSemesters), asNoTracking: true)).ToList();
+        var rawAttendances = await attendanceRepo.GetAllAsync(new AttendanceSpec(yearAgo, now), asNoTracking: true);
+        var rawGrades = await gradeRepo.GetAllAsync(new GradeSpec(yearAgo, now), asNoTracking: true);
+        var rawStudentCourses = await studentCourseRepo.GetAllAsync(new StudentCourseIdsSpec(GetRecentSemesters(3)), asNoTracking: true);
 
-        var allStudents = await studentsRepo.GetAllAsync(new StudentSpec(true, true), asNoTracking: true);
+        var facultyId2 = scope.FacultyId;
+        var studentTypeFilter = scope.StudentTypeFilter;
 
-        var latestNews = (await broadcastRepo.GetAllAsync(new BroadcastSpec(), asNoTracking: true))
+        var attendances = rawAttendances
+            .Where(a => (facultyId2 == null || a.Student?.User?.FacultyId == facultyId2)
+                     && (studentTypeFilter == null || a.Student?.StudentType == studentTypeFilter))
+            .ToList();
+
+        var grades = rawGrades
+            .Where(g => (facultyId2 == null || g.Student?.User?.FacultyId == facultyId2)
+                     && (studentTypeFilter == null || g.Student?.StudentType == studentTypeFilter))
+            .ToList();
+
+        var studentCourses = rawStudentCourses
+            .Where(sc => allCourses2.ContainsKey(sc.CourseId) && (studentTypeFilter == null || sc.Student?.StudentType == studentTypeFilter))
+            .ToList();
+
+        var allStudents = (await studentsRepo.GetAllAsync(new StudentSpec(true, true), asNoTracking: true))
+            .Where(s => (facultyId2 == null || s.User?.FacultyId == facultyId2)
+                     && (studentTypeFilter == null || s.StudentType == studentTypeFilter))
+            .ToList();
+
+        return (stats2, courseStatusBreakdown2, attendances, grades, allCourses2, allDepartments2, studentCourses, allStudents, await GetAdminLatestNewsAsync(scope));
+    }
+
+    private async Task<List<LatestNewsItemDto>> GetAdminLatestNewsAsync(AdminScope scope)
+    {
+        var broadcastRepo = _unitOfWork.GetRepository<BroadcastAnnouncement, int>();
+        var facultyId = scope.FacultyId;
+        var news = await broadcastRepo.GetAllAsync(new BroadcastSpec(facultyId), asNoTracking: true);
+        return news
             .Select(b => new LatestNewsItemDto
             {
                 Id = b.Id,
@@ -328,8 +410,33 @@ public class DashboardService : IDashboardService
                 UpdatedAt = b.UpdatedAt,
             })
             .ToList();
+    }
 
-        return (stats, courseStatusBreakdown, attendances, grades, allCourses, allDepartments, studentCourses, allStudents, latestNews);
+    private sealed record AdminScope(
+        int? FacultyId,
+        StudentType? StudentTypeFilter,  // null = all student types
+        bool InstructorsOnly,            // true for Admin_AcademicStaff
+        bool FacultyWide                 // true for SuperAdmin (see all student-types in faculty)
+    );
+
+    private async Task<AdminScope> GetAdminScopeAsync()
+    {
+        if (!_adminContext.IsAdmin)
+            return new AdminScope(null, null, false, false);
+
+        var facultyId = await _adminContext.GetFacultyIdAsync();
+
+        if (_adminContext.IsSuperAdmin)
+            return new AdminScope(facultyId, null, false, true);
+
+        if (_adminContext.IsAcademicStaff)
+            return new AdminScope(facultyId, null, true, false);
+
+        if (_adminContext.AdminStudentType is { } studentType)
+            return new AdminScope(facultyId, studentType, false, false);
+
+        // Fallback — admin with unrecognised role
+        return new AdminScope(facultyId, null, false, false);
     }
 
     private static (
@@ -438,18 +545,19 @@ public class DashboardService : IDashboardService
         }
 
         var studentsList = allStudents.ToList();
-        var averageGpa = studentsList.Count > 0
-            ? Math.Round(studentsList.Where(s => s.Gpa > 0).Average(s => s.Gpa), 2)
+        var studentsWithGpa = studentsList.Where(s => s.Gpa > 0).ToList();
+        var averageGpa = studentsWithGpa.Count > 0
+            ? Math.Round(studentsWithGpa.Average(s => s.Gpa), 2)
             : 0.0;
 
         var probationStudents = studentsList
             .Where(s => s.Gpa > 0
-                && s.Bylaw?.Settings.ProbationThreshold is not null
-                && (decimal)s.Gpa < s.Bylaw.Settings.ProbationThreshold.Value)
+                && s.Bylaw?.Settings?.ProbationThreshold is not null
+                && (decimal)s.Gpa < s.Bylaw.Settings!.ProbationThreshold!.Value)
             .ToHashSet();
 
         var probationHeatmap = studentsList
-            .Where(s => s.Level.HasValue && s.Department is not null && s.Bylaw?.Settings.ProbationThreshold is not null)
+            .Where(s => s.Level.HasValue && s.Department is not null && s.Bylaw?.Settings?.ProbationThreshold is not null)
             .GroupBy(s => new { Dept = s.Department!.DepartmentName, Level = s.Level!.Value })
             .Select(g => new ProbationDeptPointDto
             {
@@ -507,15 +615,42 @@ public class DashboardService : IDashboardService
 
     public async Task<LatestNewsItemDto> PublishNewsAsync(int senderId, string title)
     {
+        var scope = await GetAdminScopeAsync();
+
         var broadcast = new BroadcastAnnouncement
         {
             SenderId = senderId,
             Title = title,
             CreatedAt = EgyptTime.Now,
+            FacultyId = scope.FacultyId,
         };
+
+        if (scope.FacultyWide)
+        {
+            broadcast.Audience = BroadcastAudience.All;
+            broadcast.TargetStudentType = null;
+        }
+        else if (scope.InstructorsOnly)
+        {
+            broadcast.Audience = BroadcastAudience.Instructors;
+            broadcast.TargetStudentType = null;
+        }
+        else if (scope.StudentTypeFilter is { } studentType)
+        {
+            broadcast.Audience = BroadcastAudience.Students;
+            broadcast.TargetStudentType = studentType;
+        }
+        else
+        {
+            broadcast.Audience = BroadcastAudience.All;
+            broadcast.TargetStudentType = null;
+        }
+
         var repo = _unitOfWork.GetRepository<BroadcastAnnouncement, int>();
         repo.Add(broadcast);
         await _unitOfWork.SaveChangesAsync();
+
+        // Reload with Faculty nav for potential future use
         return new LatestNewsItemDto
         {
             Id = broadcast.Id,

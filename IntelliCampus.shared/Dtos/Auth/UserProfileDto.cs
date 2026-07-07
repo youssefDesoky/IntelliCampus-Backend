@@ -16,9 +16,6 @@ public class UserProfileDto
     public string? FacultyNameAr { get; set; }
     public string? InstructorCode { get; set; }
     public string? InstructorRole { get; set; }
-    public int? SpecializationId { get; set; }
-    public string? SpecializationName { get; set; }
-    public string? SpecializationNameAr { get; set; }
     public int? DepartmentId { get; set; }
     public string? DepartmentName { get; set; }
     public string? DepartmentNameAr { get; set; }

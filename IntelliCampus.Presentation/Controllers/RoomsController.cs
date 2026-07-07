@@ -50,7 +50,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult<RoomDto>> Create([FromBody] CreateRoomDto dto)
     {
         var room = await _roomService.CreateAsync(dto);
@@ -58,7 +58,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<ActionResult<RoomDto>> Update(int id, [FromBody] UpdateRoomDto dto)
     {
         var room = await _roomService.UpdateAsync(id, dto);
@@ -66,7 +66,7 @@ public class RoomsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin")]
     public async Task<IActionResult> Delete(int id)
     {
         await _roomService.DeleteAsync(id);

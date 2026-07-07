@@ -12,6 +12,7 @@ namespace IntelliCampus.Service.Specifications
             return c =>
                 (!queryParams.CourseId.HasValue || c.CourseId == queryParams.CourseId.Value)
                 && (!queryParams.DepartmentId.HasValue || c.DepartmentId == queryParams.DepartmentId.Value)
+                && (!queryParams.FacultyId.HasValue || (c.Department != null && c.Department.FacultyId == queryParams.FacultyId.Value))
                 && (!queryParams.IsActiveOnly || c.Status == CourseStatus.Active)
                 && (string.IsNullOrEmpty(queryParams.Search)
                     || c.CourseName.Contains(queryParams.Search)

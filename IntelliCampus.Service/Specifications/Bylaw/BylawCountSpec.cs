@@ -12,7 +12,8 @@ internal class BylawCountSpec : BaseSpecifications<Bylaw>
                 || b.Type == Enum.Parse<BylawType>(queryParams.Type, true)) &&
             (string.IsNullOrEmpty(queryParams.Search)
                 || b.Name.Contains(queryParams.Search)
-                || (b.NameAr != null && b.NameAr.Contains(queryParams.Search))))
+                || (b.NameAr != null && b.NameAr.Contains(queryParams.Search))) &&
+            (!queryParams.FacultyId.HasValue || b.FacultyId == queryParams.FacultyId.Value))
     {
     }
 }

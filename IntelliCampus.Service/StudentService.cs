@@ -21,8 +21,9 @@ public class StudentService : IStudentService
     private readonly UrlResolver _urlResolver;
     private readonly IBylawService _bylawService;
     private readonly IGradeService _gradeService;
+    private readonly ICurrentAdminContext _adminContext;
 
-    public StudentService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration, UrlResolver urlResolver, IBylawService bylawService, IGradeService gradeService)
+    public StudentService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration, UrlResolver urlResolver, IBylawService bylawService, IGradeService gradeService, ICurrentAdminContext adminContext)
     {
         _unitOfWork = unitOfWork;
         _passwordService = passwordService;
@@ -30,6 +31,7 @@ public class StudentService : IStudentService
         _urlResolver = urlResolver;
         _bylawService = bylawService;
         _gradeService = gradeService;
+        _adminContext = adminContext;
     }
 
     private IGenericRepository<Student, int> Students
@@ -50,9 +52,6 @@ public class StudentService : IStudentService
     private IGenericRepository<Faculty, int> Faculties
         => _unitOfWork.GetRepository<Faculty, int>();
 
-    private IGenericRepository<Specialization, int> Specializations
-        => _unitOfWork.GetRepository<Specialization, int>();
-
     public async Task<StudentDto> GetByIdAsync(int studentId)
     {
         var spec = new StudentSpec(new CourseQueryParams { StudentId = studentId, IncludeCourses = true });
@@ -60,6 +59,10 @@ public class StudentService : IStudentService
 
         if (student is null)
             throw new StudentNotFoundException(studentId);
+
+        await _adminContext.EnsureCanAccessFacultyAsync(student.User.FacultyId);
+        if (_adminContext.AdminStudentType.HasValue && student.StudentType != _adminContext.AdminStudentType.Value)
+            throw new ForbiddenException("You can only manage students of your assigned type.");
 
         var effectiveCredits = student.BylawId is not null
             ? await _bylawService.GetEffectiveCreditHoursAsync(student.BylawId.Value, student.DepartmentId)
@@ -71,6 +74,13 @@ public class StudentService : IStudentService
 
     public async Task<PaginatedResult<StudentDto>> GetAllAsync(StudentQueryParams queryParams)
     {
+        if (_adminContext.IsAdmin)
+        {
+            queryParams.FacultyId = await _adminContext.GetFacultyIdAsync();
+            if (_adminContext.AdminStudentType.HasValue)
+                queryParams.Status = _adminContext.AdminStudentType.Value.ToString();
+        }
+
         var spec = new StudentSpec(queryParams);
         var students = await Students.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = students.Select(s => MapToDto(s)).ToList();
@@ -83,6 +93,8 @@ public class StudentService : IStudentService
 
     public async Task<StudentDto> CreateAsync(CreateStudentDto dto, int? creatorUserId = null)
     {
+        await _adminContext.EnsureAdminHasFacultyAsync();
+
         if (await Users.AnyAsync(u => u.NationalId == dto.NationalId))
             throw new InvalidOperationException("National ID already exists.");
 
@@ -104,13 +116,6 @@ public class StudentService : IStudentService
             var faculty = await Faculties.GetByIdAsync(facultyId.Value);
             if (faculty is null)
                 throw new InvalidOperationException($"Faculty with ID {facultyId.Value} not found.");
-        }
-
-        if (dto.SpecializationId.HasValue)
-        {
-            var spec = await Specializations.GetByIdAsync(dto.SpecializationId.Value);
-            if (spec is null)
-                throw new SpecializationNotFoundException(dto.SpecializationId.Value);
         }
 
         var (code, email, password) = await ResolveStudentCodeEmailPasswordAsync(dto, facultyId, enrollmentDate);
@@ -141,6 +146,10 @@ public class StudentService : IStudentService
         if (student is null)
             throw new StudentNotFoundException(studentId);
 
+        await _adminContext.EnsureCanAccessFacultyAsync(student.User.FacultyId);
+        if (_adminContext.AdminStudentType.HasValue && student.StudentType != _adminContext.AdminStudentType.Value)
+            throw new ForbiddenException("You can only manage students of your assigned type.");
+
         if (dto.Email is not null && dto.Email != student.User.Email)
         {
             if (await Users.AnyAsync(u => u.Email == dto.Email && u.UserId != studentId))
@@ -168,7 +177,6 @@ public class StudentService : IStudentService
 
         if (dto.Program.HasValue)
             student.Program = dto.Program;
-        if (dto.SpecializationId.HasValue) student.SpecializationId = dto.SpecializationId.Value;
         if (dto.ProfileImage is not null) student.User.ProfileImage = dto.ProfileImage == "" ? null : dto.ProfileImage;
 
         var enrollmentDate = ParseEnrollmentDate(dto.EnrollmentDate);
@@ -194,6 +202,10 @@ public class StudentService : IStudentService
         var student = await Students.GetByIdAsync(studentId);
         if (student is null) throw new StudentNotFoundException(studentId);
 
+        await _adminContext.EnsureCanAccessFacultyAsync(student.User.FacultyId);
+        if (_adminContext.AdminStudentType.HasValue && student.StudentType != _adminContext.AdminStudentType.Value)
+            throw new ForbiddenException("You can only manage students of your assigned type.");
+
         student.Level = level;
         await _unitOfWork.SaveChangesAsync();
 
@@ -207,6 +219,10 @@ public class StudentService : IStudentService
 
         if (student is null)
             throw new StudentNotFoundException(studentId);
+
+        await _adminContext.EnsureCanAccessFacultyAsync(student.User.FacultyId);
+        if (_adminContext.AdminStudentType.HasValue && student.StudentType != _adminContext.AdminStudentType.Value)
+            throw new ForbiddenException("You can only manage students of your assigned type.");
 
         var user = student.User;
         Students.Delete(student);
@@ -363,9 +379,6 @@ public class StudentService : IStudentService
                 && student.Bylaw?.Settings.ProbationThreshold is not null
                 && (decimal)gpa < student.Bylaw.Settings.ProbationThreshold.Value,
             Program = student.Program,
-            SpecializationId = student.SpecializationId,
-            SpecializationName = student.Specialization?.Name,
-            SpecializationNameAr = student.Specialization?.NameAr,
             StudentType = student.StudentType,
             ProfileImage = _urlResolver.ResolveProfile(student.User.ProfileImage),
             Roles = student.User!.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList(),
@@ -458,8 +471,7 @@ public class StudentService : IStudentService
             DepartmentId = departmentId,
             BylawId = bylawId,
             EnrollmentDate = enrollmentDate,
-            Program = dto.Program,
-            SpecializationId = dto.SpecializationId
+            Program = dto.Program
         };
     }
 

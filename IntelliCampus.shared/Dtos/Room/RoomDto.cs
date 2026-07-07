@@ -10,4 +10,6 @@ public class RoomDto
     public string? Location { get; set; }
     public string? LocationAr { get; set; }
     public bool IsExamHall { get; set; }
+    public int FacultyId { get; set; }
+    public string? FacultyName { get; set; }
 }
