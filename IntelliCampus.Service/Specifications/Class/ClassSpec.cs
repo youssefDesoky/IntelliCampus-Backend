@@ -37,6 +37,9 @@ namespace IntelliCampus.Service.Specifications
         }
 
         public ClassSpec(ClassQueryParams queryParams)
+            : base(c =>
+                (!queryParams.FacultyId.HasValue || c.Course!.Department!.FacultyId == queryParams.FacultyId.Value) &&
+                (string.IsNullOrEmpty(queryParams.Search) || c.GroupCode.Contains(queryParams.Search) || (c.Course!.CourseName != null && c.Course.CourseName.Contains(queryParams.Search))))
         {
             AddIncludes();
             EnableSplitQuery();

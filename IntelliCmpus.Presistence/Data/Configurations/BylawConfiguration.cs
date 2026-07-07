@@ -34,6 +34,11 @@ public class BylawConfiguration : IEntityTypeConfiguration<Bylaw>
             .HasForeignKey(b => b.UploadedByAdminId)
             .OnDelete(DeleteBehavior.SetNull);
 
+        builder.HasOne(b => b.Faculty)
+            .WithMany()
+            .HasForeignKey(b => b.FacultyId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         builder.OwnsMany(b => b.GradeScales, gbs =>
         {
             gbs.ToJson();

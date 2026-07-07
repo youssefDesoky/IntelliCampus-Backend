@@ -9,9 +9,10 @@ using IntelliCampus.Shared.Params;
 
 namespace IntelliCampus.Service;
 
-public class RoomService(IUnitOfWork unitOfWork) : IRoomService
+public class RoomService(IUnitOfWork unitOfWork, ICurrentAdminContext adminContext) : IRoomService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICurrentAdminContext _adminContext = adminContext;
 
     private IGenericRepository<Room, int> Rooms
         => _unitOfWork.GetRepository<Room, int>();
@@ -23,11 +24,17 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
         if (room is null)
             throw new RoomNotFoundException(roomId);
 
+        if (_adminContext.IsAdmin)
+            await _adminContext.EnsureCanAccessFacultyAsync(room.FacultyId);
+
         return MapToDto(room);
     }
 
     public async Task<PaginatedResult<RoomDto>> GetAllAsync(RoomQueryParams queryParams)
     {
+        if (_adminContext.IsAdmin)
+            queryParams.FacultyId = await _adminContext.GetFacultyIdAsync();
+
         var spec = new RoomSpec(queryParams);
         var rooms = await Rooms.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = rooms.Select(MapToDto).ToList();
@@ -40,6 +47,8 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
 
     public async Task<RoomDto> CreateAsync(CreateRoomDto dto)
     {
+        await _adminContext.EnsureAdminHasFacultyAsync();
+
         var room = new Room
         {
             RoomName = dto.RoomName,
@@ -48,7 +57,8 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
             Type = dto.Type,
             IsExamHall = dto.IsExamHall,
             Location = dto.Location,
-            LocationAr = dto.LocationAr
+            LocationAr = dto.LocationAr,
+            FacultyId = dto.FacultyId
         };
 
         Rooms.Add(room);
@@ -63,6 +73,8 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
 
         if (room is null)
             throw new RoomNotFoundException(roomId);
+
+        await _adminContext.EnsureCanAccessFacultyAsync(room.FacultyId);
 
         if (dto.RoomName is not null)
             room.RoomName = dto.RoomName;
@@ -81,6 +93,8 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
         if (dto.LocationAr is not null)
             room.LocationAr = dto.LocationAr;
 
+        room.FacultyId = dto.FacultyId;
+
         Rooms.Update(room);
         await _unitOfWork.SaveChangesAsync();
 
@@ -93,6 +107,8 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
 
         if (room is null)
             throw new RoomNotFoundException(roomId);
+
+        await _adminContext.EnsureCanAccessFacultyAsync(room.FacultyId);
 
         Rooms.Delete(room);
         await _unitOfWork.SaveChangesAsync();
@@ -109,7 +125,9 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
             Type = room.Type,
             Location = room.Location,
             LocationAr = room.LocationAr,
-            IsExamHall = room.IsExamHall
+            IsExamHall = room.IsExamHall,
+            FacultyId = room.FacultyId,
+            FacultyName = room.Faculty?.FacultyName
         };
     }
 }

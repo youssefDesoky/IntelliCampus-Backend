@@ -12,12 +12,13 @@ using IntelliCampus.Service.Resolvers;
 
 namespace IntelliCampus.Service;
 
-public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration, UrlResolver urlResolver) : IAdminService
+public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordService, ICodeGenerationService codeGeneration, UrlResolver urlResolver, ICurrentAdminContext adminContext) : IAdminService
 {
     private readonly IPasswordService _passwordService = passwordService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICodeGenerationService _codeGeneration = codeGeneration;
     private readonly UrlResolver _urlResolver = urlResolver;
+    private readonly ICurrentAdminContext _adminContext = adminContext;
     private IGenericRepository<Admin, int> Admins
         => _unitOfWork.GetRepository<Admin, int>();
 
@@ -38,11 +39,16 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         if (admin is null)
             throw new AdminNotFoundException(adminId);
 
+        await _adminContext.EnsureCanAccessFacultyAsync(admin.User.FacultyId);
+
         return MapToDto(admin);
     }
 
     public async Task<PaginatedResult<AdminDto>> GetAllAsync(AdminQueryParams queryParams)
     {
+        if (_adminContext.IsAdmin)
+            queryParams.FacultyId = await _adminContext.GetFacultyIdAsync();
+
         var spec = new AdminSpec(queryParams);
         var admins = await Admins.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = admins.Select(MapToDto).ToList();
@@ -55,6 +61,8 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
 
     public async Task<AdminDto> CreateAsync(CreateAdminDto dto, int? creatorUserId = null)
     {
+        await _adminContext.EnsureAdminHasFacultyAsync();
+
         if (await Users.AnyAsync(u => u.NationalId == dto.NationalId))
             throw new InvalidOperationException("National ID already exists.");
 
@@ -139,6 +147,8 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
         if (admin is null)
             throw new AdminNotFoundException(adminId);
 
+        await _adminContext.EnsureCanAccessFacultyAsync(admin.User.FacultyId);
+
         if (dto.Email is not null && dto.Email != admin.User.Email)
         {
             if (await Users.AnyAsync(u => u.Email == dto.Email && u.UserId != adminId))
@@ -189,6 +199,8 @@ public class AdminService(IUnitOfWork unitOfWork, IPasswordService passwordServi
 
         if (admin is null)
             throw new AdminNotFoundException(adminId);
+
+        await _adminContext.EnsureCanAccessFacultyAsync(admin.User.FacultyId);
 
         if (admin.User.UserRoles.Any(ur => ur.IsActive && ur.Role.RoleName == nameof(UserRole.SuperAdmin)))
             throw new InvalidOperationException("Cannot delete the SuperAdmin account.");

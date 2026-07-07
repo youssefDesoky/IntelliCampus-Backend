@@ -9,9 +9,10 @@ using IntelliCampus.Service.Exceptions;
 
 namespace IntelliCampus.Service;
 
-public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
+public class DepartmentService(IUnitOfWork unitOfWork, ICurrentAdminContext adminContext) : IDepartmentService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICurrentAdminContext _adminContext = adminContext;
 
     private IGenericRepository<Department, int> Departments
         => _unitOfWork.GetRepository<Department, int>();
@@ -30,11 +31,17 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
         if (department is null)
             throw new DepartmentNotFoundException(departmentId);
 
+        if (_adminContext.IsAdmin)
+            await _adminContext.EnsureCanAccessFacultyAsync(department.FacultyId);
+
         return MapToDto(department);
     }
 
     public async Task<PaginatedResult<DepartmentDto>> GetAllAsync(DepartmentQueryParams queryParams)
     {
+        if (_adminContext.IsAdmin)
+            queryParams.FacultyId = await _adminContext.GetFacultyIdAsync();
+
         var spec = new DepartmentSpec(queryParams);
         var departments = await Departments.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = departments.Select(MapToDto).ToList();
@@ -50,6 +57,8 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
 
     public async Task<DepartmentDto> CreateAsync(CreateDepartmentDto dto, int? creatorUserId = null)
     {
+        await _adminContext.EnsureAdminHasFacultyAsync();
+
         var facultyId = dto.FacultyId;
         if (facultyId is null && creatorUserId.HasValue)
         {
@@ -98,6 +107,8 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
         if (department is null)
             throw new DepartmentNotFoundException(departmentId);
 
+        await _adminContext.EnsureCanAccessFacultyAsync(department.FacultyId);
+
         if (dto.DepartmentName is not null)
             department.DepartmentName = dto.DepartmentName;
 
@@ -144,10 +155,7 @@ public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService
         if (department is null)
             throw new DepartmentNotFoundException(departmentId);
 
-        var specializationsRepo = _unitOfWork.GetRepository<Specialization, int>();
-        var hasSpecializations = await specializationsRepo.AnyAsync(s => s.DepartmentId == departmentId);
-        if (hasSpecializations)
-            throw new InvalidOperationException("Cannot delete department with existing specializations. Remove all specializations first.");
+        await _adminContext.EnsureCanAccessFacultyAsync(department.FacultyId);
 
         var electiveBucketsRepo = _unitOfWork.GetRepository<ElectiveBucket, int>();
         var hasElectiveBuckets = await electiveBucketsRepo.AnyAsync(e => e.DepartmentId == departmentId);

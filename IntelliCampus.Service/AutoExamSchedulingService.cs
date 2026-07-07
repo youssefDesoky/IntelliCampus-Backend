@@ -330,32 +330,70 @@ public class AutoExamSchedulingService : IAutoExamSchedulingService
                     var users = (await UsersRepo.GetAllAsync(new UsersByIdsSpec(enrolledIds), asNoTracking: true))
                         .ToDictionary(u => u.UserId);
                     var orderedStudents = enrolledIds
-                        .Select(id => (Id: id, Name: users.GetValueOrDefault(id)?.FullName ?? $"#{id}"))
+                        .Select(id => (Id: id,
+                                       Name: users.GetValueOrDefault(id)?.FullName ?? $"#{id}",
+                                       FacultyId: users.GetValueOrDefault(id)?.FacultyId))
                         .OrderBy(s => s.Name)
                         .ToList();
 
-                    int studentIdx = 0, seatNum = 1;
-                    var claimed = new HashSet<int>(usedAtSlot);
-                    foreach (var hall in freeRooms)
+                    // Group students by their faculty so each group is seated
+                    // in rooms belonging to the same faculty.
+                    var byFaculty = orderedStudents.GroupBy(s => s.FacultyId).ToList();
+
+                    var roomRemaining = freeRooms.ToDictionary(r => r.RoomId, r => r.Capacity);
+                    int seatNum = 1;
+
+                    foreach (var group in byFaculty)
                     {
-                        roomName ??= hall.RoomName;
-                        for (int i = 0; i < hall.Capacity && studentIdx < orderedStudents.Count; i++)
+                        var facultyId = group.Key;
+                        var queue = new Queue<(int Id, string Name)>(group.Select(s => (s.Id, s.Name)));
+
+                        IEnumerable<Room> OrderedRooms()
                         {
-                            var student = orderedStudents[studentIdx++];
-                            SeatAssignRepo.Add(new ExamSeatAssignment
-                            {
-                                ExamId = exam.ExamId,
-                                StudentId = student.Id,
-                                RoomId = hall.RoomId,
-                                SeatNumber = seatNum++
-                            });
-                            claimed.Add(hall.RoomId);
+                            foreach (var r in freeRooms.Where(r => r.FacultyId == facultyId))
+                                yield return r;
                         }
-                        if (studentIdx >= orderedStudents.Count)
-                            break;
+
+                        foreach (var hall in OrderedRooms())
+                        {
+                            if (queue.Count == 0) break;
+                            // Skip rooms already filled by another faculty group
+                            // within this same exam (still allowed to share a room
+                            // across groups of the same exam).
+                            if (roomRemaining[hall.RoomId] == 0) continue;
+
+                            roomName ??= hall.RoomName;
+                            var remaining = roomRemaining[hall.RoomId];
+                            while (remaining > 0 && queue.Count > 0)
+                            {
+                                var student = queue.Dequeue();
+                                SeatAssignRepo.Add(new ExamSeatAssignment
+                                {
+                                    ExamId = exam.ExamId,
+                                    StudentId = student.Id,
+                                    RoomId = hall.RoomId,
+                                    SeatNumber = seatNum++
+                                });
+                                remaining--;
+                            }
+                            roomRemaining[hall.RoomId] = remaining;
+                        }
                     }
+
                     await _unitOfWork.SaveChangesAsync();
-                    slotHallUsage[slot] = claimed;
+
+                    // Mark every room touched by this exam as used for this slot.
+                    // This ensures a room (especially a shared one) cannot host
+                    // two different exams at the same time slot, even if it was
+                    // only partially filled by this exam. Sharing within the same
+                    // exam (different faculty groups) is handled above via roomRemaining.
+                    var updatedSlotUsage = new HashSet<int>(usedAtSlot);
+                    foreach (var r in freeRooms)
+                    {
+                        if (roomRemaining[r.RoomId] < r.Capacity)
+                            updatedSlotUsage.Add(r.RoomId);
+                    }
+                    slotHallUsage[slot] = updatedSlotUsage;
                 }
 
                 foreach (var studentId in enrolledIds)

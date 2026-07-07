@@ -4,6 +4,8 @@ public class ClassQueryParams
 {
     public int? InstructorId { get; set; }
     public string? ClassType { get; set; }
+    public int? FacultyId { get; set; }
+    public string? Search { get; set; }
 
     public int PageIndex { get; set; } = 1;
 

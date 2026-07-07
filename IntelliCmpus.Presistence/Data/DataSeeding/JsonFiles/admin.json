@@ -1,16 +1,272 @@
 [
-  {
-    "nationalId": "2900101123456",
-    "fullName": "Super Administrator",
-    "fullNameAr": "المشرف العام",
-    "email": "20260101@intellicampus.online",
-    "phoneNumber": "01000000000",
-    "address": "Cairo, Egypt",
-    "nationality": "EG",
-    "password": "2900101123456",
-    "adminCode": "20260101",
-    "roles": [
-      "SuperAdmin"
-    ]
-  }
+    {
+        "nationalId": "2900101100010",
+        "fullName": "Mohamed Sherif",
+        "fullNameAr": "محمد شريف",
+        "email": "20260101@intellicampus.edu",
+        "phoneNumber": "01030000001",
+        "address": "Cairo, Egypt",
+        "nationality": "EG",
+        "password": "2900101100010",
+        "roles": [
+            "SuperAdmin"
+        ],
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "adminCode": "20260101"
+    },
+    {
+        "nationalId": "2900101100020",
+        "fullName": "Fatima Adel",
+        "fullNameAr": "فاطمة عادل",
+        "email": "20260102@intellicampus.edu",
+        "phoneNumber": "01030000002",
+        "address": "Giza, Egypt",
+        "nationality": "EG",
+        "password": "2900101100020",
+        "roles": [
+            "Admin_Bachelor"
+        ],
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "adminCode": "20260102"
+    },
+    {
+        "nationalId": "2900101100030",
+        "fullName": "Ahmed Abdelrahman",
+        "fullNameAr": "أحمد عبد الرحمن",
+        "email": "20260103@intellicampus.edu",
+        "phoneNumber": "01030000003",
+        "address": "Alexandria, Egypt",
+        "nationality": "EG",
+        "password": "2900101100030",
+        "roles": [
+            "Admin_Masters"
+        ],
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "adminCode": "20260103"
+    },
+    {
+        "nationalId": "2900101100040",
+        "fullName": "Mona Saleh",
+        "fullNameAr": "منى صالح",
+        "email": "20260104@intellicampus.edu",
+        "phoneNumber": "01030000004",
+        "address": "6th of October, Giza",
+        "nationality": "EG",
+        "password": "2900101100040",
+        "roles": [
+            "Admin_PhD"
+        ],
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "adminCode": "20260104"
+    },
+    {
+        "nationalId": "2900101100050",
+        "fullName": "Khaled Fawzy",
+        "fullNameAr": "خالد فوزي",
+        "email": "20260105@intellicampus.edu",
+        "phoneNumber": "01030000005",
+        "address": "Nasr City, Cairo",
+        "nationality": "EG",
+        "password": "2900101100050",
+        "roles": [
+            "Admin_Diploma"
+        ],
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "adminCode": "20260105"
+    },
+    {
+        "nationalId": "2900101100060",
+        "fullName": "Sara Mansour",
+        "fullNameAr": "سارة منصور",
+        "email": "20260106@intellicampus.edu",
+        "phoneNumber": "01030000006",
+        "address": "Maadi, Cairo",
+        "nationality": "EG",
+        "password": "2900101100060",
+        "roles": [
+            "Admin_AcademicStaff"
+        ],
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "adminCode": "20260106"
+    },
+    {
+        "nationalId": "2900101100070",
+        "fullName": "Tarek Elsayed",
+        "fullNameAr": "طارق السيد",
+        "email": "20260201@intellicampus.edu",
+        "phoneNumber": "01030000007",
+        "address": "Zamalek, Cairo",
+        "nationality": "EG",
+        "password": "2900101100070",
+        "roles": [
+            "SuperAdmin"
+        ],
+        "facultyName": "Faculty of Engineering",
+        "adminCode": "20260201"
+    },
+    {
+        "nationalId": "2900101100080",
+        "fullName": "Nada Mostafa",
+        "fullNameAr": "ندى مصطفى",
+        "email": "20260202@intellicampus.edu",
+        "phoneNumber": "01030000008",
+        "address": "Helwan, Cairo",
+        "nationality": "EG",
+        "password": "2900101100080",
+        "roles": [
+            "Admin_Bachelor"
+        ],
+        "facultyName": "Faculty of Engineering",
+        "adminCode": "20260202"
+    },
+    {
+        "nationalId": "2900101100090",
+        "fullName": "Hany Hussein",
+        "fullNameAr": "هاني حسين",
+        "email": "20260203@intellicampus.edu",
+        "phoneNumber": "01030000009",
+        "address": "Shoubra, Cairo",
+        "nationality": "EG",
+        "password": "2900101100090",
+        "roles": [
+            "Admin_Masters"
+        ],
+        "facultyName": "Faculty of Engineering",
+        "adminCode": "20260203"
+    },
+    {
+        "nationalId": "2900101100100",
+        "fullName": "Esraa Rashed",
+        "fullNameAr": "إسراء راشد",
+        "email": "20260204@intellicampus.edu",
+        "phoneNumber": "01030000010",
+        "address": "Dokki, Giza",
+        "nationality": "EG",
+        "password": "2900101100100",
+        "roles": [
+            "Admin_PhD"
+        ],
+        "facultyName": "Faculty of Engineering",
+        "adminCode": "20260204"
+    },
+    {
+        "nationalId": "2900101100110",
+        "fullName": "Omar Salem",
+        "fullNameAr": "عمر سالم",
+        "email": "20260205@intellicampus.edu",
+        "phoneNumber": "01030000011",
+        "address": "New Cairo, Egypt",
+        "nationality": "EG",
+        "password": "2900101100110",
+        "roles": [
+            "Admin_Diploma"
+        ],
+        "facultyName": "Faculty of Engineering",
+        "adminCode": "20260205"
+    },
+    {
+        "nationalId": "2900101100120",
+        "fullName": "Salma Amin",
+        "fullNameAr": "سلمى أمين",
+        "email": "20260206@intellicampus.edu",
+        "phoneNumber": "01030000012",
+        "address": "Qalyubia, Egypt",
+        "nationality": "EG",
+        "password": "2900101100120",
+        "roles": [
+            "Admin_AcademicStaff"
+        ],
+        "facultyName": "Faculty of Engineering",
+        "adminCode": "20260206"
+    },
+    {
+        "nationalId": "2900101100130",
+        "fullName": "Amr Aziz",
+        "fullNameAr": "عمرو عزيز",
+        "email": "20260301@intellicampus.edu",
+        "phoneNumber": "01030000013",
+        "address": "Cairo, Egypt",
+        "nationality": "EG",
+        "password": "2900101100130",
+        "roles": [
+            "SuperAdmin"
+        ],
+        "facultyName": "Faculty of Science",
+        "adminCode": "20260301"
+    },
+    {
+        "nationalId": "2900101100140",
+        "fullName": "Maryam Bakr",
+        "fullNameAr": "مريم بكر",
+        "email": "20260302@intellicampus.edu",
+        "phoneNumber": "01030000014",
+        "address": "Giza, Egypt",
+        "nationality": "EG",
+        "password": "2900101100140",
+        "roles": [
+            "Admin_Bachelor"
+        ],
+        "facultyName": "Faculty of Science",
+        "adminCode": "20260302"
+    },
+    {
+        "nationalId": "2900101100150",
+        "fullName": "Youssef Dawoud",
+        "fullNameAr": "يوسف داود",
+        "email": "20260303@intellicampus.edu",
+        "phoneNumber": "01030000015",
+        "address": "Alexandria, Egypt",
+        "nationality": "EG",
+        "password": "2900101100150",
+        "roles": [
+            "Admin_Masters"
+        ],
+        "facultyName": "Faculty of Science",
+        "adminCode": "20260303"
+    },
+    {
+        "nationalId": "2900101100160",
+        "fullName": "Malak Ezz",
+        "fullNameAr": "ملك عز",
+        "email": "20260304@intellicampus.edu",
+        "phoneNumber": "01030000016",
+        "address": "6th of October, Giza",
+        "nationality": "EG",
+        "password": "2900101100160",
+        "roles": [
+            "Admin_PhD"
+        ],
+        "facultyName": "Faculty of Science",
+        "adminCode": "20260304"
+    },
+    {
+        "nationalId": "2900101100170",
+        "fullName": "Mahmoud Fahmy",
+        "fullNameAr": "محمود فهمي",
+        "email": "20260305@intellicampus.edu",
+        "phoneNumber": "01030000017",
+        "address": "Nasr City, Cairo",
+        "nationality": "EG",
+        "password": "2900101100170",
+        "roles": [
+            "Admin_Diploma"
+        ],
+        "facultyName": "Faculty of Science",
+        "adminCode": "20260305"
+    },
+    {
+        "nationalId": "2900101100180",
+        "fullName": "Aisha Gaber",
+        "fullNameAr": "عائشة جابر",
+        "email": "20260306@intellicampus.edu",
+        "phoneNumber": "01030000018",
+        "address": "Maadi, Cairo",
+        "nationality": "EG",
+        "password": "2900101100180",
+        "roles": [
+            "Admin_AcademicStaff"
+        ],
+        "facultyName": "Faculty of Science",
+        "adminCode": "20260306"
+    }
 ]

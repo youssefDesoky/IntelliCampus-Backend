@@ -28,7 +28,10 @@ public class GradeSpec : BaseSpecifications<Grade>
     public GradeSpec(ICollection<int> gradeIds, bool byIds)
         : base(g => gradeIds.Contains(g.GradeId)) { }
 
-    // Admin dashboard — grades within a date range, no includes
+    // Admin dashboard — grades within a date range
     public GradeSpec(DateTime from, DateTime to)
-        : base(g => g.GradedAt >= from && g.GradedAt <= to) { }
+        : base(g => g.GradedAt >= from && g.GradedAt <= to)
+    {
+        AddInclude("Student.User");
+    }
 }

@@ -4,5 +4,17 @@
     "facultyNameAr": "كلية الحاسبات والذكاء الاصطناعي",
     "facultyCode": "01",
     "description": "Faculty of Computers and Artificial Intelligence — Cairo University"
+  },
+  {
+    "facultyName": "Faculty of Engineering",
+    "facultyNameAr": "كلية الهندسة",
+    "facultyCode": "02",
+    "description": "Faculty of Engineering — Cairo University"
+  },
+  {
+    "facultyName": "Faculty of Science",
+    "facultyNameAr": "كلية العلوم",
+    "facultyCode": "03",
+    "description": "Faculty of Science — Cairo University"
   }
 ]

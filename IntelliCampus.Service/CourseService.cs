@@ -17,12 +17,13 @@ using System.Text.Json;
 
 namespace IntelliCampus.Service;
 
-public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExcelImportService excelImportService) : ICourseService
+public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExcelImportService excelImportService, ICurrentAdminContext adminContext) : ICourseService
 {
     private const int TotalSemesterWeeks = 16;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly UrlResolver _urlResolver = urlResolver;
     private readonly IExcelImportService _excelImportService = excelImportService;
+    private readonly ICurrentAdminContext _adminContext = adminContext;
 
     private IGenericRepository<Course, int> Courses
         => _unitOfWork.GetRepository<Course, int>();
@@ -69,6 +70,9 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
     public async Task<PaginatedResult<CourseDto>> GetAllAsync(CourseQueryParams queryParams)
     {
+        if (_adminContext.IsAdmin)
+            queryParams.FacultyId = await _adminContext.GetFacultyIdAsync();
+
         var spec = new CourseSpec(queryParams, CourseIncludeLevel.Listing);
         var courses = await Courses.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = courses.Select(c => MapToDto(c)).ToList();
@@ -267,6 +271,8 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
 
     public async Task<CourseDto> CreateAsync(CreateCourseDto dto)
     {
+        await _adminContext.EnsureAdminHasFacultyAsync();
+
         var departmentId = await ResolveDepartmentIdAsync(dto.DepartmentName);
 
         var course = new Course
@@ -313,6 +319,8 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
+        await _adminContext.EnsureCanAccessCourseAsync(courseId);
+
         if (course.Status == CourseStatus.Active)
             throw new InvalidOperationException("Cannot edit an active course. Deactivate it first.");
 
@@ -357,6 +365,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     {
         var course = await Courses.GetByIdAsync(courseId);
         if (course is null) throw new CourseNotFoundException(courseId);
+        await _adminContext.EnsureCanAccessCourseAsync(courseId);
         course.Status = CourseStatus.Active;
         Courses.Update(course);
         await _unitOfWork.SaveChangesAsync();
@@ -367,6 +376,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     {
         var course = await Courses.GetByIdAsync(courseId);
         if (course is null) throw new CourseNotFoundException(courseId);
+        await _adminContext.EnsureCanAccessCourseAsync(courseId);
         course.Status = CourseStatus.Inactive;
         Courses.Update(course);
         await _unitOfWork.SaveChangesAsync();
@@ -661,6 +671,7 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
     {
         var course = await Courses.GetByIdAsync(courseId);
         if (course is null) throw new CourseNotFoundException(courseId);
+        await _adminContext.EnsureCanAccessCourseAsync(courseId);
 
         if (course.Status != CourseStatus.Active)
             throw new InvalidOperationException("Cannot delete an inactive course.");
@@ -726,9 +737,6 @@ public class CourseService(IUnitOfWork unitOfWork, UrlResolver urlResolver, IExc
             EnrollmentDate = student.EnrollmentDate?.ToString("dd MM yyyy"),
             Gpa = student.Gpa,
             Program = student.Program,
-            SpecializationId = student.SpecializationId,
-            SpecializationName = student.Specialization?.Name,
-            SpecializationNameAr = student.Specialization?.NameAr,
             StudentType = student.StudentType,
             ProfileImage = _urlResolver.ResolveProfile(student.User.ProfileImage),
             Roles = student.User.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.RoleName).ToList()

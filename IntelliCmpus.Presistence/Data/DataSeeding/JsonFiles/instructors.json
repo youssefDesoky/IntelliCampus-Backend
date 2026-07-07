@@ -1,212 +1,1142 @@
 [
-  {
-    "nationalId": "2750315012341",
-    "fullName": "Dr. Ahmed Hassan",
-    "fullNameAr": "د. أحمد حسن",
-    "email": "202601001@intellicampus.online",
-    "phoneNumber": "01100000001",
-    "address": "Cairo, Egypt",
-    "nationality": "EG",
-    "password": "2750315012341",
-    "roles": [
-      "Instructor"
-    ],
-    "instructorCode": "202601001",
-    "instructorRole": "Professor",
-    "specialization": "Information Systems",
-    "departmentName": "Information Systems",
-    "status": "Employed"
-  },
-  {
-    "nationalId": "2800620115672",
-    "fullName": "Dr. Fatima Mohamed",
-    "fullNameAr": "د. فاطمة محمد",
-    "email": "202601002@intellicampus.online",
-    "phoneNumber": "01100000002",
-    "address": "Giza, Egypt",
-    "nationality": "EG",
-    "password": "2800620115672",
-    "roles": [
-      "Instructor"
-    ],
-    "instructorCode": "202601002",
-    "instructorRole": "Professor",
-    "specialization": "Database Systems",
-    "departmentName": "Information Systems"
-  },
-  {
-    "nationalId": "2950910023453",
-    "fullName": "Eng. Omar Khaled",
-    "fullNameAr": "م. عمر خالد",
-    "email": "202601003@intellicampus.online",
-    "phoneNumber": "01100000003",
-    "address": "Alexandria, Egypt",
-    "nationality": "EG",
-    "password": "2950910023453",
-    "roles": [
-      "Instructor"
-    ],
-    "instructorCode": "202601003",
-    "instructorRole": "TeachingAssistant",
-    "specialization": "Web Development",
-    "departmentName": "Information Systems"
-  },
-  {
-    "nationalId": "2981205017894",
-    "fullName": "Eng. Sara Ali",
-    "fullNameAr": "م. سارة علي",
-    "email": "202601004@intellicampus.online",
-    "phoneNumber": "01100000004",
-    "address": "Cairo, Egypt",
-    "nationality": "EG",
-    "password": "2981205017894",
-    "roles": [
-      "Instructor"
-    ],
-    "instructorCode": "202601004",
-    "instructorRole": "TeachingAssistant",
-    "specialization": "Data Structures",
-    "departmentName": "Software Engineering"
-  },
-  {
-    "nationalId": "2820418112345",
-    "fullName": "Dr. Mona Ibrahim",
-    "fullNameAr": "د. منى إبراهيم",
-    "email": "202601005@intellicampus.online",
-    "phoneNumber": "01100000005",
-    "address": "Cairo, Egypt",
-    "nationality": "EG",
-    "password": "2820418112345",
-    "roles": [
-      "Instructor"
-    ],
-    "instructorCode": "202601005",
-    "instructorRole": "Professor",
-    "specialization": "Data Science",
-    "departmentName": "Data Science"
-  },
-  {
-    "nationalId": "2960125016786",
-    "fullName": "Eng. Khaled Youssef",
-    "fullNameAr": "م. خالد يوسف",
-    "email": "202601006@intellicampus.online",
-    "phoneNumber": "01100000006",
-    "address": "Giza, Egypt",
-    "nationality": "EG",
-    "password": "2960125016786",
-    "roles": [
-      "Instructor"
-    ],
-    "instructorCode": "202601006",
-    "instructorRole": "TeachingAssistant",
-    "specialization": "Systems Analysis",
-    "departmentName": "Information Systems"
-  },
-  {
-    "nationalId": "2780830013457",
-    "fullName": "Dr. Hany Farouk",
-    "fullNameAr": "د. هاني فاروق",
-    "email": "202601007@intellicampus.online",
-    "phoneNumber": "01100000007",
-    "address": "Cairo, Egypt",
-    "nationality": "EG",
-    "password": "2780830013457",
-    "roles": [
-      "Instructor"
-    ],
-    "instructorCode": "202601007",
-    "instructorRole": "Professor",
-    "specialization": "Software Engineering",
-    "departmentName": "Software Engineering"
-  },
-  {
-    "nationalId": "2970714017898",
-    "fullName": "Eng. Nada Samir",
-    "fullNameAr": "م. ندى سمير",
-    "email": "202601008@intellicampus.online",
-    "phoneNumber": "01100000008",
-    "address": "Cairo, Egypt",
-    "nationality": "EG",
-    "password": "2970714017898",
-    "roles": [
-      "Instructor"
-    ],
-    "instructorCode": "202601008",
-    "instructorRole": "TeachingAssistant",
-    "specialization": "Machine Learning",
-    "departmentName": "Data Science"
-  },
-  {
-    "nationalId": "2701102012349",
-    "fullName": "Dr. Tarek Nabil",
-    "fullNameAr": "د. طارق نبيل",
-    "email": "202601009@intellicampus.online",
-    "phoneNumber": "01100000009",
-    "address": "Alexandria, Egypt",
-    "nationality": "EG",
-    "password": "2701102012349",
-    "roles": [
-      "Instructor"
-    ],
-    "instructorCode": "202601009",
-    "instructorRole": "Professor",
-    "specialization": "Network Security",
-    "departmentName": "Networks and Cyber Security"
-  },
-  {
-    "nationalId": "2940522115670",
-    "fullName": "Eng. Amr Galal",
-    "fullNameAr": "م. عمرو جلال",
-    "email": "202601010@intellicampus.online",
-    "phoneNumber": "01100000010",
-    "address": "Cairo, Egypt",
-    "nationality": "EG",
-    "password": "2940522115670",
-    "roles": [
-      "Instructor"
-    ],
-    "instructorCode": "202601010",
-    "instructorRole": "TeachingAssistant",
-    "specialization": "Cyber Security",
-    "departmentName": "Networks and Cyber Security",
-    "status": "Loan"
-  },
-  {
-    "nationalId": "30501012200101",
-    "fullName": "Ahmed Mohamed Ali",
-    "fullNameAr": "أحمد محمد علي",
-    "email": "20240110001@intellicampus.online",
-    "phoneNumber": "01001112233",
-    "address": "15 Nile St., Giza",
-    "nationality": "EG",
-    "password": "30501012200101",
-    "roles": [
-      "Student_Masters",
-      "Instructor"
-    ],
-    "instructorCode": "202401001",
-    "instructorRole": "TeachingAssistant",
-    "specialization": "Cloud Computing",
-    "departmentName": "Software Engineering",
-    "status": "Employed"
-  },
-  {
-    "nationalId": "30502012200202",
-    "fullName": "Sara Hassan Youssef",
-    "fullNameAr": "سارة حسن يوسف",
-    "email": "20240120002@intellicampus.online",
-    "phoneNumber": "01204445566",
-    "address": "42 Abbas El Akkad St., Nasr City, Cairo",
-    "nationality": "EG",
-    "password": "30502012200202",
-    "roles": [
-      "Student_PhD",
-      "Instructor"
-    ],
-    "instructorCode": "202401002",
-    "instructorRole": "TeachingAssistant",
-    "specialization": "Artificial Intelligence",
-    "departmentName": "Data Science",
-    "status": "Employed"
-  }
+    {
+        "nationalId": "2860101200011",
+        "fullName": "Dr. Mohamed Hassan",
+        "fullNameAr": "د. محمد حسن",
+        "email": "202601001@intellicampus.edu",
+        "phoneNumber": "01010000001",
+        "address": "Cairo, Egypt",
+        "nationality": "EG",
+        "password": "2860101200011",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601001",
+        "instructorRole": "Professor",
+        "specialization": "Information Systems",
+        "departmentName": "Information Systems",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200021",
+        "fullName": "Dr. Fatima Mohamed",
+        "fullNameAr": "د. فاطمة محمد",
+        "email": "202601002@intellicampus.edu",
+        "phoneNumber": "01010000002",
+        "address": "Giza, Egypt",
+        "nationality": "EG",
+        "password": "2860101200021",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601002",
+        "instructorRole": "AssociateProfessor",
+        "specialization": "Database Systems",
+        "departmentName": "Information Systems",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200031",
+        "fullName": "Dr. Ahmed Ibrahim",
+        "fullNameAr": "د. أحمد إبراهيم",
+        "email": "202601003@intellicampus.edu",
+        "phoneNumber": "01010000003",
+        "address": "Alexandria, Egypt",
+        "nationality": "EG",
+        "password": "2860101200031",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601003",
+        "instructorRole": "AssistantLecturer",
+        "specialization": "Information Systems",
+        "departmentName": "Information Systems",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200041",
+        "fullName": "Dr. Mona Ali",
+        "fullNameAr": "د. منى علي",
+        "email": "202601004@intellicampus.edu",
+        "phoneNumber": "01010000004",
+        "address": "6th of October, Giza",
+        "nationality": "EG",
+        "password": "2860101200041",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601004",
+        "instructorRole": "Lecturer",
+        "specialization": "Database Systems",
+        "departmentName": "Information Systems",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200051",
+        "fullName": "Eng. Khaled Youssef",
+        "fullNameAr": "م. خالد يوسف",
+        "email": "202601005@intellicampus.edu",
+        "phoneNumber": "01010000005",
+        "address": "Nasr City, Cairo",
+        "nationality": "EG",
+        "password": "2860101200051",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601005",
+        "instructorRole": "TeachingAssistant",
+        "specialization": "Information Systems",
+        "departmentName": "Information Systems",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200061",
+        "fullName": "Dr. Sara Khaled",
+        "fullNameAr": "د. سارة خالد",
+        "email": "202601006@intellicampus.edu",
+        "phoneNumber": "01010000006",
+        "address": "Maadi, Cairo",
+        "nationality": "EG",
+        "password": "2860101200061",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601006",
+        "instructorRole": "Professor",
+        "specialization": "Data Science",
+        "departmentName": "Data Science",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200071",
+        "fullName": "Dr. Tarek Samir",
+        "fullNameAr": "د. طارق سمير",
+        "email": "202601007@intellicampus.edu",
+        "phoneNumber": "01010000007",
+        "address": "Zamalek, Cairo",
+        "nationality": "EG",
+        "password": "2860101200071",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601007",
+        "instructorRole": "AssociateProfessor",
+        "specialization": "Artificial Intelligence",
+        "departmentName": "Data Science",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200081",
+        "fullName": "Dr. Nada Nabil",
+        "fullNameAr": "د. ندى نبيل",
+        "email": "202601008@intellicampus.edu",
+        "phoneNumber": "01010000008",
+        "address": "Helwan, Cairo",
+        "nationality": "EG",
+        "password": "2860101200081",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601008",
+        "instructorRole": "AssistantLecturer",
+        "specialization": "Data Science",
+        "departmentName": "Data Science",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200091",
+        "fullName": "Dr. Hany Galal",
+        "fullNameAr": "د. هاني جلال",
+        "email": "202601009@intellicampus.edu",
+        "phoneNumber": "01010000009",
+        "address": "Shoubra, Cairo",
+        "nationality": "EG",
+        "password": "2860101200091",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601009",
+        "instructorRole": "Lecturer",
+        "specialization": "Artificial Intelligence",
+        "departmentName": "Data Science",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200101",
+        "fullName": "Eng. Esraa Farouk",
+        "fullNameAr": "م. إسراء فاروق",
+        "email": "202601010@intellicampus.edu",
+        "phoneNumber": "01010000010",
+        "address": "Dokki, Giza",
+        "nationality": "EG",
+        "password": "2860101200101",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601010",
+        "instructorRole": "TeachingAssistant",
+        "specialization": "Data Science",
+        "departmentName": "Data Science",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200111",
+        "fullName": "Dr. Omar Sherif",
+        "fullNameAr": "د. عمر شريف",
+        "email": "202601011@intellicampus.edu",
+        "phoneNumber": "01010000011",
+        "address": "New Cairo, Egypt",
+        "nationality": "EG",
+        "password": "2860101200111",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601011",
+        "instructorRole": "Professor",
+        "specialization": "Software Engineering",
+        "departmentName": "Software Engineering",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200121",
+        "fullName": "Dr. Salma Adel",
+        "fullNameAr": "د. سلمى عادل",
+        "email": "202601012@intellicampus.edu",
+        "phoneNumber": "01010000012",
+        "address": "Qalyubia, Egypt",
+        "nationality": "EG",
+        "password": "2860101200121",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601012",
+        "instructorRole": "AssociateProfessor",
+        "specialization": "Data Structures",
+        "departmentName": "Software Engineering",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200131",
+        "fullName": "Dr. Amr Abdelrahman",
+        "fullNameAr": "د. عمرو عبد الرحمن",
+        "email": "202601013@intellicampus.edu",
+        "phoneNumber": "01010000013",
+        "address": "Cairo, Egypt",
+        "nationality": "EG",
+        "password": "2860101200131",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601013",
+        "instructorRole": "AssistantLecturer",
+        "specialization": "Software Engineering",
+        "departmentName": "Software Engineering",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200141",
+        "fullName": "Dr. Maryam Saleh",
+        "fullNameAr": "د. مريم صالح",
+        "email": "202601014@intellicampus.edu",
+        "phoneNumber": "01010000014",
+        "address": "Giza, Egypt",
+        "nationality": "EG",
+        "password": "2860101200141",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601014",
+        "instructorRole": "Lecturer",
+        "specialization": "Data Structures",
+        "departmentName": "Software Engineering",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200151",
+        "fullName": "Eng. Youssef Fawzy",
+        "fullNameAr": "م. يوسف فوزي",
+        "email": "202601015@intellicampus.edu",
+        "phoneNumber": "01010000015",
+        "address": "Alexandria, Egypt",
+        "nationality": "EG",
+        "password": "2860101200151",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601015",
+        "instructorRole": "TeachingAssistant",
+        "specialization": "Software Engineering",
+        "departmentName": "Software Engineering",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200161",
+        "fullName": "Dr. Malak Mansour",
+        "fullNameAr": "د. ملك منصور",
+        "email": "202601016@intellicampus.edu",
+        "phoneNumber": "01010000016",
+        "address": "6th of October, Giza",
+        "nationality": "EG",
+        "password": "2860101200161",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601016",
+        "instructorRole": "Professor",
+        "specialization": "Network Security",
+        "departmentName": "Networks and Cyber Security",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200171",
+        "fullName": "Dr. Mahmoud Mostafa",
+        "fullNameAr": "د. محمود مصطفى",
+        "email": "202601017@intellicampus.edu",
+        "phoneNumber": "01010000017",
+        "address": "Nasr City, Cairo",
+        "nationality": "EG",
+        "password": "2860101200171",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601017",
+        "instructorRole": "AssociateProfessor",
+        "specialization": "Cyber Security",
+        "departmentName": "Networks and Cyber Security",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200181",
+        "fullName": "Dr. Aisha Hussein",
+        "fullNameAr": "د. عائشة حسين",
+        "email": "202601018@intellicampus.edu",
+        "phoneNumber": "01010000018",
+        "address": "Maadi, Cairo",
+        "nationality": "EG",
+        "password": "2860101200181",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601018",
+        "instructorRole": "AssistantLecturer",
+        "specialization": "Network Security",
+        "departmentName": "Networks and Cyber Security",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200191",
+        "fullName": "Dr. Mostafa Rashed",
+        "fullNameAr": "د. مصطفى راشد",
+        "email": "202601019@intellicampus.edu",
+        "phoneNumber": "01010000019",
+        "address": "Zamalek, Cairo",
+        "nationality": "EG",
+        "password": "2860101200191",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601019",
+        "instructorRole": "Lecturer",
+        "specialization": "Cyber Security",
+        "departmentName": "Networks and Cyber Security",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200201",
+        "fullName": "Eng. Heba Salem",
+        "fullNameAr": "م. هبة سالم",
+        "email": "202601020@intellicampus.edu",
+        "phoneNumber": "01010000020",
+        "address": "Helwan, Cairo",
+        "nationality": "EG",
+        "password": "2860101200201",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202601020",
+        "instructorRole": "TeachingAssistant",
+        "specialization": "Network Security",
+        "departmentName": "Networks and Cyber Security",
+        "facultyName": "Faculty of Computers and Artificial Intelligence",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200211",
+        "fullName": "Dr. Karim Amin",
+        "fullNameAr": "د. كريم أمين",
+        "email": "202602001@intellicampus.edu",
+        "phoneNumber": "01010000021",
+        "address": "Shoubra, Cairo",
+        "nationality": "EG",
+        "password": "2860101200211",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602001",
+        "instructorRole": "Professor",
+        "specialization": "Structural Engineering",
+        "departmentName": "Civil Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200221",
+        "fullName": "Dr. Dina Aziz",
+        "fullNameAr": "د. دينا عزيز",
+        "email": "202602002@intellicampus.edu",
+        "phoneNumber": "01010000022",
+        "address": "Dokki, Giza",
+        "nationality": "EG",
+        "password": "2860101200221",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602002",
+        "instructorRole": "AssociateProfessor",
+        "specialization": "Geotechnical Engineering",
+        "departmentName": "Civil Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200231",
+        "fullName": "Dr. Hassan Bakr",
+        "fullNameAr": "د. حسن بكر",
+        "email": "202602003@intellicampus.edu",
+        "phoneNumber": "01010000023",
+        "address": "New Cairo, Egypt",
+        "nationality": "EG",
+        "password": "2860101200231",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602003",
+        "instructorRole": "AssistantLecturer",
+        "specialization": "Structural Engineering",
+        "departmentName": "Civil Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200241",
+        "fullName": "Dr. Rania Dawoud",
+        "fullNameAr": "د. رانيا داود",
+        "email": "202602004@intellicampus.edu",
+        "phoneNumber": "01010000024",
+        "address": "Qalyubia, Egypt",
+        "nationality": "EG",
+        "password": "2860101200241",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602004",
+        "instructorRole": "Lecturer",
+        "specialization": "Geotechnical Engineering",
+        "departmentName": "Civil Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200251",
+        "fullName": "Eng. Ibrahim Ezz",
+        "fullNameAr": "م. إبراهيم عز",
+        "email": "202602005@intellicampus.edu",
+        "phoneNumber": "01010000025",
+        "address": "Cairo, Egypt",
+        "nationality": "EG",
+        "password": "2860101200251",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602005",
+        "instructorRole": "TeachingAssistant",
+        "specialization": "Structural Engineering",
+        "departmentName": "Civil Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200261",
+        "fullName": "Dr. Yasmin Fahmy",
+        "fullNameAr": "د. ياسمين فهمي",
+        "email": "202602006@intellicampus.edu",
+        "phoneNumber": "01010000026",
+        "address": "Giza, Egypt",
+        "nationality": "EG",
+        "password": "2860101200261",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602006",
+        "instructorRole": "Professor",
+        "specialization": "Thermal Engineering",
+        "departmentName": "Mechanical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200271",
+        "fullName": "Dr. Adel Gaber",
+        "fullNameAr": "د. عادل جابر",
+        "email": "202602007@intellicampus.edu",
+        "phoneNumber": "01010000027",
+        "address": "Alexandria, Egypt",
+        "nationality": "EG",
+        "password": "2860101200271",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602007",
+        "instructorRole": "AssociateProfessor",
+        "specialization": "Mechatronics",
+        "departmentName": "Mechanical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200281",
+        "fullName": "Dr. Hala Hady",
+        "fullNameAr": "د. هالة هادي",
+        "email": "202602008@intellicampus.edu",
+        "phoneNumber": "01010000028",
+        "address": "6th of October, Giza",
+        "nationality": "EG",
+        "password": "2860101200281",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602008",
+        "instructorRole": "AssistantLecturer",
+        "specialization": "Thermal Engineering",
+        "departmentName": "Mechanical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200291",
+        "fullName": "Dr. Sherif Salah",
+        "fullNameAr": "د. شريف صلاح",
+        "email": "202602009@intellicampus.edu",
+        "phoneNumber": "01010000029",
+        "address": "Nasr City, Cairo",
+        "nationality": "EG",
+        "password": "2860101200291",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602009",
+        "instructorRole": "Lecturer",
+        "specialization": "Mechatronics",
+        "departmentName": "Mechanical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200301",
+        "fullName": "Eng. Soha Hassan",
+        "fullNameAr": "م. سهى حسن",
+        "email": "202602010@intellicampus.edu",
+        "phoneNumber": "01010000030",
+        "address": "Maadi, Cairo",
+        "nationality": "EG",
+        "password": "2860101200301",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602010",
+        "instructorRole": "TeachingAssistant",
+        "specialization": "Thermal Engineering",
+        "departmentName": "Mechanical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200311",
+        "fullName": "Dr. Mohamed Mohamed",
+        "fullNameAr": "د. محمد محمد",
+        "email": "202602011@intellicampus.edu",
+        "phoneNumber": "01010000031",
+        "address": "Zamalek, Cairo",
+        "nationality": "EG",
+        "password": "2860101200311",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602011",
+        "instructorRole": "Professor",
+        "specialization": "Power Engineering",
+        "departmentName": "Electrical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200321",
+        "fullName": "Dr. Fatima Ibrahim",
+        "fullNameAr": "د. فاطمة إبراهيم",
+        "email": "202602012@intellicampus.edu",
+        "phoneNumber": "01010000032",
+        "address": "Helwan, Cairo",
+        "nationality": "EG",
+        "password": "2860101200321",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602012",
+        "instructorRole": "AssociateProfessor",
+        "specialization": "Control Engineering",
+        "departmentName": "Electrical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200331",
+        "fullName": "Dr. Ahmed Ali",
+        "fullNameAr": "د. أحمد علي",
+        "email": "202602013@intellicampus.edu",
+        "phoneNumber": "01010000033",
+        "address": "Shoubra, Cairo",
+        "nationality": "EG",
+        "password": "2860101200331",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602013",
+        "instructorRole": "AssistantLecturer",
+        "specialization": "Power Engineering",
+        "departmentName": "Electrical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200341",
+        "fullName": "Dr. Mona Youssef",
+        "fullNameAr": "د. منى يوسف",
+        "email": "202602014@intellicampus.edu",
+        "phoneNumber": "01010000034",
+        "address": "Dokki, Giza",
+        "nationality": "EG",
+        "password": "2860101200341",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602014",
+        "instructorRole": "Lecturer",
+        "specialization": "Control Engineering",
+        "departmentName": "Electrical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200351",
+        "fullName": "Eng. Khaled Khaled",
+        "fullNameAr": "م. خالد خالد",
+        "email": "202602015@intellicampus.edu",
+        "phoneNumber": "01010000035",
+        "address": "New Cairo, Egypt",
+        "nationality": "EG",
+        "password": "2860101200351",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602015",
+        "instructorRole": "TeachingAssistant",
+        "specialization": "Power Engineering",
+        "departmentName": "Electrical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200361",
+        "fullName": "Dr. Sara Samir",
+        "fullNameAr": "د. سارة سمير",
+        "email": "202602016@intellicampus.edu",
+        "phoneNumber": "01010000036",
+        "address": "Qalyubia, Egypt",
+        "nationality": "EG",
+        "password": "2860101200361",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602016",
+        "instructorRole": "Professor",
+        "specialization": "Process Engineering",
+        "departmentName": "Chemical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200371",
+        "fullName": "Dr. Tarek Nabil",
+        "fullNameAr": "د. طارق نبيل",
+        "email": "202602017@intellicampus.edu",
+        "phoneNumber": "01010000037",
+        "address": "Cairo, Egypt",
+        "nationality": "EG",
+        "password": "2860101200371",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602017",
+        "instructorRole": "AssociateProfessor",
+        "specialization": "Environmental Engineering",
+        "departmentName": "Chemical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200381",
+        "fullName": "Dr. Nada Galal",
+        "fullNameAr": "د. ندى جلال",
+        "email": "202602018@intellicampus.edu",
+        "phoneNumber": "01010000038",
+        "address": "Giza, Egypt",
+        "nationality": "EG",
+        "password": "2860101200381",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602018",
+        "instructorRole": "AssistantLecturer",
+        "specialization": "Process Engineering",
+        "departmentName": "Chemical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200391",
+        "fullName": "Dr. Hany Farouk",
+        "fullNameAr": "د. هاني فاروق",
+        "email": "202602019@intellicampus.edu",
+        "phoneNumber": "01010000039",
+        "address": "Alexandria, Egypt",
+        "nationality": "EG",
+        "password": "2860101200391",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602019",
+        "instructorRole": "Lecturer",
+        "specialization": "Environmental Engineering",
+        "departmentName": "Chemical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200401",
+        "fullName": "Eng. Esraa Sherif",
+        "fullNameAr": "م. إسراء شريف",
+        "email": "202602020@intellicampus.edu",
+        "phoneNumber": "01010000040",
+        "address": "6th of October, Giza",
+        "nationality": "EG",
+        "password": "2860101200401",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202602020",
+        "instructorRole": "TeachingAssistant",
+        "specialization": "Process Engineering",
+        "departmentName": "Chemical Engineering",
+        "facultyName": "Faculty of Engineering",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200411",
+        "fullName": "Dr. Omar Adel",
+        "fullNameAr": "د. عمر عادل",
+        "email": "202603001@intellicampus.edu",
+        "phoneNumber": "01010000041",
+        "address": "Nasr City, Cairo",
+        "nationality": "EG",
+        "password": "2860101200411",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603001",
+        "instructorRole": "Professor",
+        "specialization": "Astrophysics",
+        "departmentName": "Physics",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200421",
+        "fullName": "Dr. Salma Abdelrahman",
+        "fullNameAr": "د. سلمى عبد الرحمن",
+        "email": "202603002@intellicampus.edu",
+        "phoneNumber": "01010000042",
+        "address": "Maadi, Cairo",
+        "nationality": "EG",
+        "password": "2860101200421",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603002",
+        "instructorRole": "AssociateProfessor",
+        "specialization": "Condensed Matter Physics",
+        "departmentName": "Physics",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200431",
+        "fullName": "Dr. Amr Saleh",
+        "fullNameAr": "د. عمرو صالح",
+        "email": "202603003@intellicampus.edu",
+        "phoneNumber": "01010000043",
+        "address": "Zamalek, Cairo",
+        "nationality": "EG",
+        "password": "2860101200431",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603003",
+        "instructorRole": "AssistantLecturer",
+        "specialization": "Astrophysics",
+        "departmentName": "Physics",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200441",
+        "fullName": "Dr. Maryam Fawzy",
+        "fullNameAr": "د. مريم فوزي",
+        "email": "202603004@intellicampus.edu",
+        "phoneNumber": "01010000044",
+        "address": "Helwan, Cairo",
+        "nationality": "EG",
+        "password": "2860101200441",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603004",
+        "instructorRole": "Lecturer",
+        "specialization": "Condensed Matter Physics",
+        "departmentName": "Physics",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200451",
+        "fullName": "Eng. Youssef Mansour",
+        "fullNameAr": "م. يوسف منصور",
+        "email": "202603005@intellicampus.edu",
+        "phoneNumber": "01010000045",
+        "address": "Shoubra, Cairo",
+        "nationality": "EG",
+        "password": "2860101200451",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603005",
+        "instructorRole": "TeachingAssistant",
+        "specialization": "Astrophysics",
+        "departmentName": "Physics",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200461",
+        "fullName": "Dr. Malak Mostafa",
+        "fullNameAr": "د. ملك مصطفى",
+        "email": "202603006@intellicampus.edu",
+        "phoneNumber": "01010000046",
+        "address": "Dokki, Giza",
+        "nationality": "EG",
+        "password": "2860101200461",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603006",
+        "instructorRole": "Professor",
+        "specialization": "Organic Chemistry",
+        "departmentName": "Chemistry",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200471",
+        "fullName": "Dr. Mahmoud Hussein",
+        "fullNameAr": "د. محمود حسين",
+        "email": "202603007@intellicampus.edu",
+        "phoneNumber": "01010000047",
+        "address": "New Cairo, Egypt",
+        "nationality": "EG",
+        "password": "2860101200471",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603007",
+        "instructorRole": "AssociateProfessor",
+        "specialization": "Analytical Chemistry",
+        "departmentName": "Chemistry",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200481",
+        "fullName": "Dr. Aisha Rashed",
+        "fullNameAr": "د. عائشة راشد",
+        "email": "202603008@intellicampus.edu",
+        "phoneNumber": "01010000048",
+        "address": "Qalyubia, Egypt",
+        "nationality": "EG",
+        "password": "2860101200481",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603008",
+        "instructorRole": "AssistantLecturer",
+        "specialization": "Organic Chemistry",
+        "departmentName": "Chemistry",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200491",
+        "fullName": "Dr. Mostafa Salem",
+        "fullNameAr": "د. مصطفى سالم",
+        "email": "202603009@intellicampus.edu",
+        "phoneNumber": "01010000049",
+        "address": "Cairo, Egypt",
+        "nationality": "EG",
+        "password": "2860101200491",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603009",
+        "instructorRole": "Lecturer",
+        "specialization": "Analytical Chemistry",
+        "departmentName": "Chemistry",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200501",
+        "fullName": "Eng. Heba Amin",
+        "fullNameAr": "م. هبة أمين",
+        "email": "202603010@intellicampus.edu",
+        "phoneNumber": "01010000050",
+        "address": "Giza, Egypt",
+        "nationality": "EG",
+        "password": "2860101200501",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603010",
+        "instructorRole": "TeachingAssistant",
+        "specialization": "Organic Chemistry",
+        "departmentName": "Chemistry",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200511",
+        "fullName": "Dr. Karim Aziz",
+        "fullNameAr": "د. كريم عزيز",
+        "email": "202603011@intellicampus.edu",
+        "phoneNumber": "01010000051",
+        "address": "Alexandria, Egypt",
+        "nationality": "EG",
+        "password": "2860101200511",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603011",
+        "instructorRole": "Professor",
+        "specialization": "Pure Mathematics",
+        "departmentName": "Mathematics",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200521",
+        "fullName": "Dr. Dina Bakr",
+        "fullNameAr": "د. دينا بكر",
+        "email": "202603012@intellicampus.edu",
+        "phoneNumber": "01010000052",
+        "address": "6th of October, Giza",
+        "nationality": "EG",
+        "password": "2860101200521",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603012",
+        "instructorRole": "AssociateProfessor",
+        "specialization": "Applied Mathematics",
+        "departmentName": "Mathematics",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200531",
+        "fullName": "Dr. Hassan Dawoud",
+        "fullNameAr": "د. حسن داود",
+        "email": "202603013@intellicampus.edu",
+        "phoneNumber": "01010000053",
+        "address": "Nasr City, Cairo",
+        "nationality": "EG",
+        "password": "2860101200531",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603013",
+        "instructorRole": "AssistantLecturer",
+        "specialization": "Pure Mathematics",
+        "departmentName": "Mathematics",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200541",
+        "fullName": "Dr. Rania Ezz",
+        "fullNameAr": "د. رانيا عز",
+        "email": "202603014@intellicampus.edu",
+        "phoneNumber": "01010000054",
+        "address": "Maadi, Cairo",
+        "nationality": "EG",
+        "password": "2860101200541",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603014",
+        "instructorRole": "Lecturer",
+        "specialization": "Applied Mathematics",
+        "departmentName": "Mathematics",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200551",
+        "fullName": "Eng. Ibrahim Fahmy",
+        "fullNameAr": "م. إبراهيم فهمي",
+        "email": "202603015@intellicampus.edu",
+        "phoneNumber": "01010000055",
+        "address": "Zamalek, Cairo",
+        "nationality": "EG",
+        "password": "2860101200551",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603015",
+        "instructorRole": "TeachingAssistant",
+        "specialization": "Pure Mathematics",
+        "departmentName": "Mathematics",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200561",
+        "fullName": "Dr. Yasmin Gaber",
+        "fullNameAr": "د. ياسمين جابر",
+        "email": "202603016@intellicampus.edu",
+        "phoneNumber": "01010000056",
+        "address": "Helwan, Cairo",
+        "nationality": "EG",
+        "password": "2860101200561",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603016",
+        "instructorRole": "Professor",
+        "specialization": "Molecular Biology",
+        "departmentName": "Biological Sciences",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200571",
+        "fullName": "Dr. Adel Hady",
+        "fullNameAr": "د. عادل هادي",
+        "email": "202603017@intellicampus.edu",
+        "phoneNumber": "01010000057",
+        "address": "Shoubra, Cairo",
+        "nationality": "EG",
+        "password": "2860101200571",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603017",
+        "instructorRole": "AssociateProfessor",
+        "specialization": "Genetics",
+        "departmentName": "Biological Sciences",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200581",
+        "fullName": "Dr. Hala Salah",
+        "fullNameAr": "د. هالة صلاح",
+        "email": "202603018@intellicampus.edu",
+        "phoneNumber": "01010000058",
+        "address": "Dokki, Giza",
+        "nationality": "EG",
+        "password": "2860101200581",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603018",
+        "instructorRole": "AssistantLecturer",
+        "specialization": "Molecular Biology",
+        "departmentName": "Biological Sciences",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200591",
+        "fullName": "Dr. Sherif Hassan",
+        "fullNameAr": "د. شريف حسن",
+        "email": "202603019@intellicampus.edu",
+        "phoneNumber": "01010000059",
+        "address": "New Cairo, Egypt",
+        "nationality": "EG",
+        "password": "2860101200591",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603019",
+        "instructorRole": "Lecturer",
+        "specialization": "Genetics",
+        "departmentName": "Biological Sciences",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    },
+    {
+        "nationalId": "2860101200601",
+        "fullName": "Eng. Soha Mohamed",
+        "fullNameAr": "م. سهى محمد",
+        "email": "202603020@intellicampus.edu",
+        "phoneNumber": "01010000060",
+        "address": "Qalyubia, Egypt",
+        "nationality": "EG",
+        "password": "2860101200601",
+        "roles": [
+            "Instructor"
+        ],
+        "instructorCode": "202603020",
+        "instructorRole": "TeachingAssistant",
+        "specialization": "Molecular Biology",
+        "departmentName": "Biological Sciences",
+        "facultyName": "Faculty of Science",
+        "status": "Employed"
+    }
 ]

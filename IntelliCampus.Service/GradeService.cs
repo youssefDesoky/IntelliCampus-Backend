@@ -787,7 +787,6 @@ public class GradeService : IGradeService
             (Type: CourseType.GeneralUniversity, Name: "University Requirements", NameAr: "متطلبات الجامعة"),
             (Type: CourseType.Faculty, Name: "Faculty Requirements", NameAr: "متطلبات الكلية"),
             (Type: CourseType.Department, Name: "Department Requirements", NameAr: "متطلبات القسم"),
-            (Type: CourseType.Specialization, Name: "Major Requirements", NameAr: "متطلبات التخصص"),
             (Type: CourseType.Elective, Name: "Free Electives", NameAr: "مواد اختيارية")
         };
 

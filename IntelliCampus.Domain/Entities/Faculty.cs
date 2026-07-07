@@ -10,4 +10,5 @@ public class Faculty
 
     public ICollection<User> Users { get; set; } = [];
     public ICollection<Department> Departments { get; set; } = [];
+    public ICollection<Room> Rooms { get; set; } = [];
 }

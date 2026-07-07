@@ -5,6 +5,7 @@ public class InstructorQueryParams
     public string? Search { get; set; }
     public int? DepartmentId { get; set; }
     public int? FacultyId { get; set; }
+    public string? InstructorRole { get; set; }
 
     private int _pageIndex = 1;
     public int PageIndex

@@ -12,12 +12,10 @@ public class Student
     public DateTime? EnrollmentDate { get; set; }
     public StudentProgram? Program { get; set; }
     public double Gpa { get; set; }
-    public int? SpecializationId { get; set; }
     public Enums.StudentType StudentType { get; set; }
 
     // Navigation properties
     public User User { get; set; } = null!;
-    public Specialization? Specialization { get; set; }
     public Department? Department { get; set; }
     public Bylaw? Bylaw { get; set; }
     public ICollection<StudentQuiz> StudentQuizzes { get; set; } = [];
@@ -32,5 +30,5 @@ public class Student
     public ICollection<StudentCourse> StudentCourses { get; set; } = [];
     public ICollection<ExamSeatAssignment> ExamSeatAssignments { get; set; } = [];
     public ICollection<StudentElectiveBucketProgress> ElectiveBucketProgresses { get; set; } = [];
-    public ICollection<SpecializationPreference> SpecializationPreferences { get; set; } = [];
+    public ICollection<DepartmentPreference> DepartmentPreferences { get; set; } = [];
 }

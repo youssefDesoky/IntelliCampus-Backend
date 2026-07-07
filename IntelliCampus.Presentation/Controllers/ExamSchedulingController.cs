@@ -9,7 +9,7 @@ namespace IntelliCampus.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "Admin_Bachelor,Admin_Masters,Admin_PhD,Admin_Diploma,SuperAdmin")]
+[Authorize(Roles = "SuperAdmin")]
 public class ExamSchedulingController : ControllerBase
 {
     private readonly IAutoExamSchedulingService _schedulingService;

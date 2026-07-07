@@ -30,9 +30,6 @@ public class StudentDto
     public decimal? ProbationThreshold { get; set; }
     public bool IsOnProbation { get; set; }
     public StudentProgram? Program { get; set; }
-    public int? SpecializationId { get; set; }
-    public string? SpecializationName { get; set; }
-    public string? SpecializationNameAr { get; set; }
     public StudentType StudentType { get; set; }
     public string? ProfileImage { get; set; }
     public string? Section { get; set; }

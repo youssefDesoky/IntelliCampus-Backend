@@ -8,6 +8,7 @@ public class CourseQueryParams
     public int? InstructorId { get; set; }
     public int? CourseId { get; set; }
     public int? DepartmentId { get; set; }
+    public int? FacultyId { get; set; }
     public string? Status { get; set; }
     public string? Search { get; set; }
     public bool IncludeCourses { get; set; }

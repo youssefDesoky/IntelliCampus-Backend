@@ -4,6 +4,7 @@ public class BylawQueryParams
 {
     public string? Search { get; set; }
     public string? Type { get; set; }
+    public int? FacultyId { get; set; }
 
     private int _pageIndex = 1;
     public int PageIndex

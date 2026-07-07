@@ -19,7 +19,6 @@ public class LevelScaleItem
 public class BylawSettings
 {
     public int? MinHoursToChooseDepartment { get; set; }
-    public int? MinHoursToChooseSpecialization { get; set; }
     public int? MinCreditHoursForGraduationProject { get; set; }
     public List<LevelScaleItem> LevelScales { get; set; } = new();
     public int? MinCreditHoursPerSemester { get; set; }
@@ -49,6 +48,7 @@ public class Bylaw
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
     public int? UploadedByAdminId { get; set; }
+    public int? FacultyId { get; set; }
 
     public BylawType Type { get; set; }
 
@@ -59,6 +59,7 @@ public class Bylaw
 
     // Relations
     public Admin? UploadedBy { get; set; }
+    public Faculty? Faculty { get; set; }
     public ICollection<Student> Students { get; set; } = new List<Student>();
     public List<GradeScaleItem> GradeScales { get; set; } = new();
     public ICollection<BylawCourse> BylawCourses { get; set; } = new List<BylawCourse>();

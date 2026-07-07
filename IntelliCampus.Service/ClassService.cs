@@ -13,10 +13,11 @@ using IntelliCampus.Service.Specifications;
 
 namespace IntelliCampus.Service;
 
-public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleService) : IClassService
+public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleService, ICurrentAdminContext adminContext) : IClassService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IScheduleService _scheduleService = scheduleService;
+    private readonly ICurrentAdminContext _adminContext = adminContext;
 
     private IGenericRepository<Class, int> Classes
         => _unitOfWork.GetRepository<Class, int>();
@@ -54,7 +55,11 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
 
     public async Task<IEnumerable<ClassDto>> GetAllAsync(ClassQueryParams? queryParams = null)
     {
-        var spec = queryParams is not null ? new ClassSpec(queryParams) : new ClassSpec();
+        var paramsToUse = queryParams ?? new ClassQueryParams();
+        if (_adminContext.IsAdmin)
+            paramsToUse.FacultyId = await _adminContext.GetFacultyIdAsync();
+
+        var spec = new ClassSpec(paramsToUse);
         var classes = await Classes.GetAllAsync(spec, asNoTracking: true);
         return classes.Select(MapToDto);
     }
@@ -602,9 +607,6 @@ public class ClassService(IUnitOfWork unitOfWork, IScheduleService scheduleServi
             Nationality = instructor.User.Nationality,
             InstructorCode = instructor.InstructorCode,
             InstructorRole = instructor.InstructorRole?.ToString(),
-            SpecializationId = instructor.SpecializationId,
-            SpecializationName = instructor.Specialization?.Name,
-            SpecializationNameAr = instructor.Specialization?.NameAr,
             DepartmentId = instructor.DepartmentId,
             DepartmentName = instructor.Department?.DepartmentName,
             DepartmentNameAr = instructor.Department?.DepartmentNameAr,

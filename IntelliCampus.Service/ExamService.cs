@@ -16,15 +16,18 @@ public class ExamService : IExamService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IExamScheduleService _examScheduleService;
     private readonly INotificationService _notificationService;
+    private readonly ICurrentAdminContext _adminContext;
 
     public ExamService(
         IUnitOfWork unitOfWork,
         IExamScheduleService examScheduleService,
-        INotificationService notificationService)
+        INotificationService notificationService,
+        ICurrentAdminContext adminContext)
     {
         _unitOfWork = unitOfWork;
         _examScheduleService = examScheduleService;
         _notificationService = notificationService;
+        _adminContext = adminContext;
     }
 
     private IGenericRepository<Exam, int> Exams
@@ -44,11 +47,18 @@ public class ExamService : IExamService
         var exam = await Exams.GetByIdAsync(spec);
         if (exam is null)
             throw new ExamNotFoundException(examId);
+
+        if (_adminContext.IsAdmin)
+            await _adminContext.EnsureCanAccessExamAsync(examId);
+
         return MapToDto(exam);
     }
 
     public async Task<PaginatedResult<ExamDto>> GetAllAsync(ExamQueryParams queryParams)
     {
+        if (_adminContext.IsAdmin)
+            queryParams.FacultyId = await _adminContext.GetFacultyIdAsync();
+
         var spec = new ExamWithCourseSpec(queryParams);
         var exams = await Exams.GetAllAsync(spec, asNoTracking: true);
         var dataToReturn = exams.Select(MapToDto).ToList();
@@ -65,6 +75,9 @@ public class ExamService : IExamService
         if (course is null)
             throw new CourseNotFoundException(courseId);
 
+        if (_adminContext.IsAdmin)
+            await _adminContext.EnsureCanAccessCourseAsync(courseId);
+
         var spec = new ExamWithDetailsSpec(courseId, filterByCourse: true);
         var exams = await Exams.GetAllAsync(spec, asNoTracking: true);
         return exams.Select(MapToDto);
@@ -72,6 +85,8 @@ public class ExamService : IExamService
 
     public async Task<ExamDto> CreateAsync(CreateExamDto dto)
     {
+        await _adminContext.EnsureAdminHasFacultyAsync();
+
         var course = await CoursesRepo.GetByIdAsync(dto.CourseId);
         if (course is null)
             throw new CourseNotFoundException(dto.CourseId);
@@ -115,6 +130,8 @@ public class ExamService : IExamService
 
         if (exam is null)
             throw new ExamNotFoundException(examId);
+
+        await _adminContext.EnsureCanAccessExamAsync(examId);
 
         var effectiveCourseId = dto.CourseId ?? exam.CourseId;
         var effectiveDate = dto.Date ?? exam.Date;
@@ -181,6 +198,8 @@ public class ExamService : IExamService
 
         if (exam is null)
             throw new ExamNotFoundException(examId);
+
+        await _adminContext.EnsureCanAccessExamAsync(examId);
 
         await _examScheduleService.RemoveByExamAsync(examId);
 

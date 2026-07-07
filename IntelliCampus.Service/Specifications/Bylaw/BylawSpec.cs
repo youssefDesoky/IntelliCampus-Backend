@@ -10,6 +10,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(b => b.UploadedBy!);
             AddInclude(b => b.Students!);
+            AddInclude(b => b.Faculty!);
             EnableSplitQuery();
         }
 
@@ -18,6 +19,7 @@ namespace IntelliCampus.Service.Specifications
         {
             AddInclude(b => b.UploadedBy!);
             AddInclude(b => b.Students!);
+            AddInclude(b => b.Faculty!);
             AddInclude("BylawCourses");
             AddInclude("BylawCourses.Course");
             AddInclude("BylawCourses.Prerequisites");
@@ -39,10 +41,12 @@ namespace IntelliCampus.Service.Specifications
                     || b.Type == Enum.Parse<BylawType>(queryParams.Type, true)) &&
                 (string.IsNullOrEmpty(queryParams.Search)
                     || b.Name.Contains(queryParams.Search)
-                    || (b.NameAr != null && b.NameAr.Contains(queryParams.Search))))
+                    || (b.NameAr != null && b.NameAr.Contains(queryParams.Search))) &&
+                (!queryParams.FacultyId.HasValue || b.FacultyId == queryParams.FacultyId.Value))
         {
             AddInclude(b => b.UploadedBy!);
             AddInclude(b => b.Students!);
+            AddInclude(b => b.Faculty!);
             EnableSplitQuery();
             AddOrderBy(b => b.BylawId);
             ApplyPagination(queryParams.PageSize, queryParams.PageIndex);

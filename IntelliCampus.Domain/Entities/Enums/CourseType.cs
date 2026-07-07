@@ -5,6 +5,5 @@ public enum CourseType
     GeneralUniversity,
     Faculty,
     Department,
-    Specialization,
     Elective
 }

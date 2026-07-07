@@ -7,6 +7,7 @@ public class StudentQueryParams
     public int? FacultyId { get; set; }
     public int? Level { get; set; }
     public string? Status { get; set; }
+    public bool? IsOnProbation { get; set; }
 
     private int _pageIndex = 1;
     public int PageIndex
